@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Common")]
+[assembly: AssemblyTitle("TestInterfaceClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Telvent DMS")]
-[assembly: AssemblyProduct("DMS Software")]
-[assembly: AssemblyCopyright("Copyright (C) Telvent DMS, 2010")]
+[assembly: AssemblyProduct("TestInterfaceClient")]
+[assembly: AssemblyCopyright("Copyright © Telvent DMS 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("20d240ad-117e-43cb-8373-abea397b041a")]
+[assembly: Guid("1155ba13-04a9-4033-bc0a-de6ca94c8674")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.4.0.0")]
-[assembly: AssemblyFileVersion("3.4.0.386")]
+[assembly: AssemblyVersion("3.1.3.302")]
+[assembly: AssemblyFileVersion("3.1.3.302")]
