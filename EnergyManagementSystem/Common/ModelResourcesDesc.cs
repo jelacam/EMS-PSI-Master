@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EMS.Common;
-using System.Xml;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ModelResourcesDesc.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Common
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    /// <summary>
+    /// ResourcePropertiesDesc class
+    /// </summary>
     public class ResourcePropertiesDesc
     {
         /// <summary>
@@ -34,6 +40,11 @@ namespace EMS.Common
             this.resourceName = resourceId.ToString();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResourcePropertiesDesc"/> class.
+        /// </summary>
+        /// <param name="resourceId">resourceId for ResourcePropertiesDesc</param>
+        /// <param name="resourceName">resourceName for ResourcePropertiesDesc</param>
         public ResourcePropertiesDesc(ModelCode resourceId, string resourceName)
         {
             this.resourceId = resourceId;
@@ -47,7 +58,7 @@ namespace EMS.Common
         {
             get
             {
-                return resourceId;
+                return this.resourceId;
             }
         }
 
@@ -58,7 +69,7 @@ namespace EMS.Common
         {
             get
             {
-                return resourceName;
+                return this.resourceName;
             }
         }
 
@@ -69,7 +80,7 @@ namespace EMS.Common
         {
             get
             {
-                return propertyIds.Keys.AsEnumerable();
+                return this.propertyIds.Keys.AsEnumerable();
             }
         }
 
@@ -79,12 +90,12 @@ namespace EMS.Common
         /// <param name="propertyId">Property code</param>
         public void AddPropertyId(ModelCode propertyId)
         {
-            propertyIds[propertyId] = null;
+            this.propertyIds[propertyId] = null;
         }
 
         public void AddPropertyId(ModelCode propertyId, string propertyName)
         {
-            propertyIds[propertyId] = propertyName;
+            this.propertyIds[propertyId] = propertyName;
         }
 
         /// <summary>
@@ -94,20 +105,20 @@ namespace EMS.Common
         /// <returns>Name of the property</returns>
         public string GetPropertyName(ModelCode propertyId)
         {
-            if (propertyIds.ContainsKey(propertyId))
+            if (this.propertyIds.ContainsKey(propertyId))
             {
                 // if this is true, the property ID is from core
-                if (propertyIds[propertyId] == null)
+                if (this.propertyIds[propertyId] == null)
                 {
                     return ((ModelCode)propertyId).ToString();
                 }
                 else // if this is true, the property ID is from extensibility
                 {
-                    return propertyIds[propertyId];
+                    return this.propertyIds[propertyId];
                 }
             }
 
-            string message = String.Format("Specified property ( ID = {0} ) does not exists for {1} resource.", (ModelCode)propertyId, resourceName);
+            string message = String.Format("Specified property ( ID = {0} ) does not exists for {1} resource.", (ModelCode)propertyId, this.resourceName);
             CommonTrace.WriteTrace(CommonTrace.TraceError, message);
             throw new Exception(message);
         }
@@ -119,7 +130,7 @@ namespace EMS.Common
         /// <returns>TRUE if property exists in class type, FALSE otherwise</returns>
         public bool PropertyExists(ModelCode propertyId)
         {
-            return propertyIds.ContainsKey(propertyId);
+            return this.propertyIds.ContainsKey(propertyId);
         }
     }
 
@@ -172,12 +183,12 @@ namespace EMS.Common
 
         public HashSet<ModelCode> AllModelCodes
         {
-            get { return allModelCodes; }
+            get { return this.allModelCodes; }
         }
 
         public HashSet<EMSType> AllDMSTypes
         {
-            get { return allDMSTypes; }
+            get { return this.allDMSTypes; }
         }
 
         /// <summary>
@@ -185,7 +196,7 @@ namespace EMS.Common
         /// </summary>
         public ModelResourcesDesc()
         {
-            Initialize();
+            this.Initialize();
         }
 
         private void Initialize()
@@ -195,26 +206,26 @@ namespace EMS.Common
 
             ResourcePropertiesDesc desc = null;
 
-            InitializeTypeIdsInInsertOrder();
+            this.InitializeTypeIdsInInsertOrder();
 
             //// Initialize metadata for core entities
-            InitializeNotSettablePropertyIds();
+            this.InitializeNotSettablePropertyIds();
 
             foreach (ModelCode code in Enum.GetValues(typeof(ModelCode)))
             {
-                allModelCodes.Add(code);
+                this.allModelCodes.Add(code);
             }
 
             foreach (EMSType type in Enum.GetValues(typeof(EMSType)))
             {
-                allDMSTypes.Add(type);
+                this.allDMSTypes.Add(type);
             }
 
             #region get all class model codes from core
 
             //// Get all class model codes for all services and for all classes, abstract or not. Extensibility included
             List<ModelCode> classIds = new List<ModelCode>();
-            foreach (ModelCode code in allModelCodes)
+            foreach (ModelCode code in this.allModelCodes)
             {
                 // don't insert attribute codes
                 if (((long)code & (long)ModelCodeMask.MASK_ATTRIBUTE_TYPE) == 0)
@@ -232,14 +243,14 @@ namespace EMS.Common
                 //// Initialize leafs
                 if (((long)classId & (long)ModelCodeMask.MASK_TYPE) != 0)
                 {
-                    nonAbstractClassIds.Add(classId);
+                    this.nonAbstractClassIds.Add(classId);
                 }
 
                 //// Initialize resourceDescription map
                 desc = this.AddResourceDesc(classId);
                 long classIdMask = unchecked((long)0xffffffff00000000);
 
-                foreach (ModelCode propertyId in allModelCodes)
+                foreach (ModelCode propertyId in this.allModelCodes)
                 {
                     PropertyType propertyType = Property.GetPropertyType(propertyId);
 
@@ -266,7 +277,7 @@ namespace EMS.Common
             string[] modelCodeNamesFromCore = Enum.GetNames(typeof(ModelCode));
 
             classIds = new List<ModelCode>();
-            foreach (ModelCode code in allModelCodes)
+            foreach (ModelCode code in this.allModelCodes)
             {
                 // don't insert attribute codes
                 if (((long)code & (long)ModelCodeMask.MASK_ATTRIBUTE_TYPE) == 0)
@@ -276,7 +287,7 @@ namespace EMS.Common
             }
 
             //// Initialize DMSType 2 ModelCode map
-            foreach (EMSType t in allDMSTypes)
+            foreach (EMSType t in this.allDMSTypes)
             {
                 EMSType type = t & EMSType.MASK_TYPE;
 
@@ -286,7 +297,7 @@ namespace EMS.Common
                     //// DMSTypes that have same name as appropriete model code
                     if (modelCodeNamesFromCore.Contains(type.ToString()))
                     {
-                        this.type2modelCode[type] = GetModelCodeFromTypeForCore(type);
+                        this.type2modelCode[type] = this.GetModelCodeFromTypeForCore(type);
                     }
                     else // for DMSTypes which don't have it's ModelCode with same name or are not in core
                     {
@@ -301,7 +312,9 @@ namespace EMS.Common
                                 }
                             }
                         }
-                        catch { }
+                        catch
+                        {
+                        }
                     }
                 }
             }
@@ -316,7 +329,7 @@ namespace EMS.Common
         {
             get
             {
-                return typeIdsInInsertOrder;
+                return this.typeIdsInInsertOrder;
             }
         }
 
@@ -325,8 +338,8 @@ namespace EMS.Common
         /// </summary>
         public List<ModelCode> NonAbstractClassIds
         {
-            get { return nonAbstractClassIds; }
-            set { nonAbstractClassIds = value; }
+            get { return this.nonAbstractClassIds; }
+            set { this.nonAbstractClassIds = value; }
         }
 
         /// <summary>
@@ -334,8 +347,8 @@ namespace EMS.Common
         /// </summary>
         public HashSet<ModelCode> NotSettablePropertyIds
         {
-            get { return notSettablePropertyIds; }
-            set { notSettablePropertyIds = value; }
+            get { return this.notSettablePropertyIds; }
+            set { this.notSettablePropertyIds = value; }
         }
 
         /// <summary>
@@ -343,8 +356,8 @@ namespace EMS.Common
         /// </summary>
         public Dictionary<ModelCode, bool> NotAccessiblePropertyIds
         {
-            get { return notAccessiblePropertyIds; }
-            set { notAccessiblePropertyIds = value; }
+            get { return this.notAccessiblePropertyIds; }
+            set { this.notAccessiblePropertyIds = value; }
         }
 
         public static EMSType GetTypeFromModelCode(ModelCode code)
@@ -427,7 +440,7 @@ namespace EMS.Common
         {
             List<EMSType> children = new List<EMSType>();
 
-            foreach (ModelCode leafCM in allModelCodes)
+            foreach (ModelCode leafCM in this.allModelCodes)
             {
                 //// if it is not property code and it is leaf code and it is inhereted from submited type
                 if (((long)leafCM & (long)ModelCodeMask.MASK_ATTRIBUTE_TYPE) == 0 && ((long)leafCM & (long)ModelCodeMask.MASK_TYPE) != 0 && InheritsFrom(entityType, leafCM))
@@ -504,7 +517,7 @@ namespace EMS.Common
         /// <returns>TRUE if model type description exists in collection, FALSE otherwise</returns>
         public bool ResourceExists(ModelCode resourceId)
         {
-            return ResourceExistsForType(((long)resourceId & (long)ModelCodeMask.MASK_INHERITANCE_ONLY));
+            return this.ResourceExistsForType(((long)resourceId & (long)ModelCodeMask.MASK_INHERITANCE_ONLY));
         }
 
         /// <summary>
@@ -516,12 +529,12 @@ namespace EMS.Common
         {
             long temp = ((long)resourceId & (long)ModelCodeMask.MASK_INHERITANCE_ONLY);
 
-            if (!resourceDescs.ContainsKey(temp))
+            if (!this.resourceDescs.ContainsKey(temp))
             {
                 throw new Exception(string.Format("Invalid Model Code: {0}", resourceId));
             }
 
-            return resourceDescs[temp];
+            return this.resourceDescs[temp];
         }
 
         /// <summary>
@@ -553,9 +566,9 @@ namespace EMS.Common
             while (ancestorId != oldestAncestorId)
             {
                 long ancestorIdF = ancestorId & maskfNbl;
-                if (ancestorId != (long)typeIdLong && (ancestorId & maskfNbl) != maskfNbl && ResourceExistsForType(ancestorId))
+                if (ancestorId != (long)typeIdLong && (ancestorId & maskfNbl) != maskfNbl && this.ResourceExistsForType(ancestorId))
                 {
-                    ancestors.Insert(0, resourceDescs[ancestorId].ResourceId);
+                    ancestors.Insert(0, this.resourceDescs[ancestorId].ResourceId);
                 }
 
                 maskDelNbls <<= 4;
@@ -564,9 +577,9 @@ namespace EMS.Common
                 ancestorId &= maskDelNbls;
             }
 
-            if (oldestAncestorId != (long)typeIdLong && ResourceExistsForType(oldestAncestorId))
+            if (oldestAncestorId != (long)typeIdLong && this.ResourceExistsForType(oldestAncestorId))
             {
-                ancestors.Insert(0, resourceDescs[oldestAncestorId].ResourceId);
+                ancestors.Insert(0, this.resourceDescs[oldestAncestorId].ResourceId);
             }
         }
 
@@ -585,7 +598,7 @@ namespace EMS.Common
             while (i < properties.Count)
             {
                 ModelCode propertyId = properties[i];
-                if (notAccessiblePropertyIds.ContainsKey(propertyId))
+                if (this.notAccessiblePropertyIds.ContainsKey(propertyId))
                 {
                     properties.RemoveAt(i);
                 }
@@ -620,7 +633,7 @@ namespace EMS.Common
             while (i < properties.Count)
             {
                 ModelCode propertyId = properties[i];
-                if (notAccessiblePropertyIds.ContainsKey(propertyId))
+                if (this.notAccessiblePropertyIds.ContainsKey(propertyId))
                 {
                     properties.RemoveAt(i);
                 }
@@ -656,12 +669,12 @@ namespace EMS.Common
         /// <returns>List of property ids that corresponds to entity attributes.</returns>
         public List<ModelCode> GetAllPropertyIds(EMSType typeId)
         {
-            return GetAllPropertyIds(GetModelCodeFromType(typeId));
+            return this.GetAllPropertyIds(this.GetModelCodeFromType(typeId));
         }
 
         public List<ModelCode> GetAllPropertyIds(short type)
         {
-            return GetAllPropertyIds((EMSType)type);
+            return this.GetAllPropertyIds((EMSType)type);
         }
 
         /// <summary>
@@ -672,13 +685,13 @@ namespace EMS.Common
         /// <returns>List of property ids that corresponds to entity attributes that satisfy entity type.</returns>
         public List<ModelCode> GetPropertyIds(EMSType typeId, PropertyType propertyType)
         {
-            List<ModelCode> propertyIds = GetAllPropertyIds(GetModelCodeFromType(typeId));
+            List<ModelCode> propertyIds = this.GetAllPropertyIds(this.GetModelCodeFromType(typeId));
             List<ModelCode> propertyIdsFiltered = new List<ModelCode>();
 
             int i = 0;
             while (i < propertyIds.Count)
             {
-                //if (ModelCodeHelper.ExtractPropertyTypeFromModelCode(propertyIds[i]) != propertyType)
+                // if (ModelCodeHelper.ExtractPropertyTypeFromModelCode(propertyIds[i]) != propertyType)
                 if (Property.GetPropertyType(propertyIds[i]) != propertyType)
                 {
                     propertyIds.RemoveAt(i);
@@ -700,7 +713,7 @@ namespace EMS.Common
         public List<ModelCode> GetAllPropertyIdsForEntityId(long globalId)
         {
             EMSType type = (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
-            return GetAllPropertyIds(type);
+            return this.GetAllPropertyIds(type);
         }
 
         /// <summary>
@@ -710,13 +723,13 @@ namespace EMS.Common
         /// <returns>List of property ids that corresponds to settable entity attributes.</returns>
         public List<ModelCode> GetAllSettablePropertyIds(ModelCode typeId, bool includeInherited)
         {
-            List<ModelCode> properties = (includeInherited) ? GetAllPropertyIds(typeId) : GetClassPropertyIds(typeId);
+            List<ModelCode> properties = (includeInherited) ? this.GetAllPropertyIds(typeId) : this.GetClassPropertyIds(typeId);
 
             int i = 0;
             while (i < properties.Count)
             {
                 ModelCode propertyId = properties[i];
-                if (notSettablePropertyIds.Contains(propertyId) || Property.GetPropertyType(propertyId) == PropertyType.ReferenceVector)
+                if (this.notSettablePropertyIds.Contains(propertyId) || Property.GetPropertyType(propertyId) == PropertyType.ReferenceVector)
                 {
                     properties.RemoveAt(i);
                 }
@@ -736,8 +749,8 @@ namespace EMS.Common
         /// <returns>List of property ids that corresponds to settable entity attributes.</returns>
         public List<ModelCode> GetAllSettablePropertyIds(EMSType type)
         {
-            ModelCode code = GetModelCodeFromType(type);
-            return GetAllSettablePropertyIds(code, true);
+            ModelCode code = this.GetModelCodeFromType(type);
+            return this.GetAllSettablePropertyIds(code, true);
         }
 
         /// <summary>
@@ -747,8 +760,8 @@ namespace EMS.Common
         /// <returns>List of property ids that corresponds to settable entity attributes.</returns>
         public List<ModelCode> GetAllSettablePropertyIds(short type)
         {
-            ModelCode code = GetModelCodeFromType((EMSType)type);
-            return GetAllSettablePropertyIds(code, true);
+            ModelCode code = this.GetModelCodeFromType((EMSType)type);
+            return this.GetAllSettablePropertyIds(code, true);
         }
 
         /// <summary>
@@ -759,7 +772,7 @@ namespace EMS.Common
         public List<ModelCode> GetAllSettablePropertyIdsForEntityId(long globalId)
         {
             EMSType type = (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
-            return GetAllSettablePropertyIds(type);
+            return this.GetAllSettablePropertyIds(type);
         }
 
         /// <summary>
@@ -767,7 +780,7 @@ namespace EMS.Common
         /// </summary>
         public void Clear()
         {
-            resourceDescs.Clear();
+            this.resourceDescs.Clear();
         }
 
         /// <summary>
@@ -832,12 +845,12 @@ namespace EMS.Common
 
         public bool ContainsModelCode(ModelCode modelCode)
         {
-            return allModelCodes.Contains(modelCode);
+            return this.allModelCodes.Contains(modelCode);
         }
 
         public bool ContainsModelCode(EMSType dmsType)
         {
-            return allDMSTypes.Contains(dmsType);
+            return this.allDMSTypes.Contains(dmsType);
         }
 
         /// <summary>
@@ -847,7 +860,7 @@ namespace EMS.Common
         /// <returns>TRUE if model type description exists in collection, FALSE otherwise</returns>
         private bool ResourceExistsForType(long resourceId)
         {
-            return resourceDescs.ContainsKey(resourceId);
+            return this.resourceDescs.ContainsKey(resourceId);
         }
 
         /// <summary>
@@ -862,32 +875,23 @@ namespace EMS.Common
 
         #region Initialization of metadata
 
+        /// <summary>
+        /// Insert order of operations
+        /// </summary>
         private void InitializeTypeIdsInInsertOrder()
-        {
-            //typeIdsInInsertOrder.Add(ModelCode.BASEVOLTAGE);
-            //typeIdsInInsertOrder.Add(ModelCode.LOCATION);
-            //typeIdsInInsertOrder.Add(ModelCode.POWERTR);
-            //typeIdsInInsertOrder.Add(ModelCode.TRWINDING);
-            //typeIdsInInsertOrder.Add(ModelCode.WINDINGTEST);
-            //typeIdsInInsertOrder.Add(ModelCode.PROCESS);
-            //typeIdsInInsertOrder.Add(ModelCode.REASON);
-            //typeIdsInInsertOrder.Add(ModelCode.MARKETDOC);
-            //typeIdsInInsertOrder.Add(ModelCode.BIDTIMESERIES);
-            //typeIdsInInsertOrder.Add(ModelCode.MEASUREMENTPOINT);
+        {           
+            this.typeIdsInInsertOrder.Add(ModelCode.ANALOG);
+            this.typeIdsInInsertOrder.Add(ModelCode.ENERGYCONSUMER);
+            this.typeIdsInInsertOrder.Add(ModelCode.SYNCHRONOUSMACHINE);
         }
 
+        /// <summary>
+        /// Properties that client cannot set
+        /// </summary>
         private void InitializeNotSettablePropertyIds()
         {
-            //notSettablePropertyIds.Add(ModelCode.IDOBJ_GID);
-            //notSettablePropertyIds.Add(ModelCode.BASEVOLTAGE_CONDEQS);
-            //notSettablePropertyIds.Add(ModelCode.LOCATION_PSRS);
-            //notSettablePropertyIds.Add(ModelCode.TRWINDING_TESTS);
-            //         notSettablePropertyIds.Add(ModelCode.POWERTR_WINDINGS);
-            //notSettablePropertyIds.Add(ModelCode.REASON_TIMESERIES);
-            //notSettablePropertyIds.Add(ModelCode.REASON_MARKETDOCUMENT);
-            //notSettablePropertyIds.Add(ModelCode.MARKETDOC_TIMESERIES);
-            //notSettablePropertyIds.Add(ModelCode.TIMESERIES_MEASUREMENTPOINT);
-            //notSettablePropertyIds.Add(ModelCode.PROCESS_MARKETDOC);
+            this.notSettablePropertyIds.Add(ModelCode.IDENTIFIEDOBJECT_GID);
+            this.notSettablePropertyIds.Add(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
         }
 
         #endregion Initialization of metadata
@@ -986,9 +990,12 @@ namespace EMS.Common
     {
         private IEqualityComparer<long> comparer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelCodeComparer"/> class.
+        /// </summary>
         public ModelCodeComparer()
         {
-            comparer = EqualityComparer<long>.Default;
+            this.comparer = EqualityComparer<long>.Default;
         }
 
         #region IEqualityComparer<ModelCode> Members
@@ -1000,7 +1007,7 @@ namespace EMS.Common
 
         public int GetHashCode(ModelCode obj)
         {
-            return comparer.GetHashCode((long)obj);
+            return this.comparer.GetHashCode((long)obj);
         }
 
         #endregion IEqualityComparer<ModelCode> Members
