@@ -13,7 +13,7 @@ namespace EMS.Services.NetworkModelService
         private static NetworkModel networkModel = null;
 
 		private List<long> globalDs = new List<long>();
-		private Dictionary<DMSType, List<ModelCode>> class2PropertyIDs = new Dictionary<DMSType, List<ModelCode>>(); 	
+		private Dictionary<EMSType, List<ModelCode>> class2PropertyIDs = new Dictionary<EMSType, List<ModelCode>>(); 	
 		
 		private int lastReadIndex = 0; // index of the last read resource description
 		private int maxReturnNo = 5000;
@@ -27,7 +27,7 @@ namespace EMS.Services.NetworkModelService
 		{			
 		}
 
-		public ResourceIterator(List<long> globalIDs, Dictionary<DMSType, List<ModelCode>> class2PropertyIDs)
+		public ResourceIterator(List<long> globalIDs, Dictionary<EMSType, List<ModelCode>> class2PropertyIDs)
 		{
 			this.globalDs = globalIDs;
 			this.class2PropertyIDs = class2PropertyIDs;
@@ -119,7 +119,7 @@ namespace EMS.Services.NetworkModelService
                 List<ModelCode> propertyIds = null;
                 foreach (long globalId in resultIDs)
                 {
-                    propertyIds = class2PropertyIDs[(DMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId)];
+                    propertyIds = class2PropertyIDs[(EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId)];
                     result.Add(networkModel.GetValues(globalId, propertyIds));
                 }
 

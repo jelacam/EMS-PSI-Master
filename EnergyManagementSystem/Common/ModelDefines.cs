@@ -11,7 +11,7 @@ namespace EMS.Common
     /// <summary>
     /// Enumeration for DMS type
     /// </summary>
-    public enum DMSType : short
+    public enum EMSType : short
     {
         /// <summary>
         /// mask type
@@ -190,7 +190,7 @@ namespace EMS.Common
         /// </summary>
         SYNCHRONOUSMACHINE_FUELTYPE = 0x121121100003040a
     }
-    
+
     /// <summary>
     /// Enumeration for model code mask
     /// </summary>

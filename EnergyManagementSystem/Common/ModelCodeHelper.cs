@@ -81,9 +81,9 @@ namespace EMS.Common
             }
         }
 
-        public static DMSType GetTypeFromModelCode(ModelCode code)
+        public static EMSType GetTypeFromModelCode(ModelCode code)
         {
-            return (DMSType)((long)((long)code & (long)ModelCodeMask.MASK_TYPE) >> 16);
+            return (EMSType)((long)((long)code & (long)ModelCodeMask.MASK_TYPE) >> 16);
         }
 
         public static bool GetModelCodeFromString(string strModelCode, out ModelCode modelCode)
@@ -91,7 +91,7 @@ namespace EMS.Common
             return Enum.TryParse(strModelCode, true, out modelCode);
         }
 
-        public static bool GetDMSTypeFromString(string strDmsType, out DMSType dmsType)
+        public static bool GetDMSTypeFromString(string strDmsType, out EMSType dmsType)
         {
             return Enum.TryParse(strDmsType, true, out dmsType);
         }

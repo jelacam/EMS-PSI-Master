@@ -141,7 +141,7 @@ namespace EMS.Common
 			}
 		}
 
-		public static bool CompareLists(List<DMSType> xList, List<DMSType> yList)
+		public static bool CompareLists(List<EMSType> xList, List<EMSType> yList)
 		{
 			if (Object.ReferenceEquals(xList, null) && Object.ReferenceEquals(yList, null))
 			{

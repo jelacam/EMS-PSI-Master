@@ -9,247 +9,246 @@ using System.Text;
 using System.Xml;
 using EMS.Common;
 using EMS.Services.NetworkModelService.DataModel.Core;
-using EMS.Services.NetworkModelService.DataModel.Wires;
 using EMS.Services.NetworkModelService.DataModel;
-using EMS.Services.NetworkModelService.DataModel.MarketMangement;
 
 namespace EMS.Services.NetworkModelService
-{		
-	public class Container
-	{
-		/// <summary>
-		/// The dictionary of entities. Key = GlobaId, Value = Entity
-		/// </summary>		
-		private Dictionary<long, IdentifiedObject> entities = new Dictionary<long, IdentifiedObject>();	
+{
+    public class Container
+    {
+        /// <summary>
+        /// The dictionary of entities. Key = GlobaId, Value = Entity
+        /// </summary>
+        private Dictionary<long, IdentifiedObject> entities = new Dictionary<long, IdentifiedObject>();
 
-		/// <summary>
-		/// Initializes a new instance of the Container class
-		/// </summary>
-		public Container()
-		{
-		}
-
-		/// <summary>
-		/// Gets or sets dictionary of entities (identified objects) inside container.
-		/// </summary>	
-		public Dictionary<long, IdentifiedObject> Entities
-		{
-			get { return entities; }
-			set { entities = value; }
-		}
-
-		/// <summary>
-		/// Gets a number of entitis in container
-		/// </summary>		
-		public int Count
-		{
-			get { return entities.Count; }
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether container is empty
-		/// </summary>		
-		public bool IsEmpty
-		{
-			get { return entities.Count == 0; }			
-		}
-			
-		# region operators
-
-		public static bool operator ==(Container x, Container y)
-		{
-			if (Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null))
-			{
-				return true;
-			}
-			else if ((Object.ReferenceEquals(x, null) && !Object.ReferenceEquals(y, null)) || (!Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null)))
-			{
-				return false;
-			}
-			else
-			{
-				// TO DO
-				if (x.entities.Count != y.entities.Count)
-				{
-					return false;
-				}
-
-				IdentifiedObject io = null;
-
-				foreach (KeyValuePair<long, IdentifiedObject> pair in x.Entities)
-				{
-					//if (!y.objects.ContainsKey(pair.Key))
-					if (y.Entities.TryGetValue(pair.Key, out io))
-					{
-						return false;
-					}
-					else if (io != pair.Value)
-					{
-						return false;
-					}
-				}
-
-				 return true;									
-			}
-		}
-
-		public static bool operator !=(Container x, Container y)
-		{
-			return !(x == y);
-		}
-
-        public override bool Equals (object obj)
+        /// <summary>
+        /// Initializes a new instance of the Container class
+        /// </summary>
+        public Container()
         {
-			return this == (Container)obj;
         }
 
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}				
+        /// <summary>
+        /// Gets or sets dictionary of entities (identified objects) inside container.
+        /// </summary>
+        public Dictionary<long, IdentifiedObject> Entities
+        {
+            get { return entities; }
+            set { entities = value; }
+        }
 
-		# endregion operators
+        /// <summary>
+        /// Gets a number of entitis in container
+        /// </summary>
+        public int Count
+        {
+            get { return entities.Count; }
+        }
 
-		/// <summary>
-		/// Creates entity for specified global inside the container.
-		/// </summary>
-		/// <param name="globalId">Global id of the entity for insert</param>		
-		/// <returns>Created entity (identified object).</returns>
-		public IdentifiedObject CreateEntity(long globalId)
-		{
-			short type = ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
+        /// <summary>
+        /// Gets a value indicating whether container is empty
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return entities.Count == 0; }
+        }
 
-			IdentifiedObject io = null;			
-			switch ((DMSType)type)
-			{
-				case DMSType.BASEVOLTAGE:
-					io = new BaseVoltage(globalId);
-					break;
+        #region operators
 
-				case DMSType.LOCATION:
-					io = new Location(globalId);
-					break;
-				case DMSType.POWERTR:
-					io = new PowerTransformer(globalId);
-					break;
-				case DMSType.TRWINDING:
-					io = new TransformerWinding(globalId);
-					break;
-				case DMSType.WINDINGTEST:
-					io = new WindingTest(globalId);
-					break;
+        public static bool operator ==(Container x, Container y)
+        {
+            if (Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null))
+            {
+                return true;
+            }
+            else if ((Object.ReferenceEquals(x, null) && !Object.ReferenceEquals(y, null)) || (!Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null)))
+            {
+                return false;
+            }
+            else
+            {
+                // TO DO
+                if (x.entities.Count != y.entities.Count)
+                {
+                    return false;
+                }
 
-                case DMSType.REASON:
-                    io = new Reason(globalId);
-                    break;
+                IdentifiedObject io = null;
 
-                case DMSType.MARKETDOC:
-                    io = new MarketDocument(globalId);
-                    break;
+                foreach (KeyValuePair<long, IdentifiedObject> pair in x.Entities)
+                {
+                    //if (!y.objects.ContainsKey(pair.Key))
+                    if (y.Entities.TryGetValue(pair.Key, out io))
+                    {
+                        return false;
+                    }
+                    else if (io != pair.Value)
+                    {
+                        return false;
+                    }
+                }
 
-                case DMSType.PROCESS:
-                    io = new Process(globalId);
-                    break;
+                return true;
+            }
+        }
 
-                case DMSType.MEASUREMENTPOINT:
-                    io = new MeasurementPoint(globalId);
-                    break;
+        public static bool operator !=(Container x, Container y)
+        {
+            return !(x == y);
+        }
 
-                case DMSType.BIDTIMESERIES:
-                    io = new BidTimeSeries(globalId);
-                    break;
+        public override bool Equals(object obj)
+        {
+            return this == (Container)obj;
+        }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
-                
-				default:					
-					string message = String.Format("Failed to create entity because specified type ({0}) is not supported.", type);
-					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-					throw new Exception(message);					
-			}
+        #endregion operators
+
+        /// <summary>
+        /// Creates entity for specified global inside the container.
+        /// </summary>
+        /// <param name="globalId">Global id of the entity for insert</param>
+        /// <returns>Created entity (identified object).</returns>
+        public IdentifiedObject CreateEntity(long globalId)
+        {
+            short type = ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
+
+            IdentifiedObject io = null;
+            switch ((EMSType)type)
+            {
+                //case EMSType.BASEVOLTAGE:
+                //    io = new BaseVoltage(globalId);
+                //    break;
+
+                //case EMSType.LOCATION:
+                //    io = new Location(globalId);
+                //    break;
+
+                //case EMSType.POWERTR:
+                //    io = new PowerTransformer(globalId);
+                //    break;
+
+                //case EMSType.TRWINDING:
+                //    io = new TransformerWinding(globalId);
+                //    break;
+
+                //case EMSType.WINDINGTEST:
+                //    io = new WindingTest(globalId);
+                //    break;
+
+                //case EMSType.REASON:
+                //    io = new Reason(globalId);
+                //    break;
+
+                //case EMSType.MARKETDOC:
+                //    io = new MarketDocument(globalId);
+                //    break;
+
+                //case EMSType.PROCESS:
+                //    io = new Process(globalId);
+                //    break;
+
+                //case EMSType.MEASUREMENTPOINT:
+                //    io = new MeasurementPoint(globalId);
+                //    break;
+
+                //case EMSType.BIDTIMESERIES:
+                //    io = new BidTimeSeries(globalId);
+                //    break;
+
+                default:
+                    string message = String.Format("Failed to create entity because specified type ({0}) is not supported.", type);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    throw new Exception(message);
+            }
 
             // Add entity to map
-			this.AddEntity(io);
+            this.AddEntity(io);
 
-			return io;
-		}		
+            return io;
+        }
 
-		/// <summary>
-		/// Checks if entity exists in container.
-		/// </summary>
-		/// <param name="globalId">Global id of the entity that should be checked</param>
-		/// <returns>TRUE if the entity is found.</returns>
-		public bool EntityExists(long globalId)
-		{
-			return entities.ContainsKey(globalId);
-		}	
+        /// <summary>
+        /// Checks if entity exists in container.
+        /// </summary>
+        /// <param name="globalId">Global id of the entity that should be checked</param>
+        /// <returns>TRUE if the entity is found.</returns>
+        public bool EntityExists(long globalId)
+        {
+            return entities.ContainsKey(globalId);
+        }
 
-		/// <summary>
-		/// Returns entity (identified object) on the specified index. Throws an exception if entity does not exist. 
-		/// </summary>
-		/// <param name="index">Index of the entity that should be returned</param>
-		/// <returns>Instance of the entity in case it is found on specified position, otherwise throws exception</returns>
-		public IdentifiedObject GetEntity(long globalId)
-		{
-			if (EntityExists(globalId))
-			{
-				return entities[globalId];
-			}
-			else
-			{
-				string message = String.Format("Failed to retrieve entity (GID = 0x{1:x16}) because entity doesn't exist.", globalId);
-				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				throw new Exception(message);
-			}
-		}
+        /// <summary>
+        /// Returns entity (identified object) on the specified index. Throws an exception if entity does not exist.
+        /// </summary>
+        /// <param name="index">Index of the entity that should be returned</param>
+        /// <returns>Instance of the entity in case it is found on specified position, otherwise throws exception</returns>
+        public IdentifiedObject GetEntity(long globalId)
+        {
+            if (EntityExists(globalId))
+            {
+                return entities[globalId];
+            }
+            else
+            {
+                string message = String.Format("Failed to retrieve entity (GID = 0x{1:x16}) because entity doesn't exist.", globalId);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                throw new Exception(message);
+            }
+        }
 
-		/// <summary>
-		/// Adds entity on the first free position in the container.
-		/// </summary>
-		/// <param name="io">Entity (identified object) that should be added</param>
-		/// <returns>Index of the entity that is just added.</returns>
-		public void AddEntity(IdentifiedObject io)
-		{
-			if (!EntityExists(io.GlobalId))
-			{
-				entities[io.GlobalId] = io;
-			}
-			else
-			{
-				string message = String.Format("Entity (GID = 0x{1:x16}) already exists.", io.GlobalId);
-				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				throw new Exception(message);
-			}
-		}
+        /// <summary>
+        /// Adds entity on the first free position in the container.
+        /// </summary>
+        /// <param name="io">Entity (identified object) that should be added</param>
+        /// <returns>Index of the entity that is just added.</returns>
+        public void AddEntity(IdentifiedObject io)
+        {
+            if (!EntityExists(io.GlobalId))
+            {
+                entities[io.GlobalId] = io;
+            }
+            else
+            {
+                string message = String.Format("Entity (GID = 0x{1:x16}) already exists.", io.GlobalId);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                throw new Exception(message);
+            }
+        }
 
-		/// <summary>
-		/// Removes entity from the container at the specified position. Throws an exception if entity does not exist.
-		/// </summary>
-		/// <param name="index">Index of the entity that should be removed</param>
-		/// <returns>Returns entity that is removed</returns>
-		public IdentifiedObject RemoveEntity(long globalId)
-		{
-			IdentifiedObject io = null;
-			if (EntityExists(globalId))
-			{
-				entities.Remove(globalId);
-			}
-			else
-			{
-				string message = String.Format("Failed to remove entity because entity with GID = {0} doesn't exist at the specified position ( {0} ).", globalId);
-				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				throw new Exception(message);
-			}
+        /// <summary>
+        /// Removes entity from the container at the specified position. Throws an exception if entity does not exist.
+        /// </summary>
+        /// <param name="index">Index of the entity that should be removed</param>
+        /// <returns>Returns entity that is removed</returns>
+        public IdentifiedObject RemoveEntity(long globalId)
+        {
+            IdentifiedObject io = null;
+            if (EntityExists(globalId))
+            {
+                entities.Remove(globalId);
+            }
+            else
+            {
+                string message = String.Format("Failed to remove entity because entity with GID = {0} doesn't exist at the specified position ( {0} ).", globalId);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                throw new Exception(message);
+            }
 
-			return io;
-		}
+            return io;
+        }
 
-		/// <summary>
-		/// Get globalIds of all entities.
-		/// </summary>		
-		/// <returns>Returns globalIds of all entities</returns>
-		public List<long> GetEntitiesGlobalIds()
-		{
-			return entities.Keys.ToList();
-		}			
-	}
+        /// <summary>
+        /// Get globalIds of all entities.
+        /// </summary>
+        /// <returns>Returns globalIds of all entities</returns>
+        public List<long> GetEntitiesGlobalIds()
+        {
+            return entities.Keys.ToList();
+        }
+    }
 }

@@ -499,14 +499,14 @@ namespace EMS.Common
 			// pass through all given types
 			for (int indexType = 0; indexType < Delta.ResourceDescs.TypeIdsInInsertOrder.Count; indexType++)
 			{
-				DMSType type = ModelResourcesDesc.GetTypeFromModelCode(Delta.ResourceDescs.TypeIdsInInsertOrder[indexType]);
+				EMSType type = ModelResourcesDesc.GetTypeFromModelCode(Delta.ResourceDescs.TypeIdsInInsertOrder[indexType]);
 
 				// pass through all insert operations
 				// move operations with current type to list of ordered insert operations
 				indexOp = 0;
 				for (indexOp = 0; indexOp < insertOps.Count; indexOp++)
 				{
-					if (insertOps[indexOp] != null && type == (DMSType)ModelCodeHelper.ExtractTypeFromGlobalId(insertOps[indexOp].Id))
+					if (insertOps[indexOp] != null && type == (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(insertOps[indexOp].Id))
 					{
 						// add at the end of list of ordered insert operations
 						insertOpsOrdered.Add(insertOps[indexOp]);
@@ -523,7 +523,7 @@ namespace EMS.Common
 				indexOp = 0;
 				for (indexOp = 0; indexOp < deleteOps.Count; indexOp++)
 				{
-					if (deleteOps[indexOp] != null && type == (DMSType)ModelCodeHelper.ExtractTypeFromGlobalId(deleteOps[indexOp].Id))
+					if (deleteOps[indexOp] != null && type == (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(deleteOps[indexOp].Id))
 					{
 						// add at the end of list of ordered delete operations
 						deleteOpsOrdered.Add(deleteOps[indexOp]);
