@@ -1,128 +1,199 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+//-----------------------------------------------------------------------
+// <copyright file="ModelDefines.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Common
 {
+    using System;
+
+    /// <summary>
+    /// Enumeration for DMS type
+    /// </summary>
     public enum DMSType : short
     {
+        /// <summary>
+        /// mask type
+        /// </summary>
         MASK_TYPE = unchecked((short)0xFFFF),
 
-        BASEVOLTAGE = 0x0001,
-        LOCATION = 0x0002,
-        POWERTR = 0x0003,
-        TRWINDING = 0x0004,
-        WINDINGTEST = 0x0005,
+        /// <summary>
+        /// Analog DMS type
+        /// </summary>
+        ANALOG = 0x0001,
 
-        REASON = 0x0006,   //added
-        MARKETDOC = 0x0007,
-        PROCESS = 0x0008,
-        MEASUREMENTPOINT = 0x0009,
-        BIDTIMESERIES = 0x0010,
+        /// <summary>
+        /// EnergyConsumer DMS type
+        /// </summary>
+        ENERGYCONSUMER = 0x0002,
+
+        /// <summary>
+        /// SynchronousMachine DMS type
+        /// </summary>
+        SYNCHRONOUSMACHINE = 0x0003,
     }
 
+    /// <summary>
+    /// Enumeration for model code
+    /// </summary>
     [Flags]
     public enum ModelCode : long
     {
-        IDOBJ = 0x1000000000000000,
-        IDOBJ_GID = 0x1000000000000104,
-        IDOBJ_DESCRIPTION = 0x1000000000000207,
-        IDOBJ_MRID = 0x1000000000000307,
-        IDOBJ_NAME = 0x1000000000000407,
-        IDOBJ_ALIASNAME = 0x1000000000000507,   //added
+        /// <summary>
+        /// ModelCode for IDENTIFIEDOBJECT
+        /// </summary>
+        IDENTIFIEDOBJECT = 0x1000000000000000,
 
-        PSR = 0x1100000000000000,
-        PSR_CUSTOMTYPE = 0x1100000000000107,
-        PSR_LOCATION = 0x1100000000000209,
+        /// <summary>
+        /// ModelCode for IDENTIFIEDOBJECT_GID
+        /// </summary>
+        IDENTIFIEDOBJECT_GID = 0x1000000000000104,
 
-        BASEVOLTAGE = 0x1200000000010000,
-        BASEVOLTAGE_NOMINALVOLTAGE = 0x1200000000010105,
-        BASEVOLTAGE_CONDEQS = 0x1200000000010219,
+        /// <summary>
+        /// ModelCode for IDENTIFIEDOBJECT_MRID
+        /// </summary>
+        IDENTIFIEDOBJECT_MRID = 0x1000000000000207,
 
-        LOCATION = 0x1300000000020000,
-        LOCATION_CORPORATECODE = 0x1300000000020107,
-        LOCATION_CATEGORY = 0x1300000000020207,
-        LOCATION_PSRS = 0x1300000000020319,
+        /// <summary>
+        /// ModelCode for IDENTIFIEDOBJECT_NAME
+        /// </summary>
+        IDENTIFIEDOBJECT_NAME = 0x1000000000000307,
 
-        WINDINGTEST = 0x1400000000050000,
-        WINDINGTEST_LEAKIMPDN = 0x1400000000050105,
-        WINDINGTEST_LOADLOSS = 0x1400000000050205,
-        WINDINGTEST_NOLOADLOSS = 0x1400000000050305,
-        WINDINGTEST_PHASESHIFT = 0x1400000000050405,
-        WINDINGTEST_LEAKIMPDN0PERCENT = 0x1400000000050505,
-        WINDINGTEST_LEAKIMPDNMINPERCENT = 0x1400000000050605,
-        WINDINGTEST_LEAKIMPDNMAXPERCENT = 0x1400000000050705,
-        WINDINGTEST_POWERTRWINDING = 0x1400000000050809,
+        /// <summary>
+        /// ModelCode for MEASUREMENT
+        /// </summary>
+        MEASUREMENT = 0x1100000000000000,
 
-        EQUIPMENT = 0x1110000000000000,
-        EQUIPMENT_ISUNDERGROUND = 0x1110000000000101,
-        EQUIPMENT_ISPRIVATE = 0x1110000000000201,
+        /// <summary>
+        /// ModelCode for MEASUREMENT_MEASUREMENTTYPE
+        /// </summary>
+        MEASUREMENT_MEASUREMENTTYPE = 0x1100000000000107,
 
-        CONDEQ = 0x1111000000000000,
-        CONDEQ_PHASES = 0x111100000000010a,
-        CONDEQ_RATEDVOLTAGE = 0x1111000000000205,
-        CONDEQ_BASVOLTAGE = 0x1111000000000309,
+        /// <summary>
+        /// ModelCode for MEASUREMENT_UNITSYMBOL
+        /// </summary>
+        MEASUREMENT_UNITSYMBOL = 0x110000000000020a,
 
-        POWERTR = 0x1112000000030000,
-        POWERTR_FUNC = 0x111200000003010a,
-        POWERTR_AUTO = 0x1112000000030201,
-        POWERTR_WINDINGS = 0x1112000000030319,
+        /// <summary>
+        /// ModelCode for MEASUREMENT_POWERSYSTEMRESOURCE
+        /// </summary>
+        MEASUREMENT_POWERSYSTEMRESOURCE = 0x1100000000000309,
 
-        TRWINDING = 0x1111100000040000,
-        TRWINDING_CONNTYPE = 0x111110000004010a,
-        TRWINDING_GROUNDED = 0x1111100000040201,
-        TRWINDING_RATEDS = 0x1111100000040305,
-        TRWINDING_RATEDU = 0x1111100000040405,
-        TRWINDING_WINDTYPE = 0x111110000004050a,
-        TRWINDING_PHASETOGRNDVOLTAGE = 0x1111100000040605,
-        TRWINDING_PHASETOPHASEVOLTAGE = 0x1111100000040705,
-        TRWINDING_POWERTRW = 0x1111100000040809,
-        TRWINDING_TESTS = 0x1111100000040919,
+        /// <summary>
+        /// ModelCode for POWERSYSTEMRESOURCE
+        /// </summary>
+        POWERSYSTEMRESOURCE = 0x1200000000000000,
 
-        REASON = 0x1500000000060000,   //added
-        REASON_CODE = 0x1500000000060107,
-        REASON_TEXT = 0x1500000000060207,
-        REASON_MARKETDOCUMENT = 0x1500000000060319,
-        REASON_TIMESERIES = 0x1500000000060419,
+        /// <summary>
+        /// ModelCode for POWERSYSTEMRESOURCE_MEASUREMENTS
+        /// </summary>
+        POWERSYSTEMRESOURCE_MEASUREMENTS = 0x1200000000000119,
 
-        DOCUMENT = 0x1600000000000000,
-        DOCUMENT_REVNO = 0x1600000000000107,
-        DOCUMENT_SUBJECT = 0x1600000000000207,
-        DOCUMENT_TITLE = 0x1600000000000307,
-        DOCUMENT_TYPE = 0x1600000000000407,
-        DOCUMENT_CRDATETIME = 0x1600000000000508,
-        DOCUMENT_LASTMODIFIEDDATETIME = 0x1600000000000608,
+        /// <summary>
+        /// ModelCode for ANALOG
+        /// </summary>
+        ANALOG = 0x1110000000010000,
 
-        MARKETDOC = 0x1610000000070000,
-        MARKETDOC_REASON = 0x1610000000070109,
-        MARKETDOC_TIMESERIES = 0x1610000000070219,
-        MARKETDOC_PROCESS = 0x1610000000070309,
+        /// <summary>
+        /// ModelCode for ANALOG_MAXVALUE
+        /// </summary>
+        ANALOG_MAXVALUE = 0x1110000000010105,
 
-        PROCESS = 0x1700000000080000,
-        PROCESS_CLASSTYPE = 0x1700000000080107,
-        PROCESS_PROCTYPE = 0x1700000000080207,
-        PROCESS_MARKETDOC = 0x1700000000080319,
+        /// <summary>
+        /// ModelCode for ANALOG_MINVALUE
+        /// </summary>
+        ANALOG_MINVALUE = 0x1110000000010205,
 
-        MEASUREMENTPOINT = 0x1800000000090000,
-        MEASUREMENTPOINT_TIMESERIES = 0x1800000000090109,
+        /// <summary>
+        /// ModelCode for ANALOG_NORMALVALUE
+        /// </summary>
+        ANALOG_NORMALVALUE = 0x1110000000010305,
 
-        TIMESERIES = 0x1900000000000000,
-        TIMESERIES_OBJAGR = 0x1900000000000107,
-        TIMESERIES_PRODUCT = 0x1900000000000207,
-        TIMESERIES_VERSION = 0x1900000000000307,
-        TIMESERIES_REASON = 0x1900000000000409,
-        TIMESERIES_MARKETDOC = 0x1900000000000509,
-        TIMESERIES_MEASUREMENTPOINT = 0x1900000000000619,
+        /// <summary>
+        /// ModelCode for ANALOG_SIGNALDIRECTION
+        /// </summary>
+        ANALOG_SIGNALDIRECTION = 0x111000000001040a,
 
-        BIDTIMESERIES = 0x1910000000100000,
-        BIDTIMESERIES_BLOCKBID = 0x1910000000100101,
-        BIDTIMESERIES_DIRECTION = 0x1910000000100207,
-        BIDTIMESERIES_DIVISIBLE = 0x1910000000100301,
-        BIDTIMESERIES_LINKEDBIDSID = 0x1910000000100407,
-        BIDTIMESERIES_MINACTQUANTITY = 0x1910000000100505,
-        BIDTIMESERIES_STEPINCQUANTITY = 0x1910000000100605,
+        /// <summary>
+        /// ModelCode for EQUIPMENT
+        /// </summary>
+        EQUIPMENT = 0x1210000000000000,
+
+        /// <summary>
+        /// ModelCode for CONDUCTINGEQUIPMENT
+        /// </summary>
+        CONDUCTINGEQUIPMENT = 0x1211000000000000,
+
+        /// <summary>
+        /// ModelCode for ENERGYCONSUMER
+        /// </summary>
+        ENERGYCONSUMER = 0x1211100000020000,
+
+        /// <summary>
+        /// ModelCode for ENERGYCONSUMER_PFIXED
+        /// </summary>
+        ENERGYCONSUMER_PFIXED = 0x1211100000020105,
+
+        /// <summary>
+        /// ModelCode for ENERGYCONSUMER_PFIXEDPCT
+        /// </summary>
+        ENERGYCONSUMER_PFIXEDPCT = 0x1211100000020205,
+
+        /// <summary>
+        /// ModelCode for ENERGYCONSUMER_QFIXED
+        /// </summary>
+        ENERGYCONSUMER_QFIXED = 0x1211100000020305,
+
+        /// <summary>
+        /// ModelCode for ENERGYCONSUMER_QFIXEDPCT
+        /// </summary>
+        ENERGYCONSUMER_QFIXEDPCT = 0x1211100000020405,
+
+        /// <summary>
+        /// ModelCode for REGULATINGCONDEQ
+        /// </summary>
+        REGULATINGCONDEQ = 0x1211200000000000,
+
+        /// <summary>
+        /// ModelCode for ROTATINGMACHINE
+        /// </summary>
+        ROTATINGMACHINE = 0x1211210000000000,
+
+        /// <summary>
+        /// ModelCode for ROTATINGMACHINE_RATEDS
+        /// </summary>
+        ROTATINGMACHINE_RATEDS = 0x1211210000000105,
+
+        /// <summary>
+        /// ModelCode for SYNCHRONOUSMACHINE
+        /// </summary>
+        SYNCHRONOUSMACHINE = 0x1211211000030000,
+
+        /// <summary>
+        /// ModelCode for SYNCHRONOUSMACHINE_MAXQ
+        /// </summary>
+        SYNCHRONOUSMACHINE_MAXQ = 0x1211211000030105,
+
+        /// <summary>
+        /// ModelCode for SYNCHRONOUSMACHINE_MINQ
+        /// </summary>
+        SYNCHRONOUSMACHINE_MINQ = 0x1211211000030205,
+
+        /// <summary>
+        /// ModelCode for SYNCHRONOUSMACHINE_OPERATINGMODE
+        /// </summary>
+        SYNCHRONOUSMACHINE_OPERATINGMODE = 0x121121100003030a,
+
+        /// <summary>
+        /// ModelCode for SYNCHRONOUSMACHINE_FUELTYPE
+        /// </summary>
+        SYNCHRONOUSMACHINE_FUELTYPE = 0x121121100003040a
     }
-
+    
+    /// <summary>
+    /// Enumeration for model code mask
+    /// </summary>
     [Flags]
     public enum ModelCodeMask : long
     {

@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ModelCodeHelper.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Common
 {
+    using System;
+
     public class ModelCodeHelper
     {
         /// <summary>

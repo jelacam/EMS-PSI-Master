@@ -1,55 +1,217 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Enums.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Common
-{	
-	public enum PhaseCode : short
-	{
-		Unknown = 0x0,
-		N = 0x1,
-		C = 0x2,
-		CN = 0x3,
-		B = 0x4,
-		BN = 0x5,
-		BC = 0x6,
-		BCN = 0x7,
-		A = 0x8,
-		AN = 0x9,
-		AC = 0xA,
-		ACN = 0xB,
-		AB = 0xC,
-		ABN = 0xD,
-		ABC = 0xE,
-		ABCN = 0xF
-	}
-	
-	public enum TransformerFunction : short
-	{
-		Supply = 1,				// Supply transformer
-		Consumer = 2,			// Transformer supplying a consumer
-		Grounding = 3,			// Transformer used only for grounding of network neutral
-		Voltreg = 4,			// Feeder voltage regulator
-		Step = 5,				// Step
-		Generator = 6,			// Step-up transformer next to a generator.
-		Transmission = 7,		// HV/HV transformer within transmission network.
-		Interconnection = 8		// HV/HV transformer linking transmission network with other transmission networks.
-	}
-	
-	public enum WindingConnection : short
-	{
-		Y = 1,		// Wye
-		D = 2,		// Delta
-		Z = 3,		// ZigZag
-		I = 4,		// Single-phase connection. Phase-to-phase or phase-to-ground is determined by elements' phase attribute.
-		Scott = 5,   // Scott T-connection. The primary winding is 2-phase, split in 8.66:1 ratio
-		OY = 6,		// 2-phase open wye. Not used in Network Model, only as result of Topology Analysis.
-		OD = 7		// 2-phase open delta. Not used in Network Model, only as result of Topology Analysis.
-	}
+{
+    /// <summary>
+    /// Enumeration for signal direction
+    /// </summary>
+    public enum SignalDirection : short
+    {
+        /// <summary>
+        /// Read signal direction
+        /// </summary>
+        Read = 0,
 
-	public enum WindingType : short
-	{
-		None = 0,
-		Primary = 1,
-		Secondary = 2,
-		Tertiary = 3
-	}			
+        /// <summary>
+        /// ReadWrite signal direction
+        /// </summary>
+        ReadWrite = 1,
+
+        /// <summary>
+        /// Write signal direction
+        /// </summary>
+        Write = 2
+    }
+
+    /// <summary>
+    /// Enumeration for fuel type
+    /// </summary>
+    public enum EmsFuelType : short
+    {
+        /// <summary>
+        /// coal fuel type
+        /// </summary>
+        coal = 0,
+
+        /// <summary>
+        /// hydro fuel type
+        /// </summary>
+        hydro = 1,
+
+        /// <summary>
+        /// wind fuel type
+        /// </summary>
+        wind = 2,
+
+        /// <summary>
+        /// solar fuel type
+        /// </summary>
+        solar = 3,
+
+        /// <summary>
+        /// oil fuel type
+        /// </summary>
+        oli = 4
+    }
+
+    /// <summary>
+    /// Enumeration for SynchronousMachine operating mode
+    /// </summary>
+    public enum SynchronousMachineOperatingMode
+    {
+        /// <summary>
+        /// generator operating mode
+        /// </summary>
+        generator = 0,
+
+        /// <summary>
+        /// condenser operating mode
+        /// </summary>
+        condenser = 1
+    }
+
+    /// <summary>
+    /// Enumeration for unit symbol
+    /// </summary>
+    public enum UnitSymbol : short
+    {
+        /// <summary>
+        /// unit symbol VA
+        /// </summary>
+        VA = 0x00,
+
+        /// <summary>
+        /// unit symbol W
+        /// </summary>
+        W = 0x01,
+
+        /// <summary>
+        /// unit symbol VAr
+        /// </summary>
+        VAr = 0x02,
+
+        /// <summary>
+        /// unit symbol VAh
+        /// </summary>
+        VAh = 0x03,
+
+        /// <summary>
+        /// unit symbol Wh
+        /// </summary>
+        Wh = 0x04,
+
+        /// <summary>
+        /// unit symbol VArh
+        /// </summary>
+        VArh = 0x05,
+
+        /// <summary>
+        /// unit symbol V
+        /// </summary>
+        V = 0x06,
+
+        /// <summary>
+        /// unit symbol ohm
+        /// </summary>
+        ohm = 0x07,
+
+        /// <summary>
+        /// unit symbol A
+        /// </summary>
+        A = 0x08,
+
+        /// <summary>
+        /// unit symbol F
+        /// </summary>
+        F = 0x09,
+
+        /// <summary>
+        /// unit symbol H
+        /// </summary>
+        H = 0x0A,
+
+        /// <summary>
+        /// unit symbol degC
+        /// </summary>
+        degC = 0x0B,
+
+        /// <summary>
+        /// unit symbol s
+        /// </summary>
+        s = 0x0C,
+
+        /// <summary>
+        /// unit symbol min
+        /// </summary>
+        min = 0x0D,
+
+        /// <summary>
+        /// unit symbol h
+        /// </summary>
+        h = 0x0E,
+
+        /// <summary>
+        /// unit symbol deg
+        /// </summary>
+        deg = 0x0F,
+
+        /// <summary>
+        /// unit symbol rad
+        /// </summary>
+        rad = 0x10,
+
+        /// <summary>
+        /// unit symbol J
+        /// </summary>
+        J = 0x11,
+
+        /// <summary>
+        /// unit symbol N
+        /// </summary>
+        N = 0x12,
+
+        /// <summary>
+        /// unit symbol S
+        /// </summary>
+        S = 0x13,
+
+        /// <summary>
+        /// unit symbol none
+        /// </summary>
+        none = 0x14,
+
+        /// <summary>
+        /// unit symbol Hz
+        /// </summary>
+        Hz = 0x15,
+
+        /// <summary>
+        /// unit symbol g
+        /// </summary>
+        g = 0x16,
+
+        /// <summary>
+        /// unit symbol Pa
+        /// </summary>
+        Pa = 0x17,
+
+        /// <summary>
+        /// unit symbol m
+        /// </summary>
+        m = 0x18,
+
+        /// <summary>
+        /// unit symbol m2
+        /// </summary>
+        m2 = 0x19,
+
+        /// <summary>
+        /// unit symbol m3
+        /// </summary>
+        m3 = 0x1A
+    }
 }
