@@ -13,7 +13,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
     /// <summary>
     /// RotatingMachine class
     /// </summary>
-    public class RotatingMachine
+    public class RotatingMachine : RegulatingCondEq
     {
+        public RotatingMachine(long globalId) : base(globalId)
+        {
+
+        }
     }
 }

@@ -33,19 +33,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         /// </summary>
         private string mrid = string.Empty;
 
-        /// <summary>
-        /// Description of identified object
-        /// </summary>
-        private string description = string.Empty;
-
-        /// <summary>
-        /// Initializes a new instance of the IdentifiedObject class.
-        /// </summary>
-        /// <param name="globalId">Global id of the entity.</param>
-        ///
-
-        private string aliasName = string.Empty;
-
         public IdentifiedObject(long globalId)
         {
             this.globalId = globalId;
@@ -92,28 +79,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             set { mrid = value; }
         }
 
-        /// <summary>
-        /// Gets or sets description of the entity (identified object).
-        /// </summary>
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
-
-        public string AliasName
-        {
-            get
-            {
-                return aliasName;
-            }
-
-            set
-            {
-                aliasName = value;
-            }
-        }
-
         public static bool operator ==(IdentifiedObject x, IdentifiedObject y)
         {
             if (Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null))
@@ -144,8 +109,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             else
             {
                 IdentifiedObject io = (IdentifiedObject)x;
-                return ((io.GlobalId == this.GlobalId) && (io.name == this.name) && (io.mrid == this.mrid) &&
-                        (io.description == this.description && (io.aliasName == this.aliasName)));
+                return ((io.GlobalId == this.GlobalId) && (io.name == this.name) && (io.mrid == this.mrid));
             }
         }
 

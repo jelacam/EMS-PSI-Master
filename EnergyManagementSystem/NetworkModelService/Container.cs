@@ -10,6 +10,8 @@ using System.Xml;
 using EMS.Common;
 using EMS.Services.NetworkModelService.DataModel.Core;
 using EMS.Services.NetworkModelService.DataModel;
+using EMS.Services.NetworkModelService.DataModel.Meas;
+using EMS.Services.NetworkModelService.DataModel.Wires;
 
 namespace EMS.Services.NetworkModelService
 {
@@ -120,6 +122,18 @@ namespace EMS.Services.NetworkModelService
             IdentifiedObject io = null;
             switch ((EMSType)type)
             {
+                case EMSType.ANALOG:
+                    io = new Analog(globalId);
+                    break;
+
+                case EMSType.ENERGYCONSUMER:
+                    io = new EnergyConsumer(globalId);
+                    break;
+
+                case EMSType.SYNCHRONOUSMACHINE:
+                    io = new SynchronousMachine(globalId);
+                    break;
+
                 default:
                     string message = String.Format("Failed to create entity because specified type ({0}) is not supported.", type);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
