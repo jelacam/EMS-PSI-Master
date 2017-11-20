@@ -13,7 +13,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
     /// <summary>
     /// SynchronousMachine class
     /// </summary>
-    public class SynchronousMachine
+    public class SynchronousMachine : RotatingMachine
     {
+        public SynchronousMachine(long globalId) : base(globalId)
+        {
+
+        }
     }
 }

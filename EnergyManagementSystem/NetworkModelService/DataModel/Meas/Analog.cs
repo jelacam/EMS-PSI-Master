@@ -13,7 +13,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
     /// <summary>
     /// Analog class
     /// </summary>
-    public class Analog
+    public class Analog : Measurement
     {
+        public Analog(long globalId) : base(globalId)
+        {
+
+        }
     }
 }
