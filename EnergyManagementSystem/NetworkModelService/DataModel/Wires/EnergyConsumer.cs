@@ -6,8 +6,6 @@
 
 namespace EMS.Services.NetworkModelService.DataModel.Wires
 {
-    using System;
-    using System.Collections.Generic;
     using EMS.Common;
     using EMS.Services.NetworkModelService.DataModel.Core;
 
@@ -16,46 +14,81 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
     /// </summary>
     public class EnergyConsumer : ConductingEquipment
     {
+		/// <summary>
+		/// pFixed of energy consumer
+		/// </summary>
         private float pFixed;
-        private float pFixedPct;
-        private float qFixed;
-        private float qFixedPct;
 
-        public EnergyConsumer(long globalId) : base(globalId)
+		/// <summary>
+		/// pFixedPct of energy consumer
+		/// </summary>
+		private float pFixedPct;
+
+		/// <summary>
+		/// qFixed of energy consumer
+		/// </summary>
+		private float qFixed;
+
+		/// <summary>
+		/// qFixedPct of energy consumer
+		/// </summary>
+		private float qFixedPct;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="EnergyConsumer" /> class
+		/// </summary>
+		/// <param name="globalId">globalId of the entity</param>
+		public EnergyConsumer(long globalId) : base(globalId)
         {
-
         }
 
-        public float PFixed
+		/// <summary>
+		/// Gets or sets PFixed of the entity
+		/// </summary>
+		public float PFixed
         {
-            get { return pFixed; }
-            set { pFixed = value; }
+            get { return this.pFixed; }
+            set { this.pFixed = value; }
         }
 
-        public float PFixedPct
+		/// <summary>
+		/// Gets or sets PFixedPct of the entity
+		/// </summary>
+		public float PFixedPct
         {
-            get { return pFixedPct; }
-            set { pFixedPct = value; }
+            get { return this.pFixedPct; }
+            set { this.pFixedPct = value; }
         }
 
-        public float QFixed
+		/// <summary>
+		/// Gets or sets QFixed of the entity
+		/// </summary>
+		public float QFixed
         {
-            get { return qFixed; }
-            set { qFixed = value; }
+            get { return this.qFixed; }
+            set { this.qFixed = value; }
         }
 
-        public float QFixedPct
+		/// <summary>
+		/// Gets or sets QFixedPct of the entity
+		/// </summary>
+		public float QFixedPct
         {
-            get { return qFixedPct; }
-            set { qFixedPct = value; }
+            get { return this.qFixedPct; }
+            set { this.qFixedPct = value; }
         }
 
-        public override bool Equals(object obj)
+		/// <summary>
+		/// Chechs are the entities equals
+		/// </summary>
+		/// <param name="obj">object to compare with</param>
+		/// <returns>indicator of equality</returns>
+		public override bool Equals(object obj)
         {
             if (base.Equals(obj))
             {
                 EnergyConsumer x = (EnergyConsumer)obj;
-                return (x.pFixed == this.pFixed && x.pFixedPct == this.pFixedPct && x.qFixed == this.qFixed && x.qFixedPct == this.qFixedPct);
+                return x.pFixed == this.pFixed && x.pFixedPct == this.pFixedPct && x.qFixed == this.qFixed && x.qFixedPct == this.qFixedPct;
             }
             else
             {
@@ -63,14 +96,23 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-        public override int GetHashCode()
+		/// <summary>
+		/// Returns hash code of the entity
+		/// </summary>
+		/// <returns>hash code</returns>
+		public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        #region IAccess implementation
+		#region IAccess implementation
 
-        public override bool HasProperty(ModelCode t)
+		/// <summary>
+		/// Checks if the entity has a property
+		/// </summary>
+		/// <param name="t">model code of property</param>
+		/// <returns>indicator of has property</returns>
+		public override bool HasProperty(ModelCode t)
         {
             switch (t)
             {
@@ -85,25 +127,28 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-        public override void GetProperty(Property prop)
+		/// <summary>
+		/// Gets the property
+		/// </summary>
+		/// <param name="prop">property to get</param>
+		public override void GetProperty(Property prop)
         {
             switch (prop.Id)
             {
-
                 case ModelCode.ENERGYCONSUMER_PFIXED:
-                    prop.SetValue(pFixed);
+                    prop.SetValue(this.pFixed);
                     break;
 
                 case ModelCode.ENERGYCONSUMER_PFIXEDPCT:
-                    prop.SetValue(pFixedPct);
+                    prop.SetValue(this.pFixedPct);
                     break;
 
                 case ModelCode.ENERGYCONSUMER_QFIXED:
-                    prop.SetValue(qFixed);
+                    prop.SetValue(this.qFixed);
                     break;
 
                 case ModelCode.ENERGYCONSUMER_QFIXEDPCT:
-                    prop.SetValue(qFixedPct);
+                    prop.SetValue(this.qFixedPct);
                     break;
 
                 default:
@@ -112,24 +157,28 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-        public override void SetProperty(Property property)
+		/// <summary>
+		/// Sets the property
+		/// </summary>
+		/// <param name="property">property to set</param>
+		public override void SetProperty(Property property)
         {
             switch (property.Id)
             {
                 case ModelCode.ENERGYCONSUMER_PFIXED:
-                    pFixed = property.AsFloat();
+                    this.pFixed = property.AsFloat();
                     break;
 
                 case ModelCode.ENERGYCONSUMER_PFIXEDPCT:
-                    pFixedPct = property.AsFloat();
+                    this.pFixedPct = property.AsFloat();
                     break;
 
                 case ModelCode.ENERGYCONSUMER_QFIXED:
-                    qFixed = property.AsFloat();
+                    this.qFixed = property.AsFloat();
                     break;
 
                 case ModelCode.ENERGYCONSUMER_QFIXEDPCT:
-                    qFixedPct = property.AsFloat();
+                    this.qFixedPct = property.AsFloat();
                     break;
 
                 default:
@@ -142,9 +191,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
 
         #region IReference implementation
 
-
-
         #endregion IReference implementation
-
     }
 }

@@ -6,7 +6,6 @@
 
 namespace EMS.Services.NetworkModelService.DataModel.Meas
 {
-    using System;
     using System.Collections.Generic;
     using EMS.Common;
     using EMS.Services.NetworkModelService.DataModel.Core;
@@ -16,39 +15,67 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
     /// </summary>
     public class Measurement : IdentifiedObject
     {
-        private string measurementType = string.Empty;
-        private UnitSymbol unitSymbol;
-        private long powerSystemResource = 0;
+		/// <summary>
+		/// measurementType of measurement
+		/// </summary>
+		private string measurementType = string.Empty;
 
-        public Measurement(long globalId) : base(globalId)
+		/// <summary>
+		/// unitSymbol of measurement
+		/// </summary>
+		private UnitSymbol unitSymbol;
+
+		/// <summary>
+		/// powerSystemResource of measurement
+		/// </summary>
+		private long powerSystemResource = 0;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Measurement" /> class
+		/// </summary>
+		/// <param name="globalId">globalId of the entity</param>
+		public Measurement(long globalId) : base(globalId)
         {
-
         }
 
-        public string MeasurementType
+		/// <summary>
+		/// Gets or sets MeasurementType of the entity
+		/// </summary>
+		public string MeasurementType
         {
-            get { return measurementType; }
-            set { measurementType = value; }
+            get { return this.measurementType; }
+            set { this.measurementType = value; }
         }
 
-        public UnitSymbol UnitSymbol
+		/// <summary>
+		/// Gets or sets UnitSymbol of the entity
+		/// </summary>
+		public UnitSymbol UnitSymbol
         {
-            get { return unitSymbol; }
-            set { unitSymbol = value; }
+            get { return this.unitSymbol; }
+            set { this.unitSymbol = value; }
         }
 
+		/// <summary>
+		/// Gets or sets PowerSystemResource of the entity
+		/// </summary>
         public long PowerSystemResource
         {
-            get { return powerSystemResource; }
-            set { powerSystemResource = value; }
+            get { return this.powerSystemResource; }
+            set { this.powerSystemResource = value; }
         }
 
-        public override bool Equals(object obj)
+		/// <summary>
+		/// Chechs are the entities equals
+		/// </summary>
+		/// <param name="obj">object to compare with</param>
+		/// <returns>indicator of equality</returns>
+		public override bool Equals(object obj)
         {
             if (base.Equals(obj))
             {
                 Measurement x = (Measurement)obj;
-                return (x.powerSystemResource == this.powerSystemResource && x.measurementType == this.measurementType && x.unitSymbol == this.unitSymbol);
+                return x.powerSystemResource == this.powerSystemResource && x.measurementType == this.measurementType && x.unitSymbol == this.unitSymbol;
             }
             else
             {
@@ -56,14 +83,23 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-        public override int GetHashCode()
+		/// <summary>
+		/// Returns hash code of the entity
+		/// </summary>
+		/// <returns>hash code</returns>
+		public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        #region IAccess implementation
+		#region IAccess implementation
 
-        public override bool HasProperty(ModelCode t)
+		/// <summary>
+		/// Checks if the entity has a property
+		/// </summary>
+		/// <param name="t">model code of property</param>
+		/// <returns>indicator of has property</returns>
+		public override bool HasProperty(ModelCode t)
         {
             switch (t)
             {
@@ -77,21 +113,24 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-        public override void GetProperty(Property prop)
+		/// <summary>
+		/// Gets the property
+		/// </summary>
+		/// <param name="prop">property to get</param>
+		public override void GetProperty(Property prop)
         {
             switch (prop.Id)
             {
-
                 case ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE:
-                    prop.SetValue(powerSystemResource);
+                    prop.SetValue(this.powerSystemResource);
                     break;
 
                 case ModelCode.MEASUREMENT_MEASUREMENTTYPE:
-                    prop.SetValue(measurementType);
+                    prop.SetValue(this.measurementType);
                     break;
 
                 case ModelCode.MEASUREMENT_UNITSYMBOL:
-                    prop.SetValue((short)unitSymbol);
+                    prop.SetValue((short)this.unitSymbol);
                     break;
 
                 default:
@@ -100,20 +139,24 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-        public override void SetProperty(Property property)
+		/// <summary>
+		/// Sets the property
+		/// </summary>
+		/// <param name="property">property to set</param>
+		public override void SetProperty(Property property)
         {
             switch (property.Id)
             {
                 case ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE:
-                    powerSystemResource = property.AsReference();
+                    this.powerSystemResource = property.AsReference();
                     break;
 
                 case ModelCode.MEASUREMENT_MEASUREMENTTYPE:
-                    measurementType = property.AsString();
+                    this.measurementType = property.AsString();
                     break;
 
                 case ModelCode.MEASUREMENT_UNITSYMBOL:
-                    unitSymbol = (UnitSymbol)property.AsEnum();
+                    this.unitSymbol = (UnitSymbol)property.AsEnum();
                     break;
 
                 default:
@@ -122,22 +165,26 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-        #endregion IAccess implementation
+		#endregion IAccess implementation
 
-        #region IReference implementation
+		#region IReference implementation
 
-        public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
+		/// <summary>
+		/// Get references
+		/// </summary>
+		/// <param name="references">collection of references</param>
+		/// <param name="refType">type of reference</param>
+		public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
         {
-            if (powerSystemResource != 0 && (refType == TypeOfReference.Reference || refType == TypeOfReference.Both))
+            if (this.powerSystemResource != 0 && (refType == TypeOfReference.Reference || refType == TypeOfReference.Both))
             {
                 references[ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE] = new List<long>();
-                references[ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE].Add(powerSystemResource);
+                references[ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE].Add(this.powerSystemResource);
             }
 
             base.GetReferences(references, refType);
         }
 
         #endregion IReference implementation
-
     }
 }

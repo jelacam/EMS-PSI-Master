@@ -46,10 +46,29 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             return base.GetHashCode();
         }
 
-        public float MaxValue { get => maxValue; set => maxValue = value; }
-        public float MinValue { get => minValue; set => minValue = value; }
-        public float NormalValue { get => normalValue; set => normalValue = value; }
-        public SignalDirection SignalDirection { get => signalDirection; set => signalDirection = value; }
+        public float MaxValue
+        {
+            get { return maxValue; }
+            set { maxValue = value; }
+        }
+
+        public float MinValue
+        {
+            get { return minValue; }
+            set { minValue = value; }
+        }
+
+        public float NormalValue
+        {
+            get { return normalValue; }
+            set { normalValue = value; }
+        }
+
+        public SignalDirection SignalDirection
+        {
+            get { return signalDirection; }
+            set { signalDirection = value; }
+        }
 
 
         #region IAccess implementation
