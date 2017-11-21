@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -25,6 +25,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMAdapter", "CIMAdapter\CIMAdapter.csproj", "{F680D34F-C148-4314-8914-B2DF3E7B17AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMParser", "CIMParser\CIMParser.csproj", "{3C03A41C-BE4C-40A8-97D5-5DBAC0C34102}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMProfileCreator", "CIMProfileCreator\CIMProfileCreator.csproj", "{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLabsApp", "ModelLabsApp\ModelLabsApp.csproj", "{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +117,28 @@ Global
 		{3C03A41C-BE4C-40A8-97D5-5DBAC0C34102}.Release|x64.Build.0 = Release|x64
 		{3C03A41C-BE4C-40A8-97D5-5DBAC0C34102}.Release|x86.ActiveCfg = Release|x86
 		{3C03A41C-BE4C-40A8-97D5-5DBAC0C34102}.Release|x86.Build.0 = Release|x86
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|Any CPU.Build.0 = Debug|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|x64.ActiveCfg = Debug|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|x64.Build.0 = Debug|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|x86.ActiveCfg = Debug|x86
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Debug|x86.Build.0 = Debug|x86
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Release|Any CPU.ActiveCfg = Release|x86
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Release|x64.ActiveCfg = Release|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Release|x64.Build.0 = Release|x64
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Release|x86.ActiveCfg = Release|x86
+		{05FA2F21-D4DE-4F42-8D8F-AC79993394F6}.Release|x86.Build.0 = Release|x86
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|Any CPU.Build.0 = Debug|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|x64.ActiveCfg = Debug|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|x64.Build.0 = Debug|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|x86.ActiveCfg = Debug|x86
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Debug|x86.Build.0 = Debug|x86
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|Any CPU.ActiveCfg = Release|x86
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x64.ActiveCfg = Release|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x64.Build.0 = Release|x64
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x86.ActiveCfg = Release|x86
+		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
