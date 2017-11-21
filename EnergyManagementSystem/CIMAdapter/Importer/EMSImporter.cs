@@ -121,7 +121,7 @@ namespace EMS.CIMAdapter.Importer
             {
                 foreach (KeyValuePair<string, object> cimEnergyConsumerPair in cimEnergyConsumers)
                 {
-                    EMS.EnergyConsumer energyConsumer = cimEnergyConsumerPair as EMS.EnergyConsumer;
+                    EMS.EnergyConsumer energyConsumer = cimEnergyConsumerPair.Value as EMS.EnergyConsumer;
 
                     ResourceDescription rd = CreateEnergyConsumer(energyConsumer);
 
@@ -156,11 +156,11 @@ namespace EMS.CIMAdapter.Importer
         {
 
             SortedDictionary<string, object> cimSynchronousMachines = concreteModel.GetAllObjectsOfType("EMS.SynchronousMachine");
-            if (cimEnergyConsumers != null)
+            if (cimSynchronousMachines != null)
             {
                 foreach (KeyValuePair<string, object> cimSynchronousMachinePair in cimSynchronousMachines)
                 {
-                    EMS.SynchronousMachine synchronousMachine = cimSynchronousMachinePair as EMS.SynchronousMachine;
+                    EMS.SynchronousMachine synchronousMachine = cimSynchronousMachinePair.Value as EMS.SynchronousMachine;
 
                     ResourceDescription rd = CreateSynchronousMachine(synchronousMachine);
 
@@ -199,7 +199,7 @@ namespace EMS.CIMAdapter.Importer
             {
                 foreach (KeyValuePair<string, object> cimAnalogPair in cimAnalogs)
                 {
-                    EMS.Analog analog = cimAnalogPair as EMS.Analog;
+                    EMS.Analog analog = cimAnalogPair.Value as EMS.Analog;
 
                     ResourceDescription rd = CreateAnalog(analog);
 
