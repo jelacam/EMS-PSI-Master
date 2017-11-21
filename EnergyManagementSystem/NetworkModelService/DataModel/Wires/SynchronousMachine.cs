@@ -19,6 +19,9 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         private float minQ;
         private EmsFuelType fuelType;
         private SynchronousMachineOperatingMode operatingMode;
+
+        
+
         public SynchronousMachine(long globalId) : base(globalId)
         {
 
@@ -29,10 +32,10 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             if( base.Equals(obj))
             {
                 SynchronousMachine s = (SynchronousMachine)obj;
-                return (s.maxQ == this.maxQ
-                    && s.minQ == this.minQ
-                    && s.fuelType == this.fuelType
-                    && s.operatingMode == this.operatingMode);
+                return (s.MaxQ == this.MaxQ
+                    && s.MinQ == this.MinQ
+                    && s.FuelType == this.FuelType
+                    && s.OperatingMode == this.OperatingMode);
             }
             else
             {
@@ -45,11 +48,58 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             return base.GetHashCode();
         }
 
-        public float MaxQ { get => maxQ; set => maxQ = value; }
-        public float MinQ { get => minQ; set => minQ = value; }
-        public EmsFuelType FuelType { get => fuelType; set => fuelType = value; }
-        public SynchronousMachineOperatingMode OperatingMode { get => operatingMode; set => operatingMode = value; }
+        public float MaxQ
+        {
+            get
+            {
+                return maxQ;
+            }
 
+            set
+            {
+                maxQ = value;
+            }
+        }
+
+        public float MinQ
+        {
+            get
+            {
+                return minQ;
+            }
+
+            set
+            {
+                minQ = value;
+            }
+        }
+
+        public EmsFuelType FuelType
+        {
+            get
+            {
+                return fuelType;
+            }
+
+            set
+            {
+                fuelType = value;
+            }
+        }
+
+        public SynchronousMachineOperatingMode OperatingMode
+        {
+            get
+            {
+                return operatingMode;
+            }
+
+            set
+            {
+                operatingMode = value;
+            }
+        }
+       
 
         #region IAccess implementation
 
@@ -73,19 +123,19 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             switch(prop.Id)
             {
                 case ModelCode.SYNCHRONOUSMACHINE_FUELTYPE:
-                    prop.SetValue((short)fuelType);
+                    prop.SetValue((short)FuelType);
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
-                    prop.SetValue(maxQ);
+                    prop.SetValue(MaxQ);
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_MINQ:
-                    prop.SetValue(minQ);
+                    prop.SetValue(MinQ);
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE:
-                    prop.SetValue((short)operatingMode);
+                    prop.SetValue((short)OperatingMode);
                     break;
 
                 default:
@@ -100,19 +150,19 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             switch(property.Id)
             {
                 case ModelCode.SYNCHRONOUSMACHINE_FUELTYPE:
-                    fuelType = (EmsFuelType)property.AsEnum();
+                    FuelType = (EmsFuelType)property.AsEnum();
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
-                    maxQ = property.AsFloat();
+                    MaxQ = property.AsFloat();
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_MINQ:
-                    minQ = property.AsFloat();
+                    MinQ = property.AsFloat();
                     break;
 
                 case ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE:
-                    operatingMode = (SynchronousMachineOperatingMode)property.AsEnum();
+                    OperatingMode = (SynchronousMachineOperatingMode)property.AsEnum();
                     break;
 
                 default:
