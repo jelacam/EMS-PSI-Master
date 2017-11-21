@@ -127,11 +127,11 @@ namespace EMS.CIMAdapter
 					case SupportedProfiles.RegulatingControl:
 						{
 							// transformation to DMS delta					
-							TransformAndLoadReport report = RegulatingControlImporter.Instance.CreateNMSDelta(concreteModel);
+							TransformAndLoadReport report = EMSImporter.Instance.CreateNMSDelta(concreteModel);
 
 							if (report.Success)
 							{
-								nmsDelta = RegulatingControlImporter.Instance.NMSDelta;
+								nmsDelta = EMSImporter.Instance.NMSDelta;
 								success = true;
 							}
 							else
@@ -139,7 +139,7 @@ namespace EMS.CIMAdapter
 								success = false;
 							}
 							log = report.Report.ToString();
-							RegulatingControlImporter.Instance.Reset();
+							EMSImporter.Instance.Reset();
 
 							break;
 						}
