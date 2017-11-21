@@ -39,7 +39,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             return base.GetHashCode();
         }
 
-        public float RatedS { get => ratedS; set => ratedS = value; }
+        public float RatedS
+        {
+            get { return ratedS; }
+            set { ratedS = value; }
+        }
 
         #region IAccess implementation
 
