@@ -9,10 +9,9 @@ using System.IO;
 using System.Xml;
 using System.Threading;
 using System.Diagnostics;
-using FTN.Common;
-using FTN.ServiceContracts;
 using FTN.Services.NetworkModelService.TestClient;
-
+using EMS.Common;
+using EMS.ServiceContracts;
 
 namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 {
@@ -57,7 +56,7 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 			try
 			{
 				short type = ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
-				List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds((DMSType)type);
+				List<ModelCode> properties = modelResourcesDesc.GetAllPropertyIds((EMSType)type);
 
                 rd = GdaQueryProxy.GetValues(globalId, properties);
 
@@ -164,10 +163,9 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 			try
 			{						
 				List<ModelCode> properties = new List<ModelCode>();
-                properties.Add(ModelCode.IDOBJ_DESCRIPTION);
-                properties.Add(ModelCode.IDOBJ_MRID);
-                properties.Add(ModelCode.IDOBJ_NAME);
-						
+                properties.Add(ModelCode.IDENTIFIEDOBJECT_MRID);
+                properties.Add(ModelCode.IDENTIFIEDOBJECT_NAME);
+ 				
 				int iteratorId = GdaQueryProxy.GetRelatedValues(sourceGlobalId, properties, association);
 				int resourcesLeft = GdaQueryProxy.IteratorResourcesLeft(iteratorId);
 
@@ -226,10 +224,10 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 
             int iteratorId = 0;
             int numberOfResources = 1000;
-            DMSType currType = 0;
+            EMSType currType = 0;
             try
             {
-                foreach (DMSType type in Enum.GetValues(typeof(DMSType)))
+                foreach (EMSType type in Enum.GetValues(typeof(EMSType)))
                 {
                     currType = type;
                     properties = modelResourcesDesc.GetAllPropertyIds(type);
@@ -287,7 +285,7 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 
             try
             {
-                Dictionary<DMSType, ResourceDescription> updates = CreateResourcesToInsert();
+                Dictionary<EMSType, ResourceDescription> updates = CreateResourcesToInsert();
                 Delta delta = new Delta();
 
                 foreach (ResourceDescription rd in updates.Values)
@@ -328,7 +326,7 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
 
             try
             {
-                Dictionary<DMSType, ResourceDescription> updates = CreateResourcesForUpdate(gids);
+                Dictionary<EMSType, ResourceDescription> updates = CreateResourcesForUpdate(gids);
                 Delta delta = new Delta();
 
                 foreach (ResourceDescription rd in updates.Values)
@@ -468,20 +466,20 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
             }
         }
 
-        private Dictionary<DMSType, ResourceDescription> CreateResourcesToInsert()
+        private Dictionary<EMSType, ResourceDescription> CreateResourcesToInsert()
         {
             long globalId = 0;
             ResourceDescription rd = null;
             List<ModelCode> propertyIDs = null;
-            Dictionary<DMSType, ResourceDescription> updates = new Dictionary<DMSType, ResourceDescription>(new DMSTypeComparer());
+            Dictionary<EMSType, ResourceDescription> updates = new Dictionary<EMSType, ResourceDescription>(new EMSTypeComparer());
 
             #region Create resources
 
-            foreach (DMSType type in modelResourcesDesc.AllDMSTypes)
+            foreach (EMSType type in modelResourcesDesc.AllEMSTypes)
             {
-                if (type != DMSType.MASK_TYPE)
+                if (type != EMSType.MASK_TYPE)
                 {
-                    if (type < DMSType.PROCESS)
+                    if (type < EMSType.SYNCHRONOUSMACHINE)      /// ???? 
                         continue;
 
                     globalId = ModelCodeHelper.CreateGlobalId(0, (short)type, -1);
@@ -598,20 +596,20 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
             return updates;
         }
 
-        private Dictionary<DMSType, ResourceDescription> CreateResourcesForUpdate(List<long> gids)
+        private Dictionary<EMSType, ResourceDescription> CreateResourcesForUpdate(List<long> gids)
         {
-            Dictionary<DMSType, ResourceDescription> updates = new Dictionary<DMSType, ResourceDescription>(new DMSTypeComparer());
+            Dictionary<EMSType, ResourceDescription> updates = new Dictionary<EMSType, ResourceDescription>(new EMSTypeComparer());
             Delta delta = new Delta();
 
             ResourceDescription rd = null;
             List<ModelCode> propertyIDs = null;
-            DMSType type;
+            EMSType type;
 
             #region Creating resources
 
             foreach (long gid in gids)
             {
-                type = (DMSType)ModelCodeHelper.ExtractTypeFromGlobalId(gid);
+                type = (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(gid);
                 propertyIDs = modelResourcesDesc.GetAllPropertyIds(modelResourcesDesc.GetModelCodeFromType(type));
                 rd = new ResourceDescription(gid);
 
@@ -713,45 +711,45 @@ namespace TelventDMS.Services.NetworkModelService.TestClient.Tests
      
 
 
-        //private void SetPowerTransformerReferences(Dictionary<DMSType, ResourceDescription> updates)
+        //private void SetPowerTransformerReferences(Dictionary<EMSType, ResourceDescription> updates)
         //{
-        //    for (int i = 0; i < updates[DMSType.POWERTR].Properties.Count; i++)
+        //    for (int i = 0; i < updates[EMSType.POWERTR].Properties.Count; i++)
         //    {
-        //        if (updates[DMSType.POWERTR].Properties[i].Id == ModelCode.PSR_LOCATION)
+        //        if (updates[EMSType.POWERTR].Properties[i].Id == ModelCode.PSR_LOCATION)
         //        {
-        //            updates[DMSType.POWERTR].Properties[i].SetValue(updates[DMSType.LOCATION].Id);
+        //            updates[EMSType.POWERTR].Properties[i].SetValue(updates[EMSType.LOCATION].Id);
         //        }
         //    }
         //}
 
-        //private void SetTransformerWindingReferences(Dictionary<DMSType, ResourceDescription> updates)
+        //private void SetTransformerWindingReferences(Dictionary<EMSType, ResourceDescription> updates)
         //{
-        //    for (int i = 0; i < updates[DMSType.TRWINDING].Properties.Count; i++)
+        //    for (int i = 0; i < updates[EMSType.TRWINDING].Properties.Count; i++)
         //    {
-        //        if (updates[DMSType.TRWINDING].Properties[i].Id == ModelCode.CONDEQ_BASVOLTAGE)
+        //        if (updates[EMSType.TRWINDING].Properties[i].Id == ModelCode.CONDEQ_BASVOLTAGE)
         //        {
-        //            updates[DMSType.TRWINDING].Properties[i].SetValue(updates[DMSType.BASEVOLTAGE].Id);
+        //            updates[EMSType.TRWINDING].Properties[i].SetValue(updates[EMSType.BASEVOLTAGE].Id);
         //        }
 
-        //        if (updates[DMSType.TRWINDING].Properties[i].Id == ModelCode.PSR_LOCATION)
+        //        if (updates[EMSType.TRWINDING].Properties[i].Id == ModelCode.PSR_LOCATION)
         //        {
-        //            updates[DMSType.TRWINDING].Properties[i].SetValue(updates[DMSType.LOCATION].Id);
+        //            updates[EMSType.TRWINDING].Properties[i].SetValue(updates[EMSType.LOCATION].Id);
         //        }
 
-        //        if (updates[DMSType.TRWINDING].Properties[i].Id == ModelCode.TRWINDING_POWERTRW)
+        //        if (updates[EMSType.TRWINDING].Properties[i].Id == ModelCode.TRWINDING_POWERTRW)
         //        {
-        //            updates[DMSType.TRWINDING].Properties[i].SetValue(updates[DMSType.POWERTR].Id);
+        //            updates[EMSType.TRWINDING].Properties[i].SetValue(updates[EMSType.POWERTR].Id);
         //        }
         //    }
         //}
 
-        //private void SetWindingTestRefernces(Dictionary<DMSType, ResourceDescription> updates)
+        //private void SetWindingTestRefernces(Dictionary<EMSType, ResourceDescription> updates)
         //{
-        //    for (int i = 0; i < updates[DMSType.WINDINGTEST].Properties.Count; i++)
+        //    for (int i = 0; i < updates[EMSType.WINDINGTEST].Properties.Count; i++)
         //    {
-        //        if (updates[DMSType.WINDINGTEST].Properties[i].Id == ModelCode.WINDINGTEST_POWERTRWINDING)
+        //        if (updates[EMSType.WINDINGTEST].Properties[i].Id == ModelCode.WINDINGTEST_POWERTRWINDING)
         //        {
-        //            updates[DMSType.WINDINGTEST].Properties[i].SetValue(updates[DMSType.TRWINDING].Id);
+        //            updates[EMSType.WINDINGTEST].Properties[i].SetValue(updates[EMSType.TRWINDING].Id);
         //        }
         //    }
         //}
