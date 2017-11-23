@@ -3,11 +3,19 @@
     using System;
     using EMS.Common;
 
+	/// <summary>
+	/// EMSConverter
+	/// </summary>
     public static class EMSConverter
     {
 
         #region Populate ResourceDescription
 
+		/// <summary>
+		/// Method populates IdentifiedObject properties
+		/// </summary>
+		/// <param name="cimIdentifiedObject">IdentifiedObject object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
         public static void PopulateIdentifiedObjectProperties(EMS.IdentifiedObject cimIdentifiedObject, ResourceDescription rd)
         {
             if ((cimIdentifiedObject != null) && (rd != null))
@@ -23,7 +31,12 @@
             }
         }
 
-        public static void PopulatePowerSystemResourceProperties(EMS.PowerSystemResource cimPowerSystemResource, ResourceDescription rd)
+		/// <summary>
+		/// Method populates PowerSystemResource properties
+		/// </summary>
+		/// <param name="cimPowerSystemResource">PowerSystemResource object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		public static void PopulatePowerSystemResourceProperties(EMS.PowerSystemResource cimPowerSystemResource, ResourceDescription rd)
         {
             if ((cimPowerSystemResource != null) && (rd != null))
             {
@@ -31,7 +44,12 @@
             }
         }
 
-        public static void PopulateEquipmentProperties(EMS.Equipment cimEquipment, ResourceDescription rd)
+		/// <summary>
+		/// Method populates Equipment properties
+		/// </summary>
+		/// <param name="cimEquipment">Equipment object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		public static void PopulateEquipmentProperties(EMS.Equipment cimEquipment, ResourceDescription rd)
         {
             if ((cimEquipment != null) && (rd != null))
             {
@@ -39,7 +57,12 @@
             }
         }
 
-        public static void PopulateConductingEquipmentProperties(EMS.ConductingEquipment cimConductingEquipment, ResourceDescription rd)
+		/// <summary>
+		/// Method populates ConductingEquipment properties
+		/// </summary>
+		/// <param name="cimConductingEquipment">ConductingEquipment object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		public static void PopulateConductingEquipmentProperties(EMS.ConductingEquipment cimConductingEquipment, ResourceDescription rd)
         {
             if ((cimConductingEquipment != null) && (rd != null))
             {
@@ -47,7 +70,14 @@
             }
         }
 
-        public static void PopulateEnergyConsumerProperties(EMS.EnergyConsumer cimEnergyConsumer, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates EnergyConsumer properties
+		/// </summary>
+		/// <param name="cimEnergyConsumer">EnergyConsumer object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper">Import</param>
+		/// <param name="report"></param>
+		public static void PopulateEnergyConsumerProperties(EMS.EnergyConsumer cimEnergyConsumer, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimEnergyConsumer != null) && (rd != null))
             {
@@ -75,7 +105,14 @@
             }
         }
 
-        public static void PopulateRegulatingCondEqProperties(RegulatingCondEq cimRegulatingCondEq, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates RegulatingCondEq properties
+		/// </summary>
+		/// <param name="cimRegulatingCondEq">RegulatingCondEq object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper"></param>
+		/// <param name="report"></param>
+		public static void PopulateRegulatingCondEqProperties(RegulatingCondEq cimRegulatingCondEq, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimRegulatingCondEq != null) && (rd != null))
             {
@@ -83,7 +120,14 @@
             }
         }
 
-        public static void PopulateRotatingMachineProperties(RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates RotatingMachine properties
+		/// </summary>
+		/// <param name="cimRotatingMachine">RotatingMachine object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper"></param>
+		/// <param name="report"></param>
+		public static void PopulateRotatingMachineProperties(RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimRotatingMachine != null) && (rd != null))
             {
@@ -96,7 +140,14 @@
             }
         }
 
-        public static void PopulateSynchronousMachineProperties(EMS.SynchronousMachine cimSynchronousMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates SynchronousMachine properties
+		/// </summary>
+		/// <param name="cimSynchronousMachine">SynchronousMachine object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper"></param>
+		/// <param name="report"></param>
+		public static void PopulateSynchronousMachineProperties(EMS.SynchronousMachine cimSynchronousMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimSynchronousMachine != null) && (rd != null))
             {
@@ -124,7 +175,14 @@
             }
         }
 
-        public static void PopulateMeasurementProperties(EMS.Measurement cimMeasurement, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates Measurement properties
+		/// </summary>
+		/// <param name="cimMeasurement">Measurement object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper"></param>
+		/// <param name="report"></param>
+		public static void PopulateMeasurementProperties(EMS.Measurement cimMeasurement, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimMeasurement != null) && (rd != null))
             {
@@ -153,7 +211,14 @@
             }
         }
 
-        public static void PopulateAnalogProperties(Analog cimAnalog, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		/// <summary>
+		/// Method populates Analog properties
+		/// </summary>
+		/// <param name="cimAnalog">Analog object with values from CIM</param>
+		/// <param name="rd">ResourceDescription object from importer</param>
+		/// <param name="importHelper"></param>
+		/// <param name="report"></param>
+		public static void PopulateAnalogProperties(Analog cimAnalog, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimAnalog != null) && (rd != null))
             {
@@ -186,6 +251,11 @@
 
         #region Enums convert
 
+		/// <summary>
+		/// Method returns FuelType enum values for values defined in CIM
+		/// </summary>
+		/// <param name="fuelType">EMSFuelType enum value</param>
+		/// <returns>Concrete value from model</returns>
         public static EmsFuelType GetEMSFuelType(EMS.EmsFuelType fuelType)
         {
             switch (fuelType)
@@ -204,7 +274,12 @@
             }
         }
 
-        public static SignalDirection GetSignalDirection(EMS.SignalDirection signalDirection)
+		/// <summary>
+		/// Method returns SignalDirection enum values for values defined in CIM
+		/// </summary>
+		/// <param name="signalDirection">SignalDirection enum value</param>
+		/// <returns>Concrete value from model</returns>
+		public static SignalDirection GetSignalDirection(EMS.SignalDirection signalDirection)
         {
             switch (signalDirection)
             {
@@ -218,7 +293,12 @@
             }
         }
 
-        public static SynchronousMachineOperatingMode GetSynchronousMachineOperatingMode(EMS.SynchronousMachineOperatingMode syncMode)
+		/// <summary>
+		/// Method returns SynchronousMachineOperatingMode enum values for values defined in CIM
+		/// </summary>
+		/// <param name="syncMode">SynchronousMachineOperatingMode enum value</param>
+		/// <returns>Concrete value from model</returns>
+		public static SynchronousMachineOperatingMode GetSynchronousMachineOperatingMode(EMS.SynchronousMachineOperatingMode syncMode)
         {
             switch (syncMode)
             {
@@ -230,7 +310,12 @@
             }
         }
 
-        public static UnitSymbol GetUnitSymbol(EMS.UnitSymbol unitSymbol)
+		/// <summary>
+		/// Method returns UnitSymbol enum values for values defined in CIM
+		/// </summary>
+		/// <param name="unitSymbol">UnitSymbol enum value</param>
+		/// <returns>Concrete value from model</returns>
+		public static UnitSymbol GetUnitSymbol(EMS.UnitSymbol unitSymbol)
         {
             switch (unitSymbol)
             {
