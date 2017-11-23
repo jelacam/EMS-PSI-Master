@@ -125,29 +125,48 @@ namespace EMS.CIMAdapter
 				switch (extractType)
 				{
 					case SupportedProfiles.RegulatingControl:
+					{
+						// transformation to DMS delta					
+						TransformAndLoadReport report = EMSImporter.Instance.CreateNMSDelta(concreteModel);
+
+						if (report.Success)
 						{
-							// transformation to DMS delta					
-							TransformAndLoadReport report = EMSImporter.Instance.CreateNMSDelta(concreteModel);
-
-							if (report.Success)
-							{
-								nmsDelta = EMSImporter.Instance.NMSDelta;
-								success = true;
-							}
-							else
-							{
-								success = false;
-							}
-							log = report.Report.ToString();
-							EMSImporter.Instance.Reset();
-
-							break;
+							nmsDelta = EMSImporter.Instance.NMSDelta;
+							success = true;
 						}
+						else
+						{
+							success = false;
+						}
+						log = report.Report.ToString();
+						EMSImporter.Instance.Reset();
+
+						break;
+					}
+                    case SupportedProfiles.EMSData:
+                    {
+                            // transformation to EMS delta
+                            TransformAndLoadReport report = EMSImporter.Instance.CreateNMSDelta(concreteModel);
+
+                            if(report.Success)
+                            {
+                                nmsDelta = EMSImporter.Instance.NMSDelta;
+                                success = true;
+                            }
+                            else
+                            {
+                                success = false;
+                            }
+                            log = report.Report.ToString();
+                            EMSImporter.Instance.Reset();
+
+                        break;
+                    }
 					default:
-						{
-							LogManager.Log(string.Format("Import of {0} data is NOT SUPPORTED.", extractType), LogLevel.Warning);
-							break;
-						}
+					{
+						LogManager.Log(string.Format("Import of {0} data is NOT SUPPORTED.", extractType), LogLevel.Warning);
+						break;
+					}
 				}
 
 				return success;

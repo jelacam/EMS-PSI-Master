@@ -149,7 +149,7 @@ namespace EMS.Common
         /// <summary>
         /// Dictionary of DMS type to class type code mappings.
         /// </summary>
-        private Dictionary<EMSType, ModelCode> type2modelCode = new Dictionary<EMSType, ModelCode>(new DMSTypeComparer());
+        private Dictionary<EMSType, ModelCode> type2modelCode = new Dictionary<EMSType, ModelCode>(new EMSTypeComparer());
 
         /// <summary>
         /// Insert order for Data model.
@@ -179,16 +179,16 @@ namespace EMS.Common
         /// <summary>
         /// All types, codes and from DMSType enum end from extensibility
         /// </summary>
-        private HashSet<EMSType> allDMSTypes = new HashSet<EMSType>(new DMSTypeComparer());
+        private HashSet<EMSType> allEMSTypes = new HashSet<EMSType>(new EMSTypeComparer());
 
         public HashSet<ModelCode> AllModelCodes
         {
             get { return this.allModelCodes; }
         }
 
-        public HashSet<EMSType> AllDMSTypes
+        public HashSet<EMSType> AllEMSTypes
         {
-            get { return this.allDMSTypes; }
+            get { return this.allEMSTypes; }
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace EMS.Common
 
             foreach (EMSType type in Enum.GetValues(typeof(EMSType)))
             {
-                this.allDMSTypes.Add(type);
+                this.allEMSTypes.Add(type);
             }
 
             #region get all class model codes from core
@@ -287,7 +287,7 @@ namespace EMS.Common
             }
 
             //// Initialize DMSType 2 ModelCode map
-            foreach (EMSType t in this.allDMSTypes)
+            foreach (EMSType t in this.allEMSTypes)
             {
                 EMSType type = t & EMSType.MASK_TYPE;
 
@@ -850,7 +850,7 @@ namespace EMS.Common
 
         public bool ContainsModelCode(EMSType dmsType)
         {
-            return this.allDMSTypes.Contains(dmsType);
+            return this.allEMSTypes.Contains(dmsType);
         }
 
         /// <summary>
@@ -966,7 +966,7 @@ namespace EMS.Common
     /// <summary>
     /// Comparer that should be used when DMSType enum is key in dictionary to avoid unnecessary boxing
     /// </summary>
-    public class DMSTypeComparer : IEqualityComparer<EMSType>
+    public class EMSTypeComparer : IEqualityComparer<EMSType>
     {
         #region IEqualityComparer<DMSType> Members
 

@@ -11,7 +11,8 @@ namespace EMS.CIMAdapter.Manager
 		SwitchingEquipment,
 		OverheadLines,
 		UndergroundCables,
-		ProtectionDevices
+		ProtectionDevices,
+        EMSData
 	};
 
 
@@ -20,7 +21,7 @@ namespace EMS.CIMAdapter.Manager
 	/// </summary>
 	public static class ProfileManager
 	{
-		public const string Namespace = "FTN";
+		public const string Namespace = "EMS";
 
 		/// <summary>
 		/// Method returns the name of CIM profile based on the defined enumeration.

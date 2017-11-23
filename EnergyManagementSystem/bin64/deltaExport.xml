@@ -1,0 +1,74 @@
+﻿<delta id="0">
+  <operations>
+    <operation type="insert">
+      <ResourceDescriptions count="6">
+        <ResourceDescription>
+          <id gid="0x00000002ffffffff" type="ENERGYCONSUMER" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="EnergyConsumer_1" />
+            <Property id="ENERGYCONSUMER_PFIXED" value="30" />
+            <Property id="ENERGYCONSUMER_PFIXEDPCT" value="0.2" />
+            <Property id="ENERGYCONSUMER_QFIXED" value="7" />
+            <Property id="ENERGYCONSUMER_QFIXEDPCT" value="0.2" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000002fffffffe" type="ENERGYCONSUMER" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="EnergyConsumer_2" />
+            <Property id="ENERGYCONSUMER_PFIXED" value="20" />
+            <Property id="ENERGYCONSUMER_PFIXEDPCT" value="0.3" />
+            <Property id="ENERGYCONSUMER_QFIXED" value="5" />
+            <Property id="ENERGYCONSUMER_QFIXEDPCT" value="0.2" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000002fffffffd" type="ENERGYCONSUMER" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="EnergyConsumer_3" />
+            <Property id="ENERGYCONSUMER_PFIXED" value="50" />
+            <Property id="ENERGYCONSUMER_PFIXEDPCT" value="0.5" />
+            <Property id="ENERGYCONSUMER_QFIXED" value="11" />
+            <Property id="ENERGYCONSUMER_QFIXEDPCT" value="0.5" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000003ffffffff" type="SYNCHRONOUSMACHINE" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="SynchronousMachine_Coal" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="SyncMachine_1" />
+            <Property id="ROTATINGMACHINE_RATEDS" value="300" />
+            <Property id="SYNCHRONOUSMACHINE_FUELTYPE" value="coal" />
+            <Property id="SYNCHRONOUSMACHINE_MAXQ" value="350" />
+            <Property id="SYNCHRONOUSMACHINE_MINQ" value="140" />
+            <Property id="SYNCHRONOUSMACHINE_OPERATINGMODE" value="generator" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000003fffffffe" type="SYNCHRONOUSMACHINE" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="SyncMachine_2" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="SynchronousMachine_Wind" />
+            <Property id="ROTATINGMACHINE_RATEDS" value="15" />
+            <Property id="SYNCHRONOUSMACHINE_FUELTYPE" value="wind" />
+            <Property id="SYNCHRONOUSMACHINE_MAXQ" value="20" />
+            <Property id="SYNCHRONOUSMACHINE_MINQ" value="10" />
+            <Property id="SYNCHRONOUSMACHINE_OPERATINGMODE" value="generator" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000003fffffffd" type="SYNCHRONOUSMACHINE" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="SyncMachine_3" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="SynchronousMachine_Solar" />
+            <Property id="ROTATINGMACHINE_RATEDS" value="100" />
+            <Property id="SYNCHRONOUSMACHINE_FUELTYPE" value="solar" />
+            <Property id="SYNCHRONOUSMACHINE_MAXQ" value="150" />
+            <Property id="SYNCHRONOUSMACHINE_MINQ" value="20" />
+            <Property id="SYNCHRONOUSMACHINE_OPERATINGMODE" value="generator" />
+          </Properties>
+        </ResourceDescription>
+      </ResourceDescriptions>
+    </operation>
+  </operations>
+</delta>
