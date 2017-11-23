@@ -1,7 +1,7 @@
 ﻿<delta id="0">
   <operations>
     <operation type="insert">
-      <ResourceDescriptions count="6">
+      <ResourceDescriptions count="12">
         <ResourceDescription>
           <id gid="0x00000002ffffffff" type="ENERGYCONSUMER" />
           <Properties>
@@ -66,6 +66,72 @@
             <Property id="SYNCHRONOUSMACHINE_MAXQ" value="150" />
             <Property id="SYNCHRONOUSMACHINE_MINQ" value="20" />
             <Property id="SYNCHRONOUSMACHINE_OPERATINGMODE" value="generator" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001ffffffff" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_1" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_1" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="PowerPerHour" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="Wh" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000003ffffffff" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="ReadWrite" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001fffffffe" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_2" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_2" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="PowerPerHour" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="Wh" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000003fffffffe" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="ReadWrite" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001fffffffd" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_3" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_3" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="PowerPerHour" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="Wh" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000003fffffffd" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="ReadWrite" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001fffffffc" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_4" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_4" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="Power" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="W" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000002ffffffff" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="Read" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001fffffffb" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_5" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_5" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="Power" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="W" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000002fffffffe" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="Read" />
+          </Properties>
+        </ResourceDescription>
+        <ResourceDescription>
+          <id gid="0x00000001fffffffa" type="ANALOG" />
+          <Properties>
+            <Property id="IDENTIFIEDOBJECT_MRID" value="Analog_6" />
+            <Property id="IDENTIFIEDOBJECT_NAME" value="Analog_6" />
+            <Property id="MEASUREMENT_MEASUREMENTTYPE" value="Power" />
+            <Property id="MEASUREMENT_UNITSYMBOL" value="W" />
+            <Property id="MEASUREMENT_POWERSYSTEMRESOURCE" value="0x00000002fffffffd" />
+            <Property id="ANALOG_SIGNALDIRECTION" value="Read" />
           </Properties>
         </ResourceDescription>
       </ResourceDescriptions>

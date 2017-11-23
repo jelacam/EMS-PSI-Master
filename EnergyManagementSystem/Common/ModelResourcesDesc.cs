@@ -879,10 +879,10 @@ namespace EMS.Common
         /// Insert order of operations
         /// </summary>
         private void InitializeTypeIdsInInsertOrder()
-        {           
-            this.typeIdsInInsertOrder.Add(ModelCode.ANALOG);
+        {
             this.typeIdsInInsertOrder.Add(ModelCode.ENERGYCONSUMER);
             this.typeIdsInInsertOrder.Add(ModelCode.SYNCHRONOUSMACHINE);
+            this.typeIdsInInsertOrder.Add(ModelCode.ANALOG);
         }
 
         /// <summary>
