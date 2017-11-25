@@ -15,9 +15,9 @@ namespace CIMAdapterTest.ImporterTest
     {
         #region Declarations
 
-        private EMSImporter EMSImporter;
         private TransformAndLoadReport report;
         private ConcreteModel concreteModel;
+        private ConcreteModel failConcreteModel;
 
         #endregion Declarations
 
@@ -26,8 +26,8 @@ namespace CIMAdapterTest.ImporterTest
         [OneTimeSetUp]
         public void SetupTest()
         {
-            EMSImporter = new EMSImporter();
             concreteModel = new ConcreteModel();
+            failConcreteModel = null;
         }
 
         #endregion Setup
@@ -35,18 +35,19 @@ namespace CIMAdapterTest.ImporterTest
         #region Tests
 
         [Test]
-        [TestCase(TestName = "Reset")]
-        public void ResetTest()
-        {
-            //EMSImporter.Reset();
-            //Assert.AreEqual(EMSImporter.Instance.NMSDelta, )
-        }
-
-        [Test]
         [TestCase(TestName = "CreateNMSDelta")]
         public void CreateNMSDeltaTest()
         {
-            Assert.IsNotNull(EMSImporter.Instance.CreateNMSDelta(concreteModel));
+            report = EMSImporter.Instance.CreateNMSDelta(concreteModel) as TransformAndLoadReport;
+            Assert.AreEqual(true, report.Success);
+        }
+
+        [Test]
+        [TestCase(TestName = "CreateNMSDeltaFail")]
+        public void CreateNMSDeltaFailTest()
+        {
+            report = EMSImporter.Instance.CreateNMSDelta(failConcreteModel) as TransformAndLoadReport;
+            Assert.AreEqual(true, report.Success);
         }
 
         #endregion Tests

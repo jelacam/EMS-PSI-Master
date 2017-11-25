@@ -75,7 +75,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EMSDataCIMProfile_Labs">
+    <Reference Include="EMSDataCIMProfile_Labs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin64\DLL\EMSDataCIMProfile_Labs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -112,10 +113,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\RegulatingControlCIMProfile_Labs.dll" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="Lib\EMSDataCIMProfile_Labs.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
