@@ -6,8 +6,6 @@
 
 namespace EMS.Services.NetworkModelService.DataModel.Wires
 {
-    using System;
-    using System.Collections.Generic;
     using EMS.Common;
 
     /// <summary>
@@ -15,18 +13,39 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
     /// </summary>
     public class RotatingMachine : RegulatingCondEq
     {
+        /// <summary>
+        /// ratedS of rotating machine
+        /// </summary>
         private float ratedS;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RotatingMachine" /> class
+        /// </summary>
+        /// <param name="globalId">globalId of the entity</param>
         public RotatingMachine(long globalId) : base(globalId)
         {
-
         }
 
+        /// <summary>
+        /// Gets or sets RatedS of the entity
+        /// </summary>
+        public float RatedS
+        {
+            get { return this.ratedS; }
+            set { this.ratedS = value; }
+        }
+
+        /// <summary>
+        /// Checks are the entities equals
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <returns>indicator of equality</returns>
         public override bool Equals(object obj)
         {
-            if(base.Equals(obj))
+            if (base.Equals(obj))
             {
                 RotatingMachine r = (RotatingMachine)obj;
-                return (r.ratedS == this.ratedS);
+                return r.ratedS == this.ratedS;
             }
             else
             {
@@ -34,19 +53,21 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
+        /// <summary>
+        /// Returns hash code of the entity
+        /// </summary>
+        /// <returns>hash code</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public float RatedS
-        {
-            get { return ratedS; }
-            set { ratedS = value; }
-        }
-
         #region IAccess implementation
-
+        /// <summary>
+        /// Checks if the entity has a property
+        /// </summary>
+        /// <param name="t">model code of property</param>
+        /// <returns>indicator of has property</returns>
         public override bool HasProperty(ModelCode t)
         {
             switch (t)
@@ -57,44 +78,47 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                 default:
                     return base.HasProperty(t);
             }
-            
         }
 
+        /// <summary>
+        /// Gets the property
+        /// </summary>
+        /// <param name="prop">property to get</param>
         public override void GetProperty(Property prop)
         {
-            switch(prop.Id)
+            switch (prop.Id)
             {
                 case ModelCode.ROTATINGMACHINE_RATEDS:
-                    prop.SetValue(ratedS);
+                    prop.SetValue(this.ratedS);
                     break;
 
                 default:
                     base.GetProperty(prop);
                     break;
             }
-            
         }
 
+        /// <summary>
+        /// Sets the property
+        /// </summary>
+        /// <param name="property">property to set</param>
         public override void SetProperty(Property property)
         {
-            switch(property.Id)
+            switch (property.Id)
             {
                 case ModelCode.ROTATINGMACHINE_RATEDS:
-                    ratedS = property.AsFloat();
+                    this.ratedS = property.AsFloat();
                     break;
 
                 default:
                     base.SetProperty(property);
                     break;
             }
-           
         }
 
         #endregion IAccess implementation
 
         #region IReference implementation
-
-        //koliko znam ovde ne treba nista, ali neka cr proveri
 
         #endregion IReference implementation
     }

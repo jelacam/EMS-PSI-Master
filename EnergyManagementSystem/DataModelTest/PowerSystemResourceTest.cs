@@ -97,7 +97,9 @@ namespace DataModelTest
         public void HasPropertyMethod()
         {
             PowerSystemResource psr = new PowerSystemResource(1623);
-            bool resultT = psr.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            bool resultT = psr.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(resultT);
+            resultT = psr.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
             Assert.IsTrue(resultT);
             bool resultF = psr.HasProperty(ModelCode.POWERSYSTEMRESOURCE);
             Assert.IsFalse(resultF);
@@ -156,6 +158,29 @@ namespace DataModelTest
             psr.Measurements = l;
             Dictionary<ModelCode, List<long>> d = new Dictionary<ModelCode, List<long>>();
             psr.GetReferences(d, TypeOfReference.Both);
+        }
+
+        /// <summary>
+        /// Unit test for PowerSystemResource AddReference method
+        /// </summary>
+        [Test]
+        public void AddReferenceMethod()
+        {
+            PowerSystemResource psr = new PowerSystemResource(1623);
+            psr.AddReference(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE, 1);
+            Assert.IsNotNull(psr.Measurements);
+        }
+
+        /// <summary>
+        /// Unit test for PowerSystemResource RemoveReference method
+        /// </summary>
+        [Test]
+        public void RemoveReferenceMethod()
+        {
+            PowerSystemResource psr = new PowerSystemResource(1623);
+            psr.RemoveReference(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE, 1);
+            psr.AddReference(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE, 2);
+            psr.RemoveReference(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE, 2);
         }
     }
 }
