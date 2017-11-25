@@ -44,9 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalogTest.cs" />
+    <Compile Include="ConductingEquipmentTest.cs" />
+    <Compile Include="EnergyConsumerTest.cs" />
+    <Compile Include="EquipmentTest.cs" />
     <Compile Include="IdentifiedObjectTest.cs" />
+    <Compile Include="MeasurementTest.cs" />
     <Compile Include="PowerSystemResourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegulatingCondEqTest.cs" />
+    <Compile Include="RotatingMachineTest.cs" />
+    <Compile Include="SynchronousMachineTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
