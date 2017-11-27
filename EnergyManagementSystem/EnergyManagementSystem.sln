@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -151,8 +151,8 @@ Global
 		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x64.Build.0 = Release|x64
 		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x86.ActiveCfg = Release|x86
 		{3DD11384-2CC1-4EE9-9F4A-02B6FE8759C0}.Release|x86.Build.0 = Release|x86
-		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|Any CPU.Build.0 = Debug|x64
 		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|x64.ActiveCfg = Debug|x64
 		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|x64.Build.0 = Debug|x64
 		{0FD9983C-F379-4145-9FF3-7324C2A24D32}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -174,8 +174,8 @@ Global
 		{32EE9373-A350-42AC-972B-41B2EDABA082}.Release|x64.Build.0 = Release|x64
 		{32EE9373-A350-42AC-972B-41B2EDABA082}.Release|x86.ActiveCfg = Release|x86
 		{32EE9373-A350-42AC-972B-41B2EDABA082}.Release|x86.Build.0 = Release|x86
-		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|Any CPU.Build.0 = Debug|x64
 		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|x64.ActiveCfg = Debug|x64
 		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|x64.Build.0 = Debug|x64
 		{BFC47BE0-B158-4B21-B8BB-FD9BCF36E27E}.Debug|x86.ActiveCfg = Debug|Any CPU
