@@ -112,7 +112,7 @@
 		/// <param name="rd">ResourceDescription object from importer</param>
 		/// <param name="importHelper"></param>
 		/// <param name="report"></param>
-		public static void PopulateRegulatingCondEqProperties(RegulatingCondEq cimRegulatingCondEq, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		public static void PopulateRegulatingCondEqProperties(EMS.RegulatingCondEq cimRegulatingCondEq, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimRegulatingCondEq != null) && (rd != null))
             {
@@ -127,7 +127,7 @@
 		/// <param name="rd">ResourceDescription object from importer</param>
 		/// <param name="importHelper"></param>
 		/// <param name="report"></param>
-		public static void PopulateRotatingMachineProperties(RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+		public static void PopulateRotatingMachineProperties(EMS.RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimRotatingMachine != null) && (rd != null))
             {
