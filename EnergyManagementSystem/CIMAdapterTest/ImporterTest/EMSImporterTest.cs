@@ -27,6 +27,7 @@ namespace CIMAdapterTest.ImporterTest
         public void SetupTest()
         {
             concreteModel = new ConcreteModel();
+
             failConcreteModel = null;
         }
 
