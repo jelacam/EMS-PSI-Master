@@ -17,119 +17,210 @@ namespace DataModelTest
     public class AnalogTest
     {
         /// <summary>
+        /// Instance of Analog
+        /// </summary>
+        private Analog a1;
+
+        /// <summary>
+        /// Instance of Analog
+        /// </summary>
+        private Analog a2;
+
+        /// <summary>
+        /// Instance of Analog
+        /// </summary>
+        private Analog a3;
+
+        /// <summary>
+        /// Instance of Analog
+        /// </summary>
+        private Analog a4;
+
+        /// <summary>
+        /// Instance of Analog
+        /// </summary>
+        private Analog a5;
+
+        /// <summary>
+        /// Container for maxValue
+        /// </summary>
+        private float maxValue1;
+
+        /// <summary>
+        /// Container for maxValue
+        /// </summary>
+        private float maxValue2;
+
+        /// <summary>
+        /// Container for minValue
+        /// </summary>
+        private float minValue1;
+
+        /// <summary>
+        /// Container for minValue
+        /// </summary>
+        private float minValue2;
+
+        /// <summary>
+        /// Container for normalValue
+        /// </summary>
+        private float normalValue1;
+
+        /// <summary>
+        /// Container for normalValue
+        /// </summary>
+        private float normalValue2;
+
+        /// <summary>
+        /// Container for signalDirection
+        /// </summary>
+        private SignalDirection signalDirection1;
+
+        /// <summary>
+        /// Container for signalDirection
+        /// </summary>
+        private SignalDirection signalDirection2;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.maxValue1 = 1000;
+            this.maxValue2 = 100;
+            this.minValue1 = 10;
+            this.minValue2 = 1;
+            this.normalValue1 = 500;
+            this.normalValue2 = 50;
+            this.signalDirection1 = SignalDirection.Read;
+            this.signalDirection2 = SignalDirection.Write;
+            this.a1 = new Analog(this.globalId1);
+            this.a2 = new Analog(this.globalId1);
+            this.a2.MaxValue = this.maxValue1;
+            this.a2.MinValue = this.minValue1;
+            this.a2.NormalValue = this.normalValue1;
+            this.a2.SignalDirection = this.signalDirection1;
+            this.a3 = new Analog(this.globalId1);
+            this.a3.MaxValue = this.maxValue2;
+            this.a3.MinValue = this.minValue2;
+            this.a3.NormalValue = this.normalValue2;
+            this.a3.SignalDirection = this.signalDirection2;
+            this.a4 = new Analog(this.globalId2);
+            this.a4.MaxValue = this.maxValue1;
+            this.a4.MinValue = this.minValue1;
+            this.a4.NormalValue = this.normalValue1;
+            this.a4.SignalDirection = this.signalDirection1;
+            this.a5 = null;
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "AnalogConstructor")]
+        public void Constructor()
         {
-            Analog a = new Analog(globalId);
+            Analog a = new Analog(this.globalId1);
             Assert.IsNotNull(a);
         }
 
         /// <summary>
         /// Unit test for Analog MaxValue setter
         /// </summary>
-        /// <param name="maxValue">maxValue property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void MaxValuePropertySet(float maxValue)
+        [TestCase(TestName = "AnalogMaxValueProperty")]
+        public void MaxValueProperty()
         {
-            Analog a = new Analog(1623);
-            a.MaxValue = maxValue;
-            Assert.AreEqual(a.MaxValue, maxValue);
+            this.a1.MaxValue = this.maxValue1;
+            Assert.AreEqual(this.a1.MaxValue, this.maxValue1);
         }
 
         /// <summary>
         /// Unit test for Analog MinValue setter
         /// </summary>
-        /// <param name="minValue">minValue property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void MinValuePropertySet(float minValue)
+        [TestCase(TestName = "AnalogMinValueProperty")]
+        public void MinValueProperty()
         {
-            Analog a = new Analog(1623);
-            a.MinValue = minValue;
-            Assert.AreEqual(a.MinValue, minValue);
+            this.a1.MinValue = this.minValue1;
+            Assert.AreEqual(this.a1.MinValue, this.minValue1);
         }
 
         /// <summary>
         /// Unit test for Analog NormalValue setter
         /// </summary>
-        /// <param name="normalValue">normalValue property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void NormalValuePropertySet(float normalValue)
+        [TestCase(TestName = "AnalogNormalValueProperty")]
+        public void NormalValueProperty()
         {
-            Analog a = new Analog(1623);
-            a.NormalValue = normalValue;
-            Assert.AreEqual(a.NormalValue, normalValue);
+            this.a1.NormalValue = this.normalValue1;
+            Assert.AreEqual(this.a1.NormalValue, this.normalValue1);
         }
 
         /// <summary>
         /// Unit test for Analog SignalDirection setter
         /// </summary>
-        /// <param name="signalDirection">signalDirection property being set and asserted</param>
         [Test]
-        [TestCase(SignalDirection.Read)]
-        public void SignalDirectionPropertySet(SignalDirection signalDirection)
+        [TestCase(TestName = "AnalogSignalDirectionProperty")]
+        public void SignalDirectionProperty()
         {
-            Analog a = new Analog(1623);
-            a.SignalDirection = signalDirection;
-            Assert.AreEqual(a.SignalDirection, signalDirection);
-            Assert.IsNotNull(a.SignalDirection);
+            this.a1.SignalDirection = this.signalDirection1;
+            Assert.AreEqual(this.a1.SignalDirection, this.signalDirection1);
+            Assert.IsNotNull(this.a1.SignalDirection);
         }
 
         /// <summary>
         /// Unit test for Analog Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "AnalogEqualsMethod")]
+        public void EqualsMethod()
         {
-            Analog a1 = new Analog(globalId1);
-            Analog a2 = new Analog(globalId1);
-            Analog a3 = null;
-            Analog a4 = new Analog(globalId1);
-            Analog a5 = new Analog(globalId2);
-
-            a1.MaxValue = 10;
-            a1.MinValue = 1;
-            a1.NormalValue = 5;
-            a1.SignalDirection = SignalDirection.Read;
-            a2.MaxValue = 10;
-            a2.MinValue = 1;
-            a2.NormalValue = 5;
-            a2.SignalDirection = SignalDirection.Read;
-            a4.MaxValue = 100;
-            a4.MinValue = 10;
-            a4.NormalValue = 50;
-            a4.SignalDirection = SignalDirection.Write;
-            a5.MaxValue = 10;
-            a5.MinValue = 1;
-            a5.NormalValue = 5;
-            a5.SignalDirection = SignalDirection.Read;
-            bool resultT = a1.Equals(a2);
-            Assert.IsTrue(resultT);
-            bool resultF = a1.Equals(a3);
-            Assert.IsFalse(resultF);
-            resultF = a1.Equals(a4);
-            Assert.IsFalse(resultF);
-            resultF = a1.Equals(a5);
-            Assert.IsFalse(resultF);
+            this.a1.MaxValue = this.maxValue1;
+            this.a1.MinValue = this.minValue1;
+            this.a1.NormalValue = this.normalValue1;
+            this.a1.SignalDirection = this.signalDirection1;
+            this.resultT = this.a1.Equals(this.a2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.a1.Equals(this.a3);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.a1.Equals(this.a4);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.a1.Equals(this.a5);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Analog GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "AnalogGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            Analog a = new Analog(1623);
-            int result = a.GetHashCode();
+            int result = this.a1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -137,65 +228,65 @@ namespace DataModelTest
         /// Unit test for Analog HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "AnalogHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            Analog a = new Analog(1623);
-            bool resultT = a.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = a.HasProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
-            Assert.IsTrue(resultT);
-            resultT = a.HasProperty(ModelCode.ANALOG_MAXVALUE);
-            Assert.IsTrue(resultT);
-            resultT = a.HasProperty(ModelCode.ANALOG_MINVALUE);
-            Assert.IsTrue(resultT);
-            resultT = a.HasProperty(ModelCode.ANALOG_NORMALVALUE);
-            Assert.IsTrue(resultT);
-            resultT = a.HasProperty(ModelCode.ANALOG_SIGNALDIRECTION);
-            Assert.IsTrue(resultT);
-            bool resultF = a.HasProperty(ModelCode.ANALOG);
-            Assert.IsFalse(resultF);
+            this.resultT = this.a1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.a1.HasProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.a1.HasProperty(ModelCode.ANALOG_MAXVALUE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.a1.HasProperty(ModelCode.ANALOG_MINVALUE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.a1.HasProperty(ModelCode.ANALOG_NORMALVALUE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.a1.HasProperty(ModelCode.ANALOG_SIGNALDIRECTION);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.a1.HasProperty(ModelCode.ANALOG);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Analog GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "AnalogGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            Analog a = new Analog(1623);
-            a.GetProperty(ModelCode.ANALOG_MAXVALUE);
-            Assert.IsNotNull(a.MaxValue);
-            a.GetProperty(ModelCode.ANALOG_MINVALUE);
-            Assert.IsNotNull(a.MinValue);
-            a.GetProperty(ModelCode.ANALOG_NORMALVALUE);
-            Assert.IsNotNull(a.NormalValue);
-            a.GetProperty(ModelCode.ANALOG_SIGNALDIRECTION);
-            Assert.IsNotNull(a.SignalDirection);
-            a.GetProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
-            Assert.IsNotNull(a.MeasurementType);
-            a.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(a.Mrid);
+            this.a1.GetProperty(ModelCode.ANALOG_MAXVALUE);
+            Assert.IsNotNull(this.a1.MaxValue);
+            this.a1.GetProperty(ModelCode.ANALOG_MINVALUE);
+            Assert.IsNotNull(this.a1.MinValue);
+            this.a1.GetProperty(ModelCode.ANALOG_NORMALVALUE);
+            Assert.IsNotNull(this.a1.NormalValue);
+            this.a1.GetProperty(ModelCode.ANALOG_SIGNALDIRECTION);
+            Assert.IsNotNull(this.a1.SignalDirection);
+            this.a1.GetProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
+            Assert.IsNotNull(this.a1.MeasurementType);
+            this.a1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.a1.Mrid);
         }
 
         /// <summary>
         /// Unit test for Analog SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "AnalogSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            Analog a = new Analog(1623);
-            a.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(a.Mrid);
-            a.SetProperty(new Property(ModelCode.MEASUREMENT_MEASUREMENTTYPE));
-            Assert.IsNotNull(a.MeasurementType);
-            a.SetProperty(new Property(ModelCode.ANALOG_MAXVALUE));
-            Assert.IsNotNull(a.MaxValue);
-            a.SetProperty(new Property(ModelCode.ANALOG_MINVALUE));
-            Assert.IsNotNull(a.MinValue);
-            a.SetProperty(new Property(ModelCode.ANALOG_NORMALVALUE));
-            Assert.IsNotNull(a.NormalValue);
-            a.SetProperty(new Property(ModelCode.ANALOG_SIGNALDIRECTION));
-            Assert.IsNotNull(a.SignalDirection);
+            this.a1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.a1.Mrid);
+            this.a1.SetProperty(new Property(ModelCode.MEASUREMENT_MEASUREMENTTYPE));
+            Assert.IsNotNull(this.a1.MeasurementType);
+            this.a1.SetProperty(new Property(ModelCode.ANALOG_MAXVALUE));
+            Assert.IsNotNull(this.a1.MaxValue);
+            this.a1.SetProperty(new Property(ModelCode.ANALOG_MINVALUE));
+            Assert.IsNotNull(this.a1.MinValue);
+            this.a1.SetProperty(new Property(ModelCode.ANALOG_NORMALVALUE));
+            Assert.IsNotNull(this.a1.NormalValue);
+            this.a1.SetProperty(new Property(ModelCode.ANALOG_SIGNALDIRECTION));
+            Assert.IsNotNull(this.a1.SignalDirection);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace DataModelTest
     using EMS.Services.NetworkModelService.DataModel.Core;
     using EMS.Services.NetworkModelService.DataModel.Meas;
     using NUnit.Framework;
-    
+
     /// <summary>
     /// Class for unit testing Measurement
     /// </summary>
@@ -19,104 +19,173 @@ namespace DataModelTest
     public class MeasurementTest
     {
         /// <summary>
+        /// Instance of Measurement
+        /// </summary>
+        private Measurement m1;
+
+        /// <summary>
+        /// Instance of Measurement
+        /// </summary>
+        private Measurement m2;
+
+        /// <summary>
+        /// Instance of Measurement
+        /// </summary>
+        private Measurement m3;
+
+        /// <summary>
+        /// Instance of Measurement
+        /// </summary>
+        private Measurement m4;
+
+        /// <summary>
+        /// Instance of Measurement
+        /// </summary>
+        private Measurement m5;
+
+        /// <summary>
+        /// Container for measurementType
+        /// </summary>
+        private string measurementType1;
+
+        /// <summary>
+        /// Container for measurementType
+        /// </summary>
+        private string measurementType2;
+
+        /// <summary>
+        /// Container for unitSymbol
+        /// </summary>
+        private UnitSymbol unitSymbol1;
+
+        /// <summary>
+        /// Container for unitSymbol
+        /// </summary>
+        private UnitSymbol unitSymbol2;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.measurementType1 = "measurementType1";
+            this.measurementType2 = "measurementType2";
+            this.unitSymbol1 = UnitSymbol.A;
+            this.unitSymbol2 = UnitSymbol.deg;
+            this.m1 = new Measurement(this.globalId1);
+            this.m2 = new Measurement(this.globalId1);
+            this.m2.MeasurementType = this.measurementType1;
+            this.m2.UnitSymbol = this.unitSymbol1;
+            this.m2.PowerSystemResource = 1;
+            this.m3 = new Measurement(this.globalId1);
+            this.m3.MeasurementType = this.measurementType2;
+            this.m3.UnitSymbol = this.unitSymbol2;
+            this.m4 = new Measurement(this.globalId2);
+            this.m4.MeasurementType = this.measurementType2;
+            this.m4.UnitSymbol = this.unitSymbol2;
+            this.m4.PowerSystemResource = 2;
+            this.m5 = null;
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "MeasurementConstructor")]
+        public void Constructor()
         {
-            Measurement m = new Measurement(globalId);
+            Measurement m = new Measurement(this.globalId1);
             Assert.IsNotNull(m);
         }
 
         /// <summary>
         /// Unit test for Measurement MeasurementType setter
         /// </summary>
-        /// <param name="measurementType">measurementType property being set and asserted</param>
         [Test]
-        [TestCase("measurementType")]
-        public void MeasurementTypePropertySet(string measurementType)
+        [TestCase(TestName = "MeasurementMeasurementTypeProperty")]
+        public void MeasurementTypeProperty()
         {
-            Measurement m = new Measurement(1623);
-            m.MeasurementType = measurementType;
-            Assert.AreEqual(m.MeasurementType, measurementType);
-            Assert.IsNotEmpty(m.MeasurementType);
-            Assert.IsNotNull(m.MeasurementType);
+            this.m1.MeasurementType = this.measurementType1;
+            Assert.AreEqual(this.m1.MeasurementType, this.measurementType1);
+            Assert.IsNotEmpty(this.m1.MeasurementType);
+            Assert.IsNotNull(this.m1.MeasurementType);
         }
 
         /// <summary>
         /// Unit test for Measurement UnitSymbol setter
         /// </summary>
-        /// <param name="unitSymbol">unitSymbol property being set and asserted</param>
         [Test]
-        [TestCase(UnitSymbol.A)]
-        public void UnitSymbolPropertySet(UnitSymbol unitSymbol)
+        [TestCase(TestName = "MeasurementUnitSymbolProperty")]
+        public void UnitSymbolProperty()
         {
-            Measurement m = new Measurement(1623);
-            m.UnitSymbol = unitSymbol;
-            Assert.AreEqual(m.UnitSymbol, unitSymbol);
-            Assert.IsNotNull(m.UnitSymbol);
+            this.m1.UnitSymbol = this.unitSymbol1;
+            Assert.AreEqual(this.m1.UnitSymbol, this.unitSymbol1);
+            Assert.IsNotNull(this.m1.UnitSymbol);
         }
 
         /// <summary>
         /// Unit test for Measurement PowerSystemResource setter
         /// </summary>
         [Test]
-        public void PowerSystemResourcePropertySet()
+        [TestCase(TestName = "MeasurementPowerSystemResourceProperty")]
+        public void PowerSystemResourceProperty()
         {
-            Measurement m = new Measurement(1623);
             PowerSystemResource psr = new PowerSystemResource(1);
-            m.PowerSystemResource = 1;
-            Assert.IsNotNull(m.PowerSystemResource);
+            this.m1.PowerSystemResource = 1;
+            Assert.IsNotNull(this.m1.PowerSystemResource);
         }
 
         /// <summary>
         /// Unit test for Measurement Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "MeasurementEqualsMethod")]
+        public void EqualsMethod()
         {
-            Measurement m1 = new Measurement(globalId1);
-            Measurement m2 = new Measurement(globalId1);
-            Measurement m3 = null;
-            Measurement m4 = new Measurement(globalId1);
-            Measurement m5 = new Measurement(globalId2);
-            PowerSystemResource psr1 = new PowerSystemResource(1);
-            PowerSystemResource psr2 = new PowerSystemResource(2);
-            m1.MeasurementType = "measurementType1";
-            m1.UnitSymbol = UnitSymbol.A;
-            m1.PowerSystemResource = 1;
-            m2.MeasurementType = "measurementType1";
-            m2.UnitSymbol = UnitSymbol.A;
-            m2.PowerSystemResource = 1;
-            m4.MeasurementType = "measurementType2";
-            m4.UnitSymbol = UnitSymbol.deg;
-            m4.PowerSystemResource = 2;
-            m5.MeasurementType = "measurementType2";
-            m5.UnitSymbol = UnitSymbol.deg;
-            m5.PowerSystemResource = 2;
-            bool resultT = m1.Equals(m2);
-            Assert.IsTrue(resultT);
-            bool resultF = m1.Equals(m3);
-            Assert.IsFalse(resultF);
-            resultF = m1.Equals(m4);
-            Assert.IsFalse(resultF);
-            resultF = m1.Equals(m5);
-            Assert.IsFalse(resultF);
+            this.m1.MeasurementType = this.measurementType1;
+            this.m1.UnitSymbol = this.unitSymbol1;
+            this.m1.PowerSystemResource = 1;
+            this.resultT = this.m1.Equals(this.m2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.m1.Equals(this.m3);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.m1.Equals(this.m4);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.m1.Equals(this.m5);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Measurement GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "MeasurementGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            Measurement m = new Measurement(1623);
-            int result = m.GetHashCode();
+            int result = this.m1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -124,70 +193,71 @@ namespace DataModelTest
         /// Unit test for Measurement HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "MeasurementHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            Measurement m = new Measurement(1623);
-            bool resultT = m.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = m.HasProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
-            Assert.IsTrue(resultT);
-            resultT = m.HasProperty(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE);
-            Assert.IsTrue(resultT);
-            resultT = m.HasProperty(ModelCode.MEASUREMENT_UNITSYMBOL);
-            Assert.IsTrue(resultT);
-            bool resultF = m.HasProperty(ModelCode.MEASUREMENT);
-            Assert.IsFalse(resultF);
+            this.resultT = this.m1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.m1.HasProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.m1.HasProperty(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.m1.HasProperty(ModelCode.MEASUREMENT_UNITSYMBOL);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.m1.HasProperty(ModelCode.MEASUREMENT);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Measurement GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "MeasurementGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            Measurement m = new Measurement(1623);
-            m.GetProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
-            Assert.IsNotNull(m.MeasurementType);
-            m.GetProperty(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE);
-            Assert.IsNotNull(m.PowerSystemResource);
-            m.GetProperty(ModelCode.MEASUREMENT_UNITSYMBOL);
-            Assert.IsNotNull(m.UnitSymbol);
-            m.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(m.Mrid);
+            this.m1.GetProperty(ModelCode.MEASUREMENT_MEASUREMENTTYPE);
+            Assert.IsNotNull(this.m1.MeasurementType);
+            this.m1.GetProperty(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE);
+            Assert.IsNotNull(this.m1.PowerSystemResource);
+            this.m1.GetProperty(ModelCode.MEASUREMENT_UNITSYMBOL);
+            Assert.IsNotNull(this.m1.UnitSymbol);
+            this.m1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.m1.Mrid);
         }
 
         /// <summary>
         /// Unit test for Measurement SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "MeasurementSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            Measurement m = new Measurement(1623);
-            m.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(m.Mrid);
-            m.SetProperty(new Property(ModelCode.MEASUREMENT_MEASUREMENTTYPE));
-            Assert.IsNotNull(m.MeasurementType);
-            m.SetProperty(new Property(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE));
-            Assert.IsNotNull(m.PowerSystemResource);
-            m.SetProperty(new Property(ModelCode.MEASUREMENT_UNITSYMBOL));
-            Assert.IsNotNull(m.UnitSymbol);
+            this.m1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.m1.Mrid);
+            this.m1.SetProperty(new Property(ModelCode.MEASUREMENT_MEASUREMENTTYPE));
+            Assert.IsNotNull(this.m1.MeasurementType);
+            this.m1.SetProperty(new Property(ModelCode.MEASUREMENT_POWERSYSTEMRESOURCE));
+            Assert.IsNotNull(this.m1.PowerSystemResource);
+            this.m1.SetProperty(new Property(ModelCode.MEASUREMENT_UNITSYMBOL));
+            Assert.IsNotNull(this.m1.UnitSymbol);
         }
 
         /// <summary>
         /// Unit test for Measurement GetReferences method
         /// </summary>
         [Test]
-        public void GetReferencesPropertyMethod()
+        [TestCase(TestName = "MeasurementGetReferencesMethod")]
+        public void GetReferencesMethod()
         {
-            Measurement m = new Measurement(1623);
             List<long> l = new List<long>();
             l.Add(10);
             Dictionary<ModelCode, List<long>> d = new Dictionary<ModelCode, List<long>>();
             d.Add(ModelCode.POWERSYSTEMRESOURCE, l);
-            m.GetReferences(d, TypeOfReference.Both);
-            PowerSystemResource psr = new PowerSystemResource(10);
-            m.PowerSystemResource = 10;
-            m.GetReferences(d, TypeOfReference.Reference);
+            this.m1 = new Measurement(this.globalId1);
+            this.m1.GetReferences(d, TypeOfReference.Both);
+            this.m1.PowerSystemResource = 100;
+            this.m1.GetReferences(d, TypeOfReference.Reference);
+            this.m1.GetReferences(d, TypeOfReference.Both);
         }
     }
 }

@@ -1,9 +1,15 @@
-﻿using EMS.Common;
-using System;
-using System.Collections.Generic;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IdentifiedObject.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Services.NetworkModelService.DataModel.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using EMS.Common;
+
     public enum TypeOfReference : short
     {
         Reference = 1,
@@ -11,6 +17,9 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         Both = 3,
     }
 
+    /// <summary>
+    /// IdentifiedObject class
+    /// </summary>
     public class IdentifiedObject
     {
         /// <summary>
@@ -33,24 +42,23 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         /// </summary>
         private string mrid = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IdentifiedObject" /> class
+        /// </summary>
+        /// <param name="globalId">globalId of the entity</param>
         public IdentifiedObject(long globalId)
         {
             this.globalId = globalId;
         }
 
         /// <summary>
-        /// Gets or sets global id of the entity (identified object).
+        /// Gets global id of the entity (identified object).
         /// </summary>
         public long GlobalId
         {
             get
             {
-                return globalId;
-            }
-
-            set
-            {
-                globalId = value;
+                return this.globalId;
             }
         }
 
@@ -61,12 +69,12 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         {
             get
             {
-                return name;
+                return this.name;
             }
 
             set
             {
-                name = value;
+                this.name = value;
             }
         }
 
@@ -75,8 +83,8 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         /// </summary>
         public string Mrid
         {
-            get { return mrid; }
-            set { mrid = value; }
+            get { return this.mrid; }
+            set { this.mrid = value; }
         }
 
         public static bool operator ==(IdentifiedObject x, IdentifiedObject y)
@@ -109,7 +117,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             else
             {
                 IdentifiedObject io = (IdentifiedObject)x;
-                return ((io.GlobalId == this.GlobalId) && (io.name == this.name) && (io.mrid == this.mrid));
+                return (io.GlobalId == this.GlobalId) && (io.name == this.name) && (io.mrid == this.mrid);
             }
         }
 
@@ -139,15 +147,15 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             switch (property.Id)
             {
                 case ModelCode.IDENTIFIEDOBJECT_GID:
-                    property.SetValue(globalId);
+                    property.SetValue(this.globalId);
                     break;
 
                 case ModelCode.IDENTIFIEDOBJECT_NAME:
-                    property.SetValue(name);
+                    property.SetValue(this.name);
                     break;
 
                 case ModelCode.IDENTIFIEDOBJECT_MRID:
-                    property.SetValue(mrid);
+                    property.SetValue(this.mrid);
                     break;
 
                 default:
@@ -162,11 +170,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             switch (property.Id)
             {
                 case ModelCode.IDENTIFIEDOBJECT_NAME:
-                    name = property.AsString();
+                    this.name = property.AsString();
                     break;
 
                 case ModelCode.IDENTIFIEDOBJECT_MRID:
-                    mrid = property.AsString();
+                    this.mrid = property.AsString();
                     break;
 
                 default:
@@ -213,21 +221,21 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
 
         public void GetReferences(Dictionary<ModelCode, List<long>> references)
         {
-            GetReferences(references, TypeOfReference.Target | TypeOfReference.Reference);
+            this.GetReferences(references, TypeOfReference.Target | TypeOfReference.Reference);
         }
 
         public ResourceDescription GetAsResourceDescription(bool onlySettableAttributes)
         {
-            ResourceDescription rd = new ResourceDescription(globalId);
+            ResourceDescription rd = new ResourceDescription(this.globalId);
             List<ModelCode> props = new List<ModelCode>();
 
             if (onlySettableAttributes == true)
             {
-                props = resourcesDescs.GetAllSettablePropertyIdsForEntityId(globalId);
+                props = resourcesDescs.GetAllSettablePropertyIdsForEntityId(this.globalId);
             }
             else
             {
-                props = resourcesDescs.GetAllPropertyIdsForEntityId(globalId);
+                props = resourcesDescs.GetAllPropertyIdsForEntityId(this.globalId);
             }
 
             return rd;
@@ -235,11 +243,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
 
         public ResourceDescription GetAsResourceDescription(List<ModelCode> propIds)
         {
-            ResourceDescription rd = new ResourceDescription(globalId);
+            ResourceDescription rd = new ResourceDescription(this.globalId);
 
             for (int i = 0; i < propIds.Count; i++)
             {
-                rd.AddProperty(GetProperty(propIds[i]));
+                rd.AddProperty(this.GetProperty(propIds[i]));
             }
 
             return rd;
@@ -248,7 +256,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
         public virtual Property GetProperty(ModelCode propId)
         {
             Property property = new Property(propId);
-            GetProperty(property);
+            this.GetProperty(property);
             return property;
         }
 
