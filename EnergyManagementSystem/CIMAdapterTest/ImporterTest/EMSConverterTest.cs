@@ -234,6 +234,69 @@ namespace CIMAdapterTest.ImporterTest
 			Assert.AreEqual(rdAnalog.GetProperty(ModelCode.ANALOG_SIGNALDIRECTION).AsEnum(), 0);
 		}
 
+		[Test]
+		[TestCase(TestName ="GetEMSFuelTypeTest")]
+		public void GetEMSFuelTypeTest()
+		{
+			Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.coal), EmsFuelType.coal);
+			Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.hydro), EmsFuelType.hydro);
+			Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.oil), EmsFuelType.oli);
+			Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.solar), EmsFuelType.solar);
+			Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.wind), EmsFuelType.wind);
+		}
+
+		[Test]
+		[TestCase(TestName = "GetSignalDirectionTest")]
+		public void GetSignalDirectionTest()
+		{
+			Assert.AreEqual(EMSConverter.GetSignalDirection(EMS.SignalDirection.Read), SignalDirection.Read);
+			Assert.AreEqual(EMSConverter.GetSignalDirection(EMS.SignalDirection.ReadWrite), SignalDirection.ReadWrite);
+			Assert.AreEqual(EMSConverter.GetSignalDirection(EMS.SignalDirection.Write), SignalDirection.Write);
+		}
+
+		[Test]
+		[TestCase(TestName = "GetSynchronousMachineOperatingModeTest")]
+		public void GetSynchronousMachineOperatingModeTest()
+		{
+			Assert.AreEqual(EMSConverter.GetSynchronousMachineOperatingMode(EMS.SynchronousMachineOperatingMode.condenser), SynchronousMachineOperatingMode.condenser);
+			Assert.AreEqual(EMSConverter.GetSynchronousMachineOperatingMode(EMS.SynchronousMachineOperatingMode.generator), SynchronousMachineOperatingMode.generator);
+		}
+
+		[Test]
+		[TestCase(TestName = "GetUnitSymbolTest")]
+		public void GetUnitSymbolTest()
+		{
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.A), UnitSymbol.A);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.deg), UnitSymbol.deg);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.degC), UnitSymbol.degC);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.F), UnitSymbol.F);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.g), UnitSymbol.g);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.h), UnitSymbol.h);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.H), UnitSymbol.H);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.Hz), UnitSymbol.Hz);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.J), UnitSymbol.J);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.m), UnitSymbol.m);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.m2), UnitSymbol.m2);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.m3), UnitSymbol.m3);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.min), UnitSymbol.min);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.N), UnitSymbol.N);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.none), UnitSymbol.none);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.ohm), UnitSymbol.ohm);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.Pa), UnitSymbol.Pa);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.rad), UnitSymbol.rad);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.s), UnitSymbol.s);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.S), UnitSymbol.S);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.V), UnitSymbol.V);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.VA), UnitSymbol.VA);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.VAh), UnitSymbol.VAh);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.VAr), UnitSymbol.VAr);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.VArh), UnitSymbol.VArh);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.W), UnitSymbol.W);
+			Assert.AreEqual(EMSConverter.GetUnitSymbol(EMS.UnitSymbol.Wh), UnitSymbol.Wh);
+
+		}
+
+
 		#endregion Tests
 	}
 }
