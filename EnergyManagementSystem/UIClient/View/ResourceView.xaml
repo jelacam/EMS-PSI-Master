@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="UIClient.View.ResourceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:UIClient.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="_this">
+	<Grid Background="LightGray" >
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Margin="5">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<StackPanel Grid.Row="0" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
+				<TextBlock Text="Type"/>
+				<TextBlock Text="{Binding Type,ElementName=_this}"/>
+			</StackPanel>
+			<StackPanel Grid.Row="1" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
+				<TextBlock Text="Global Id"/>
+				<TextBlock Text="{Binding RelativeSource={RelativeSource 
+                            AncestorType=UserControl}, Path=ResourceDesc.Id}"/>
+			</StackPanel>
+		</Grid>
+
+		<Grid Grid.Row="1" Margin="5">
+			<ListView ItemsSource="{Binding Path = Properties,ElementName=_this}">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<TextBlock Text="{Binding Type}"></TextBlock>
+							<TextBlock Text="{Binding Id}"></TextBlock>
+							<TextBlock>aaaa</TextBlock>
+						</StackPanel>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+	</Grid>
+</UserControl>
