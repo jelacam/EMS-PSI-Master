@@ -9,6 +9,9 @@
 *.userosscache
 *.sln.docstates
 
+EnergyManagementSystem/adapter_log.txt
+*.data
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -24,7 +27,7 @@ bld/
 [Bb]in64/
 [Oo]bj/
 [Ll]og/
-
+.vs/
 # Visual Studio 2015 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
