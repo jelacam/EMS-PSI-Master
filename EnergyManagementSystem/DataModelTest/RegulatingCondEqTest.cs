@@ -7,8 +7,6 @@
 namespace DataModelTest
 {
     using EMS.Common;
-    using EMS.Services.NetworkModelService.DataModel.Core;
-    using EMS.Services.NetworkModelService.DataModel.Meas;
     using EMS.Services.NetworkModelService.DataModel.Wires;
     using NUnit.Framework;
 
@@ -19,43 +17,85 @@ namespace DataModelTest
     public class RegulatingCondEqTest
     {
         /// <summary>
+        /// Instance of RegulatingCondEq
+        /// </summary>
+        private RegulatingCondEq rce1;
+
+        /// <summary>
+        /// Instance of RegulatingCondEq
+        /// </summary>
+        private RegulatingCondEq rce2;
+
+        /// <summary>
+        /// Instance of RegulatingCondEq
+        /// </summary>
+        private RegulatingCondEq rce3;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.rce1 = new RegulatingCondEq(this.globalId1);
+            this.rce2 = new RegulatingCondEq(this.globalId1);
+            this.rce3 = new RegulatingCondEq(this.globalId2);
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "EquipmentConstructor")]
+        public void Constructor()
         {
-            RegulatingCondEq rce = new RegulatingCondEq(globalId);
+            RegulatingCondEq rce = new RegulatingCondEq(this.globalId1);
             Assert.IsNotNull(rce);
         }
 
         /// <summary>
         /// Unit test for RegulatingCondEq Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "RegulatingCondEqEqualsMethod")]
+        public void EqualsMethod()
         {
-            RegulatingCondEq rce1 = new RegulatingCondEq(globalId1);
-            RegulatingCondEq rce2 = new RegulatingCondEq(globalId1);
-            RegulatingCondEq rce3 = new RegulatingCondEq(globalId2);
-            bool resultT = rce1.Equals(rce2);
-            Assert.IsTrue(resultT);
-            bool resultF = rce1.Equals(rce3);
-            Assert.IsFalse(resultF);
+            this.resultT = this.rce1.Equals(this.rce2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.rce1.Equals(this.rce3);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for RegulatingCondEq GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RegulatingCondEqGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            RegulatingCondEq rce = new RegulatingCondEq(1623);
-            int result = rce.GetHashCode();
+            int result = this.rce1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -63,39 +103,39 @@ namespace DataModelTest
         /// Unit test for RegulatingCondEq HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RegulatingCondEqHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            RegulatingCondEq rce = new RegulatingCondEq(1623);
-            bool resultT = rce.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = rce.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsTrue(resultT);
-            bool resultF = rce.HasProperty(ModelCode.REGULATINGCONDEQ);
-            Assert.IsFalse(resultF);
+            this.resultT = this.rce1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.rce1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.rce1.HasProperty(ModelCode.REGULATINGCONDEQ);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for RegulatingCondEq GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RegulatingCondEqGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            RegulatingCondEq rce = new RegulatingCondEq(1623);
-            rce.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(rce.Mrid);
-            rce.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsNotNull(rce.Measurements);
+            this.rce1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.rce1.Mrid);
+            this.rce1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsNotNull(this.rce1.Measurements);
         }
 
         /// <summary>
         /// Unit test for RegulatingCondEq SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RegulatingCondEqSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            RegulatingCondEq rce = new RegulatingCondEq(1623);
-            rce.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(rce.Mrid);
+            this.rce1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.rce1.Mrid);
         }
     }
 }

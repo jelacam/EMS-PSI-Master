@@ -17,66 +17,131 @@ namespace DataModelTest
     public class RotatingMachineTest
     {
         /// <summary>
+        /// Instance of RotatingMachine
+        /// </summary>
+        private RotatingMachine rm1;
+
+        /// <summary>
+        /// Instance of RotatingMachine
+        /// </summary>
+        private RotatingMachine rm2;
+
+        /// <summary>
+        /// Instance of RotatingMachine
+        /// </summary>
+        private RotatingMachine rm3;
+
+        /// <summary>
+        /// Instance of RotatingMachine
+        /// </summary>
+        private RotatingMachine rm4;
+
+        /// <summary>
+        /// Instance of RotatingMachine
+        /// </summary>
+        private RotatingMachine rm5;
+
+        /// <summary>
+        /// Container for ratedS
+        /// </summary>
+        private float ratedS1;
+
+        /// <summary>
+        /// Container for ratedS
+        /// </summary>
+        private float ratedS2;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.ratedS1 = 100;
+            this.ratedS2 = 1;
+            this.rm1 = new RotatingMachine(globalId1);
+            this.rm2 = new RotatingMachine(globalId1);
+            this.rm2.RatedS = this.ratedS1;
+            this.rm3 = new RotatingMachine(globalId1);
+            this.rm3.RatedS = this.ratedS2;
+            this.rm4 = new RotatingMachine(globalId2);
+            this.rm4.RatedS = this.ratedS1;
+            this.rm5 = null;
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "RotatingMachineConstructor")]
+        public void Constructor()
         {
-            RotatingMachine rm = new RotatingMachine(globalId);
+            RotatingMachine rm = new RotatingMachine(this.globalId1);
             Assert.IsNotNull(rm);
         }
 
         /// <summary>
         /// Unit test for RotatingMachine RatedS setter
         /// </summary>
-        /// <param name="ratedS">ratedS property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void RatedSPropertySet(float ratedS)
+        [TestCase(TestName = "RotatingMachineRatedSProperty")]
+        public void RatedSProperty()
         {
-            RotatingMachine rm = new RotatingMachine(1623);
-            rm.RatedS = ratedS;
-            Assert.AreEqual(rm.RatedS, ratedS);
+            this.rm1.RatedS = this.ratedS1;
+            Assert.AreEqual(this.rm1.RatedS, this.ratedS1);
         }
 
         /// <summary>
         /// Unit test for RotatingMachine Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "RotatingMachineEqualsMethod")]
+        public void EqualsMethod()
         {
-            RotatingMachine rm1 = new RotatingMachine(globalId1);
-            RotatingMachine rm2 = new RotatingMachine(globalId1);
-            RotatingMachine rm3 = null;
-            RotatingMachine rm4 = new RotatingMachine(globalId1);
-            RotatingMachine rm5 = new RotatingMachine(globalId2);
-            rm1.RatedS = 10;
-            rm2.RatedS = 10;
-            rm4.RatedS = 100;
-            rm5.RatedS = 10;
-            bool resultT = rm1.Equals(rm2);
-            Assert.IsTrue(resultT);
-            bool resultF = rm1.Equals(rm3);
-            Assert.IsFalse(resultF);
-            resultF = rm1.Equals(rm4);
-            Assert.IsFalse(resultF);
-            resultF = rm1.Equals(rm5);
-            Assert.IsFalse(resultF);
+            this.rm1.RatedS = this.ratedS1;
+            this.rm2.RatedS = this.ratedS1;
+            this.rm3.RatedS = this.ratedS2;
+            this.rm4.RatedS = this.ratedS1;
+            this.resultT = this.rm1.Equals(this.rm2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.rm1.Equals(this.rm3);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.rm1.Equals(this.rm4);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.rm1.Equals(this.rm5);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for RotatingMachine GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RotatingMachineGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            RotatingMachine rm = new RotatingMachine(1623);
-            int result = rm.GetHashCode();
+            int result = this.rm1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -84,45 +149,45 @@ namespace DataModelTest
         /// Unit test for RotatingMachine HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RotatingMachineHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            RotatingMachine rm = new RotatingMachine(1623);
-            bool resultT = rm.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = rm.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsTrue(resultT);
-            resultT = rm.HasProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsTrue(resultT);
-            bool resultF = rm.HasProperty(ModelCode.ROTATINGMACHINE);
-            Assert.IsFalse(resultF);
+            this.resultT = this.rm1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.rm1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.rm1.HasProperty(ModelCode.ROTATINGMACHINE_RATEDS);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.rm1.HasProperty(ModelCode.ROTATINGMACHINE);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for RotatingMachine GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RotatingMachineGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            RotatingMachine rm = new RotatingMachine(1623);
-            rm.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(rm.Mrid);
-            rm.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsNotNull(rm.Measurements);
-            rm.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsNotNull(rm.RatedS);
+            this.rm1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.rm1.Mrid);
+            this.rm1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsNotNull(this.rm1.Measurements);
+            this.rm1.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS);
+            Assert.IsNotNull(this.rm1.RatedS);
         }
 
         /// <summary>
         /// Unit test for RotatingMachine SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "RotatingMachineSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            RotatingMachine rm = new RotatingMachine(1623);
-            rm.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(rm.Mrid);
-            rm.SetProperty(new Property(ModelCode.ROTATINGMACHINE_RATEDS));
-            Assert.IsNotNull(rm.RatedS);
+            this.rm1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.rm1.Mrid);
+            this.rm1.SetProperty(new Property(ModelCode.ROTATINGMACHINE_RATEDS));
+            Assert.IsNotNull(this.rm1.RatedS);
         }
     }
 }

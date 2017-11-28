@@ -8,7 +8,6 @@ namespace DataModelTest
 {
     using EMS.Common;
     using EMS.Services.NetworkModelService.DataModel.Core;
-    using EMS.Services.NetworkModelService.DataModel.Meas;
     using NUnit.Framework;
 
     /// <summary>
@@ -18,43 +17,85 @@ namespace DataModelTest
     public class EquipmentTest
     {
         /// <summary>
+        /// Instance of Equipment
+        /// </summary>
+        private Equipment e1;
+
+        /// <summary>
+        /// Instance of Equipment
+        /// </summary>
+        private Equipment e2;
+
+        /// <summary>
+        /// Instance of Equipment
+        /// </summary>
+        private Equipment e3;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.e1 = new Equipment(this.globalId1);
+            this.e2 = new Equipment(this.globalId1);
+            this.e3 = new Equipment(this.globalId2);
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "EquipmentConstructor")]
+        public void Constructor()
         {
-            Equipment e = new Equipment(globalId);
+            Equipment e = new Equipment(this.globalId1);
             Assert.IsNotNull(e);
         }
 
         /// <summary>
         /// Unit test for Equipment Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "EquipmentEqualsMethod")]
+        public void EqualsMethod()
         {
-            Equipment e1 = new Equipment(globalId1);
-            Equipment e2 = new Equipment(globalId1);
-            Equipment e3 = new Equipment(globalId2);
-            bool resultT = e1.Equals(e2);
-            Assert.IsTrue(resultT);
-            bool resultF = e1.Equals(e3);
-            Assert.IsFalse(resultF);
+            this.resultT = this.e1.Equals(this.e2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.e1.Equals(this.e3);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Equipment GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EquipmentGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            Equipment e = new Equipment(1623);
-            int result = e.GetHashCode();
+            int result = this.e1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -62,39 +103,39 @@ namespace DataModelTest
         /// Unit test for Equipment HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EquipmentHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            Equipment e = new Equipment(1623);
-            bool resultT = e.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = e.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsTrue(resultT);
-            bool resultF = e.HasProperty(ModelCode.EQUIPMENT);
-            Assert.IsFalse(resultF);
+            this.resultT = this.e1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.e1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.e1.HasProperty(ModelCode.EQUIPMENT);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for Equipment GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EquipmentGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            Equipment e = new Equipment(1623);
-            e.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(e.Mrid);
-            e.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsNotNull(e.Measurements);
+            this.e1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.e1.Mrid);
+            this.e1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsNotNull(this.e1.Measurements);
         }
 
         /// <summary>
         /// Unit test for Equipment SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EquipmentSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            Equipment e = new Equipment(1623);
-            e.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(e.Mrid);
+            this.e1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.e1.Mrid);
         }
     }
 }

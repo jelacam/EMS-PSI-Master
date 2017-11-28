@@ -17,119 +17,211 @@ namespace DataModelTest
     public class SynchronousMachineTest
     {
         /// <summary>
+        /// Instance of SynchronousMachine
+        /// </summary>
+        private SynchronousMachine sm1;
+
+        /// <summary>
+        /// Instance of SynchronousMachine
+        /// </summary>
+        private SynchronousMachine sm2;
+
+        /// <summary>
+        /// Instance of SynchronousMachine
+        /// </summary>
+        private SynchronousMachine sm3;
+
+        /// <summary>
+        /// Instance of SynchronousMachine
+        /// </summary>
+        private SynchronousMachine sm4;
+
+        /// <summary>
+        /// Instance of SynchronousMachine
+        /// </summary>
+        private SynchronousMachine sm5;
+
+        /// <summary>
+        /// Container for maxQ
+        /// </summary>
+        private float maxQ1;
+
+        /// <summary>
+        /// Container for maxQ
+        /// </summary>
+        private float maxQ2;
+
+        /// <summary>
+        /// Container for minQ
+        /// </summary>
+        private float minQ1;
+
+        /// <summary>
+        /// Container for minQ
+        /// </summary>
+        private float minQ2;
+
+        /// <summary>
+        /// Container for fuelType
+        /// </summary>
+        private EmsFuelType fuelType1;
+
+        /// <summary>
+        /// Container for fuelType
+        /// </summary>
+        private EmsFuelType fuelType2;
+
+        /// <summary>
+        /// Container for operatingMode
+        /// </summary>
+        private SynchronousMachineOperatingMode operatingMode1;
+
+        /// <summary>
+        /// Container for operatingMode
+        /// </summary>
+        private SynchronousMachineOperatingMode operatingMode2;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.maxQ1 = 100;
+            this.maxQ2 = 10;
+            this.minQ1 = 10;
+            this.minQ2 = 1;
+            this.fuelType1 = EmsFuelType.coal;
+            this.fuelType2 = EmsFuelType.hydro;
+            this.operatingMode1 = SynchronousMachineOperatingMode.condenser;
+            this.operatingMode2 = SynchronousMachineOperatingMode.generator;
+            this.sm1 = new SynchronousMachine(this.globalId1);
+            this.sm2 = new SynchronousMachine(this.globalId1);
+            this.sm2.MaxQ = this.maxQ1;
+            this.sm2.MinQ = this.minQ1;
+            this.sm2.FuelType = this.fuelType1;
+            this.sm2.OperatingMode = this.operatingMode1;
+            this.sm3 = new SynchronousMachine(this.globalId1);
+            this.sm3.MaxQ = this.maxQ2;
+            this.sm3.MinQ = this.minQ2;
+            this.sm3.FuelType = this.fuelType2;
+            this.sm3.OperatingMode = this.operatingMode2;
+            this.sm4 = new SynchronousMachine(this.globalId2);
+            this.sm4.MaxQ = this.maxQ1;
+            this.sm4.MinQ = this.minQ1;
+            this.sm4.FuelType = this.fuelType1;
+            this.sm4.OperatingMode = this.operatingMode1;
+            this.sm5 = null;
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "SynchronousMachineConstructor")]
+        public void Constructor()
         {
-            SynchronousMachine sm = new SynchronousMachine(globalId);
+            SynchronousMachine sm = new SynchronousMachine(this.globalId1);
             Assert.IsNotNull(sm);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine FuelType setter
         /// </summary>
-        /// <param name="fuelType">fuelType property being set and asserted</param>
         [Test]
-        [TestCase(EmsFuelType.coal)]
-        public void FuelTypePropertySet(EmsFuelType fuelType)
+        [TestCase(TestName = "SynchronousMachineFuelTypeProperty")]
+        public void FuelTypeProperty()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.FuelType = fuelType;
-            Assert.AreEqual(sm.FuelType, fuelType);
-            Assert.IsNotNull(sm.FuelType);
+            this.sm1.FuelType = this.fuelType1;
+            Assert.AreEqual(this.sm1.FuelType, this.fuelType1);
+            Assert.IsNotNull(this.sm1.FuelType);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine MaxQ setter
         /// </summary>
-        /// <param name="maxQ">maxQ property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void MaxQPropertySet(float maxQ)
+        [TestCase(TestName = "SynchronousMachineMaxQProperty")]
+        public void MaxQProperty()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.MaxQ = maxQ;
-            Assert.AreEqual(sm.MaxQ, maxQ);
+            this.sm1.MaxQ = this.maxQ1;
+            Assert.AreEqual(this.sm1.MaxQ, this.maxQ1);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine MinQ setter
         /// </summary>
-        /// <param name="minQ">minQ property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void MinQPropertySet(float minQ)
+        [TestCase(TestName = "SynchronousMachineMinQProperty")]
+        public void MinQProperty()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.MinQ = minQ;
-            Assert.AreEqual(sm.MinQ, minQ);
+            this.sm1.MinQ = this.minQ1;
+            Assert.AreEqual(this.sm1.MinQ, this.minQ1);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine OperatingMode setter
         /// </summary>
-        /// <param name="operatingMode">operatingMode property being set and asserted</param>
         [Test]
-        [TestCase(SynchronousMachineOperatingMode.generator)]
-        public void OperatingModePropertySet(SynchronousMachineOperatingMode operatingMode)
+        [TestCase(TestName = "SynchronousMachineOperatingModeProperty")]
+        public void OperatingModeProperty()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.OperatingMode = operatingMode;
-            Assert.AreEqual(sm.OperatingMode, operatingMode);
-            Assert.IsNotNull(sm.OperatingMode);
+            this.sm1.OperatingMode = this.operatingMode1;
+            Assert.AreEqual(this.sm1.OperatingMode, this.operatingMode1);
+            Assert.IsNotNull(this.sm1.OperatingMode);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "SynchronousMachineEqualsMethod")]
+        public void EqualsMethod()
         {
-            SynchronousMachine sm1 = new SynchronousMachine(globalId1);
-            SynchronousMachine sm2 = new SynchronousMachine(globalId1);
-            SynchronousMachine sm3 = null;
-            SynchronousMachine sm4 = new SynchronousMachine(globalId1);
-            SynchronousMachine sm5 = new SynchronousMachine(globalId2);
-            sm1.FuelType = EmsFuelType.coal;
-            sm1.MaxQ = 10;
-            sm1.MinQ = 1;
-            sm1.OperatingMode = SynchronousMachineOperatingMode.generator;
-            sm2.FuelType = EmsFuelType.coal;
-            sm2.MaxQ = 10;
-            sm2.MinQ = 1;
-            sm2.OperatingMode = SynchronousMachineOperatingMode.generator;
-            sm4.FuelType = EmsFuelType.hydro;
-            sm4.MaxQ = 100;
-            sm4.MinQ = 10;
-            sm4.OperatingMode = SynchronousMachineOperatingMode.condenser;
-            sm5.FuelType = EmsFuelType.coal;
-            sm5.MaxQ = 10;
-            sm5.MinQ = 1;
-            sm5.OperatingMode = SynchronousMachineOperatingMode.generator;
-            bool resultT = sm1.Equals(sm2);
-            Assert.IsTrue(resultT);
-            bool resultF = sm1.Equals(sm3);
-            Assert.IsFalse(resultF);
-            resultF = sm1.Equals(sm4);
-            Assert.IsFalse(resultF);
-            resultF = sm1.Equals(sm5);
-            Assert.IsFalse(resultF);
+            this.sm1.FuelType = this.fuelType1;
+            this.sm1.MaxQ = this.maxQ1;
+            this.sm1.MinQ = this.minQ1;
+            this.sm1.OperatingMode = this.operatingMode1;
+            this.resultT = this.sm1.Equals(this.sm2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.sm1.Equals(this.sm3);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.sm1.Equals(this.sm4);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.sm1.Equals(this.sm5);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "SynchronousMachineGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            int result = sm.GetHashCode();
+            int result = this.sm1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -137,69 +229,69 @@ namespace DataModelTest
         /// Unit test for SynchronousMachine HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "SynchronousMachineHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            bool resultT = sm.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
-            Assert.IsTrue(resultT);
-            resultT = sm.HasProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
-            Assert.IsTrue(resultT);
-            bool resultF = sm.HasProperty(ModelCode.SYNCHRONOUSMACHINE);
-            Assert.IsFalse(resultF);
+            this.resultT = this.sm1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.ROTATINGMACHINE_RATEDS);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "SynchronousMachineGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(sm.Mrid);
-            sm.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsNotNull(sm.Measurements);
-            sm.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsNotNull(sm.RatedS);
-            sm.GetProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
-            Assert.IsNotNull(sm.FuelType);
-            sm.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
-            Assert.IsNotNull(sm.MaxQ);
-            sm.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
-            Assert.IsNotNull(sm.MinQ);
-            sm.GetProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
-            Assert.IsNotNull(sm.OperatingMode);
+            this.sm1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.sm1.Mrid);
+            this.sm1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsNotNull(this.sm1.Measurements);
+            this.sm1.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS);
+            Assert.IsNotNull(this.sm1.RatedS);
+            this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
+            Assert.IsNotNull(this.sm1.FuelType);
+            this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
+            Assert.IsNotNull(this.sm1.MaxQ);
+            this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
+            Assert.IsNotNull(this.sm1.MinQ);
+            this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
+            Assert.IsNotNull(this.sm1.OperatingMode);
         }
 
         /// <summary>
         /// Unit test for SynchronousMachine SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "SynchronousMachineSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            SynchronousMachine sm = new SynchronousMachine(1623);
-            sm.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(sm.Mrid);
-            sm.SetProperty(new Property(ModelCode.ROTATINGMACHINE_RATEDS));
-            Assert.IsNotNull(sm.RatedS);
-            sm.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE));
-            Assert.IsNotNull(sm.FuelType);
-            sm.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXQ));
-            Assert.IsNotNull(sm.MaxQ);
-            sm.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MINQ));
-            Assert.IsNotNull(sm.MinQ);
-            sm.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE));
-            Assert.IsNotNull(sm.OperatingMode);
+            this.sm1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.sm1.Mrid);
+            this.sm1.SetProperty(new Property(ModelCode.ROTATINGMACHINE_RATEDS));
+            Assert.IsNotNull(this.sm1.RatedS);
+            this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE));
+            Assert.IsNotNull(this.sm1.FuelType);
+            this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXQ));
+            Assert.IsNotNull(this.sm1.MaxQ);
+            this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MINQ));
+            Assert.IsNotNull(this.sm1.MinQ);
+            this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE));
+            Assert.IsNotNull(this.sm1.OperatingMode);
         }
     }
 }

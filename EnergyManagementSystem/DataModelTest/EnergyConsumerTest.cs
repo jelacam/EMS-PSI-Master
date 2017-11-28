@@ -17,117 +17,209 @@ namespace DataModelTest
     public class EnergyConsumerTest
     {
         /// <summary>
+        /// Instance of EnergyConsumer
+        /// </summary>
+        private EnergyConsumer ec1;
+
+        /// <summary>
+        /// Instance of EnergyConsumer
+        /// </summary>
+        private EnergyConsumer ec2;
+
+        /// <summary>
+        /// Instance of EnergyConsumer
+        /// </summary>
+        private EnergyConsumer ec3;
+
+        /// <summary>
+        /// Instance of EnergyConsumer
+        /// </summary>
+        private EnergyConsumer ec4;
+
+        /// <summary>
+        /// Instance of EnergyConsumer
+        /// </summary>
+        private EnergyConsumer ec5;
+
+        /// <summary>
+        /// Container for pFixed
+        /// </summary>
+        private float pFixed1;
+
+        /// <summary>
+        /// Container for pFixed
+        /// </summary>
+        private float pFixed2;
+
+        /// <summary>
+        /// Container for pFixedPct
+        /// </summary>
+        private float pFixedPct1;
+
+        /// <summary>
+        /// Container for pFixedPct
+        /// </summary>
+        private float pFixedPct2;
+
+        /// <summary>
+        /// Container for qFixed
+        /// </summary>
+        private float qFixed1;
+
+        /// <summary>
+        /// Container for qFixed
+        /// </summary>
+        private float qFixed2;
+
+        /// <summary>
+        /// Container for qFixedPct
+        /// </summary>
+        private float qFixedPct1;
+
+        /// <summary>
+        /// Container for qFixedPct
+        /// </summary>
+        private float qFixedPct2;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId1;
+
+        /// <summary>
+        /// Container for globalId
+        /// </summary>
+        private long globalId2;
+
+        /// <summary>
+        /// Container for true result
+        /// </summary>
+        private bool resultT;
+
+        /// <summary>
+        /// Container for false result
+        /// </summary>
+        private bool resultF;
+
+        /// <summary>
+        /// SetUp method
+        /// </summary>
+        [OneTimeSetUp]
+        public void SetupTest()
+        {
+            this.globalId1 = 1623;
+            this.globalId2 = 10;
+            this.pFixed1 = 100;
+            this.pFixed2 = 200;
+            this.pFixedPct1 = 10;
+            this.pFixedPct2 = 20;
+            this.qFixed1 = 10;
+            this.qFixed2 = 20;
+            this.qFixedPct1 = 1;
+            this.qFixedPct2 = 2;
+            this.ec1 = new EnergyConsumer(this.globalId1);
+            this.ec2 = new EnergyConsumer(this.globalId1);
+            this.ec2.PFixed = this.pFixed1;
+            this.ec2.PFixedPct = this.pFixedPct1;
+            this.ec2.QFixed = this.qFixed1;
+            this.ec2.QFixedPct = this.qFixedPct1;
+            this.ec3 = new EnergyConsumer(this.globalId1);
+            this.ec3.PFixed = this.pFixed2;
+            this.ec3.PFixedPct = this.pFixedPct2;
+            this.ec3.QFixed = this.qFixed2;
+            this.ec3.QFixedPct = this.qFixedPct2;
+            this.ec4 = new EnergyConsumer(this.globalId2);
+            this.ec4.PFixed = this.pFixed1;
+            this.ec4.PFixedPct = this.pFixedPct1;
+            this.ec4.QFixed = this.qFixed1;
+            this.ec4.QFixedPct = this.qFixedPct1;
+            this.ec5 = null;
+        }
+
+        /// <summary>
         /// Unit test for constructor with parameters
         /// </summary>
-        /// <param name="globalId">globalId for the constructor</param>
         [Test]
-        [TestCase(1623)]
-        public void Constructor(long globalId)
+        [TestCase(TestName = "EnergyConsumerConstructor")]
+        public void Constructor()
         {
-            EnergyConsumer ec = new EnergyConsumer(globalId);
+            EnergyConsumer ec = new EnergyConsumer(this.globalId1);
             Assert.IsNotNull(ec);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer PFixed setter
         /// </summary>
-        /// <param name="pFixed">pFixed property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void PFixedPropertySet(float pFixed)
+        [TestCase(TestName = "EnergyConsumerPFixedProperty")]
+        public void PFixedProperty()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.PFixed = pFixed;
-            Assert.AreEqual(ec.PFixed, pFixed);
+            this.ec1.PFixed = this.pFixed1;
+            Assert.AreEqual(this.ec1.PFixed, this.pFixed1);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer PFixedPct setter
         /// </summary>
-        /// <param name="pFixedPct">pFixedPct property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void PFixedPctPropertySet(float pFixedPct)
+        [TestCase(TestName = "EnergyConsumerPFixedPctProperty")]
+        public void PFixedPctProperty()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.PFixedPct = pFixedPct;
-            Assert.AreEqual(ec.PFixedPct, pFixedPct);
+            this.ec1.PFixedPct = this.pFixedPct1;
+            Assert.AreEqual(this.ec1.PFixedPct, this.pFixedPct1);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer QFixed setter
         /// </summary>
-        /// <param name="qFixed">qFixed property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void QFixedPropertySet(float qFixed)
+        [TestCase(TestName = "EnergyConsumerQFixedProperty")]
+        public void QFixedProperty()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.QFixed = qFixed;
-            Assert.AreEqual(ec.QFixed, qFixed);
+            this.ec1.QFixed = this.qFixed1;
+            Assert.AreEqual(this.ec1.QFixed, this.qFixed1);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer QFixedPct setter
         /// </summary>
-        /// <param name="qFixedPct">qFixedPct property being set and asserted</param>
         [Test]
-        [TestCase(10)]
-        public void QFixedPctPropertySet(float qFixedPct)
+        [TestCase(TestName = "EnergyConsumerQFixedPctProperty")]
+        public void QFixedPctProperty()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.QFixedPct = qFixedPct;
-            Assert.AreEqual(ec.QFixedPct, qFixedPct);
+            this.ec1.QFixedPct = this.qFixedPct1;
+            Assert.AreEqual(this.ec1.QFixedPct, this.qFixedPct1);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer Equals method
         /// </summary>
-        /// <param name="globalId1">first globalId parameter</param>
-        /// <param name="globalId2">second globalId parameter</param>
         [Test]
-        [TestCase(1623, 10)]
-        public void EqualsMethod(long globalId1, long globalId2)
+        [TestCase(TestName = "EnergyConsumerEqualsMethod")]
+        public void EqualsMethod()
         {
-            EnergyConsumer ec1 = new EnergyConsumer(globalId1);
-            EnergyConsumer ec2 = new EnergyConsumer(globalId1);
-            EnergyConsumer ec3 = null;
-            EnergyConsumer ec4 = new EnergyConsumer(globalId1);
-            EnergyConsumer ec5 = new EnergyConsumer(globalId2);
-            ec1.PFixed = 10;
-            ec1.PFixedPct = 20;
-            ec1.QFixed = 10;
-            ec1.QFixedPct = 20;
-            ec2.PFixed = 10;
-            ec2.PFixedPct = 20;
-            ec2.QFixed = 10;
-            ec2.QFixedPct = 20;
-            ec4.PFixed = 100;
-            ec4.PFixedPct = 200;
-            ec4.QFixed = 100;
-            ec4.QFixedPct = 200;
-            ec5.PFixed = 10;
-            ec5.PFixedPct = 20;
-            ec5.QFixed = 10;
-            ec5.QFixedPct = 20;
-            bool resultT = ec1.Equals(ec2);
-            Assert.IsTrue(resultT);
-            bool resultF = ec1.Equals(ec3);
-            Assert.IsFalse(resultF);
-            resultF = ec1.Equals(ec4);
-            Assert.IsFalse(resultF);
-            resultF = ec1.Equals(ec5);
-            Assert.IsFalse(resultF);
+            this.ec1.PFixed = this.pFixed1;
+            this.ec1.PFixedPct = this.pFixedPct1;
+            this.ec1.QFixed = this.qFixed1;
+            this.ec1.QFixedPct = this.qFixedPct1;
+            this.resultT = this.ec1.Equals(this.ec2);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.ec1.Equals(this.ec3);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.ec1.Equals(this.ec4);
+            Assert.IsFalse(this.resultF);
+            this.resultF = this.ec1.Equals(this.ec5);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer GetHashCode method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EnergyConsumerGetHashCodeMethod")]
         public void GetHashCodeMethod()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            int result = ec.GetHashCode();
+            int result = this.ec1.GetHashCode();
             Assert.IsNotNull(result);
         }
 
@@ -135,63 +227,63 @@ namespace DataModelTest
         /// Unit test for EnergyConsumer HasProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EnergyConsumerHasPropertyMethod")]
         public void HasPropertyMethod()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            bool resultT = ec.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsTrue(resultT);
-            resultT = ec.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsTrue(resultT);
-            resultT = ec.HasProperty(ModelCode.ENERGYCONSUMER_PFIXED);
-            Assert.IsTrue(resultT);
-            resultT = ec.HasProperty(ModelCode.ENERGYCONSUMER_PFIXEDPCT);
-            Assert.IsTrue(resultT);
-            resultT = ec.HasProperty(ModelCode.ENERGYCONSUMER_QFIXED);
-            Assert.IsTrue(resultT);
-            resultT = ec.HasProperty(ModelCode.ENERGYCONSUMER_QFIXEDPCT);
-            Assert.IsTrue(resultT);
-            bool resultF = ec.HasProperty(ModelCode.ENERGYCONSUMER);
-            Assert.IsFalse(resultF);
+            this.resultT = this.ec1.HasProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.ec1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.ec1.HasProperty(ModelCode.ENERGYCONSUMER_PFIXED);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.ec1.HasProperty(ModelCode.ENERGYCONSUMER_PFIXEDPCT);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.ec1.HasProperty(ModelCode.ENERGYCONSUMER_QFIXED);
+            Assert.IsTrue(this.resultT);
+            this.resultT = this.ec1.HasProperty(ModelCode.ENERGYCONSUMER_QFIXEDPCT);
+            Assert.IsTrue(this.resultT);
+            this.resultF = this.ec1.HasProperty(ModelCode.ENERGYCONSUMER);
+            Assert.IsFalse(this.resultF);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer GetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EnergyConsumerGetPropertyMethod")]
         public void GetPropertyMethod()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.GetProperty(ModelCode.ENERGYCONSUMER_PFIXED);
-            Assert.IsNotNull(ec.PFixed);
-            ec.GetProperty(ModelCode.ENERGYCONSUMER_PFIXEDPCT);
-            Assert.IsNotNull(ec.PFixedPct);
-            ec.GetProperty(ModelCode.ENERGYCONSUMER_QFIXED);
-            Assert.IsNotNull(ec.QFixed);
-            ec.GetProperty(ModelCode.ENERGYCONSUMER_QFIXEDPCT);
-            Assert.IsNotNull(ec.QFixedPct);
-            ec.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
-            Assert.IsNotNull(ec.Measurements);
-            ec.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
-            Assert.IsNotNull(ec.Mrid);
+            this.ec1.GetProperty(ModelCode.ENERGYCONSUMER_PFIXED);
+            Assert.IsNotNull(this.ec1.PFixed);
+            this.ec1.GetProperty(ModelCode.ENERGYCONSUMER_PFIXEDPCT);
+            Assert.IsNotNull(this.ec1.PFixedPct);
+            this.ec1.GetProperty(ModelCode.ENERGYCONSUMER_QFIXED);
+            Assert.IsNotNull(this.ec1.QFixed);
+            this.ec1.GetProperty(ModelCode.ENERGYCONSUMER_QFIXEDPCT);
+            Assert.IsNotNull(this.ec1.QFixedPct);
+            this.ec1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
+            Assert.IsNotNull(this.ec1.Measurements);
+            this.ec1.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
+            Assert.IsNotNull(this.ec1.Mrid);
         }
 
         /// <summary>
         /// Unit test for EnergyConsumer SetProperty method
         /// </summary>
         [Test]
+        [TestCase(TestName = "EnergyConsumerSetPropertyMethod")]
         public void SetPropertyMethod()
         {
-            EnergyConsumer ec = new EnergyConsumer(1623);
-            ec.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
-            Assert.IsNotNull(ec.Mrid);
-            ec.SetProperty(new Property(ModelCode.ENERGYCONSUMER_PFIXED));
-            Assert.IsNotNull(ec.PFixed);
-            ec.SetProperty(new Property(ModelCode.ENERGYCONSUMER_PFIXEDPCT));
-            Assert.IsNotNull(ec.PFixedPct);
-            ec.SetProperty(new Property(ModelCode.ENERGYCONSUMER_QFIXED));
-            Assert.IsNotNull(ec.QFixed);
-            ec.SetProperty(new Property(ModelCode.ENERGYCONSUMER_QFIXEDPCT));
-            Assert.IsNotNull(ec.QFixedPct);
+            this.ec1.SetProperty(new Property(ModelCode.IDENTIFIEDOBJECT_MRID));
+            Assert.IsNotNull(this.ec1.Mrid);
+            this.ec1.SetProperty(new Property(ModelCode.ENERGYCONSUMER_PFIXED));
+            Assert.IsNotNull(this.ec1.PFixed);
+            this.ec1.SetProperty(new Property(ModelCode.ENERGYCONSUMER_PFIXEDPCT));
+            Assert.IsNotNull(this.ec1.PFixedPct);
+            this.ec1.SetProperty(new Property(ModelCode.ENERGYCONSUMER_QFIXED));
+            Assert.IsNotNull(this.ec1.QFixed);
+            this.ec1.SetProperty(new Property(ModelCode.ENERGYCONSUMER_QFIXEDPCT));
+            Assert.IsNotNull(this.ec1.QFixedPct);
         }
     }
 }
