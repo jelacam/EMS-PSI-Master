@@ -30,7 +30,6 @@ namespace DataModelTest
 
 			//SYNCHRONOUSMACHINE
 			Assert.AreEqual(EMSType.SYNCHRONOUSMACHINE, ModelCodeHelper.GetTypeFromModelCode(ModelCode.SYNCHRONOUSMACHINE));
-			Assert.AreEqual(EMSType.SYNCHRONOUSMACHINE, ModelCodeHelper.GetTypeFromModelCode(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE));
 			Assert.AreEqual(EMSType.SYNCHRONOUSMACHINE, ModelCodeHelper.GetTypeFromModelCode(ModelCode.SYNCHRONOUSMACHINE_MAXQ));
 			Assert.AreEqual(EMSType.SYNCHRONOUSMACHINE, ModelCodeHelper.GetTypeFromModelCode(ModelCode.SYNCHRONOUSMACHINE_MINQ));
 			Assert.AreEqual(EMSType.SYNCHRONOUSMACHINE, ModelCodeHelper.GetTypeFromModelCode(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE));
@@ -81,7 +80,6 @@ namespace DataModelTest
 			Assert.AreEqual(inhEnergyConsumer, ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.ENERGYCONSUMER_QFIXEDPCT));
 
 			long inhSyncMachine = ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.SYNCHRONOUSMACHINE);
-			Assert.AreEqual(inhSyncMachine, ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE));
 			Assert.AreEqual(inhSyncMachine, ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.SYNCHRONOUSMACHINE_MAXQ));
 			Assert.AreEqual(inhSyncMachine, ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.SYNCHRONOUSMACHINE_MINQ));
 			Assert.AreEqual(inhSyncMachine, ModelCodeHelper.GetInheritanceOnlyFromModelCode(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE));

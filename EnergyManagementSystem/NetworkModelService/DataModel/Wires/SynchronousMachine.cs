@@ -142,7 +142,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         {
             switch (t)
             {
-                case ModelCode.SYNCHRONOUSMACHINE_FUELTYPE:
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
                 case ModelCode.SYNCHRONOUSMACHINE_MINQ:
                 case ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE:
@@ -160,10 +159,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         {
             switch (prop.Id)
             {
-                case ModelCode.SYNCHRONOUSMACHINE_FUELTYPE:
-                    prop.SetValue((short)this.FuelType);
-                    break;
-
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
                     prop.SetValue(this.MaxQ);
                     break;
@@ -190,10 +185,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         {
             switch (property.Id)
             {
-                case ModelCode.SYNCHRONOUSMACHINE_FUELTYPE:
-                    this.FuelType = (EmsFuelType)property.AsEnum();
-                    break;
-
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
                     this.MaxQ = property.AsFloat();
                     break;

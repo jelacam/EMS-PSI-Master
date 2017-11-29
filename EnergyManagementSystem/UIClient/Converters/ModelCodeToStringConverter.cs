@@ -39,7 +39,6 @@ namespace UIClient.Converters
 			{ModelCode.ROTATINGMACHINE,"RotatingMachine" },
 			{ModelCode.ROTATINGMACHINE_RATEDS,"RotatingMachine_Rateds" },
 			{ModelCode.SYNCHRONOUSMACHINE,"SyncMachine" },
-			{ModelCode.SYNCHRONOUSMACHINE_FUELTYPE,"SyncMachine_FuelType" },
 			{ModelCode.SYNCHRONOUSMACHINE_MAXQ,"SyncMachine_MaxQ" },
 			{ModelCode.SYNCHRONOUSMACHINE_MINQ,"SyncMachine_MinQ" },
 			{ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE,"SyncMachine_OperatingMode" }

@@ -237,9 +237,7 @@ namespace DataModelTest
             this.resultT = this.sm1.HasProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
             Assert.IsTrue(this.resultT);
             this.resultT = this.sm1.HasProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsTrue(this.resultT);
-            this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
-            Assert.IsTrue(this.resultT);
+            Assert.IsTrue(this.resultT);           
             this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
             Assert.IsTrue(this.resultT);
             this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
@@ -262,9 +260,7 @@ namespace DataModelTest
             this.sm1.GetProperty(ModelCode.POWERSYSTEMRESOURCE_MEASUREMENTS);
             Assert.IsNotNull(this.sm1.Measurements);
             this.sm1.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS);
-            Assert.IsNotNull(this.sm1.RatedS);
-            this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE);
-            Assert.IsNotNull(this.sm1.FuelType);
+            Assert.IsNotNull(this.sm1.RatedS);           
             this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ);
             Assert.IsNotNull(this.sm1.MaxQ);
             this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ);
@@ -284,8 +280,6 @@ namespace DataModelTest
             Assert.IsNotNull(this.sm1.Mrid);
             this.sm1.SetProperty(new Property(ModelCode.ROTATINGMACHINE_RATEDS));
             Assert.IsNotNull(this.sm1.RatedS);
-            this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE));
-            Assert.IsNotNull(this.sm1.FuelType);
             this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXQ));
             Assert.IsNotNull(this.sm1.MaxQ);
             this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MINQ));

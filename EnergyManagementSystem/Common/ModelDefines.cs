@@ -90,10 +90,30 @@ namespace EMS.Common
         /// </summary>
         POWERSYSTEMRESOURCE_MEASUREMENTS = 0x1200000000000119,
 
-        /// <summary>
-        /// ModelCode for ANALOG
-        /// </summary>
-        ANALOG = 0x1110000000010000,
+		/// <summary>
+		/// ModelCode for EMSFUEL
+		/// </summary>
+		EMSFUEL = 0x1300000000000000,
+
+		/// <summary>
+		/// ModelCode for EMSFUEL_FUELTYPE
+		/// </summary>
+		EMSFUEL_FUELTYPE = 0x130000000000010a,
+
+		/// <summary>
+		/// ModelCode for EMSFUEL_UNITPRICE
+		/// </summary>
+		EMSFUEL_UNITPRICE = 0x1300000000000205,
+
+		/// <summary>
+		/// ModelCode for EMSFUEL_SYNCHRONOUSMACHINES
+		/// </summary>
+		EMSFUEL_SYNCHRONOUSMACHINES = 0x1300000000000319,
+
+		/// <summary>
+		/// ModelCode for ANALOG
+		/// </summary>
+		ANALOG = 0x1110000000010000,
 
         /// <summary>
         /// ModelCode for ANALOG_MAXVALUE
@@ -186,10 +206,30 @@ namespace EMS.Common
         SYNCHRONOUSMACHINE_OPERATINGMODE = 0x121121100003030a,
 
         /// <summary>
-        /// ModelCode for SYNCHRONOUSMACHINE_FUELTYPE
+        /// ModelCode for SYNCHRONOUSMACHINE_FUEL
         /// </summary>
-        SYNCHRONOUSMACHINE_FUELTYPE = 0x121121100003040a
-    }
+        SYNCHRONOUSMACHINE_FUEL = 0x1211211000030409,
+
+		/// <summary>
+		/// ModelCode for SYNCHRONOUSMACHINE_ACTIVE
+		/// </summary>
+		SYNCHRONOUSMACHINE_ACTIVE = 0x1211211000030501,
+
+		/// <summary>
+		/// ModelCode for SYNCHRONOUSMACHINE_LOADPCT
+		/// </summary>
+		SYNCHRONOUSMACHINE_LOADPCT = 0x1211211000030605,
+
+		/// <summary>
+		/// ModelCode for SYNCHRONOUSMACHINE_MAXCOSPHI
+		/// </summary>
+		SYNCHRONOUSMACHINE_MAXCOSPHI = 0x1211211000030705,
+
+		/// <summary>
+		/// ModelCode for SYNCHRONOUSMACHINE_MINCOSPHI
+		/// </summary>
+		SYNCHRONOUSMACHINE_MINCOSPHI = 0x1211211000030805
+	}
 
     /// <summary>
     /// Enumeration for model code mask

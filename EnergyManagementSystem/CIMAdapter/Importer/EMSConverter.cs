@@ -153,11 +153,6 @@
             {
                 EMSConverter.PopulateRotatingMachineProperties(cimSynchronousMachine, rd, importHelper, report);
 
-                if (cimSynchronousMachine.FuelTypeHasValue)
-                {
-                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE, (short)GetEMSFuelType(cimSynchronousMachine.FuelType)));
-                }
-
                 if (cimSynchronousMachine.MaxQHasValue)
                 {
                     rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXQ, cimSynchronousMachine.MaxQ));

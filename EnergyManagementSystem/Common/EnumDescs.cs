@@ -26,7 +26,7 @@ namespace EMS.Common
         {
             this.property2enumType.Add(ModelCode.MEASUREMENT_UNITSYMBOL, typeof(UnitSymbol));
             this.property2enumType.Add(ModelCode.ANALOG_SIGNALDIRECTION, typeof(SignalDirection));
-            this.property2enumType.Add(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE, typeof(EmsFuelType));
+            this.property2enumType.Add(ModelCode.EMSFUEL_FUELTYPE, typeof(EmsFuelType));
             this.property2enumType.Add(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE, typeof(SynchronousMachineOperatingMode));
         }
 

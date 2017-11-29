@@ -192,7 +192,6 @@ namespace CIMAdapterTest.ImporterTest
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID).ToString(), mRid);
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.IDENTIFIEDOBJECT_NAME).ToString(), name);
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.ROTATINGMACHINE_RATEDS).AsFloat(), ratedS);
-			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.SYNCHRONOUSMACHINE_FUELTYPE).AsEnum(), 0);
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE).AsEnum(), 0);
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MAXQ).AsFloat(), maxQ);
 			Assert.AreEqual(rdSynchronousMachine.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MINQ).AsFloat(), minQ);
