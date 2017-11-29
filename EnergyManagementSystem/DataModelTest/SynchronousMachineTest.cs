@@ -121,17 +121,17 @@ namespace DataModelTest
             this.sm2 = new SynchronousMachine(this.globalId1);
             this.sm2.MaxQ = this.maxQ1;
             this.sm2.MinQ = this.minQ1;
-            this.sm2.FuelType = this.fuelType1;
+            //this.sm2.FuelType = this.fuelType1;
             this.sm2.OperatingMode = this.operatingMode1;
             this.sm3 = new SynchronousMachine(this.globalId1);
             this.sm3.MaxQ = this.maxQ2;
             this.sm3.MinQ = this.minQ2;
-            this.sm3.FuelType = this.fuelType2;
+            //this.sm3.FuelType = this.fuelType2;
             this.sm3.OperatingMode = this.operatingMode2;
             this.sm4 = new SynchronousMachine(this.globalId2);
             this.sm4.MaxQ = this.maxQ1;
             this.sm4.MinQ = this.minQ1;
-            this.sm4.FuelType = this.fuelType1;
+            //this.sm4.FuelType = this.fuelType1;
             this.sm4.OperatingMode = this.operatingMode1;
             this.sm5 = null;
         }
@@ -154,9 +154,9 @@ namespace DataModelTest
         [TestCase(TestName = "SynchronousMachineFuelTypeProperty")]
         public void FuelTypeProperty()
         {
-            this.sm1.FuelType = this.fuelType1;
-            Assert.AreEqual(this.sm1.FuelType, this.fuelType1);
-            Assert.IsNotNull(this.sm1.FuelType);
+            //this.sm1.FuelType = this.fuelType1;
+            //Assert.AreEqual(this.sm1.FuelType, this.fuelType1);
+            //Assert.IsNotNull(this.sm1.FuelType);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace DataModelTest
         [TestCase(TestName = "SynchronousMachineEqualsMethod")]
         public void EqualsMethod()
         {
-            this.sm1.FuelType = this.fuelType1;
+            //this.sm1.FuelType = this.fuelType1;
             this.sm1.MaxQ = this.maxQ1;
             this.sm1.MinQ = this.minQ1;
             this.sm1.OperatingMode = this.operatingMode1;

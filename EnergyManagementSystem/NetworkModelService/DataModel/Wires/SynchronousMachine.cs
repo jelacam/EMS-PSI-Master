@@ -6,7 +6,10 @@
 
 namespace EMS.Services.NetworkModelService.DataModel.Wires
 {
+    using System.Collections.Generic;
     using EMS.Common;
+    using Core;
+    using Production;
 
     /// <summary>
     /// SynchronousMachine class
@@ -23,15 +26,22 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         /// </summary>
         private float minQ;
 
-        /// <summary>
-        /// fuelType of synchronous machine
-        /// </summary>
-        private EmsFuelType fuelType;
+       
 
         /// <summary>
         /// operatingMode of synchronous machine
         /// </summary>
         private SynchronousMachineOperatingMode operatingMode;
+
+        private long fuel = 0;
+
+        private bool active;
+
+        private float loadPct;
+
+        private float maxCosPhi;
+
+        private float minCosPhi;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SynchronousMachine" /> class
@@ -39,6 +49,37 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         /// <param name="globalId">globalId of the entity</param>
         public SynchronousMachine(long globalId) : base(globalId)
         {
+        }
+
+
+        public long Fuel
+        {
+            get { return fuel; }
+            set { fuel = value; }
+        }
+
+        public bool Active
+        {
+            get { return active; }
+            set { active = value; }
+        }
+
+        public float LoadPct
+        {
+            get { return loadPct; }
+            set { loadPct = value; }
+        }
+
+        public float MaxCosPhi
+        {
+            get { return maxCosPhi;  }
+            set { maxCosPhi = value; }
+        }
+
+        public float MinCosPhi
+        {
+            get { return minCosPhi; }
+            set { minCosPhi = value; }
         }
 
         /// <summary>
@@ -73,21 +114,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-        /// <summary>
-        /// Gets or sets FuelType of the entity
-        /// </summary>
-        public EmsFuelType FuelType
-        {
-            get
-            {
-                return this.fuelType;
-            }
-
-            set
-            {
-                this.fuelType = value;
-            }
-        }
+     
 
         /// <summary>
         /// Gets or sets OperatingMode of the entity
@@ -105,6 +132,8 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
+
+
         /// <summary>
         /// Checks are the entities equals
         /// </summary>
@@ -115,7 +144,9 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             if (base.Equals(obj))
             {
                 SynchronousMachine s = (SynchronousMachine)obj;
-                return s.MaxQ == this.MaxQ && s.MinQ == this.MinQ && s.FuelType == this.FuelType && s.OperatingMode == this.OperatingMode;
+                return s.MaxQ == this.MaxQ && s.MinQ == this.MinQ && s.OperatingMode == this.OperatingMode &&
+                       s.Fuel == this.Fuel && s.Active == this.Active && s.LoadPct == this.LoadPct && s.MaxCosPhi == this.MaxCosPhi &&
+                       s.MinCosPhi == this.MinCosPhi;
             }
             else
             {
@@ -145,6 +176,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                 case ModelCode.SYNCHRONOUSMACHINE_MAXQ:
                 case ModelCode.SYNCHRONOUSMACHINE_MINQ:
                 case ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE:
+                case ModelCode.SYNCHRONOUSMACHINE_ACTIVE:
+                case ModelCode.SYNCHRONOUSMACHINE_FUEL:
+                case ModelCode.SYNCHRONOUSMACHINE_LOADPCT:
+                case ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI:
+                case ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI:
                     return true;
                 default:
                     return base.HasProperty(t);
@@ -170,6 +206,27 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                 case ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE:
                     prop.SetValue((short)this.OperatingMode);
                     break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_ACTIVE:
+                    prop.SetValue(this.Active);
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_FUEL:
+                    prop.SetValue(this.Fuel);
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_LOADPCT:
+                    prop.SetValue(this.LoadPct);
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI:
+                    prop.SetValue(this.MaxCosPhi);
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI:
+                    prop.SetValue(this.MinCosPhi);
+                    break;
+                
 
                 default:
                     base.GetProperty(prop);
@@ -197,6 +254,26 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                     this.OperatingMode = (SynchronousMachineOperatingMode)property.AsEnum();
                     break;
 
+                case ModelCode.SYNCHRONOUSMACHINE_ACTIVE:
+                    this.Active = property.AsBool();
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_FUEL:
+                    this.Fuel = property.AsReference();
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_LOADPCT:
+                    this.LoadPct = property.AsFloat();
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI:
+                    this.MaxCosPhi = property.AsFloat();
+                    break;
+
+                case ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI:
+                    this.MinCosPhi = property.AsFloat();
+                    break;
+
                 default:
                     base.SetProperty(property);
                     break;
@@ -206,6 +283,17 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         #endregion IAccess implementation
 
         #region IReference implementation
+
+        public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
+        {
+            if (this.Fuel != 0 && (refType == TypeOfReference.Reference || refType == TypeOfReference.Both))
+            {
+                references[ModelCode.SYNCHRONOUSMACHINE_FUEL] = new List<long>();
+                references[ModelCode.SYNCHRONOUSMACHINE_FUEL].Add(this.Fuel);
+            }
+
+            base.GetReferences(references, refType);
+        }
 
         #endregion IReference implementation
     }
