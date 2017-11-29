@@ -62,14 +62,14 @@ namespace DataModelTest
         private float minQ2;
 
         /// <summary>
-        /// Container for fuelType
+        /// Container for fuel
         /// </summary>
-        private EmsFuelType fuelType1;
+        private long fuel1;
 
         /// <summary>
-        /// Container for fuelType
+        /// Container for fuel
         /// </summary>
-        private EmsFuelType fuelType2;
+        private long fuel2;
 
         /// <summary>
         /// Container for operatingMode
@@ -81,10 +81,50 @@ namespace DataModelTest
         /// </summary>
         private SynchronousMachineOperatingMode operatingMode2;
 
-        /// <summary>
-        /// Container for globalId
-        /// </summary>
-        private long globalId1;
+		/// <summary>
+		/// Container for active
+		/// </summary>
+		private bool active1;
+
+		/// <summary>
+		/// Container for active
+		/// </summary>
+		private bool active2;
+
+		/// <summary>
+		/// Container for loadPct
+		/// </summary>
+		private float loadPct1;
+
+		/// <summary>
+		/// Container for loadPct
+		/// </summary>
+		private float loadPct2;
+
+		/// <summary>
+		/// Container for maxCosPhi
+		/// </summary>
+		private float maxCosPhi1;
+
+		/// <summary>
+		/// Container for maxCosPhi
+		/// </summary>
+		private float maxCosPhi2;
+
+		/// <summary>
+		/// Container for minCosPhi
+		/// </summary>
+		private float minCosPhi1;
+
+		/// <summary>
+		/// Container for minCosPhi
+		/// </summary>
+		private float minCosPhi2;
+
+		/// <summary>
+		/// Container for globalId
+		/// </summary>
+		private long globalId1;
 
         /// <summary>
         /// Container for globalId
@@ -113,26 +153,46 @@ namespace DataModelTest
             this.maxQ2 = 10;
             this.minQ1 = 10;
             this.minQ2 = 1;
-            this.fuelType1 = EmsFuelType.coal;
-            this.fuelType2 = EmsFuelType.hydro;
+			this.fuel1 = 1;
+			this.fuel2 = 2;
             this.operatingMode1 = SynchronousMachineOperatingMode.condenser;
             this.operatingMode2 = SynchronousMachineOperatingMode.generator;
+			this.active1 = true;
+			this.active2 = false;
+			this.loadPct1 = 10;
+			this.loadPct2 = 20;
+			this.maxCosPhi1 = 10;
+			this.maxCosPhi2 = 5;
+			this.minCosPhi1 = 5;
+			this.minCosPhi2 = 1;
             this.sm1 = new SynchronousMachine(this.globalId1);
             this.sm2 = new SynchronousMachine(this.globalId1);
             this.sm2.MaxQ = this.maxQ1;
             this.sm2.MinQ = this.minQ1;
-            //this.sm2.FuelType = this.fuelType1;
+			this.sm2.Fuel = this.fuel1;
+			this.sm2.Active = this.active1;
+			this.sm2.LoadPct = this.loadPct1;
+			this.sm2.MaxCosPhi = this.maxCosPhi1;
+			this.sm2.MinCosPhi = this.minCosPhi1;
             this.sm2.OperatingMode = this.operatingMode1;
             this.sm3 = new SynchronousMachine(this.globalId1);
             this.sm3.MaxQ = this.maxQ2;
             this.sm3.MinQ = this.minQ2;
-            //this.sm3.FuelType = this.fuelType2;
-            this.sm3.OperatingMode = this.operatingMode2;
+			this.sm3.Fuel = this.fuel2;
+			this.sm3.Active = this.active2;
+			this.sm3.LoadPct = this.loadPct2;
+			this.sm3.MaxCosPhi = this.maxCosPhi2;
+			this.sm3.MinCosPhi = this.minCosPhi2;
+			this.sm3.OperatingMode = this.operatingMode2;
             this.sm4 = new SynchronousMachine(this.globalId2);
             this.sm4.MaxQ = this.maxQ1;
             this.sm4.MinQ = this.minQ1;
-            //this.sm4.FuelType = this.fuelType1;
-            this.sm4.OperatingMode = this.operatingMode1;
+			this.sm4.Fuel = this.fuel1;
+			this.sm4.Active = this.active1;
+			this.sm4.LoadPct = this.loadPct1;
+			this.sm4.MaxCosPhi = this.maxCosPhi1;
+			this.sm4.MinCosPhi = this.minCosPhi1;
+			this.sm4.OperatingMode = this.operatingMode1;
             this.sm5 = null;
         }
 
@@ -151,12 +211,12 @@ namespace DataModelTest
         /// Unit test for SynchronousMachine FuelType setter
         /// </summary>
         [Test]
-        [TestCase(TestName = "SynchronousMachineFuelTypeProperty")]
-        public void FuelTypeProperty()
+        [TestCase(TestName = "SynchronousMachineFuelProperty")]
+        public void FuelProperty()
         {
-            //this.sm1.FuelType = this.fuelType1;
-            //Assert.AreEqual(this.sm1.FuelType, this.fuelType1);
-            //Assert.IsNotNull(this.sm1.FuelType);
+			this.sm1.Fuel = this.fuel1;
+            Assert.AreEqual(this.sm1.Fuel, this.fuel1);
+            Assert.IsNotNull(this.sm1.Fuel);
         }
 
         /// <summary>
@@ -193,15 +253,63 @@ namespace DataModelTest
             Assert.IsNotNull(this.sm1.OperatingMode);
         }
 
-        /// <summary>
-        /// Unit test for SynchronousMachine Equals method
-        /// </summary>
-        [Test]
+		/// <summary>
+		/// Unit test for SynchronousMachine Active setter
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SynchronousMachineActiveProperty")]
+		public void ActiveProperty()
+		{
+			this.sm1.Active = this.active1;
+			Assert.AreEqual(this.sm1.Active, this.active1);
+		}
+
+		/// <summary>
+		/// Unit test for SynchronousMachine LoadPct setter
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SynchronousMachineLoadPctProperty")]
+		public void LoadPctProperty()
+		{
+			this.sm1.LoadPct = this.loadPct1;
+			Assert.AreEqual(this.sm1.LoadPct, this.loadPct1);
+		}
+
+		/// <summary>
+		/// Unit test for SynchronousMachine MaxCosPhi setter
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SynchronousMachineMaxCosPhiProperty")]
+		public void MaxCosPhiProperty()
+		{
+			this.sm1.MaxCosPhi = this.maxCosPhi1;
+			Assert.AreEqual(this.sm1.MaxCosPhi, this.maxCosPhi1);
+		}
+
+		/// <summary>
+		/// Unit test for SynchronousMachine MinCosPhi setter
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SynchronousMachineMinCosPhiProperty")]
+		public void MinCosPhiProperty()
+		{
+			this.sm1.MinCosPhi = this.minCosPhi1;
+			Assert.AreEqual(this.sm1.MinCosPhi, this.minCosPhi1);
+		}
+
+		/// <summary>
+		/// Unit test for SynchronousMachine Equals method
+		/// </summary>
+		[Test]
         [TestCase(TestName = "SynchronousMachineEqualsMethod")]
         public void EqualsMethod()
         {
-            //this.sm1.FuelType = this.fuelType1;
-            this.sm1.MaxQ = this.maxQ1;
+			this.sm1.Fuel = this.fuel1;
+			this.sm1.Active = this.active1;
+			this.sm1.LoadPct = this.loadPct1;
+			this.sm1.MaxCosPhi = this.maxCosPhi1;
+			this.sm1.MinCosPhi = this.minCosPhi1;
+			this.sm1.MaxQ = this.maxQ1;
             this.sm1.MinQ = this.minQ1;
             this.sm1.OperatingMode = this.operatingMode1;
             this.resultT = this.sm1.Equals(this.sm2);
@@ -244,7 +352,17 @@ namespace DataModelTest
             Assert.IsTrue(this.resultT);
             this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
             Assert.IsTrue(this.resultT);
-            this.resultF = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE);
+			this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_FUEL);
+			Assert.IsTrue(this.resultT);
+			this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_ACTIVE);
+			Assert.IsTrue(this.resultT);
+			this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_LOADPCT);
+			Assert.IsTrue(this.resultT);
+			this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI);
+			Assert.IsTrue(this.resultT);
+			this.resultT = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI);
+			Assert.IsTrue(this.resultT);
+			this.resultF = this.sm1.HasProperty(ModelCode.SYNCHRONOUSMACHINE);
             Assert.IsFalse(this.resultF);
         }
 
@@ -267,7 +385,17 @@ namespace DataModelTest
             Assert.IsNotNull(this.sm1.MinQ);
             this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE);
             Assert.IsNotNull(this.sm1.OperatingMode);
-        }
+			this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_FUEL);
+			Assert.IsNotNull(this.sm1.Fuel);
+			this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_ACTIVE);
+			Assert.IsNotNull(this.sm1.Active);
+			this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_LOADPCT);
+			Assert.IsNotNull(this.sm1.LoadPct);
+			this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI);
+			Assert.IsNotNull(this.sm1.MaxCosPhi);
+			this.sm1.GetProperty(ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI);
+			Assert.IsNotNull(this.sm1.MinCosPhi);
+		}
 
         /// <summary>
         /// Unit test for SynchronousMachine SetProperty method
@@ -286,6 +414,16 @@ namespace DataModelTest
             Assert.IsNotNull(this.sm1.MinQ);
             this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE));
             Assert.IsNotNull(this.sm1.OperatingMode);
-        }
+			this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUEL));
+			Assert.IsNotNull(this.sm1.Fuel);
+			this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_ACTIVE));
+			Assert.IsNotNull(this.sm1.Active);
+			this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_LOADPCT));
+			Assert.IsNotNull(this.sm1.LoadPct);
+			this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI));
+			Assert.IsNotNull(this.sm1.MaxCosPhi);
+			this.sm1.SetProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI));
+			Assert.IsNotNull(this.sm1.MinCosPhi);
+		}
     }
 }
