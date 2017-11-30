@@ -16,11 +16,31 @@ namespace EMS {
     /// An electromechanical device that operates with shaft rotating synchronously with the network. It is a single machine operating either as a generator or synchronous condenser or pump.
     public class SynchronousMachine : RotatingMachine {
         
-        private EmsFuelType? cim_fuelType;
+        /// Active mode or not.
+        private System.Boolean? cim_active;
         
-        private const bool isFuelTypeMandatory = false;
+        private const bool isActiveMandatory = false;
         
-        private const string _fuelTypePrefix = "cim";
+        private const string _activePrefix = "cim";
+        
+        private EMSFuel cim_fuel;
+        
+        private const bool isFuelMandatory = false;
+        
+        private const string _fuelPrefix = "cim";
+        
+        /// SynchronousMachine load in percent.
+        private System.Single? cim_loadPct;
+        
+        private const bool isLoadPctMandatory = false;
+        
+        private const string _loadPctPrefix = "cim";
+        
+        private System.Single? cim_maxCosPhi;
+        
+        private const bool isMaxCosPhiMandatory = false;
+        
+        private const string _maxCosPhiPrefix = "cim";
         
         /// Maximum reactive power limit. This is the maximum (nameplate) limit for the unit.
         private System.Single? cim_maxQ;
@@ -28,6 +48,12 @@ namespace EMS {
         private const bool isMaxQMandatory = false;
         
         private const string _maxQPrefix = "cim";
+        
+        private System.Single? cim_minCosPhi;
+        
+        private const bool isMinCosPhiMandatory = false;
+        
+        private const string _minCosPhiPrefix = "cim";
         
         /// Minimum reactive power limit for the unit.
         private System.Single? cim_minQ;
@@ -43,30 +69,111 @@ namespace EMS {
         
         private const string _operatingModePrefix = "cim";
         
-        public virtual EmsFuelType FuelType {
+        public virtual bool Active {
             get {
-                return this.cim_fuelType.GetValueOrDefault();
+                return this.cim_active.GetValueOrDefault();
             }
             set {
-                this.cim_fuelType = value;
+                this.cim_active = value;
             }
         }
         
-        public virtual bool FuelTypeHasValue {
+        public virtual bool ActiveHasValue {
             get {
-                return this.cim_fuelType != null;
+                return this.cim_active != null;
             }
         }
         
-        public static bool IsFuelTypeMandatory {
+        public static bool IsActiveMandatory {
             get {
-                return isFuelTypeMandatory;
+                return isActiveMandatory;
             }
         }
         
-        public static string FuelTypePrefix {
+        public static string ActivePrefix {
             get {
-                return _fuelTypePrefix;
+                return _activePrefix;
+            }
+        }
+        
+        public virtual EMSFuel Fuel {
+            get {
+                return this.cim_fuel;
+            }
+            set {
+                this.cim_fuel = value;
+            }
+        }
+        
+        public virtual bool FuelHasValue {
+            get {
+                return this.cim_fuel != null;
+            }
+        }
+        
+        public static bool IsFuelMandatory {
+            get {
+                return isFuelMandatory;
+            }
+        }
+        
+        public static string FuelPrefix {
+            get {
+                return _fuelPrefix;
+            }
+        }
+        
+        public virtual float LoadPct {
+            get {
+                return this.cim_loadPct.GetValueOrDefault();
+            }
+            set {
+                this.cim_loadPct = value;
+            }
+        }
+        
+        public virtual bool LoadPctHasValue {
+            get {
+                return this.cim_loadPct != null;
+            }
+        }
+        
+        public static bool IsLoadPctMandatory {
+            get {
+                return isLoadPctMandatory;
+            }
+        }
+        
+        public static string LoadPctPrefix {
+            get {
+                return _loadPctPrefix;
+            }
+        }
+        
+        public virtual float MaxCosPhi {
+            get {
+                return this.cim_maxCosPhi.GetValueOrDefault();
+            }
+            set {
+                this.cim_maxCosPhi = value;
+            }
+        }
+        
+        public virtual bool MaxCosPhiHasValue {
+            get {
+                return this.cim_maxCosPhi != null;
+            }
+        }
+        
+        public static bool IsMaxCosPhiMandatory {
+            get {
+                return isMaxCosPhiMandatory;
+            }
+        }
+        
+        public static string MaxCosPhiPrefix {
+            get {
+                return _maxCosPhiPrefix;
             }
         }
         
@@ -94,6 +201,33 @@ namespace EMS {
         public static string MaxQPrefix {
             get {
                 return _maxQPrefix;
+            }
+        }
+        
+        public virtual float MinCosPhi {
+            get {
+                return this.cim_minCosPhi.GetValueOrDefault();
+            }
+            set {
+                this.cim_minCosPhi = value;
+            }
+        }
+        
+        public virtual bool MinCosPhiHasValue {
+            get {
+                return this.cim_minCosPhi != null;
+            }
+        }
+        
+        public static bool IsMinCosPhiMandatory {
+            get {
+                return isMinCosPhiMandatory;
+            }
+        }
+        
+        public static string MinCosPhiPrefix {
+            get {
+                return _minCosPhiPrefix;
             }
         }
         

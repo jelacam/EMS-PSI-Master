@@ -183,7 +183,7 @@ namespace CIMAdapterTest.ImporterTest
 			cimSynchronousMachine.MRID = mRid;
 			cimSynchronousMachine.Name = name;
 			cimSynchronousMachine.RatedS = ratedS;
-			cimSynchronousMachine.FuelType = fuelType;
+			//cimSynchronousMachine.FuelType = fuelType;
 			cimSynchronousMachine.OperatingMode = operatingMode;
 			cimSynchronousMachine.MaxQ = maxQ;
 			cimSynchronousMachine.MinQ = minQ;

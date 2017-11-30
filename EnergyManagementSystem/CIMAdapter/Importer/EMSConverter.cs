@@ -120,14 +120,40 @@
             }
         }
 
-		/// <summary>
-		/// Method populates RotatingMachine properties
-		/// </summary>
-		/// <param name="cimRotatingMachine">RotatingMachine object with values from CIM</param>
-		/// <param name="rd">ResourceDescription object from importer</param>
-		/// <param name="importHelper"></param>
-		/// <param name="report"></param>
-		public static void PopulateRotatingMachineProperties(EMS.RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+        /// <summary>
+        /// Method populates EMSFuel properties
+        /// </summary>
+        /// <param name="emsFuel">EMSFuel object with values from CIM</param>
+        /// <param name="rd">ResourcesDescription object from importer</param>
+        /// <param name="importHelper"></param>
+        /// <param name="report"></param>
+        public static void PopulateEmsFuelProperties(EMSFuel emsFuel, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
+        {
+            if((emsFuel != null) && (rd != null))
+            {
+                EMSConverter.PopulateIdentifiedObjectProperties(emsFuel, rd);
+
+                if(emsFuel.FuelTypeHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.EMSFUEL_FUELTYPE, (short)emsFuel.FuelType));
+                }
+
+                if(emsFuel.UnitPriceHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.EMSFUEL_UNITPRICE, emsFuel.UnitPrice));
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Method populates RotatingMachine properties
+        /// </summary>
+        /// <param name="cimRotatingMachine">RotatingMachine object with values from CIM</param>
+        /// <param name="rd">ResourceDescription object from importer</param>
+        /// <param name="importHelper"></param>
+        /// <param name="report"></param>
+        public static void PopulateRotatingMachineProperties(EMS.RotatingMachine cimRotatingMachine, ResourceDescription rd, ImportHelper importHelper, TransformAndLoadReport report)
         {
             if ((cimRotatingMachine != null) && (rd != null))
             {
@@ -153,6 +179,26 @@
             {
                 EMSConverter.PopulateRotatingMachineProperties(cimSynchronousMachine, rd, importHelper, report);
 
+                if(cimSynchronousMachine.ActiveHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_ACTIVE, cimSynchronousMachine.Active));
+                }
+
+                if (cimSynchronousMachine.LoadPctHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_LOADPCT, cimSynchronousMachine.LoadPct));
+                }
+
+                if (cimSynchronousMachine.MaxCosPhiHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXCOSPHI, cimSynchronousMachine.MaxCosPhi));
+                }
+
+                if (cimSynchronousMachine.MinCosPhiHasValue)
+                {
+                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI, cimSynchronousMachine.MinCosPhi));
+                }
+
                 if (cimSynchronousMachine.MaxQHasValue)
                 {
                     rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_MAXQ, cimSynchronousMachine.MaxQ));
@@ -166,6 +212,17 @@
                 if (cimSynchronousMachine.OperatingModeHasValue)
                 {
                     rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE, (short)GetSynchronousMachineOperatingMode(cimSynchronousMachine.OperatingMode)));
+                }
+
+                if(cimSynchronousMachine.FuelHasValue)
+                {
+                    long gid = importHelper.GetMappedGID(cimSynchronousMachine.Fuel.ID);
+                    if (gid < 0)
+                    {
+                        report.Report.Append("WARNING: Convert ").Append(cimSynchronousMachine.GetType().ToString()).Append(" rdfID = \"").Append(cimSynchronousMachine.ID);
+                        report.Report.Append("\" - Failed to set reference to PowerSystemResource: rdfID \"").Append(cimSynchronousMachine.Fuel.ID).AppendLine(" \" is not mapped to GID!");
+                    }
+                    rd.AddProperty(new Property(ModelCode.SYNCHRONOUSMACHINE_FUEL, gid));
                 }
             }
         }

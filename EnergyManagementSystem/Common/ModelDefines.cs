@@ -9,7 +9,7 @@ namespace EMS.Common
     using System;
 
     /// <summary>
-    /// Enumeration for DMS type
+    /// Enumeration for EMS type
     /// </summary>
     public enum EMSType : short
     {
@@ -19,19 +19,24 @@ namespace EMS.Common
         MASK_TYPE = unchecked((short)0xFFFF),
 
         /// <summary>
-        /// Analog DMS type
+        /// Analog EMS type
         /// </summary>
         ANALOG = 0x0001,
 
         /// <summary>
-        /// EnergyConsumer DMS type
+        /// EnergyConsumer EMS type
         /// </summary>
         ENERGYCONSUMER = 0x0002,
 
         /// <summary>
-        /// SynchronousMachine DMS type
+        /// SynchronousMachine EMS type
         /// </summary>
         SYNCHRONOUSMACHINE = 0x0003,
+
+        /// <summary>
+        /// EMSFuel EMS type
+        /// </summary>
+        EMSFUEL = 0x0004,
     }
 
     /// <summary>
@@ -93,22 +98,22 @@ namespace EMS.Common
 		/// <summary>
 		/// ModelCode for EMSFUEL
 		/// </summary>
-		EMSFUEL = 0x1300000000000000,
+		EMSFUEL = 0x1300000000040000,
 
 		/// <summary>
 		/// ModelCode for EMSFUEL_FUELTYPE
 		/// </summary>
-		EMSFUEL_FUELTYPE = 0x130000000000010a,
+		EMSFUEL_FUELTYPE = 0x130000000004010a,
 
 		/// <summary>
 		/// ModelCode for EMSFUEL_UNITPRICE
 		/// </summary>
-		EMSFUEL_UNITPRICE = 0x1300000000000205,
+		EMSFUEL_UNITPRICE = 0x1300000000040205,
 
 		/// <summary>
 		/// ModelCode for EMSFUEL_SYNCHRONOUSMACHINES
 		/// </summary>
-		EMSFUEL_SYNCHRONOUSMACHINES = 0x1300000000000319,
+		EMSFUEL_SYNCHRONOUSMACHINES = 0x1300000000040319,
 
 		/// <summary>
 		/// ModelCode for ANALOG

@@ -12,6 +12,7 @@ using EMS.Services.NetworkModelService.DataModel.Core;
 using EMS.Services.NetworkModelService.DataModel;
 using EMS.Services.NetworkModelService.DataModel.Meas;
 using EMS.Services.NetworkModelService.DataModel.Wires;
+using EMS.Services.NetworkModelService.DataModel.Production;
 
 namespace EMS.Services.NetworkModelService
 {
@@ -132,6 +133,10 @@ namespace EMS.Services.NetworkModelService
 
                 case EMSType.SYNCHRONOUSMACHINE:
                     io = new SynchronousMachine(globalId);
+                    break;
+
+                case EMSType.EMSFUEL:
+                    io = new EMSFuel(globalId);
                     break;
 
                 default:

@@ -108,8 +108,9 @@ namespace EMS.CIMAdapter.Importer
             LogManager.Log("Loading elements and creating delta...", LogLevel.Info);
 
             //// import all concrete model types (DMSType enum)
-
+            
             ImportEnergyConsumer();
+            ImportEMSFuel();
             ImportSynchronousMachine();
             ImportAnalog();
 
@@ -117,6 +118,46 @@ namespace EMS.CIMAdapter.Importer
         }
 
         #region Import
+
+
+        private void ImportEMSFuel()
+        {
+            SortedDictionary<string, object> cimEMSFuels = concreteModel.GetAllObjectsOfType("EMS.EMSFuel");
+            if (cimEMSFuels != null)
+            {
+                foreach (KeyValuePair<string, object> cimEMSFuelPair in cimEMSFuels)
+                {
+                    EMS.EMSFuel emsFuel = cimEMSFuelPair.Value as EMS.EMSFuel;
+
+                    ResourceDescription rd = CreateEMSFuel(emsFuel);
+
+                    if (rd != null)
+                    {
+                        delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
+                        report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                    }
+                    else
+                    {
+                        report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).AppendLine(" FAILED to be converted");
+                    }
+                }
+            }
+        }
+
+        private ResourceDescription CreateEMSFuel(EMSFuel emsFuel)
+        {
+            ResourceDescription rd = null;
+            if (emsFuel != null)
+            {
+                long gid = ModelCodeHelper.CreateGlobalId(0, (short)EMSType.EMSFUEL, importHelper.CheckOutIndexForDMSType(EMSType.EMSFUEL));
+                rd = new ResourceDescription(gid);
+                importHelper.DefineIDMapping(emsFuel.ID, gid);
+
+                EMSConverter.PopulateEmsFuelProperties(emsFuel, rd, importHelper, report);
+            }
+            return rd;
+        }
+
 
         /// <summary>
         /// Method import EnergyConsumer objects into delta

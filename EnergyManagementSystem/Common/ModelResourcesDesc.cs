@@ -880,7 +880,9 @@ namespace EMS.Common
         /// </summary>
         private void InitializeTypeIdsInInsertOrder()
         {
+            
             this.typeIdsInInsertOrder.Add(ModelCode.ENERGYCONSUMER);
+            this.typeIdsInInsertOrder.Add(ModelCode.EMSFUEL);
             this.typeIdsInInsertOrder.Add(ModelCode.SYNCHRONOUSMACHINE);
             this.typeIdsInInsertOrder.Add(ModelCode.ANALOG);
         }

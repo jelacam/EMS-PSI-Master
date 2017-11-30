@@ -55,16 +55,16 @@
     <rdfs:label>SynchronousMachine</rdfs:label>
     <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
   </rdf:Description>
+  <rdf:Description rdf:about="#UnitSymbol.Pa">
+    <rdfs:comment>Pressure in pascal (n/m2).</rdfs:comment>
+    <rdfs:label>Pa</rdfs:label>
+    <rdf:type rdf:resource="#UnitSymbol"/>
+  </rdf:Description>
   <rdf:Description rdf:about="#Package_IEC61970">
     <cims:belongsToCategory rdf:resource="#Package_TC57CIM"/>
     <rdfs:comment>The ControlArea package models area specifications which can be used for a variety of purposes.  The package as a whole models potentially overlapping control area specifications for the purpose of actual generation control, load forecast area load capture, or powerflow based analysis.</rdfs:comment>
     <rdfs:label>IEC61970</rdfs:label>
     <rdf:type rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#ClassCategory"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="#UnitSymbol.Pa">
-    <rdfs:comment>Pressure in pascal (n/m2).</rdfs:comment>
-    <rdfs:label>Pa</rdfs:label>
-    <rdf:type rdf:resource="#UnitSymbol"/>
   </rdf:Description>
   <rdf:Description rdf:about="#UnitSymbol.J">
     <rdfs:comment>Energy in joule.</rdfs:comment>
@@ -96,6 +96,14 @@
     <rdfs:label>Hz</rdfs:label>
     <rdf:type rdf:resource="#UnitSymbol"/>
   </rdf:Description>
+  <rdf:Description rdf:about="#EMSFuel">
+    <rdfs:subClassOf rdf:resource="#IdentifiedObject"/>
+    <cims:belongsToCategory rdf:resource="#Package_Production"/>
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#concrete"/>
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#byreference"/>
+    <rdfs:label>EMSFuel</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
   <rdf:Description rdf:about="#IdentifiedObject.name">
     <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
     <rdfs:comment>The name is any free human readable and possibly non unique text naming the object.</rdfs:comment>
@@ -116,6 +124,14 @@
     <rdfs:comment>Synchronous machine operating mode.</rdfs:comment>
     <rdfs:label>SynchronousMachineOperatingMode</rdfs:label>
     <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#SynchronousMachine.minCosPhi">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:label>minCosPhi</rdfs:label>
+    <cims:dataType rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SynchronousMachine"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
   <rdf:Description rdf:about="#EmsFuelType.coal">
     <rdfs:label>coal</rdfs:label>
@@ -178,12 +194,6 @@
     <rdfs:label>deg</rdfs:label>
     <rdf:type rdf:resource="#UnitSymbol"/>
   </rdf:Description>
-  <rdf:Description rdf:about="#IdentifiedObject">
-    <cims:belongsToCategory rdf:resource="#Package_Core"/>
-    <rdfs:comment>This is a root class to provide common identification for all classes needing identification and naming attributes.</rdfs:comment>
-    <rdfs:label>IdentifiedObject</rdfs:label>
-    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
-  </rdf:Description>
   <rdf:Description rdf:about="#RotatingMachine">
     <rdfs:subClassOf rdf:resource="#RegulatingCondEq"/>
     <cims:belongsToCategory rdf:resource="#Package_Wires"/>
@@ -201,6 +211,12 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:domain rdf:resource="#IdentifiedObject"/>
     <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#IdentifiedObject">
+    <cims:belongsToCategory rdf:resource="#Package_Core"/>
+    <rdfs:comment>This is a root class to provide common identification for all classes needing identification and naming attributes.</rdfs:comment>
+    <rdfs:label>IdentifiedObject</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
   </rdf:Description>
   <rdf:Description rdf:about="#SignalDirection">
     <cims:belongsToCategory rdf:resource="#Package_NMS"/>
@@ -320,6 +336,14 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:label>m</rdfs:label>
     <rdf:type rdf:resource="#UnitSymbol"/>
   </rdf:Description>
+  <rdf:Description rdf:about="#EMSFuel.unitPrice">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:label>unitPrice</rdfs:label>
+    <cims:dataType rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#EMSFuel"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
   <rdf:Description rdf:about="#SynchronousMachine.maxQ">
     <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
     <rdfs:comment>Maximum reactive power limit. This is the maximum (nameplate) limit for the unit.</rdfs:comment>
@@ -362,6 +386,14 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:label>rad</rdfs:label>
     <rdf:type rdf:resource="#UnitSymbol"/>
   </rdf:Description>
+  <rdf:Description rdf:about="#SynchronousMachine.maxCosPhi">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:label>maxCosPhi</rdfs:label>
+    <cims:dataType rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:domain rdf:resource="#SynchronousMachine"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
   <rdf:Description rdf:about="#UnitSymbol.VAh">
     <rdfs:comment>Apparent energy in volt ampere hours.</rdfs:comment>
     <rdfs:label>VAh</rdfs:label>
@@ -373,14 +405,6 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:comment>Product of RMS value of the voltage and the RMS value of the quadrature component of the current.</rdfs:comment>
     <rdfs:label>ReactivePower</rdfs:label>
     <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="#SynchronousMachine.fuelType">
-    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
-    <rdfs:label>fuelType</rdfs:label>
-    <rdfs:range rdf:resource="#EmsFuelType"/>
-    <rdfs:domain rdf:resource="#SynchronousMachine"/>
-    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
   <rdf:Description rdf:about="#Package_Domain">
     <cims:belongsToCategory rdf:resource="#Package_IEC61970"/>
@@ -401,6 +425,15 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:comment>The IEC 62325 subpackages of the CIM are developed, standardized and maintained by IEC TC57 Working Group 16.</rdfs:comment>
     <rdfs:label>TC57CIM</rdfs:label>
     <rdf:type rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#ClassCategory"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#SynchronousMachine.loadPct">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:comment>SynchronousMachine load in percent.</rdfs:comment>
+    <rdfs:label>loadPct</rdfs:label>
+    <rdfs:range rdf:resource="#PerCent"/>
+    <rdfs:domain rdf:resource="#SynchronousMachine"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
   <rdf:Description rdf:about="#UnitSymbol.H">
     <rdfs:comment>Inductance in henry.</rdfs:comment>
@@ -448,12 +481,34 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
+  <rdf:Description rdf:about="#Package_Generation">
+    <cims:belongsToCategory rdf:resource="#Package_IEC61970"/>
+    <rdfs:comment>This package contains packages that have information for Unit Commitment and Economic Dispatch of Hydro and Thermal Generating Units, Load Forecasting, Automatic Generation Control, and Unit Modeling for Dynamic Training Simulator.</rdfs:comment>
+    <rdfs:label>Generation</rdfs:label>
+    <rdf:type rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#ClassCategory"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#EMSFuel.fuelType">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:label>fuelType</rdfs:label>
+    <rdfs:range rdf:resource="#EmsFuelType"/>
+    <rdfs:domain rdf:resource="#EMSFuel"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
   <rdf:Description rdf:about="#Measurement.measurementType">
     <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
     <rdfs:comment>Specifies the type of measurement.  For example, this specifies if the measurement represents an indoor temperature, outdoor temperature, bus voltage, line flow, etc.</rdfs:comment>
     <rdfs:label>measurementType</rdfs:label>
     <cims:dataType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     <rdfs:domain rdf:resource="#Measurement"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#SynchronousMachine.fuel">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#byreference"/>
+    <rdfs:label>fuel</rdfs:label>
+    <rdfs:range rdf:resource="#EMSFuel"/>
+    <rdfs:domain rdf:resource="#SynchronousMachine"/>
     <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
@@ -464,6 +519,15 @@ For CIMXML data files in RDF syntax, the mRID is mapped to rdf:ID or rdf:about a
     <rdfs:label>PowerSystemResource</rdfs:label>
     <rdfs:range rdf:resource="#PowerSystemResource"/>
     <rdfs:domain rdf:resource="#Measurement"/>
+    <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#SynchronousMachine.active">
+    <cims:stereotype rdf:resource="http://langdale.com.au/2005/UML#attribute"/>
+    <rdfs:comment>Active mode or not.</rdfs:comment>
+    <rdfs:label>active</rdfs:label>
+    <cims:dataType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="#SynchronousMachine"/>
     <cims:multiplicity rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#M:0..1"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
   </rdf:Description>
@@ -513,6 +577,12 @@ When the sensor location is needed both Measurement-PSR and Measurement-Terminal
   <rdf:Description rdf:about="#Package_EMS_Project">
     <cims:belongsToCategory rdf:resource="#Package_TC57CIM"/>
     <rdfs:label>EMS_Project</rdfs:label>
+    <rdf:type rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#ClassCategory"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Package_Production">
+    <cims:belongsToCategory rdf:resource="#Package_Generation"/>
+    <rdfs:comment>The production package is responsible for classes which describe various kinds of generators. These classes also provide production costing information which is used to economically allocate demand among committed units and calculate reserve quantities.</rdfs:comment>
+    <rdfs:label>Production</rdfs:label>
     <rdf:type rdf:resource="http://iec.ch/TC57/1999/rdf-schema-extensions-19990926#ClassCategory"/>
   </rdf:Description>
   <rdf:Description rdf:about="#UnitSymbol.m2">
