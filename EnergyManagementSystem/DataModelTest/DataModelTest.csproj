@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="AnalogTest.cs" />
     <Compile Include="ConductingEquipmentTest.cs" />
+    <Compile Include="EMSFuelTest.cs" />
     <Compile Include="EnergyConsumerTest.cs" />
     <Compile Include="EquipmentTest.cs" />
     <Compile Include="IdentifiedObjectTest.cs" />
