@@ -24,6 +24,8 @@ namespace UIClient.Converters
 					return "EnergyConsumer";
 				case EMSType.SYNCHRONOUSMACHINE:
 					return "SynchronousMachine";
+				case EMSType.EMSFUEL:
+					return "EMSFuel";
 				default:
 					return "";
 			}

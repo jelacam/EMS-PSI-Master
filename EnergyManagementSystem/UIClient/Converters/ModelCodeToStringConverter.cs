@@ -41,7 +41,11 @@ namespace UIClient.Converters
 			{ModelCode.SYNCHRONOUSMACHINE,"SyncMachine" },
 			{ModelCode.SYNCHRONOUSMACHINE_MAXQ,"SyncMachine_MaxQ" },
 			{ModelCode.SYNCHRONOUSMACHINE_MINQ,"SyncMachine_MinQ" },
-			{ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE,"SyncMachine_OperatingMode" }
+			{ModelCode.SYNCHRONOUSMACHINE_OPERATINGMODE,"SyncMachine_OperatingMode" },
+			{ModelCode.EMSFUEL,"EMSFuel" },
+			{ ModelCode.EMSFUEL_FUELTYPE,"EMSFuel_FuelType" },
+			{ModelCode.EMSFUEL_SYNCHRONOUSMACHINES,"EMSFuel_SynchronousMachines" },
+			{ModelCode.EMSFUEL_UNITPRICE,"EMSFuel_UnitPrice" }
 		};
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
