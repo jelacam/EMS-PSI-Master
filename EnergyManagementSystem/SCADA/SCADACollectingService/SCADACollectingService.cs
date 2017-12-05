@@ -8,6 +8,6 @@ namespace SCADACollectingService
 {
     public class SCADACollectingService
     {
-        private List<ServiceHost> hosts = null;
+        
     }
 }

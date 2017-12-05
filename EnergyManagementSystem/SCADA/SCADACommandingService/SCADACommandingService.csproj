@@ -67,11 +67,11 @@
     <Compile Include="SCADACommandingService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
+    <ProjectReference Include="..\..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ScadaCMDContract\ScadaCMDContract.csproj">
+    <ProjectReference Include="..\..\ServiceContracts\ScadaCMDContract\ScadaCMDContract.csproj">
       <Project>{E5EB974E-55E9-4C8C-9DBF-DB4530F4904E}</Project>
       <Name>ScadaCMDContract</Name>
     </ProjectReference>
