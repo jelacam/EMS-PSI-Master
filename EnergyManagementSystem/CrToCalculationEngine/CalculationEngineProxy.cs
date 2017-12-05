@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CrToCalculationEngineProxy.cs" company="EMS-Team">
+// <copyright file="CalculationEngineProxy.cs" company="EMS-Team">
 //     Company copyright tag.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,18 +9,18 @@ namespace EMS.ServiceContracts
 	using System;
 	using System.ServiceModel;
 
-	public class CrToCalculationEngineProxy : ICrToCalculationEngineContract, IDisposable
+	public class CalculationEngineProxy : ICalculationEngineContract, IDisposable
 	{
-		private static ICrToCalculationEngineContract proxy;
-		private static ChannelFactory<ICrToCalculationEngineContract> factory;		
+		private static ICalculationEngineContract proxy;
+		private static ChannelFactory<ICalculationEngineContract> factory;		
 
-		public static ICrToCalculationEngineContract Instance
+		public static ICalculationEngineContract Instance
 		{
 			get
 			{
 				if (proxy == null)
 				{
-					factory = new ChannelFactory<ICrToCalculationEngineContract>("*");
+					factory = new ChannelFactory<ICalculationEngineContract>("*");
 					proxy = factory.CreateChannel();
 
 					IContextChannel cc = proxy as IContextChannel;

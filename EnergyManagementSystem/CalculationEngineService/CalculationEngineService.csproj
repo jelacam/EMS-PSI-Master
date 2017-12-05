@@ -57,9 +57,9 @@
       <Project>{892cbe15-9ed7-4540-81fa-0eaaba592138}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CrToCalculationEngine\CrToCalculationEngine.csproj">
+    <ProjectReference Include="..\CrToCalculationEngine\CalculationEngineContract.csproj">
       <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
-      <Name>CrToCalculationEngine</Name>
+      <Name>CalculationEngineContract</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ICrToCalculationEngineContract.cs" company="EMS-Team">
+// <copyright file="ICalculationEngineContract.cs" company="EMS-Team">
 //     Company copyright tag.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,10 +10,10 @@ namespace EMS.ServiceContracts
 	using System.ServiceModel;
 
 	/// <summary>
-	/// Contract for CrToCalculationEngine
+	/// Contract for CalculationEngine
 	/// </summary>
 	[ServiceContract]
-	public interface ICrToCalculationEngineContract
+	public interface ICalculationEngineContract
 	{
 	}
 }

@@ -9,7 +9,7 @@ namespace EMS.Services.CalculationEngineService
 	using System;
 	using EMS.ServiceContracts;
 	
-	public class CrToCe:ICrToCalculationEngineContract
+	public class CrToCe:ICalculationEngineContract
 	{
 		CrToCe()
 		{

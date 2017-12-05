@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrToCalculationEngineProxy.cs" />
-    <Compile Include="ICrToCalculationEngineContract.cs" />
+    <Compile Include="CalculationEngineProxy.cs" />
+    <Compile Include="ICalculationEngineContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
