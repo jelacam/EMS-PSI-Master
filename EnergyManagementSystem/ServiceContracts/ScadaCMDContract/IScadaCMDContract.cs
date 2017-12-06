@@ -10,5 +10,7 @@ namespace EMS.ServiceContracts
     [ServiceContract]
     public interface IScadaCMDContract
     {
+        [OperationContract]
+        void Test();
     }
 }

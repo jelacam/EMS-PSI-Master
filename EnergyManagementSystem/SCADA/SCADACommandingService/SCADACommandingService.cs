@@ -40,19 +40,30 @@ namespace EMS.Services.SCADACommandingService
             string message = string.Empty;
             foreach(ServiceHost host in hosts)
             {
-                host.Open();
-
-                message = string.Format("The WCF service {0} is ready.", host.Description.Name);
-                Console.WriteLine(message);
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-
-                foreach(Uri uri in host.BaseAddresses)
+                try
                 {
-                    Console.WriteLine(uri);
-                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
-                }
+                    host.Open();
 
-                Console.WriteLine("\n");
+                    message = string.Format("The WCF service {0} is ready.", host.Description.Name);
+                    Console.WriteLine(message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+
+                    foreach (Uri uri in host.BaseAddresses)
+                    {
+                        Console.WriteLine(uri);
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
+                    }
+
+                    Console.WriteLine("\n");
+                }
+                catch (CommunicationException ce)
+                {
+                    Console.WriteLine(ce.Message);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
            

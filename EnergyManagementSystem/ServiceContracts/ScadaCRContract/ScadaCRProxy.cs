@@ -40,5 +40,15 @@ namespace EMS.ServiceContracts
                 factory = null;
             }
         }
+
+        public void Test()
+        {
+            proxy.Test();
+        }
+
+        public bool SendValues(byte[] value)
+        {
+            return proxy.SendValues(value);
+        }
     }
 }

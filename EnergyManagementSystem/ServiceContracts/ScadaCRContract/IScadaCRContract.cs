@@ -10,5 +10,10 @@ namespace EMS.ServiceContracts
     [ServiceContract]
     public interface IScadaCRContract
     {
+        [OperationContract]
+        void Test();
+
+        [OperationContract]
+        bool SendValues(byte[] value);
     }
 }

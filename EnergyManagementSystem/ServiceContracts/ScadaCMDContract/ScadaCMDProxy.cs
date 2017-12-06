@@ -51,5 +51,10 @@ namespace EMS.ServiceContracts
                 Console.WriteLine("ScadaCMDProxy exception: {0}", e.Message);
             }
         }
+
+        public void Test()
+        {
+            proxy.Test();
+        }
     }
 }

@@ -36,8 +36,11 @@ namespace SCADACommandingServiceSelfHost
                 CommonTrace.WriteTrace(CommonTrace.TraceError, ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "SCADA Commanding Service failed.");
                 CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
+
                 Console.ReadLine();
             }
         }
+
+
     }
 }
