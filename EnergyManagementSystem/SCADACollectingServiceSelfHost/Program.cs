@@ -1,4 +1,4 @@
-﻿using SmoothModbus;
+﻿using SCADACollectingService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,26 @@ namespace SCADACollectingServiceSelfHost
 	{
 		static void Main(string[] args)
 		{
-			ModbusClient modbusClient = new ModbusClient("localhost", 502);
-			modbusClient.Connect();
-			while (true)
+			try
 			{
-				var veqe = modbusClient.ReadCoils(0, 3);
+				string message = "Starting Network Model Service...";
+				Console.WriteLine("\n{0}\n", message);
+
+				using (SCADACollectingService service = new SCADACollectingService("localhost",502))
+				{
+					service.Start();
+
+					message = "Press <Enter> to stop the service.";
+					Console.WriteLine(message);
+					Console.ReadLine();
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				Console.WriteLine("NetworkModelService failed.");
+				Console.WriteLine(ex.StackTrace);
+				Console.ReadLine();
 			}
 		}
 	}

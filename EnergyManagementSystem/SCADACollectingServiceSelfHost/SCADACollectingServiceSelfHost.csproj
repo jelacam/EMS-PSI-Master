@@ -50,9 +50,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SmoothModbus\SmoothModbus.csproj">
-      <Project>{09EF9D35-1AD9-49CE-8064-367B80F9E75D}</Project>
-      <Name>SmoothModbus</Name>
+    <ProjectReference Include="..\SCADA\SCADACollectingService\SCADACollectingService.csproj">
+      <Project>{2819300E-0523-4CF8-B071-62D604AF02D6}</Project>
+      <Name>SCADACollectingService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
