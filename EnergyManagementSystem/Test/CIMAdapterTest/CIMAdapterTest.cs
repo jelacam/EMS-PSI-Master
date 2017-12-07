@@ -25,7 +25,7 @@ namespace CIMAdapterTest
         private Delta nmsDeltaNull;
         private Delta nmsDelta;
         private ResourceDescription rd;
-
+        private Delta delta;
         #endregion Declarations
 
         #region Setup
@@ -36,6 +36,7 @@ namespace CIMAdapterTest
             cimAdapterUnderTest = new CIMAdapter();
 
             NetworkModelGDAProxy.Instance = Substitute.For<INetworkModelGDAContract>();
+
             NetworkModelGDAProxy.Instance.ApplyUpdate(null).ReturnsForAnyArgs(new UpdateResult()
             {
                 Message = "OK"

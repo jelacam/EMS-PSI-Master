@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: AssemblyVersion("1.0.0")]
+[assembly: AssemblyVersion("2.0.0")]
 
 namespace EMS {
     using System;
