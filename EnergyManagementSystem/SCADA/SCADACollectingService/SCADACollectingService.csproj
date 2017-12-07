@@ -7,7 +7,7 @@
     <ProjectGuid>{2819300E-0523-4CF8-B071-62D604AF02D6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SCADACollectingService</RootNamespace>
+    <RootNamespace>EMS.Services.SCADACollectingService</RootNamespace>
     <AssemblyName>SCADACollectingService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -61,7 +61,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SCADACollecting.cs" />
     <Compile Include="SCADACollectingService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\ScadaCLContract\ScadaCLContract.csproj">
+      <Project>{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}</Project>
+      <Name>ScadaCLContract</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

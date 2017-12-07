@@ -10,7 +10,8 @@ namespace EMS.Services.CalculationEngineService
     using System.Collections.Generic;
     using Common;
     using CommonMeasurement;
-    using EMS.ServiceContracts;
+    using ServiceContracts;
+
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
