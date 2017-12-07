@@ -6,15 +6,15 @@
 
 namespace CalculationEngineServiceTest
 {
-	using System.Collections.Generic;
-	using EMS.CommonMeasurement;
-	using EMS.Services.CalculationEngineService;
-	using NUnit.Framework;
+    using System.Collections.Generic;
+    using NUnit.Framework;
+    using EMS.Services.CalculationEngineService;
+    using EMS.CommonMeasurement;
 
-	/// <summary>
-	/// Class for unit testing CalculationEngine
-	/// </summary>
-	[TestFixture]
+    /// <summary>
+    /// Class for unit testing CalculationEngine
+    /// </summary>
+    [TestFixture]
 	public class CalculationEngineTest
 	{
 		/// <summary>
