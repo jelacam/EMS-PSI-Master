@@ -8,7 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    class Program
+    public class Program
     {
         private static void Main(string[] args)
         {

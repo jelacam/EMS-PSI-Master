@@ -32,13 +32,13 @@ namespace EMS.Services.SCADACommandingService
 
         private void StartHosts()
         {
-            if(hosts == null || hosts.Count == 0)
+            if (hosts == null || hosts.Count == 0)
             {
                 throw new Exception("SCADA Commanding Services can not be opend because it is not initialized.");
             }
 
             string message = string.Empty;
-            foreach(ServiceHost host in hosts)
+            foreach (ServiceHost host in hosts)
             {
                 try
                 {
@@ -60,7 +60,7 @@ namespace EMS.Services.SCADACommandingService
                 {
                     Console.WriteLine(ce.Message);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }

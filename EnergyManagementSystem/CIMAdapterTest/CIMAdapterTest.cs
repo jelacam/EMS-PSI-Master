@@ -17,7 +17,7 @@ namespace CIMAdapterTest
     {
         #region Declarations
 
-        private NetworkModelGDAProxy GdaQueryProxy;
+      
         private CIMAdapter cimAdapterUnderTest;
         private FileStream stream;
         private string textBoxCimFile = string.Empty;
@@ -35,12 +35,12 @@ namespace CIMAdapterTest
         {
             cimAdapterUnderTest = new CIMAdapter();
 
-            GdaQueryProxy = Substitute.For<NetworkModelGDAProxy>("NetworkModelGDAEndpoint");
-            GdaQueryProxy.ApplyUpdate(null).ReturnsForAnyArgs(new UpdateResult()
+            NetworkModelGDAProxy.Instance = Substitute.For<INetworkModelGDAContract>();
+            NetworkModelGDAProxy.Instance.ApplyUpdate(null).ReturnsForAnyArgs(new UpdateResult()
             {
                 Message = "OK"
             });
-            GdaQueryProxy.ApplyUpdate(null).ReturnsForAnyArgs(new UpdateResult()
+            NetworkModelGDAProxy.Instance.ApplyUpdate(null).ReturnsForAnyArgs(new UpdateResult()
             {
                 Message = "OK"
             });
@@ -86,7 +86,7 @@ namespace CIMAdapterTest
 
         [Test]
         [TestCase(TestName = "ApplyUpdateDeltaOperation")]
-        [Ignore("NetworkGDAProxy puca")]
+        //[Ignore("NetworkGDAProxy puca")]
         public void ApplyUpdateDeltaOperation()
         {
             nmsDelta.AddDeltaOperation(DeltaOpType.Insert, rd, true);

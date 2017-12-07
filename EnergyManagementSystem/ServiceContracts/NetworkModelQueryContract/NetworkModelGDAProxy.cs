@@ -1,23 +1,34 @@
-﻿using System.Collections.Generic;
-using EMS.Common;
-using System.ServiceModel;
-using System;
-using System.Configuration;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="NetworkModelGDAProxy.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace EMS.ServiceContracts
 {
-	public class NetworkModelGDAProxy : INetworkModelGDAContract, IDisposable
-	{
-        //public NetworkModelGDAProxy(string endpointName)
-        //	: base(endpointName)
-        //{
-        //}
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+    using EMS.Common;
 
+    /// <summary>
+    /// Represent proxy class for communication with NetworkModelService
+    /// </summary>
+    public class NetworkModelGDAProxy : INetworkModelGDAContract, IDisposable
+	{
+        /// <summary>
+        /// INetworkModelGDAContract instace for proxy
+        /// </summary>
         private static INetworkModelGDAContract proxy;
+
+        /// <summary>
+        /// ChannelFactory instance for INetworkModelGDAContract
+        /// </summary>
         private static ChannelFactory<INetworkModelGDAContract> factory;
 
-        //private static EndpointAddress = NetworkModelGDAAddress;
-       
+        /// <summary>
+        /// Gets singleton instance for INetworkModelGDAContract
+        /// Sets singleton instance for INetworkModelGDAContract
+        /// </summary>
         public static INetworkModelGDAContract Instance
         {
             get
@@ -32,6 +43,7 @@ namespace EMS.ServiceContracts
 
                 return proxy;
             }
+
             set
             {
                 if (proxy == null)
@@ -41,7 +53,9 @@ namespace EMS.ServiceContracts
             }
         }
 
-
+        /// <summary>
+        /// Dispose method
+        /// </summary>
         public void Dispose()
         {
             try
@@ -55,11 +69,10 @@ namespace EMS.ServiceContracts
             {
                 Console.WriteLine("Communication exception: {0}", ce.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("GDA proxy exception: {0}", e.Message);
             }
-        
         }
 
 		public UpdateResult ApplyUpdate(Delta delta)
@@ -81,7 +94,6 @@ namespace EMS.ServiceContracts
 		{
 			return proxy.GetRelatedValues(source, propIds, association);
 		}
-
 		
 		public bool IteratorClose(int id)
 		{

@@ -77,6 +77,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScadaCLContract", "ServiceContracts\ScadaCLContract\ScadaCLContract.csproj", "{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationEngineContract", "ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj", "{D322124E-3C27-45ED-86BB-84DC5621845A}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonTest", "CommonTest", "{125E31D5-1DB3-401A-ACA0-2A2E0232B20E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMeasurementTest", "CommonMeasurementTest\CommonMeasurementTest.csproj", "{2F3BE0BA-869C-433B-894C-55298A35B127}"
@@ -358,8 +359,8 @@ Global
 		{6745D108-B4DF-4D0C-8B66-67133D0F164B}.Release|x64.Build.0 = Release|Any CPU
 		{6745D108-B4DF-4D0C-8B66-67133D0F164B}.Release|x86.ActiveCfg = Release|Any CPU
 		{6745D108-B4DF-4D0C-8B66-67133D0F164B}.Release|x86.Build.0 = Release|Any CPU
-		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|Any CPU.Build.0 = Debug|x64
 		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|x64.Build.0 = Debug|Any CPU
 		{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -382,8 +383,8 @@ Global
 		{D322124E-3C27-45ED-86BB-84DC5621845A}.Release|x64.Build.0 = Release|x64
 		{D322124E-3C27-45ED-86BB-84DC5621845A}.Release|x86.ActiveCfg = Release|Any CPU
 		{D322124E-3C27-45ED-86BB-84DC5621845A}.Release|x86.Build.0 = Release|Any CPU
-		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.Build.0 = Debug|x64
 		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x64.Build.0 = Debug|Any CPU
 		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x86.ActiveCfg = Debug|Any CPU

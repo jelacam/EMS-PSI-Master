@@ -1,33 +1,67 @@
-﻿using EMS.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="SCADACollectingService.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace EMS.Services.SCADACollectingService
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.Text;
+    using System.Threading.Tasks;
+    using EMS.Common;
+
+    /// <summary>
+    /// SCADACollectingService represents SCADA Collecting component
+    /// </summary>
     public class SCADACollectingService : IDisposable
     {
+        /// <summary>
+        /// Instance of SCADA Collecting logic
+        /// </summary>
         private SCADACollecting scadaCL = null;
+
+        /// <summary>
+        /// ServiceHost list
+        /// </summary>
         private List<ServiceHost> hosts = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SCADACollectingService"/> class
+        /// Creates new SCADACollecting instance and initialize hosts
+        /// </summary>
         public SCADACollectingService()
         {
-            scadaCL = new SCADACollecting();
-            InitializeHosts();
+            this.scadaCL = new SCADACollecting();
+            this.InitializeHosts();
         }
 
-        private void InitializeHosts()
-        {
-            hosts = new List<ServiceHost>();
-            hosts.Add(new ServiceHost(typeof(SCADACollecting)));
-        }
-
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
         public void Start()
         {
-            StartHosts();
+            this.StartHosts();
+        }
+
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        public void Dispose()
+        {
+            this.CloseHosts();
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Initialize service hosts
+        /// </summary>
+        private void InitializeHosts()
+        {
+            this.hosts = new List<ServiceHost>();
+            this.hosts.Add(new ServiceHost(typeof(SCADACollecting)));
         }
 
         private void StartHosts()
@@ -66,25 +100,15 @@ namespace EMS.Services.SCADACollectingService
                 }
             }
 
-
-
             message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
             Console.WriteLine(message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-
 
             message = "The SCADA Collecting Service is started.";
             Console.WriteLine("\n{0}", message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
         }
         
-
-        public void Dispose()
-        {
-            CloseHosts();
-            GC.SuppressFinalize(this);
-        }
-
         private void CloseHosts()
         {
 

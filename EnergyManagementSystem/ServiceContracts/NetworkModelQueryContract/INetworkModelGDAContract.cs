@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using EMS.Common;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="INetworkModelGDAContract.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace EMS.ServiceContracts
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.Text;
+    using EMS.Common;
+
     [ServiceContract]
     public interface INetworkModelGDAContract
     {
