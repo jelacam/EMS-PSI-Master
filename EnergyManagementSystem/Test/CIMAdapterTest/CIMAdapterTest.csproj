@@ -57,8 +57,11 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="EMSDataCIMProfile_Labs">
-      <HintPath>..\..\..\..\EMS_Team_repository\EnergyManagementSystem\bin64\DLL\EMSDataCIMProfile_Labs.dll</HintPath>
+      <HintPath>..\..\bin64\DLL\EMSDataCIMProfile_Labs.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=3.1.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NSubstitute.3.1.0\lib\net45\NSubstitute.dll</HintPath>
