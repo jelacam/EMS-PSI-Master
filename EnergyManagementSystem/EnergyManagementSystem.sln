@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -73,6 +73,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationEngineContract", "CrToCalculationEngine\CalculationEngineContract.csproj", "{D322124E-3C27-45ED-86BB-84DC5621845A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMeasurement", "CommonMeasurement\CommonMeasurement.csproj", "{94842C81-93DE-4490-A3D0-BC420C97B850}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonTest", "CommonTest", "{125E31D5-1DB3-401A-ACA0-2A2E0232B20E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMeasurementTest", "CommonMeasurementTest\CommonMeasurementTest.csproj", "{2F3BE0BA-869C-433B-894C-55298A35B127}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -351,6 +355,18 @@ Global
 		{94842C81-93DE-4490-A3D0-BC420C97B850}.Release|x64.Build.0 = Release|Any CPU
 		{94842C81-93DE-4490-A3D0-BC420C97B850}.Release|x86.ActiveCfg = Release|Any CPU
 		{94842C81-93DE-4490-A3D0-BC420C97B850}.Release|x86.Build.0 = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|x64.Build.0 = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F3BE0BA-869C-433B-894C-55298A35B127}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -380,6 +396,8 @@ Global
 		{C66761B6-9AA4-4483-9228-25F5A8FB91A1} = {2964A514-F050-4239-B4CA-DEFB248CE5E8}
 		{D322124E-3C27-45ED-86BB-84DC5621845A} = {CEFC4CE4-EF4A-4E34-AB3D-251825F77105}
 		{94842C81-93DE-4490-A3D0-BC420C97B850} = {F630D6EF-1628-4554-A550-21C81AD79356}
+		{125E31D5-1DB3-401A-ACA0-2A2E0232B20E} = {4EC6767A-09E0-44D1-B4E9-2F55124C116B}
+		{2F3BE0BA-869C-433B-894C-55298A35B127} = {125E31D5-1DB3-401A-ACA0-2A2E0232B20E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F2A5C02-A2F4-4021-990E-9A05482EA2E3}
