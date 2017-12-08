@@ -6,13 +6,13 @@
 
 namespace CommonMeasurementTest
 {
-    using EMS.CommonMeasurement;
-    using NUnit.Framework;
+	using EMS.CommonMeasurement;
+	using NUnit.Framework;
 
-    /// <summary>
-    /// Class for unit testing MeasurementUnit
-    /// </summary>
-    [TestFixture]
+	/// <summary>
+	/// Class for unit testing MeasurementUnit
+	/// </summary>
+	[TestFixture]
 	public class MeasurementUnitTest
 	{
 		/// <summary>
