@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SCADACollectingServiceSelfHost")]
+[assembly: AssemblyTitle("SmoothModbus")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SCADACollectingServiceSelfHost")]
+[assembly: AssemblyProduct("SmoothModbus")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6745d108-b4df-4d0c-8b66-67133d0f164b")]
+[assembly: Guid("09ef9d35-1ad9-49ce-8064-367b80f9e75d")]
 
 // Version information for an assembly consists of the following four values:
 //

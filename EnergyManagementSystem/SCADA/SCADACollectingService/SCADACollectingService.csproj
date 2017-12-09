@@ -72,6 +72,12 @@
     <ProjectReference Include="..\..\ServiceContracts\ScadaCLContract\ScadaCLContract.csproj">
       <Project>{F58FFCBD-49D3-4153-9336-9CBFBC17F55F}</Project>
       <Name>ScadaCLContract</Name>
+	</ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SmoothModbus\SmoothModbus.csproj">
+      <Project>{09ef9d35-1ad9-49ce-8064-367b80f9e75d}</Project>
+      <Name>SmoothModbus</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
