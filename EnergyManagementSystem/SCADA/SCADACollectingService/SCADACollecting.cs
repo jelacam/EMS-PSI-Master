@@ -5,25 +5,31 @@
 //-----------------------------------------------------------------------
 namespace EMS.Services.SCADACollectingService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using EMS.ServiceContracts;
+	using ServiceContracts;
+	using SmoothModbus;
 
-    /// <summary>
-    /// SCADACollecting component logic
-    /// </summary>
-    public class SCADACollecting : IScadaCLContract
+	/// <summary>
+	/// SCADACollecting component logic
+	/// </summary>
+	public class SCADACollecting : IScadaCLContract
     {
+
+		ModbusClient modbusClient;
+
+		public SCADACollecting()
+		{
+			modbusClient = new ModbusClient("localhost",502);
+			modbusClient.Connect();
+		}
+
         /// <summary>
         /// Method for getting data values from simulator
         /// </summary>
         /// <returns> true if values are successfully returned </returns>
         public bool GetDataFromSimulator()
         {
-            throw new NotImplementedException();
+			var values = modbusClient.ReadHoldingRegisters(0, 5);
+			return true;
         }
     }
 }

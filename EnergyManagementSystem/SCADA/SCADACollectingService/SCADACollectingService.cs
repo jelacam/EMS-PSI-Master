@@ -9,7 +9,7 @@ namespace EMS.Services.SCADACollectingService
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel;
-	using EMS.Common;
+	using Common;
 
 	/// <summary>
 	/// SCADACollectingService represents SCADA Collecting component
@@ -42,6 +42,7 @@ namespace EMS.Services.SCADACollectingService
 		public void Start()
 		{
 			this.StartHosts();
+			scadaCL.GetDataFromSimulator();
 		}
 
 		/// <summary>
