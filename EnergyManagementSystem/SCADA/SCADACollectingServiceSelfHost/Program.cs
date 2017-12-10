@@ -18,9 +18,9 @@ namespace SCADACollectingServiceSelfHost
 				CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 				Console.WriteLine("\n{0}\n", message);
 
-				using (SCADACollectingService scadaCOL = new SCADACollectingService())
+				using (SCADACollectingService scadaCL = new SCADACollectingService())
 				{
-					scadaCOL.Start();
+					scadaCL.Start();
 
 					message = "Press <Enter> to stop the service.";
 					CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

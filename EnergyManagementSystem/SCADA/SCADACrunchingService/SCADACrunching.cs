@@ -1,4 +1,5 @@
 ﻿using EMS.ServiceContracts;
+using SmoothModbus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,10 @@ namespace EMS.Services.SCADACrunchingService
     {
         public bool SendValues(byte[] value)
         {
-            throw new NotImplementedException();
+			string function = Enum.GetName(typeof(FunctionCode), value[0]);
+			Console.WriteLine("Function executed: {0}", function);
+
+			return true;
         }
 
         public void Test()

@@ -29,6 +29,8 @@ namespace EMS.Services.SCADACollectingService
         public bool GetDataFromSimulator()
         {
 			var values = modbusClient.ReadHoldingRegisters(0, 5);
+			ScadaCRProxy.Instance.SendValues(values);
+
 			return true;
         }
     }

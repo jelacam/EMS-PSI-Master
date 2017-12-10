@@ -67,7 +67,7 @@ namespace EMS.Services.SCADACollectingService
 		{
 			if (hosts == null || hosts.Count == 0)
 			{
-				throw new Exception("SCADA Commanding Services can not be opend because it is not initialized.");
+				throw new Exception("SCADA Collecting Services can not be opened because it is not initialized.");
 			}
 
 			string message = string.Empty;
