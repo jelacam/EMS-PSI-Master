@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Enums.cs" />
     <Compile Include="ModbusClient.cs" />
+    <Compile Include="ModbusHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

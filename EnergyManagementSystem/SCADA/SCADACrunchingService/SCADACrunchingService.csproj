@@ -73,6 +73,10 @@
       <Project>{FEDD8D01-0F4E-421F-9BC8-15E6F4BD9AF7}</Project>
       <Name>ScadaCRContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SmoothModbus\SmoothModbus.csproj">
+      <Project>{09ef9d35-1ad9-49ce-8064-367b80f9e75d}</Project>
+      <Name>SmoothModbus</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
