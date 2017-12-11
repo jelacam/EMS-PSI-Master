@@ -1,19 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IScadaCRContract.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.ServiceContracts
 {
-    [ServiceContract]
+	using System.ServiceModel;
+
+	/// <summary>
+	/// Contract for Scada Crunching
+	/// </summary>
+	[ServiceContract]
     public interface IScadaCRContract
     {
+		/// <summary>
+		/// Test method
+		/// </summary>
         [OperationContract]
         void Test();
 
-        [OperationContract]
+		/// <summary>
+		/// SendValues method implementation
+		/// </summary>
+		/// <param name="value">values to send</param>
+		/// <returns>returns true if success</returns>
+		[OperationContract]
         bool SendValues(byte[] value);
     }
 }

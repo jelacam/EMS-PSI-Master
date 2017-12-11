@@ -1,17 +1,27 @@
-﻿using EMS.ServiceContracts;
-using SmoothModbus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SCADACrunching.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace EMS.Services.SCADACrunchingService
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	using System;
+	using System.ServiceModel;
+	using EMS.ServiceContracts;
+	using SmoothModbus;
+
+	/// <summary>
+	/// SCADACrunching component logic
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class SCADACrunching : IScadaCRContract
     {
+		/// <summary>
+		/// SendValues method implementation
+		/// </summary>
+		/// <param name="value">values to send</param>
+		/// <returns>returns true if success</returns>
         public bool SendValues(byte[] value)
         {
 			string function = Enum.GetName(typeof(FunctionCode), value[0]);
@@ -27,11 +37,15 @@ namespace EMS.Services.SCADACrunchingService
 			{
 				Console.Write(" " + v);
 			}
+
 			Console.WriteLine();
 
 			return true;
         }
 
+		/// <summary>
+		/// Test method
+		/// </summary>
         public void Test()
         {
             Console.WriteLine("Test");

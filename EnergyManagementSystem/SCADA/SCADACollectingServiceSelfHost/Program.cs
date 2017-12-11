@@ -1,16 +1,25 @@
-﻿using EMS.Common;
-using EMS.Services.SCADACollectingService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace SCADACollectingServiceSelfHost
 {
-	class Program
+	using System;
+	using EMS.Common;
+	using EMS.Services.SCADACollectingService;
+
+	/// <summary>
+	/// Class for Main method
+	/// </summary>
+	public class Program
 	{
-		static void Main(string[] args)
+		/// <summary>
+		/// Main method
+		/// </summary>
+		/// <param name="args">arguments for method</param>
+		private static void Main(string[] args)
 		{
 			try
 			{

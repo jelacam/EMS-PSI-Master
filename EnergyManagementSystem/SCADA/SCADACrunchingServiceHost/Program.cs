@@ -1,16 +1,25 @@
-﻿using EMS.Common;
-using EMS.Services.SCADACrunchingService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace SCADACrunchingServiceHost
 {
-    class Program
+	using System;
+	using EMS.Common;
+	using EMS.Services.SCADACrunchingService;
+
+	/// <summary>
+	/// Class for Main method
+	/// </summary>
+	public class Program
     {
-        private static void Main(string[] args)
+		/// <summary>
+		/// Main method
+		/// </summary>
+		/// <param name="args">arguments for method</param>
+		private static void Main(string[] args)
         {
             try
             {
@@ -18,9 +27,9 @@ namespace SCADACrunchingServiceHost
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);
 
-                using (SCADACrunchingService scadaCMD = new SCADACrunchingService())
+                using (SCADACrunchingService scadaCR = new SCADACrunchingService())
                 {
-                    scadaCMD.Start();
+                    scadaCR.Start();
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
