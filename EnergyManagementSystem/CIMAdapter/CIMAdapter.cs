@@ -19,22 +19,22 @@ namespace EMS.CIMAdapter
 		{
 		}
 
-        private NetworkModelGDAProxy GdaQueryProxy
-        {
-            get
-            {
-                if (gdaQueryProxy != null)
-                {
-                    gdaQueryProxy.Abort();
-                    gdaQueryProxy = null;
-                }
+        //private NetworkModelGDAProxy GdaQueryProxy
+        //{
+        //    get
+        //    {
+        //        if (gdaQueryProxy != null)
+        //        {
+        //            gdaQueryProxy.Abort();
+        //            gdaQueryProxy = null;
+        //        }
 
-                gdaQueryProxy = new NetworkModelGDAProxy("NetworkModelGDAEndpoint");
-                gdaQueryProxy.Open();
+        //        gdaQueryProxy = new NetworkModelGDAProxy("NetworkModelGDAEndpoint");
+        //        gdaQueryProxy.Open();
 
-                return gdaQueryProxy;
-            }
-        }
+        //        return gdaQueryProxy;
+        //    }
+        //}
 
 		public Delta CreateDelta(Stream extract, SupportedProfiles extractType, out string log)
 		{
@@ -62,8 +62,9 @@ namespace EMS.CIMAdapter
 			if ((delta != null) && (delta.NumberOfOperations != 0))
 			{
 				//// NetworkModelService->ApplyUpdates
-                updateResult = GdaQueryProxy.ApplyUpdate(delta).ToString();
-			}
+                //updateResult = GdaQueryProxy.ApplyUpdate(delta).ToString();
+                updateResult = NetworkModelGDAProxy.Instance.ApplyUpdate(delta).ToString();
+            }
 
 			Thread.CurrentThread.CurrentCulture = culture;
 			return updateResult;
