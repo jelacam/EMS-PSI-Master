@@ -1,15 +1,15 @@
-
 //-----------------------------------------------------------------------
 // <copyright file="SCADACollectingService.cs" company="EMS-Team">
 // Copyright (c) EMS-Team. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
+
 namespace EMS.Services.SCADACollectingService
 {
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel;
-	using EMS.Common;
+	using Common;
 
 	/// <summary>
 	/// SCADACollectingService represents SCADA Collecting component
@@ -42,10 +42,11 @@ namespace EMS.Services.SCADACollectingService
 		public void Start()
 		{
 			this.StartHosts();
+			this.scadaCL.GetDataFromSimulator();
 		}
 
 		/// <summary>
-		/// Dispose
+		/// Dispose method
 		/// </summary>
 		public void Dispose()
 		{
@@ -62,15 +63,18 @@ namespace EMS.Services.SCADACollectingService
 			this.hosts.Add(new ServiceHost(typeof(SCADACollecting)));
 		}
 
+		/// <summary>
+		/// Starting hosts
+		/// </summary>
 		private void StartHosts()
 		{
-			if (hosts == null || hosts.Count == 0)
+			if (this.hosts == null || this.hosts.Count == 0)
 			{
-				throw new Exception("SCADA Commanding Services can not be opend because it is not initialized.");
+				throw new Exception("SCADA Collecting Services can not be opened because it is not initialized.");
 			}
 
 			string message = string.Empty;
-			foreach (ServiceHost host in hosts)
+			foreach (ServiceHost host in this.hosts)
 			{
 				try
 				{
@@ -107,15 +111,17 @@ namespace EMS.Services.SCADACollectingService
 			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 		}
 
+		/// <summary>
+		/// Closing hosts
+		/// </summary>
 		private void CloseHosts()
 		{
-
-			if (hosts == null || hosts.Count == 0)
+			if (this.hosts == null || this.hosts.Count == 0)
 			{
 				throw new Exception("SCADA Collecting Services can not be closed because it is not initialized.");
 			}
 
-			foreach (ServiceHost host in hosts)
+			foreach (ServiceHost host in this.hosts)
 			{
 				host.Close();
 			}
@@ -125,5 +131,4 @@ namespace EMS.Services.SCADACollectingService
 			Console.WriteLine("\n\n{0}", message);
 		}
 	}
-
 }
