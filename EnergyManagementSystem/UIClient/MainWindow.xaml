@@ -8,7 +8,6 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
 		xmlns:view="clr-namespace:UIClient.View"
         xmlns:converters="clr-namespace:UIClient.Converters"
-		Loaded="Window_Loaded"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000"
         Name="mainWin">
@@ -57,9 +56,10 @@
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Button Name="ResetBtn" Grid.Column="0" Margin="5" Content="Reset" Click="ResetBtn_Click"></Button>
-					<Button Name="ExportBtn" Grid.Column="1" Margin="5" 
-                            Content="ExportToXml" Click="ExportBtn_Click"
-                            IsEnabled="{Binding ElementName=borderHelper,Path=IsEnabled}"/>
+					<!--<Button Name="ExportBtn" Grid.Column="1" Margin="5" 
+                            Content="ExportToXml" 
+							Command="{Binding }"
+                            IsEnabled="{Binding ElementName=borderHelper,Path=IsEnabled}"/>-->
 					<Border Name="borderHelper" DataContext="{Binding ElementName=mainWin,Path=ResList}" >
 						<Border.Style>
 							<Style TargetType="Border">
@@ -141,7 +141,7 @@
 			</Grid>
 		</Grid>
 		<Grid Grid.Row="1" Background="Gray">
-			<Button Content="Find" Margin="5" Click="Find_Click"/>
+			<Button Content="Find" Margin="5" Command="{Binding FindCommand}"/>
 		</Grid>
 		<ScrollViewer Grid.Row="2" Margin="10">
 			<ItemsControl x:Name="ViewBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" ItemsSource="{Binding ResList}">
