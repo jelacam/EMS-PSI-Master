@@ -60,14 +60,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalogLocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SCADACrunching.cs" />
     <Compile Include="SCADACrunchingService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModelService\DataModel\DataModel.csproj">
+      <Project>{ade96497-7c11-40b6-ae82-57f956c9f104}</Project>
+      <Name>DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
+      <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
+      <Name>CalculationEngineContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\ScadaCRContract\ScadaCRContract.csproj">
       <Project>{FEDD8D01-0F4E-421F-9BC8-15E6F4BD9AF7}</Project>

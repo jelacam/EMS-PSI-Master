@@ -26,6 +26,8 @@ namespace EMS.Services.SCADACollectingService
 		/// </summary>
 		private List<ServiceHost> hosts = null;
 
+		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SCADACollectingService"/> class
 		/// Creates new SCADACollecting instance and initialize hosts
@@ -42,7 +44,14 @@ namespace EMS.Services.SCADACollectingService
 		public void Start()
 		{
 			this.StartHosts();
-			this.scadaCL.GetDataFromSimulator();
+		}
+
+		/// <summary>
+		/// Starting collecting data from simulator
+		/// </summary>
+		public void StartCollectingData()
+		{
+			this.scadaCL.StartCollectingData();
 		}
 
 		/// <summary>
