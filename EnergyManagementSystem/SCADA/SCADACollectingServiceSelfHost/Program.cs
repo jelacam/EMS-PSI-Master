@@ -31,6 +31,8 @@ namespace SCADACollectingServiceSelfHost
 				{
 					scadaCL.Start();
 
+					scadaCL.StartCollectingData();
+
 					message = "Press <Enter> to stop the service.";
 					CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 					Console.WriteLine(message);
