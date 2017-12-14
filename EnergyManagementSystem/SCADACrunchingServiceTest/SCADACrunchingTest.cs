@@ -7,7 +7,7 @@
 namespace SCADACrunchingServiceTest
 {
 	using EMS.Services.SCADACrunchingService;
-	using NUnit.Framework;
+	using NUnit.Framework;	
 
 	/// <summary>
 	/// Class for unit testing SCADACrunching
@@ -40,16 +40,38 @@ namespace SCADACrunchingServiceTest
 		}
 
 		/// <summary>
+		/// Unit test for constructor without parameters
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SCADACrunchingConstructor")]
+		public void Constructor()
+		{
+			SCADACrunching cr = new SCADACrunching();
+			Assert.IsNotNull(cr);
+		}
+
+		/// <summary>
 		/// Unit test for SCADACrunching SendValues method
 		/// </summary>
 		[Test]
 		[TestCase(TestName = "SCADACrunchingSendValuesMethod")]
+		[Ignore("Ne pozove se otimizacija na CE")]
 		public void SendValuesMethod()
 		{
-			byte[] val = new byte[3];
-			val[0] = 1; // ReadCoils
-			val[1] = 1; // arrayLength
-			val[2] = 0;
+			int length = 100;
+			byte[] val = new byte[length];
+			for (int i = 0; i < length; i++)
+			{
+				val[i] = 0x00;
+			}
+			val[0] = 3; // ReadHoldingRegisters
+			val[1] = 20; // arrayLength
+			val[2] = 1;
+			val[3] = 2;
+			val[4] = 3;
+			val[5] = 4;
+			val[6] = 5;
+			val[7] = 6;
 			this.resultT = this.scadaCR.SendValues(val);
 			Assert.IsTrue(this.resultT);
 		}
