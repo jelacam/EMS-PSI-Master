@@ -7,13 +7,13 @@
 namespace EMS.Services.SCADACrunchingService
 {
 	using System;
-	using System.ServiceModel;
-	using EMS.ServiceContracts;
-	using SmoothModbus;
 	using System.Collections.Generic;
-	using NetworkModelService.DataModel.Meas;
-	using CommonMeasurement;
+	using System.ServiceModel;		
 	using Common;
+	using CommonMeasurement;	
+	using NetworkModelService.DataModel.Meas;
+	using ServiceContracts;
+	using SmoothModbus;
 
 	/// <summary>
 	/// SCADACrunching component logic
@@ -21,19 +21,25 @@ namespace EMS.Services.SCADACrunchingService
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
 	public class SCADACrunching : IScadaCRContract
 	{
+		/// <summary>
+		/// list for storing AnalogLocation values
+		/// </summary>
 		private List<AnalogLocation> listOfAnalog;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SCADACrunching" /> class
+		/// </summary>
 		public SCADACrunching()
 		{
-			//TODO treba izmeniti kad se napravi transakcija sa NMS-om
-			listOfAnalog = new List<AnalogLocation>();
+			// TODO treba izmeniti kad se napravi transakcija sa NMS-om
+			this.listOfAnalog = new List<AnalogLocation>();
 			for (int i = 0; i < 5; i++)
 			{
 				Analog analog = new Analog(10000 + i);
 				analog.MinValue = 0;
 				analog.MaxValue = 5;
 				analog.PowerSystemResource = 20000 + i;
-				listOfAnalog.Add(new AnalogLocation()
+				this.listOfAnalog.Add(new AnalogLocation()
 				{
 					Analog = analog,
 					StartAddress = i * 4, // flaot value 4bytes
@@ -55,13 +61,12 @@ namespace EMS.Services.SCADACrunchingService
 			int arrayLength = value[1];
 			Console.WriteLine("Byte count: {0}", arrayLength);
 
-
 			List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-			foreach (AnalogLocation analogLoc in listOfAnalog)
+			foreach (AnalogLocation analogLoc in this.listOfAnalog)
 			{
 				// startIndex = 2 because first two bytes a metadata
 				float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length, 2 + analogLoc.StartAddress);
-				CheckForAlarms(values[0], analogLoc.Analog);
+				this.CheckForAlarms(values[0], analogLoc.Analog);
 
 				MeasurementUnit measUnit = new MeasurementUnit();
 				measUnit.Gid = analogLoc.Analog.PowerSystemResource;
@@ -87,17 +92,7 @@ namespace EMS.Services.SCADACrunchingService
 			}
 
 			return isSuccess;
-		}
-
-		private void CheckForAlarms(float value, Analog analog)
-		{
-			if (value < analog.MinValue || value > analog.MaxValue)
-			{
-				CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on Gid = {0}", analog.GlobalId);
-				Console.WriteLine("Alarm on Gid = {0}", analog.GlobalId);
-
-			}
-		}
+		}	
 
 		/// <summary>
 		/// Test method
@@ -105,6 +100,20 @@ namespace EMS.Services.SCADACrunchingService
 		public void Test()
 		{
 			Console.WriteLine("Test");
+		}
+
+		/// <summary>
+		/// Method for checking alarms
+		/// </summary>
+		/// <param name="value">measured value</param>
+		/// <param name="analog">analog instance</param>
+		private void CheckForAlarms(float value, Analog analog)
+		{
+			if (value < analog.MinValue || value > analog.MaxValue)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on Gid = {0}", analog.GlobalId);
+				Console.WriteLine("Alarm on Gid = {0}", analog.GlobalId);
+			}
 		}
 	}
 }
