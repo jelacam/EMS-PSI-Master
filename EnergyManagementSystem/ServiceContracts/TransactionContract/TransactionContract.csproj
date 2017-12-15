@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7DB4A704-0FDB-4CDE-A4AB-FA0AF9708780}</ProjectGuid>
+    <ProjectGuid>{6F89B2AE-4EED-479E-AD58-69B8A6865820}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EMS.ServiceContracts</RootNamespace>
