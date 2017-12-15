@@ -6,8 +6,12 @@
 
 namespace SCADACrunchingServiceTest
 {
+	using EMS.CommonMeasurement;
+	using EMS.ServiceContracts;
 	using EMS.Services.SCADACrunchingService;
-	using NUnit.Framework;	
+	using NSubstitute;
+	using NUnit.Framework;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// Class for unit testing SCADACrunching
@@ -36,6 +40,8 @@ namespace SCADACrunchingServiceTest
 		[OneTimeSetUp]
 		public void SetupTest()
 		{
+			CalculationEngineProxy.Instance = Substitute.For<ICalculationEngineContract>();
+			CalculationEngineProxy.Instance.OptimisationAlgorithm(new List<MeasurementUnit>()).ReturnsForAnyArgs(true);
 			this.scadaCR = new SCADACrunching();
 		}
 
@@ -55,7 +61,6 @@ namespace SCADACrunchingServiceTest
 		/// </summary>
 		[Test]
 		[TestCase(TestName = "SCADACrunchingSendValuesMethod")]
-		[Ignore("Ne pozove se otimizacija na CE")]
 		public void SendValuesMethod()
 		{
 			int length = 100;
