@@ -1,4 +1,5 @@
 ﻿using EMS.Common;
+using EMS.Services.NetworkModelService.DataModel.Meas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EMS.Services.TransactionManagerService
 {
-    public class TransactionManagerService: IDisposable
+    public class TransactionManagerService : IDisposable
     {
         private TransactionManager transactionManager = null;
         private List<ServiceHost> hosts = null;
@@ -66,12 +67,9 @@ namespace EMS.Services.TransactionManagerService
                 }
             }
 
-
-
             message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
             Console.WriteLine(message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-
 
             message = "The Transaction Manager Service is started.";
             Console.WriteLine("\n{0}", message);
@@ -99,6 +97,11 @@ namespace EMS.Services.TransactionManagerService
             string message = "The Transaction Managers Service is closed.";
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             Console.WriteLine("\n\n{0}", message);
+        }
+
+        public void ScadaCRPrepare(Delta analogDelta)
+        {
+            TransactionProxy.Instance.Prepare(analogDelta);
         }
     }
 }

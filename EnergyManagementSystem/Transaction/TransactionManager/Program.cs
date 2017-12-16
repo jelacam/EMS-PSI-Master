@@ -1,4 +1,5 @@
 ﻿using EMS.Common;
+using EMS.Services.NetworkModelService.DataModel.Meas;
 using EMS.Services.TransactionManagerService;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ namespace TransactionManager
                 using (TransactionManagerService tmService = new TransactionManagerService())
                 {
                     tmService.Start();
+
+                    Console.WriteLine("Analog test");
+
+                    tmService.ScadaCRPrepare(new Delta());
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

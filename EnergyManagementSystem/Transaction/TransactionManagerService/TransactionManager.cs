@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace EMS.Services.TransactionManagerService
 {
-    public class TransactionManager : ITransactionContract
+    public class TransactionManager : ITransactionCallback
     {
-        public void Test()
+        public void Response(string message)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Response: {0}", message);
         }
     }
 }
