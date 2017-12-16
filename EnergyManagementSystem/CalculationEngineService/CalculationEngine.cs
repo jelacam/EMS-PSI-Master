@@ -5,10 +5,11 @@
 //-----------------------------------------------------------------------
 
 namespace EMS.Services.CalculationEngineService
-{    
-    using System.Collections.Generic;
-    using CommonMeasurement;
-
+{
+	using System;
+	using System.Collections.Generic;
+	using CommonMeasurement;
+	
 	/// <summary>
 	/// Class for CalculationEngine
 	/// </summary>
@@ -33,14 +34,17 @@ namespace EMS.Services.CalculationEngineService
 			{
 				if (measurements.Count > 0)
 				{
+					Console.WriteLine("CE: Optimize");
 					for (int i = 0; i < measurements.Count; i++)
 					{
 						measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
+						Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
 					}
 
 					result= true;
 				}
 			}
+
 			return result;
         }
     }
