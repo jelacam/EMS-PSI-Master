@@ -78,7 +78,8 @@ namespace SmoothModbus
 			Connect();
 		}
 
-		public void Disconnect() {
+		public void Disconnect()
+		{
 			client.Client.Disconnect(true);
 		}
 
@@ -108,12 +109,24 @@ namespace SmoothModbus
 
 		public void WriteSingleCoil(ushort startingAddress, bool value)
 		{
-			SendForWrite(startingAddress, 0xFF00, FunctionCode.WriteSingleCoil);
+			ushort shortValue = value == true ? (ushort)0xFF00 : (ushort)0x0000;
+
+			SendForWrite(startingAddress, shortValue, FunctionCode.WriteSingleCoil);
 		}
 
-		public void WriteSingleRegister(ushort startingAddress,ushort value)
+		public void WriteSingleRegister(ushort startingAddress, ushort value)
 		{
-			SendForWrite(startingAddress, value,FunctionCode.WriteSingleRegister);
+			SendForWrite(startingAddress, value, FunctionCode.WriteSingleRegister);
+		}
+
+		public void WriteSingleRegister(ushort startingAddress, float value)
+		{
+			byte[] bytes = BitConverter.GetBytes(value);
+			ushort upper = BitConverter.ToUInt16(bytes, 0);
+			ushort lower = BitConverter.ToUInt16(bytes, 2);
+
+			SendForWrite(startingAddress, upper, FunctionCode.WriteSingleRegister);
+			SendForWrite((ushort)(startingAddress + 1), lower, FunctionCode.WriteSingleRegister);
 		}
 
 		private byte[] SendAndReceive(ushort startingAddress, ushort quantity, FunctionCode functionCode)
@@ -169,13 +182,13 @@ namespace SmoothModbus
 		private byte[] PreparePackageForWrite(ushort outputAddress, ushort outputValue, FunctionCode functionCode)
 		{
 			byte[] startAddressBytes = BitConverter.GetBytes(outputAddress);
-			byte[] quanityBytes = BitConverter.GetBytes(outputValue);
+			byte[] outValue = BitConverter.GetBytes(outputValue);
 
 			sendData[0] = (byte)functionCode;
 			sendData[1] = startAddressBytes[1];
 			sendData[2] = startAddressBytes[0];
-			sendData[3] = quanityBytes[1];
-			sendData[4] = quanityBytes[0];
+			sendData[3] = outValue[0];
+			sendData[4] = outValue[1];
 
 			byte[] data = new byte[header.Length + sendData.Length + 1];
 

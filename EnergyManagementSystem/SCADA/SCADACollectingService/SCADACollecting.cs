@@ -6,8 +6,11 @@
 
 namespace EMS.Services.SCADACollectingService
 {
+	using Common;
 	using ServiceContracts;
 	using SmoothModbus;
+	using System.Threading;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// SCADACollecting component logic
@@ -28,16 +31,40 @@ namespace EMS.Services.SCADACollectingService
 			this.modbusClient.Connect();
 		}
 
+		public void StartCollectingData()
+		{
+			modbusClient.WriteSingleRegister(0, 6f);
+			Task task = new Task(() =>
+			{
+				while (true)
+				{
+					GetDataFromSimulator();
+					Thread.Sleep(5000);
+				}
+			});
+			task.Start();
+		}
+
 		/// <summary>
 		/// Method for getting data values from simulator
 		/// </summary>
 		/// <returns> true if values are successfully returned </returns>
 		public bool GetDataFromSimulator()
 		{
-			var values = this.modbusClient.ReadHoldingRegisters(0, 5);
-			ScadaCRProxy.Instance.SendValues(values);
+			var values = this.modbusClient.ReadHoldingRegisters(0, 10);
 
-			return true;
+			bool isSuccess = false;
+			try
+			{
+				isSuccess = ScadaCRProxy.Instance.SendValues(values);
+			}
+			catch (System.Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, ex.Message);
+				CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
+			}
+
+			return isSuccess;
 		}
 	}
 }

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9328821B-A2D6-4735-9CA3-EC63D9B36E2D}</ProjectGuid>
+    <ProjectGuid>{B58C4EBA-AE0A-40E9-85EE-A3ACCA49D7B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EMS.Services.SCADACrunchingService</RootNamespace>
-    <AssemblyName>SCADACrunchingService</AssemblyName>
+    <RootNamespace>EMS.Services.TransactionManagerService</RootNamespace>
+    <AssemblyName>TransactionManagerService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -60,43 +60,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalogLocation.cs" />
+    <Compile Include="TransactionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SCADACrunching.cs" />
-    <Compile Include="SCADACrunchingService.cs" />
+    <Compile Include="TransactionManagerService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonMeasurement\CommonMeasurement.csproj">
-      <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
-      <Name>CommonMeasurement</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NetworkModelService\DataModel\DataModel.csproj">
-      <Project>{ade96497-7c11-40b6-ae82-57f956c9f104}</Project>
-      <Name>DataModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
-      <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
-      <Name>CalculationEngineContract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ServiceContracts\ScadaCRContract\ScadaCRContract.csproj">
-      <Project>{FEDD8D01-0F4E-421F-9BC8-15E6F4BD9AF7}</Project>
-      <Name>ScadaCRContract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SmoothModbus\SmoothModbus.csproj">
-      <Project>{09ef9d35-1ad9-49ce-8064-367b80f9e75d}</Project>
-      <Name>SmoothModbus</Name>
+    <ProjectReference Include="..\..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{7DB4A704-0FDB-4CDE-A4AB-FA0AF9708780}</Project>
+      <Name>TransactionContract</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

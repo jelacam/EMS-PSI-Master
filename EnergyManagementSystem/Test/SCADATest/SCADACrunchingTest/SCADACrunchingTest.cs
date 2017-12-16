@@ -6,8 +6,12 @@
 
 namespace SCADACrunchingServiceTest
 {
+	using EMS.CommonMeasurement;
+	using EMS.ServiceContracts;
 	using EMS.Services.SCADACrunchingService;
+	using NSubstitute;
 	using NUnit.Framework;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// Class for unit testing SCADACrunching
@@ -36,7 +40,20 @@ namespace SCADACrunchingServiceTest
 		[OneTimeSetUp]
 		public void SetupTest()
 		{
+			CalculationEngineProxy.Instance = Substitute.For<ICalculationEngineContract>();
+			CalculationEngineProxy.Instance.OptimisationAlgorithm(new List<MeasurementUnit>()).ReturnsForAnyArgs(true);
 			this.scadaCR = new SCADACrunching();
+		}
+
+		/// <summary>
+		/// Unit test for constructor without parameters
+		/// </summary>
+		[Test]
+		[TestCase(TestName = "SCADACrunchingConstructor")]
+		public void Constructor()
+		{
+			SCADACrunching cr = new SCADACrunching();
+			Assert.IsNotNull(cr);
 		}
 
 		/// <summary>
@@ -46,10 +63,20 @@ namespace SCADACrunchingServiceTest
 		[TestCase(TestName = "SCADACrunchingSendValuesMethod")]
 		public void SendValuesMethod()
 		{
-			byte[] val = new byte[3];
-			val[0] = 1; // ReadCoils
-			val[1] = 1; // arrayLength
-			val[2] = 0;
+			int length = 100;
+			byte[] val = new byte[length];
+			for (int i = 0; i < length; i++)
+			{
+				val[i] = 0x00;
+			}
+			val[0] = 3; // ReadHoldingRegisters
+			val[1] = 20; // arrayLength
+			val[2] = 1;
+			val[3] = 2;
+			val[4] = 3;
+			val[5] = 4;
+			val[6] = 5;
+			val[7] = 6;
 			this.resultT = this.scadaCR.SendValues(val);
 			Assert.IsTrue(this.resultT);
 		}
