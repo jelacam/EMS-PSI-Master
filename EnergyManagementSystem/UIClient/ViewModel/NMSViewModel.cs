@@ -117,14 +117,14 @@ namespace UIClient.ViewModel
 		}
 		private void GoToReferenceCommandExecute(object obj)
 		{
-			//var grid = sender as Grid;
-			//var property = grid.DataContext as Property;
-			//var resDesc = grid.Tag as ResourceDescription;
+			var grid = obj as Grid;
+			var property = grid.DataContext as Property;
+			var resDesc = grid.Tag as ResourceDescription;
 
-			//List<ResourceDescription> refResList = new List<ResourceDescription>();
+			List<ResourceDescription> refResList = new List<ResourceDescription>();
 
-			//ReferenceView RefView = new ReferenceView(tgda, resDesc.Id, property);
-			//RefView.Visibility = System.Windows.Visibility.Visible;
+			ReferenceView RefView = new ReferenceView(tgda, resDesc.Id, property);
+			RefView.Visibility = System.Windows.Visibility.Visible;
 		}
 		#endregion
 

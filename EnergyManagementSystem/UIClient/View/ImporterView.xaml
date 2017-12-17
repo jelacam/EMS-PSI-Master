@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:UIClient.View"
              mc:Ignorable="d" 
 			 xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="500" d:DesignWidth="900">
 	<Grid>
 		<Grid.RowDefinitions>

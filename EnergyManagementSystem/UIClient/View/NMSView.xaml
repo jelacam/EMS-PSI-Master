@@ -8,6 +8,7 @@
 			 xmlns:common="clr-namespace:EMS.Common;assembly=EMS.Common"
 			 xmlns:converters="clr-namespace:UIClient.Converters"
              mc:Ignorable="d" 
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="900" d:DesignWidth="1000">
 	<UserControl.Resources>
 		<converters:EMSTypeToStringConverter x:Key="enumDMSTypeConverter" />
@@ -84,8 +85,9 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<!--TypeCheckbox-->
-									<CheckBox Name="TypeCheckBox" Content="{Binding Converter={StaticResource enumDMSTypeConverter}}"
-											  Command="{Binding TypeCheckBoxChangedCommand}">
+									<CheckBox Name="TypeCheckBox" Content="{Binding Converter={StaticResource enumDMSTypeConverter}}" 
+											  Command="{Binding Path=DataContext.TypeCheckBoxChangedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}">
+
 										<CheckBox.Style>
 											<Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxDarkStyle}">
 												<Style.Triggers>
@@ -95,6 +97,7 @@
 												</Style.Triggers>
 											</Style>
 										</CheckBox.Style>
+										
 									</CheckBox>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
@@ -119,7 +122,7 @@
 									<!--TypeCheckbox-->
 									<CheckBox Name="PropCheckBox" Content="{Binding Converter={StaticResource modelCodeConverter}}">
 										<CheckBox.Style>
-											<Style TargetType="CheckBox">
+											<Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxDarkStyle}">
 												<Style.Triggers>
 													<Trigger Property="Content" Value="">
 														<Setter Property="Visibility" Value="Collapsed"/>
@@ -207,8 +210,14 @@
 																	<ColumnDefinition Width="Auto"/>
 																</Grid.ColumnDefinitions>
 																<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Converter={StaticResource propertyValueConverter}}"></TextBlock>
-																<Grid Tag="{Binding ElementName=PropList,Path=DataContext}"  Grid.Column="1" Width="18" Height="18" Margin="5,2,0,2"
-                                                                  >
+																<Grid Tag="{Binding ElementName=PropList,Path=DataContext}" Grid.Column="1" Width="18" Height="18" Margin="5,2,0,2">
+																	
+																		<i:Interaction.Triggers>
+																			<i:EventTrigger EventName="MouseLeftButtonDown">
+																				<i:InvokeCommandAction Command="{Binding DataContext.GoToReferenceCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" 
+																									   CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Grid}}"/>
+																			</i:EventTrigger>
+																		</i:Interaction.Triggers>
 																	<Image  Source="pack://application:,,,/Resources/search.png" />
 																	<Grid.Style>
 																		<Style TargetType="Grid">

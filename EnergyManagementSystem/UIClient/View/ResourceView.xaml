@@ -4,13 +4,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:UIClient.View"
+			 xmlns:converters="clr-namespace:UIClient.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              x:Name="_this">
-	<Grid Background="LightGray" >
+	<UserControl.Resources>
+		<converters:GlobalIdToEMSTypeStringConverter x:Key="longToTypeConverter" />
+		<converters:PropertyValueConverter x:Key="propertyValueConverter" />
+		<converters:ModelCodeToStringConverter x:Key="modelCodeConverter" />
+	</UserControl.Resources>
+	<!--ResourceView-->
+	<Grid Background="Gray" MinWidth="300" Margin="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
+			<RowDefinition Height="150"/>
 		</Grid.RowDefinitions>
 		<Grid Grid.Row="0" Margin="5">
 			<Grid.RowDefinitions>
@@ -18,27 +25,59 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<StackPanel Grid.Row="0" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
-				<TextBlock Text="Type"/>
-				<TextBlock Text="{Binding Type,ElementName=_this}"/>
+				<TextBlock Text="Type: "/>
+				<TextBlock Text="{Binding Id,Converter={StaticResource longToTypeConverter}}"/>
 			</StackPanel>
 			<StackPanel Grid.Row="1" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
-				<TextBlock Text="Global Id"/>
-				<TextBlock Text="{Binding RelativeSource={RelativeSource 
-                            AncestorType=UserControl}, Path=ResourceDesc.Id}"/>
+				<TextBlock Text="Global Id: "/>
+				<TextBlock Text="{Binding Id,StringFormat={}0x{0:X16}}"/>
 			</StackPanel>
 		</Grid>
-
 		<Grid Grid.Row="1" Margin="5">
-			<ListView ItemsSource="{Binding Path = Properties,ElementName=_this}">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<StackPanel>
-							<TextBlock Text="{Binding Type}"></TextBlock>
-							<TextBlock Text="{Binding Id}"></TextBlock>
-							<TextBlock>aaaa</TextBlock>
-						</StackPanel>
-					</DataTemplate>
-				</ListView.ItemTemplate>
+			<ListView Name="PropList" ItemsSource="{Binding Properties}">
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<Setter Property="IsEnabled" Value="True"/>
+					</Style>
+				</ListView.ItemContainerStyle>
+				<ListView.View>
+					<GridView>
+						<GridViewColumn Header="Type" x:Name="GV_Type" Width="100" DisplayMemberBinding="{Binding Type}" />
+						<GridViewColumn Header="Id" Width="130" DisplayMemberBinding="{Binding Id,Converter={StaticResource modelCodeConverter}}" />
+						<GridViewColumn Header="Value" Width="150">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="Auto"/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Converter={StaticResource propertyValueConverter}}"></TextBlock>
+										<Grid Tag="{Binding ElementName=PropList,Path=DataContext}"  Grid.Column="1" Width="18" Height="18" Margin="5,2,0,2">
+											<Image  Source="pack://application:,,,/Resources/search.png" />
+											<Grid.Style>
+												<Style TargetType="Grid">
+													<Setter Property="Visibility" Value="Collapsed"></Setter>
+													<Style.Triggers>
+														<DataTrigger Binding="{Binding Path=Type}" Value="Reference">
+															<Setter Property="Visibility" Value="Visible"></Setter>
+														</DataTrigger>
+														<DataTrigger Binding="{Binding Path=Type}" Value="ReferenceVector">
+															<Setter Property="Visibility" Value="Visible"></Setter>
+														</DataTrigger>
+														<Trigger Property="IsMouseOver" Value="True">
+															<Setter Property="Background" Value="LightBlue"/>
+														</Trigger>
+													</Style.Triggers>
+												</Style>
+											</Grid.Style>
+										</Grid>
+									</Grid>
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+					</GridView>
+				</ListView.View>
 			</ListView>
 		</Grid>
 	</Grid>
