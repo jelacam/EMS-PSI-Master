@@ -28,6 +28,11 @@ namespace UIClient.ViewModel
 		private string convertReport;
 		private string applyReport;
 
+		public ImporterViewModel()
+		{
+			cimFileLocation = string.Empty;
+		}
+
 		#region Commands
 		public ICommand ShowOpenDialogCommand => showOpenDialogCommand ?? (showOpenDialogCommand = new RelayCommand(ShowOpenDialogCommandExecute));
 
