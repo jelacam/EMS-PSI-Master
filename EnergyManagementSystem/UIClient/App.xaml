@@ -11,6 +11,7 @@
 				<ResourceDictionary Source="Themes/IG/IG.MSControls.Core.Implicit.xaml" />
 				<ResourceDictionary Source="Themes/IG/IG.MSControls.Toolkit.Implicit.xaml" />
 				<ResourceDictionary Source="Themes/IG/MenuStyles.xaml" />
+				<ResourceDictionary Source="Styles/GeneralStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
 			<SolidColorBrush x:Key="BackgroundKey" Color="#FFFFFF" />

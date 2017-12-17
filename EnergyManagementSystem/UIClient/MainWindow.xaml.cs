@@ -21,7 +21,7 @@ namespace UIClient
 		public MainWindow()
 		{
 			
-			DataContext = new MainWindowViewModel(this);
+			DataContext = new MainWindowViewModel();
 			InitializeComponent();
 
 			//string message = string.Format("Network Model Service Test Client is up and running...");

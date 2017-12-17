@@ -1,0 +1,55 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UIClient.Styles">
+
+	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
+	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
+	<SolidColorBrush x:Key="LigthBrush" Color="#FF6E6E6E"/>
+
+	<Style TargetType="Window" x:Key="BasicWindowStyle">
+		<Setter Property="Background" Value="{StaticResource AppBackground}" ></Setter>
+		<Setter Property="Foreground" Value="White" ></Setter>
+	</Style>
+
+	<Style TargetType="Label" >
+		<Setter Property="Foreground" Value="White" ></Setter>
+	</Style>
+
+	<Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}" x:Key="CheckBoxDarkStyle">
+		<Setter Property="Foreground" Value="White" ></Setter>
+	</Style>
+
+	<Style TargetType="TabControl" x:Key="TabControlStyle">
+		<Setter Property="Foreground" Value="White" ></Setter>
+		<Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+		<Setter Property="BorderThickness" Value="0" ></Setter>
+	</Style>
+	
+	<Style TargetType="TabItem" x:Key="TabItemStyle">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TabItem">
+					<Grid Name="Panel">
+						<ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsSelected" Value="True">
+							<Setter TargetName="Panel" Property="Background" Value="{StaticResource DarkBrush}" />
+							<Setter Property="FontSize" Value="15"/>
+							<Setter Property="Margin" Value="-1,0,-1,-1"/>
+						</Trigger> 
+						<Trigger Property="IsSelected" Value="False">
+							<Setter TargetName="Panel" Property="Background" Value="{StaticResource AppBackground}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>
