@@ -101,7 +101,18 @@ namespace EMS.Services.TransactionManagerService
 
         public void ScadaCRPrepare(Delta analogDelta)
         {
-            TransactionProxy.Instance.Prepare(analogDelta);
+            TransactionCRProxy.Instance.Prepare(analogDelta);
         }
+
+        public void ScadaCMDPrepare(Delta analogDelta)
+        {
+            TransactionCMDProxy.Instance.Prepare(analogDelta);
+        }
+
+        public void NMSPrepare(Delta delta)
+        {
+            TransactionNMSProxy.Instance.Prepare(delta);
+        }
+
     }
 }

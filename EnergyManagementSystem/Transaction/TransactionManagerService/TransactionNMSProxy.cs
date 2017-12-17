@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ServiceModel;
 using EMS.Common;
+using System.ServiceModel;
 
 namespace EMS.Services.TransactionManagerService
 {
-    public class TransactionProxy : ITransactionContract
+    public class TransactionNMSProxy : ITransactionContract
     {
         private static ITransactionContract proxy;
         private static DuplexChannelFactory<ITransactionContract> factory;
@@ -18,19 +18,18 @@ namespace EMS.Services.TransactionManagerService
         {
             get
             {
-                if (proxy == null)
+                if(proxy == null)
                 {
                     InstanceContext context = new InstanceContext(new TransactionManager());
-                    factory = new DuplexChannelFactory<ITransactionContract>(context, "ScadaTransactionEndpoint");
+                    factory = new DuplexChannelFactory<ITransactionContract>(context, "NMSTransactionEndpoint");
                     proxy = factory.CreateChannel();
                 }
-
                 return proxy;
             }
 
             set
             {
-                if (proxy == null)
+                if(proxy == null)
                 {
                     proxy = value;
                 }
@@ -39,17 +38,17 @@ namespace EMS.Services.TransactionManagerService
 
         public bool Commit()
         {
-            return proxy.Commit();
+            throw new NotImplementedException();
         }
 
         public void Prepare(Delta delta)
         {
-            proxy.Prepare(delta);
+            throw new NotImplementedException();
         }
 
         public bool Rollback()
         {
-            return proxy.Rollback();
+            throw new NotImplementedException();
         }
     }
 }

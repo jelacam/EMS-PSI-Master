@@ -8,11 +8,15 @@ using System.Xml;
 using EMS.Common;
 using EMS.Services.NetworkModelService.DataModel;
 using EMS.Services.NetworkModelService.DataModel.Core;
+using EMS.ServiceContracts;
+using System.ServiceModel;
 
 namespace EMS.Services.NetworkModelService
 {
-    public class NetworkModel
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    public class NetworkModel : ITransactionContract
     {
+        private ITransactionCallback transactionCallback;
         /// <summary>
         /// Dictionaru which contains all data: Key - DMSType, Value - Container
         /// </summary>
@@ -753,6 +757,22 @@ namespace EMS.Services.NetworkModelService
             }
 
             return typesCounters;
+        }
+
+        public void Prepare(Delta delta)
+        {
+            transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
+            transactionCallback.Response("Primio NMS");
+        }
+
+        public bool Commit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Rollback()
+        {
+            throw new NotImplementedException();
         }
     }
 }

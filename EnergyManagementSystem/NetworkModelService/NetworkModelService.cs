@@ -39,6 +39,7 @@ namespace EMS.Services.NetworkModelService
 		{
 			hosts = new List<ServiceHost>();
 			hosts.Add(new ServiceHost(typeof(GenericDataAccess)));
+            hosts.Add(new ServiceHost(typeof(NetworkModel)));
 		}
 
 		private void StartHosts()
