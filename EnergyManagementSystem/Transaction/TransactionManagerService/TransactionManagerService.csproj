@@ -63,16 +63,24 @@
     <Compile Include="TransactionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransactionManagerService.cs" />
+    <Compile Include="TransactionProxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NetworkModelService\DataModel\DataModel.csproj">
+      <Project>{ADE96497-7C11-40B6-AE82-57F956C9F104}</Project>
+      <Name>DataModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\TransactionContract\TransactionContract.csproj">
-      <Project>{7DB4A704-0FDB-4CDE-A4AB-FA0AF9708780}</Project>
+      <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
       <Name>TransactionContract</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -86,6 +86,10 @@
       <Project>{FEDD8D01-0F4E-421F-9BC8-15E6F4BD9AF7}</Project>
       <Name>ScadaCRContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
+      <Name>TransactionContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SmoothModbus\SmoothModbus.csproj">
       <Project>{09ef9d35-1ad9-49ce-8064-367b80f9e75d}</Project>
       <Name>SmoothModbus</Name>
