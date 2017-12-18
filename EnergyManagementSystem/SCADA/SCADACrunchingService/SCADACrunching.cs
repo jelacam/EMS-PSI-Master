@@ -44,8 +44,8 @@ namespace EMS.Services.SCADACrunchingService
                 this.listOfAnalog.Add(new AnalogLocation()
                 {
                     Analog = analog,
-                    StartAddress = i * 4, // flaot value 4bytes
-                    Length = 4
+                    StartAddress = i * 2, // flaot value 4bytes
+                    Length = 2
                 });
             }
         }
@@ -87,7 +87,7 @@ namespace EMS.Services.SCADACrunchingService
             foreach (AnalogLocation analogLoc in this.listOfAnalog)
             {
                 // startIndex = 2 because first two bytes a metadata
-                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length, 2 + analogLoc.StartAddress);
+                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length*2, 2 + analogLoc.StartAddress * 2);
                 this.CheckForAlarms(values[0], analogLoc.Analog);
 
                 MeasurementUnit measUnit = new MeasurementUnit();

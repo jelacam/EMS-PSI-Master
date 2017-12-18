@@ -43,8 +43,8 @@ namespace EMS.Services.SCADACommandingService
                 this.listOfAnalog.Add(new CMDAnalogLocation()
                 {
                     Analog = analog,
-                    StartAddress = i * 4, // float value 4bytes
-                    Length = 4
+                    StartAddress = i * 2, // float value 4bytes
+                    Length = 2
                 });
             }
         }
@@ -62,7 +62,7 @@ namespace EMS.Services.SCADACommandingService
         {
             for (int i = 0; i < 5; i++)
             {
-                modbusClient.WriteSingleRegister((ushort)(i * 4), i * 10 + 10);
+                modbusClient.WriteSingleRegister((ushort)(i * 2), i * 10 + 10);
             }
         }
 
