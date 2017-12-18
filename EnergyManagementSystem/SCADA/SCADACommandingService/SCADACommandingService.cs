@@ -101,5 +101,10 @@ namespace EMS.Services.SCADACommandingService
             Console.WriteLine("\n\n{0}", message);
         }
 
+        public void TestWrite()
+        {
+            this.scadaCMD.TestWrite();
+        }
+
     }
 }

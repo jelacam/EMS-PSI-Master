@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.CommonMeasurement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -12,5 +13,8 @@ namespace EMS.ServiceContracts
     {
         [OperationContract]
         void Test();
+
+        [OperationContract]
+        void SendDataToSimulator(List<MeasurementUnit> measurements);
     }
 }

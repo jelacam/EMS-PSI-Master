@@ -9,11 +9,13 @@ namespace EMS.Services.CalculationEngineService
 	using System;
 	using System.Collections.Generic;
 	using CommonMeasurement;
-	
-	/// <summary>
-	/// Class for CalculationEngine
-	/// </summary>
-	public class CalculationEngine
+    using EMS.Common;
+    using EMS.ServiceContracts;
+
+    /// <summary>
+    /// Class for CalculationEngine
+    /// </summary>
+    public class CalculationEngine
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CalculationEngine" /> class
@@ -38,10 +40,20 @@ namespace EMS.Services.CalculationEngineService
 					for (int i = 0; i < measurements.Count; i++)
 					{
 						measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
-						Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+                        Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
 					}
-
-					result= true;
+                    bool isSuccess = false;
+                    try
+                    {
+                        ScadaCMDProxy.Instance.SendDataToSimulator(measurements);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, ex.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
+                    }
+                    
+                    result = true;
 				}
 			}
 
