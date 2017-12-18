@@ -60,7 +60,7 @@ namespace EMS.Services.SCADACrunchingService
         public void Prepare(Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
-            transactionCallback.Response("Primio");
+            transactionCallback.Response("OK");
         }
 
         public bool Rollback()

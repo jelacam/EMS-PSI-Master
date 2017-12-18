@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="SCADACommanding.cs" company="EMS-Team">
 // Copyright (c) EMS-Team. All rights reserved.
 // </copyright>
@@ -32,6 +32,11 @@ namespace EMS.Services.SCADACommandingService
         private List<CMDAnalogLocation> listOfAnalog;
 
         /// <summary>
+        /// TransactionCallback
+        /// </summary>
+        private ITransactionCallback transactionCallback;
+
+        /// <summary>
         /// Constructor SCADACommanding class
         /// </summary>
         public SCADACommanding()
@@ -41,6 +46,37 @@ namespace EMS.Services.SCADACommandingService
 
             CreateCMDAnalogLocation();
         }
+
+        #region Transaction
+
+        /// <summary>
+        /// Commit method
+        /// </summary>
+        /// <returns></returns>
+        public bool Commit()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Prepare method
+        /// </summary>
+        /// <param name="delta"></param>
+        public void Prepare(Delta delta)
+        {
+            transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
+            transactionCallback.Response("OK");
+        }
+
+        /// <summary>
+        /// Rollback Method
+        /// </summary>
+        /// <returns></returns>
+        public bool Rollback()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion Transactions
 
         /// <summary>
         /// Method instantiates the test data

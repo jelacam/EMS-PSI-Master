@@ -104,6 +104,10 @@
       <Project>{B726FB71-D295-41EE-9644-B2B0B1BC8911}</Project>
       <Name>NetworkModelGDAContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6F89B2AE-4EED-479E-AD58-69B8A6865820}</Project>
+      <Name>TransactionContract</Name>
+    </ProjectReference>
     <ProjectReference Include="DataModel\DataModel.csproj">
       <Project>{ade96497-7c11-40b6-ae82-57f956c9f104}</Project>
       <Name>DataModel</Name>

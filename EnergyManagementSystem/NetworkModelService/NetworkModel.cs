@@ -8,15 +8,28 @@ using System.Xml;
 using EMS.Common;
 using EMS.Services.NetworkModelService.DataModel;
 using EMS.Services.NetworkModelService.DataModel.Core;
+using EMS.ServiceContracts;
+using System.ServiceModel;
 
 namespace EMS.Services.NetworkModelService
 {
-    public class NetworkModel
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    public class NetworkModel : ITransactionContract
     {
+        private ITransactionCallback transactionCallback;
+
+        private static object obj = new object();
+
         /// <summary>
-        /// Dictionaru which contains all data: Key - DMSType, Value - Container
+        /// Dictionary which contains all data: Key - DMSType, Value - Container
+        /// </summary>
+        private Dictionary<EMSType, Container> networkDataModelCopy;
+
+        /// <summary>
+        /// Dictionary which contains all data: Key - DMSType, Value - Container
         /// </summary>
         private Dictionary<EMSType, Container> networkDataModel;
+
 
         /// <summary>
         /// ModelResourceDesc class contains metadata of the model
@@ -28,6 +41,7 @@ namespace EMS.Services.NetworkModelService
         /// </summary>
         public NetworkModel()
         {
+            networkDataModelCopy = new Dictionary<EMSType, Container>();
             networkDataModel = new Dictionary<EMSType, Container>();
             resourcesDescs = new ModelResourcesDesc();
             Initialize();
@@ -75,7 +89,7 @@ namespace EMS.Services.NetworkModelService
         /// <returns>True if container exists, otherwise FALSE.</returns>
         private bool ContainerExists(EMSType type)
         {
-            if (networkDataModel.ContainsKey(type))
+            if (networkDataModelCopy.ContainsKey(type))
             {
                 return true;
             }
@@ -92,7 +106,7 @@ namespace EMS.Services.NetworkModelService
         {
             if (ContainerExists(type))
             {
-                return networkDataModel[type];
+                return networkDataModelCopy[type];
             }
             else
             {
@@ -321,7 +335,7 @@ namespace EMS.Services.NetworkModelService
                 else
                 {
                     container = new Container();
-                    networkDataModel.Add(type, container);
+                    networkDataModelCopy.Add(type, container);
                 }
 
                 // create entity and add it to container
@@ -650,6 +664,11 @@ namespace EMS.Services.NetworkModelService
                     {
                         DeleteEntity(rd);
                     }
+
+                    foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
+                    {
+                        networkDataModel.Add(pair.Key, (Container)pair.Value);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -753,6 +772,54 @@ namespace EMS.Services.NetworkModelService
             }
 
             return typesCounters;
+        }
+
+        public void Prepare(Delta delta)
+        {
+            transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
+
+            string message = string.Empty;
+
+            networkDataModelCopy.Clear();
+            foreach (KeyValuePair<EMSType, Container> pair in networkDataModel)
+            {
+                networkDataModelCopy.Add(pair.Key, pair.Value);
+            }
+            UpdateResult applyResult = ApplyDelta(delta);
+
+            if(applyResult.Result == ResultType.Succeeded)
+            {
+                message = "OK";
+            }
+            else
+            {
+                message = "ERROR";
+            }
+
+            transactionCallback.Response(message);
+
+        }
+
+        public bool Commit()
+        {
+            try
+            {
+                networkDataModel.Clear();
+                foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
+                {
+                    networkDataModel.Add(pair.Key, pair.Value);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Rollback()
+        {
+            throw new NotImplementedException();
         }
     }
 }
