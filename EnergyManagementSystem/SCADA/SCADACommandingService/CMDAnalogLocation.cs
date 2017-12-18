@@ -1,12 +1,15 @@
-﻿using EMS.Services.NetworkModelService.DataModel.Meas;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="CMDAnalogLocation.cs" company="EMS-Team">
+//     Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace EMS.Services.SCADACommandingService
 {
+    using EMS.Services.NetworkModelService.DataModel.Meas;
+
+    /// <summary>
+    /// CMDAnalogLocation class
+    /// </summary>
     public class CMDAnalogLocation
     {
         /// <summary>
