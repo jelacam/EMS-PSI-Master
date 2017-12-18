@@ -87,7 +87,7 @@ namespace CIMAdapterTest
 
         [Test]
         [TestCase(TestName = "ApplyUpdateDeltaOperation")]
-        //[Ignore("NetworkGDAProxy puca")]
+        [Ignore("NetworkGDAProxy puca")]
         public void ApplyUpdateDeltaOperation()
         {
             nmsDelta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
