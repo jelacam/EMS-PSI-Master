@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\ResourcesDescriptionConverter.cs" />
     <Compile Include="TransactionCMDProxy.cs" />
     <Compile Include="TransactionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

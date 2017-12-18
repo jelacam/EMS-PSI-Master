@@ -8,8 +8,8 @@ using System.ServiceModel;
 
 namespace EMS.ServiceContracts
 {
-    [ServiceContract]    
-    public interface ImporterContract
+    [ServiceContract]
+    public interface IImporterContract
     {
         [OperationContract]
         bool ModelUpdate(Delta delta);

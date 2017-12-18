@@ -17,6 +17,7 @@ namespace EMS.Services.NetworkModelService
     public class NetworkModel : ITransactionContract
     {
         private ITransactionCallback transactionCallback;
+
         /// <summary>
         /// Dictionaru which contains all data: Key - DMSType, Value - Container
         /// </summary>

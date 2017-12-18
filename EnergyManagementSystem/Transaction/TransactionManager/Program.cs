@@ -25,9 +25,9 @@ namespace TransactionManager
 
                     Console.WriteLine("Analog test");
 
-                    tmService.ScadaCRPrepare(new Delta());
-                    tmService.ScadaCMDPrepare(new Delta());
-                    tmService.NMSPrepare(new Delta());
+                    //tmService.ScadaCRPrepare(new Delta());
+                    //tmService.ScadaCMDPrepare(new Delta());
+                    //tmService.NMSPrepare(new Delta());
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

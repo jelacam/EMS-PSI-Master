@@ -60,7 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImporterContract.cs" />
+    <Compile Include="IImporterContract.cs" />
+    <Compile Include="ImporterProxy.cs" />
     <Compile Include="ITransactionContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
