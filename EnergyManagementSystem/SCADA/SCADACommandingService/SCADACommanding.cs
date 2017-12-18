@@ -23,7 +23,7 @@ namespace EMS.Services.SCADACommandingService
         public void Prepare(Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
-            transactionCallback.Response("Primio Commanding");
+            transactionCallback.Response("OK");
         }
 
         public bool Rollback()

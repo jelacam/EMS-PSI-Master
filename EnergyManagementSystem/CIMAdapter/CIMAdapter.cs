@@ -63,7 +63,7 @@ namespace EMS.CIMAdapter
             {
                 //// NetworkModelService->ApplyUpdates
                 //updateResult = GdaQueryProxy.ApplyUpdate(delta).ToString();
-                updateResult = NetworkModelGDAProxy.Instance.ApplyUpdate(delta).ToString();
+                //updateResult = NetworkModelGDAProxy.Instance.ApplyUpdate(delta).ToString();
                 bool ret = ImporterProxy.Instance.ModelUpdate(delta);
             }
 
