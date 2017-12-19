@@ -23,9 +23,11 @@ namespace EMS.Services.TransactionManagerService
             if(noRespone == 1)
             {
                 TransactionNMSProxy.Instance.Commit();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
             }
 
             // nakon sve tri prepare 
+
             noRespone = 0;
             return true;
         }
