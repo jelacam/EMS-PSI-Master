@@ -33,7 +33,7 @@ namespace EMS.Services.SCADACollectingService
 
 		public void StartCollectingData()
 		{
-			modbusClient.WriteSingleRegister(0, 6f);
+			//modbusClient.WriteSingleRegister(0, 6f);
 			Task task = new Task(() =>
 			{
 				while (true)

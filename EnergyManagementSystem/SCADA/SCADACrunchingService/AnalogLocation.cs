@@ -8,9 +8,6 @@ namespace EMS.Services.SCADACrunchingService
 {
 	using EMS.Services.NetworkModelService.DataModel.Meas;
 
-	/// <summary>
-	/// AnalogLocation class
-	/// </summary>
 	public class AnalogLocation
 	{
 		/// <summary>

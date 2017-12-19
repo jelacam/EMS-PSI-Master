@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.CommonMeasurement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -50,6 +51,11 @@ namespace EMS.ServiceContracts
             {
                 Console.WriteLine("ScadaCMDProxy exception: {0}", e.Message);
             }
+        }
+
+        public void SendDataToSimulator(List<MeasurementUnit> measurements)
+        {
+            proxy.SendDataToSimulator(measurements);
         }
 
         public void Test()

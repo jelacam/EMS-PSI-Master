@@ -1,35 +1,60 @@
-﻿using EMS.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="SCADACommandingService.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace EMS.Services.SCADACommandingService
 {
+    using EMS.Common;
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+
+    /// <summary>
+    /// SCADACommandingService represents SCADA Commanding component
+    /// </summary>
     public class SCADACommandingService : IDisposable
     {
+        /// <summary>
+        /// Instance of SCADA Commanding logic
+        /// </summary>
         private SCADACommanding scadaCMD = null;
+
+        /// <summary>
+        /// ServiceHost list
+        /// </summary>
         private List<ServiceHost> hosts = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SCADACommandingService"/> class
+		/// Creates new SCADACommanding instance and initialize hosts
+        /// </summary>
         public SCADACommandingService()
         {
             scadaCMD = new SCADACommanding();
             InitializeHosts();
         }
-        
+
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
         public void Start()
         {
             StartHosts();
         }
 
+        /// <summary>
+        /// Initialize service hosts
+        /// </summary>
         private void InitializeHosts()
         {
             hosts = new List<ServiceHost>();
             hosts.Add(new ServiceHost(typeof(SCADACommanding)));
         }
 
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
         private void StartHosts()
         {
             if (hosts == null || hosts.Count == 0)
@@ -66,7 +91,7 @@ namespace EMS.Services.SCADACommandingService
                 }
             }
 
-           
+
 
             message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
             Console.WriteLine(message);
@@ -78,12 +103,18 @@ namespace EMS.Services.SCADACommandingService
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
         }
 
+        /// <summary>
+        /// Dispose method
+        /// </summary>
         public void Dispose()
         {
             CloseHosts();
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Closing hosts
+        /// </summary>
         public void CloseHosts()
         {
             if (hosts == null || hosts.Count == 0)
@@ -99,6 +130,14 @@ namespace EMS.Services.SCADACommandingService
             string message = "The SCADA Commanding Service is closed.";
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             Console.WriteLine("\n\n{0}", message);
+        }
+
+        /// <summary>
+        /// Test write data in simulator
+        /// </summary>
+        public void TestWrite()
+        {
+            this.scadaCMD.TestWrite();
         }
 
     }

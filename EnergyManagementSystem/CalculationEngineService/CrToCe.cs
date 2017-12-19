@@ -48,7 +48,6 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>returns true if optimization was successful</returns>
         public bool OptimisationAlgorithm(List<MeasurementUnit> measurements)
         {
-            // throw new NotImplementedException();
             try
             {
                 bool retVal = ce.Optimize(measurements);
@@ -56,7 +55,6 @@ namespace EMS.Services.CalculationEngineService
             }
             catch (Exception ex)
             {
-                // string message = string.Format("Getting values for resource with ID = 0x{0:x16} failed. {1}", resourceId, ex.Message);
                 string message = string.Format("Greska", ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                 throw new Exception(message);

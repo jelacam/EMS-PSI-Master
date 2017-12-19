@@ -84,6 +84,10 @@
       <Project>{D322124E-3C27-45ED-86BB-84DC5621845A}</Project>
       <Name>CalculationEngineContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\ScadaCMDContract\ScadaCMDContract.csproj">
+      <Project>{E5EB974E-55E9-4C8C-9DBF-DB4530F4904E}</Project>
+      <Name>ScadaCMDContract</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

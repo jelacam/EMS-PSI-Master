@@ -1,15 +1,27 @@
-﻿using EMS.Common;
-using EMS.Services.SCADACommandingService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace SCADACommandingServiceSelfHost
 {
+    using EMS.Common;
+    using EMS.Services.SCADACommandingService;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Class for Main method
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Main method
+        /// </summary>
+        /// <param name="args"></param>
         private static void Main(string[] args)
         {
             try
@@ -21,6 +33,8 @@ namespace SCADACommandingServiceSelfHost
                 using (SCADACommandingService scadaCMD = new SCADACommandingService())
                 {
                     scadaCMD.Start();
+
+                    scadaCMD.TestWrite();
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
