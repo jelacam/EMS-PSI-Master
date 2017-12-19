@@ -16,6 +16,7 @@ using EMS.Services.NetworkModelService.DataModel.Production;
 
 namespace EMS.Services.NetworkModelService
 {
+    [Serializable]
     public class Container
     {
         /// <summary>

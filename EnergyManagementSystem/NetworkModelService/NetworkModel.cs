@@ -28,7 +28,7 @@ namespace EMS.Services.NetworkModelService
         /// <summary>
         /// Dictionary which contains all data: Key - DMSType, Value - Container
         /// </summary>
-        private Dictionary<EMSType, Container> networkDataModel;
+        private static Dictionary<EMSType, Container> networkDataModel;
 
 
         /// <summary>
@@ -82,6 +82,39 @@ namespace EMS.Services.NetworkModelService
             }
         }
 
+        public bool EntityCopyExists(long globalId)
+        {
+            EMSType type = (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
+
+            if (ContainerCopyExists(type))
+            {
+                Container container = GetContainerCopy(type);
+
+                if (container.EntityExists(globalId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public IdentifiedObject GetEntityCopy(long globalId)
+        {
+            if (EntityCopyExists(globalId))
+            {
+                EMSType type = (EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(globalId);
+                IdentifiedObject io = GetContainerCopy(type).GetEntity(globalId);
+
+                return io;
+            }
+            else
+            {
+                string message = string.Format("Entity  (GID = 0x{0:x16}) does not exist.", globalId);
+                throw new Exception(message);
+            }
+        }
+
         /// <summary>
         /// Checks if container exists in model.
         /// </summary>
@@ -89,7 +122,7 @@ namespace EMS.Services.NetworkModelService
         /// <returns>True if container exists, otherwise FALSE.</returns>
         private bool ContainerExists(EMSType type)
         {
-            if (networkDataModelCopy.ContainsKey(type))
+            if (networkDataModel.ContainsKey(type))
             {
                 return true;
             }
@@ -106,11 +139,44 @@ namespace EMS.Services.NetworkModelService
         {
             if (ContainerExists(type))
             {
-                return networkDataModelCopy[type];
+                return networkDataModel[type];
             }
             else
             {
                 string message = string.Format("Container does not exist for type {0}.", type);
+                throw new Exception(message);
+            }
+        }
+
+        /// <summary>
+        /// Checks if container exists in model copy.
+        /// </summary>
+        /// <param name="type">Type of container.</param>
+        /// <returns>True if container exists, otherwise FALSE.</returns>
+        private bool ContainerCopyExists(EMSType type)
+        {
+            if (networkDataModelCopy.ContainsKey(type))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets container copy of specified type.
+        /// </summary>
+        /// <param name="type">Type of container.</param>
+        /// <returns>Container for specified local id</returns>
+        private Container GetContainerCopy(EMSType type)
+        {
+            if (ContainerCopyExists(type))
+            {
+                return networkDataModelCopy[type];
+            }
+            else
+            {
+                string message = string.Format("ContainerCopy does not exist for type {0}.", type);
                 throw new Exception(message);
             }
         }
@@ -240,6 +306,7 @@ namespace EMS.Services.NetworkModelService
 
         public UpdateResult ApplyDelta(Delta delta)
         {
+
             bool applyingStarted = false;
             UpdateResult updateResult = new UpdateResult();
 
@@ -313,7 +380,7 @@ namespace EMS.Services.NetworkModelService
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Inserting entity with GID ({0:x16}).", globalId);
 
             // check if mapping for specified global id already exists
-            if (this.EntityExists(globalId))
+            if (this.EntityCopyExists(globalId))
             {
                 string message = String.Format("Failed to insert entity because entity with specified GID ({0:x16}) already exists in network model.", globalId);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
@@ -328,9 +395,9 @@ namespace EMS.Services.NetworkModelService
                 Container container = null;
 
                 // get container or create container
-                if (ContainerExists(type))
+                if (ContainerCopyExists(type))
                 {
-                    container = GetContainer(type);
+                    container = GetContainerCopy(type);
                 }
                 else
                 {
@@ -359,14 +426,14 @@ namespace EMS.Services.NetworkModelService
 
                             if (targetGlobalId != 0)
                             {
-                                if (!EntityExists(targetGlobalId))
+                                if (!EntityCopyExists(targetGlobalId))
                                 {
                                     string message = string.Format("Failed to get target entity with GID: 0x{0:X16}. {1}", targetGlobalId);
                                     throw new Exception(message);
                                 }
 
                                 // get referenced entity for update
-                                IdentifiedObject targetEntity = GetEntity(targetGlobalId);
+                                IdentifiedObject targetEntity = GetEntityCopy(targetGlobalId);
                                 targetEntity.AddReference(property.Id, io.GlobalId);
                             }
 
@@ -644,6 +711,9 @@ namespace EMS.Services.NetworkModelService
 
         private void Initialize()
         {
+            networkDataModelCopy = new Dictionary<EMSType, Container>();
+            networkDataModel = new Dictionary<EMSType, Container>();
+
             List<Delta> result = ReadAllDeltas();
 
             foreach (Delta delta in result)
@@ -667,7 +737,7 @@ namespace EMS.Services.NetworkModelService
 
                     foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
                     {
-                        networkDataModel.Add(pair.Key, (Container)pair.Value);
+                        networkDataModel.Add(pair.Key, pair.Value);
                     }
                 }
                 catch (Exception ex)
@@ -809,6 +879,7 @@ namespace EMS.Services.NetworkModelService
                 {
                     networkDataModel.Add(pair.Key, pair.Value);
                 }
+                //GenericDataAccess.NetworkModel = this;
                 return true;
             }
             catch
