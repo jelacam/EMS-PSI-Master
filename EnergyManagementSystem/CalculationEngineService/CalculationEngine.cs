@@ -40,7 +40,8 @@ namespace EMS.Services.CalculationEngineService
                     for (int i = 0; i < measurements.Count; i++)
                     {
                         measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
-                        Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+						CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+						Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
                     }
 
                     result = true;
@@ -48,7 +49,8 @@ namespace EMS.Services.CalculationEngineService
                     try
                     {
                         ScadaCMDProxy.Instance.SendDataToSimulator(measurements);
-                        Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+						CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+						Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
                     }
                     catch (System.Exception ex)
                     {
