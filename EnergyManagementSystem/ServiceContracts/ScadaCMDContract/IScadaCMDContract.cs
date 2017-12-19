@@ -15,6 +15,6 @@ namespace EMS.ServiceContracts
         void Test();
 
         [OperationContract]
-        void SendDataToSimulator(List<MeasurementUnit> measurements);
+        bool SendDataToSimulator(List<MeasurementUnit> measurements);
     }
 }

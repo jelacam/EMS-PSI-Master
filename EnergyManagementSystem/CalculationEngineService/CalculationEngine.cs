@@ -48,9 +48,11 @@ namespace EMS.Services.CalculationEngineService
 
                     try
                     {
-                        ScadaCMDProxy.Instance.SendDataToSimulator(measurements);
-						CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
-						Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+						if (ScadaCMDProxy.Instance.SendDataToSimulator(measurements))
+						{
+							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+							Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+						}
                     }
                     catch (System.Exception ex)
                     {

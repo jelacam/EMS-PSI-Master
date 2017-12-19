@@ -5,10 +5,10 @@
 //-----------------------------------------------------------------------
 namespace EMS.Services.SCADACommandingService
 {
-	using EMS.Common;
-	using EMS.CommonMeasurement;
-	using EMS.ServiceContracts;
-	using EMS.Services.NetworkModelService.DataModel.Meas;
+	using Common;
+	using CommonMeasurement;
+	using ServiceContracts;
+	using NetworkModelService.DataModel.Meas;
 	using SmoothModbus;
 	using System;
 	using System.Collections.Generic;
@@ -104,7 +104,7 @@ namespace EMS.Services.SCADACommandingService
 		/// Method accepts data from CE and put data to simulator
 		/// </summary>
 		/// <param name="measurements"></param>
-		public void SendDataToSimulator(List<MeasurementUnit> measurements)
+		public bool SendDataToSimulator(List<MeasurementUnit> measurements)
 		{
 			for (int i = 0; i < measurements.Count; i++)
 			{
@@ -117,8 +117,11 @@ namespace EMS.Services.SCADACommandingService
 				{
 					CommonTrace.WriteTrace(CommonTrace.TraceError, ex.Message);
 					CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
+					return false;
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
