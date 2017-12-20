@@ -26,22 +26,6 @@ namespace EMS.Services.TransactionManagerService
             UpdateResult updateResult;
             updateResult = TransactionNMSProxy.Instance.Prepare(delta);
 
-            //Thread.Sleep(10000);
-            //if (noRespone == 1)
-            //{
-            //    bool commitResult = TransactionNMSProxy.Instance.Commit(delta);
-            //    if (commitResult)
-            //    {
-            //        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
-            //    }
-            //    else
-            //    {
-            //        CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase for NMS failed!");
-            //        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
-            //        TransactionNMSProxy.Instance.Rollback();
-            //    }
-            //}
-
             // nakon sve tri prepare
 
             return updateResult;
@@ -80,12 +64,12 @@ namespace EMS.Services.TransactionManagerService
 
         protected virtual void OnMessageReached(EventArgs e)
         {
-            MessageReached?.Invoke(this, e);
+            //MessageReached?.Invoke(this, e);
 
-            //if (MessageReached != null)
-            //{
-            //    MessageReached(this, e);
-            //}
+            if (MessageReached != null)
+            {
+                MessageReached(this, e);
+            }
         }
 
         private void Commit(object sender, EventArgs e)
