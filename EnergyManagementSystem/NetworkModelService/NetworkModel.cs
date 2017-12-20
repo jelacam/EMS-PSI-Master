@@ -30,11 +30,12 @@ namespace EMS.Services.NetworkModelService
         /// </summary>
         private static Dictionary<EMSType, Container> networkDataModel;
 
-
         /// <summary>
         /// ModelResourceDesc class contains metadata of the model
         /// </summary>
         private ModelResourcesDesc resourcesDescs;
+
+        private Delta deltaToCommit;
 
         /// <summary>
         /// Initializes a new instance of the Model class.
@@ -306,7 +307,6 @@ namespace EMS.Services.NetworkModelService
 
         public UpdateResult ApplyDelta(Delta delta)
         {
-
             bool applyingStarted = false;
             UpdateResult updateResult = new UpdateResult();
 
@@ -347,10 +347,11 @@ namespace EMS.Services.NetworkModelService
             }
             finally
             {
-                if (applyingStarted)
-                {
-                    SaveDelta(delta);
-                }
+                //if (applyingStarted)
+                //{
+                //    SaveDelta(delta);
+                //}
+                deltaToCommit = delta;
 
                 if (updateResult.Result == ResultType.Succeeded)
                 {
@@ -711,9 +712,6 @@ namespace EMS.Services.NetworkModelService
 
         private void Initialize()
         {
-            networkDataModelCopy = new Dictionary<EMSType, Container>();
-            networkDataModel = new Dictionary<EMSType, Container>();
-
             List<Delta> result = ReadAllDeltas();
 
             foreach (Delta delta in result)
@@ -735,17 +733,21 @@ namespace EMS.Services.NetworkModelService
                         DeleteEntity(rd);
                     }
 
-                    foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
-                    {
-                        networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
-                    }
+                    //networkDataModel = new Dictionary<EMSType, Container>();
                 }
                 catch (Exception ex)
                 {
                     CommonTrace.WriteTrace(CommonTrace.TraceError, "Error while applying delta (id = {0}) during service initialization. {1}", delta.Id, ex.Message);
                 }
             }
+
+            foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
+            {
+                networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
+            }
         }
+
+        #region Delta serialization
 
         private void SaveDelta(Delta delta)
         {
@@ -783,10 +785,13 @@ namespace EMS.Services.NetworkModelService
             if (br != null)
             {
                 br.Close();
+                br.Dispose();
             }
 
             bw.Close();
+            bw.Dispose();
             fs.Close();
+            fs.Dispose();
         }
 
         private List<Delta> ReadAllDeltas()
@@ -820,12 +825,16 @@ namespace EMS.Services.NetworkModelService
                 }
 
                 br.Close();
+                br.Dispose();
             }
 
             fs.Close();
+            fs.Dispose();
 
             return result;
         }
+
+        #endregion Delta serialization
 
         private Dictionary<short, int> GetCounters()
         {
@@ -844,6 +853,8 @@ namespace EMS.Services.NetworkModelService
             return typesCounters;
         }
 
+        #region Transaction
+
         public UpdateResult Prepare(Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
@@ -857,7 +868,7 @@ namespace EMS.Services.NetworkModelService
             }
             UpdateResult applyResult = ApplyDelta(delta);
 
-            if(applyResult.Result == ResultType.Succeeded)
+            if (applyResult.Result == ResultType.Succeeded)
             {
                 message = "OK";
             }
@@ -879,9 +890,9 @@ namespace EMS.Services.NetworkModelService
                 {
                     networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
                 }
-                
+
                 networkDataModelCopy.Clear();
-                SaveDelta(delta);
+                SaveDelta(deltaToCommit);
                 return true;
             }
             catch
@@ -898,11 +909,13 @@ namespace EMS.Services.NetworkModelService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Transaction rollback successfully finished!");
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction rollback error. Message: {0}", e.Message);
                 return false;
             }
         }
+
+        #endregion Transaction
     }
 }
