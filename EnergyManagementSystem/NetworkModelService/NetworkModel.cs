@@ -737,7 +737,7 @@ namespace EMS.Services.NetworkModelService
 
                     foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
                     {
-                        networkDataModel.Add(pair.Key, pair.Value);
+                        networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
                     }
                 }
                 catch (Exception ex)
@@ -844,7 +844,7 @@ namespace EMS.Services.NetworkModelService
             return typesCounters;
         }
 
-        public void Prepare(Delta delta)
+        public UpdateResult Prepare(Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
 
@@ -853,7 +853,7 @@ namespace EMS.Services.NetworkModelService
             networkDataModelCopy.Clear();
             foreach (KeyValuePair<EMSType, Container> pair in networkDataModel)
             {
-                networkDataModelCopy.Add(pair.Key, pair.Value);
+                networkDataModelCopy.Add(pair.Key, pair.Value.Clone() as Container);
             }
             UpdateResult applyResult = ApplyDelta(delta);
 
@@ -867,19 +867,21 @@ namespace EMS.Services.NetworkModelService
             }
 
             transactionCallback.Response(message);
-
+            return applyResult;
         }
 
-        public bool Commit()
+        public bool Commit(Delta delta)
         {
             try
             {
                 networkDataModel.Clear();
                 foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
                 {
-                    networkDataModel.Add(pair.Key, pair.Value);
+                    networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
                 }
-                //GenericDataAccess.NetworkModel = this;
+                
+                networkDataModelCopy.Clear();
+                SaveDelta(delta);
                 return true;
             }
             catch
@@ -890,7 +892,17 @@ namespace EMS.Services.NetworkModelService
 
         public bool Rollback()
         {
-            throw new NotImplementedException();
+            try
+            {
+                networkDataModelCopy.Clear();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Transaction rollback successfully finished!");
+                return true;
+            }
+            catch(Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction rollback error. Message: {0}", e.Message);
+                return false;
+            }
         }
     }
 }

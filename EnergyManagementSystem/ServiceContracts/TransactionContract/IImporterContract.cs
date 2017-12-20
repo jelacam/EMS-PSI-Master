@@ -12,6 +12,6 @@ namespace EMS.ServiceContracts
     public interface IImporterContract
     {
         [OperationContract]
-        bool ModelUpdate(Delta delta);
+        UpdateResult ModelUpdate(Delta delta);
     }
 }

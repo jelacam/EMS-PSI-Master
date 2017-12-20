@@ -53,7 +53,7 @@ namespace EMS.Services.SCADACommandingService
 		/// Commit method
 		/// </summary>
 		/// <returns></returns>
-		public bool Commit()
+		public bool Commit(Delta delta)
 		{
 			throw new NotImplementedException();
 		}
@@ -62,10 +62,11 @@ namespace EMS.Services.SCADACommandingService
 		/// Prepare method
 		/// </summary>
 		/// <param name="delta"></param>
-		public void Prepare(Delta delta)
+		public UpdateResult Prepare(Delta delta)
 		{
 			transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
 			transactionCallback.Response("OK");
+            return new UpdateResult();
 		}
 
 		/// <summary>

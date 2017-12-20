@@ -37,19 +37,19 @@ namespace EMS.Services.TransactionManagerService
             }
         }
 
-        public bool Commit()
+        public bool Commit(Delta delta)
         {
-            throw new NotImplementedException();
+            return proxy.Commit(delta);
         }
 
-        public void Prepare(Delta delta)
+        public UpdateResult Prepare(Delta delta)
         {
-            throw new NotImplementedException();
+            return proxy.Prepare(delta);
         }
 
         public bool Rollback()
         {
-            throw new NotImplementedException();
+            return proxy.Rollback();
         }
     }
 }

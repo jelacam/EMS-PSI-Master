@@ -52,15 +52,16 @@ namespace EMS.Services.SCADACrunchingService
 
         #region Transaction
 
-        public bool Commit()
+        public bool Commit(Delta delta)
         {
             throw new NotImplementedException();
         }
 
-        public void Prepare(Delta delta)
+        public UpdateResult Prepare(Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
             transactionCallback.Response("OK");
+            return new UpdateResult();
         }
 
         public bool Rollback()

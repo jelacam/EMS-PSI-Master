@@ -34,7 +34,7 @@ namespace EMS.ServiceContracts
             }
         }
 
-        public bool ModelUpdate(Delta delta)
+        public UpdateResult ModelUpdate(Delta delta)
         {
             return proxy.ModelUpdate(delta);
         }

@@ -12,10 +12,10 @@ namespace EMS.ServiceContracts
     public interface ITransactionContract
     {
         [OperationContract(IsOneWay = false)]
-        void Prepare(Delta delta);
+        UpdateResult Prepare(Delta delta);
 
         [OperationContract(IsOneWay = false)]
-        bool Commit();
+        bool Commit(Delta delta);
 
         [OperationContract(IsOneWay = false)]
         bool Rollback();

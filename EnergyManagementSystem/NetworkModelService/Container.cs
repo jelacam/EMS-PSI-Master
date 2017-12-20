@@ -17,7 +17,7 @@ using EMS.Services.NetworkModelService.DataModel.Production;
 namespace EMS.Services.NetworkModelService
 {
     [Serializable]
-    public class Container
+    public class Container : ICloneable
     {
         /// <summary>
         /// The dictionary of entities. Key = GlobaId, Value = Entity
@@ -229,6 +229,20 @@ namespace EMS.Services.NetworkModelService
         public List<long> GetEntitiesGlobalIds()
         {
             return entities.Keys.ToList();
+        }
+
+        public object Clone()
+        {
+            Dictionary<long, IdentifiedObject> copy = new Dictionary<long, IdentifiedObject>();
+            foreach(KeyValuePair<long, IdentifiedObject> pair in this.Entities)
+            {
+                copy[pair.Key] = pair.Value;
+            }
+
+            Container container = new Container();
+            container.Entities = copy;
+
+            return container;
         }
     }
 }

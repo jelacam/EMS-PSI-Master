@@ -14,22 +14,32 @@ namespace EMS.Services.TransactionManagerService
         private static int noRespone = 0;
         private object obj = new object();
 
-        public bool ModelUpdate(Delta delta)
+        public UpdateResult ModelUpdate(Delta delta)
         {
-            // logika za distribuiranu transakciju
-            TransactionNMSProxy.Instance.Prepare(delta);
+            UpdateResult updateResult;
+            updateResult = TransactionNMSProxy.Instance.Prepare(delta);
 
             Thread.Sleep(10000);
             if(noRespone == 1)
             {
-                TransactionNMSProxy.Instance.Commit();
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
+                bool commitResult = TransactionNMSProxy.Instance.Commit(delta);
+                if (commitResult)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
+                }
+                else
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase for NMS failed!");
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
+                    TransactionNMSProxy.Instance.Rollback();
+                }
             }
 
             // nakon sve tri prepare 
 
             noRespone = 0;
-            return true;
+
+            return updateResult;
         }
 
         public void Response(string message)
