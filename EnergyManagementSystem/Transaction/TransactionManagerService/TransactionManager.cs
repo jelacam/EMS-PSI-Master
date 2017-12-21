@@ -16,26 +16,28 @@ namespace EMS.Services.TransactionManagerService
         private static Delta deltaToApply;
 
         private static int noRespone = 0;
-        private readonly int toRespond = 1;
+        private static int toRespond = 1;
         private object obj = new object();
 
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
 
+            toRespond = 2;
+
             UpdateResult updateResult;
             updateResult = TransactionNMSProxy.Instance.Prepare(delta);
 
-
-
-            // provera da li delta sadrzi rd za analaog 
-            // ako sadrzi izdvojiti analoge i poslati ih na cr i cmd 
+            // provera da li delta sadrzi rd za analaog
+            // ako sadrzi izdvojiti analoge i poslati ih na cr i cmd
             // postaviti toRespond - 3
 
-            // List<ResourcesDescription> analogs .... 
+            // prepare metoda na CR
+            TransactionCRProxy.Instance.Prepare(delta);
+
+            // List<ResourcesDescription> analogs ....
             // delta.RemoveResourceDescription(, DeltaOpType.Insert);
 
-           
             // nakon sve tri prepare
 
             return updateResult;
