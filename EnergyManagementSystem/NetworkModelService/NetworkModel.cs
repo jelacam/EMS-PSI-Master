@@ -885,14 +885,17 @@ namespace EMS.Services.NetworkModelService
         {
             try
             {
-                networkDataModel.Clear();
-                foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
+                lock (obj)
                 {
-                    networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
-                }
+                    networkDataModel.Clear();
+                    foreach (KeyValuePair<EMSType, Container> pair in networkDataModelCopy)
+                    {
+                        networkDataModel.Add(pair.Key, pair.Value.Clone() as Container);
+                    }
 
-                networkDataModelCopy.Clear();
-                SaveDelta(deltaToCommit);
+                    networkDataModelCopy.Clear();
+                    SaveDelta(deltaToCommit);
+                }
                 return true;
             }
             catch

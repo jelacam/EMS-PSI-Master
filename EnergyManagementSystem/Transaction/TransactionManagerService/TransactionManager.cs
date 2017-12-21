@@ -26,6 +26,16 @@ namespace EMS.Services.TransactionManagerService
             UpdateResult updateResult;
             updateResult = TransactionNMSProxy.Instance.Prepare(delta);
 
+
+
+            // provera da li delta sadrzi rd za analaog 
+            // ako sadrzi izdvojiti analoge i poslati ih na cr i cmd 
+            // postaviti toRespond - 3
+
+            // List<ResourcesDescription> analogs .... 
+            // delta.RemoveResourceDescription(, DeltaOpType.Insert);
+
+           
             // nakon sve tri prepare
 
             return updateResult;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EMS.Services.TransactionManagerService.Helper
+namespace EMS.CommonMeasurement
 {
     public static class ResourcesDescriptionConverter
     {
