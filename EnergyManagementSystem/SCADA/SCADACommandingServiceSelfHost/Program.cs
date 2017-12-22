@@ -34,7 +34,7 @@ namespace SCADACommandingServiceSelfHost
                 {
                     scadaCMD.Start();
 
-                    scadaCMD.TestWrite();
+                    //scadaCMD.TestWrite();
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -54,7 +54,5 @@ namespace SCADACommandingServiceSelfHost
                 Console.ReadLine();
             }
         }
-
-
     }
 }

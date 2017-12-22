@@ -62,7 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CMDAnalogLocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SCADACommanding.cs" />
     <Compile Include="SCADACommandingService.cs" />

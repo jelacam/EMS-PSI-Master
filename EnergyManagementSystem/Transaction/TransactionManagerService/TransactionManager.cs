@@ -22,23 +22,45 @@ namespace EMS.Services.TransactionManagerService
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
+            UpdateResult updateResult = new UpdateResult();
 
-            toRespond = 2;
+            List<long> idToRemove = new List<long>(10);
+            int analogProperty = 0;
+            foreach (ResourceDescription rd_item in delta.InsertOperations)
+            {
+                foreach (Property pr_item in rd_item.Properties)
+                {
+                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.ANALOG))
+                    {
+                        analogProperty++;
+                    }
+                }
 
-            UpdateResult updateResult;
-            updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+                if (analogProperty == 0)
+                {
+                    idToRemove.Add(rd_item.Id);
+                }
 
-            // provera da li delta sadrzi rd za analaog
-            // ako sadrzi izdvojiti analoge i poslati ih na cr i cmd
-            // postaviti toRespond - 3
+                analogProperty = 0;
+            }
 
-            // prepare metoda na CR
-            TransactionCRProxy.Instance.Prepare(delta);
+            if (idToRemove.Count != 0 && (delta.InsertOperations.Count - idToRemove.Count > 0))
+            {
+                toRespond = 3;
+                updateResult = TransactionNMSProxy.Instance.Prepare(delta);
 
-            // List<ResourcesDescription> analogs ....
-            // delta.RemoveResourceDescription(, DeltaOpType.Insert);
+                foreach (long id in idToRemove)
+                {
+                    delta.RemoveResourceDescription(id, DeltaOpType.Insert);
+                }
 
-            // nakon sve tri prepare
+                TransactionCRProxy.Instance.Prepare(delta);
+                TransactionCMDProxy.Instance.Prepare(delta);
+            }
+            else
+            {
+                updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+            }
 
             return updateResult;
         }
@@ -86,8 +108,21 @@ namespace EMS.Services.TransactionManagerService
 
         private void Commit(object sender, EventArgs e)
         {
-            bool commitResult = TransactionNMSProxy.Instance.Commit(deltaToApply);
-            if (commitResult)
+            bool commitResultScadaCR;
+            bool commitResultScadaCMD;
+
+            bool commitResultSCADA = true;
+
+            bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
+            if (toRespond == 3)
+            {
+                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+
+                commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
+            }
+
+            if (commitResultNMS && commitResultSCADA)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
             }
@@ -96,6 +131,8 @@ namespace EMS.Services.TransactionManagerService
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase for NMS failed!");
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
                 TransactionNMSProxy.Instance.Rollback();
+                TransactionCRProxy.Instance.Rollback();
+                TransactionCMDProxy.Instance.Rollback();
             }
 
             noRespone = 0;

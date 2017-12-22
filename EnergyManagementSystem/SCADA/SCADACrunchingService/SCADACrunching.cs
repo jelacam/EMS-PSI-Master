@@ -26,6 +26,10 @@ namespace EMS.Services.SCADACrunchingService
         /// </summary>
         private List<AnalogLocation> listOfAnalog;
 
+        private List<AnalogLocation> listOfAnalogCopy;
+
+        private UpdateResult updateResult;
+
         private ITransactionCallback transactionCallback;
 
         /// <summary>
@@ -35,38 +39,100 @@ namespace EMS.Services.SCADACrunchingService
         {
             // TODO treba izmeniti kad se napravi transakcija sa NMS-om
             this.listOfAnalog = new List<AnalogLocation>();
-            for (int i = 0; i < 5; i++)
-            {
-                Analog analog = new Analog(10000 + i);
-                analog.MinValue = 0;
-                analog.MaxValue = 5;
-                analog.PowerSystemResource = 20000 + i;
-                this.listOfAnalog.Add(new AnalogLocation()
-                {
-                    Analog = analog,
-                    StartAddress = i * 2, // flaot value 4bytes
-                    Length = 2
-                });
-            }
+            this.listOfAnalogCopy = new List<AnalogLocation>();
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    Analog analog = new Analog(10000 + i);
+            //    analog.MinValue = 0;
+            //    analog.MaxValue = 5;
+            //    analog.PowerSystemResource = 20000 + i;
+            //    this.listOfAnalog.Add(new AnalogLocation()
+            //    {
+            //        Analog = analog,
+            //        StartAddress = i * 2, // flaot value 4bytes
+            //        Length = 2
+            //    });
+            //}
         }
 
         #region Transaction
 
         public bool Commit(Delta delta)
         {
-            throw new NotImplementedException();
+            try
+            {
+                listOfAnalog.Clear();
+                foreach (AnalogLocation alocation in listOfAnalogCopy)
+                {
+                    listOfAnalog.Add(alocation.Clone() as AnalogLocation);
+                }
+
+                listOfAnalogCopy.Clear();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction: Commit phase successfully finished.");
+                return true;
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "SCADA CR Transaction: Failed to Commit changes. Message: {0}", e.Message);
+                return false;
+            }
         }
 
         public UpdateResult Prepare(Delta delta)
         {
-            transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
-            transactionCallback.Response("OK");
-            return new UpdateResult();
+            try
+            {
+                transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
+                updateResult = new UpdateResult();
+
+                this.listOfAnalogCopy = new List<AnalogLocation>();
+                Analog analog = null;
+                int i = 0; // analog counter for address
+
+                foreach (ResourceDescription analogRd in delta.InsertOperations)
+                {
+                    analog = ResourcesDescriptionConverter.ConvertToAnalog(analogRd);
+
+                    this.listOfAnalogCopy.Add(new AnalogLocation()
+                    {
+                        Analog = analog,
+                        StartAddress = i * 2, // float value 4 bytes
+                        Length = 2
+                    });
+
+                    i++;
+                }
+
+                updateResult.Message = "SCADA CR Transaction Prepare finished.";
+                updateResult.Result = ResultType.Succeeded;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction Prepare finished successfully.");
+                transactionCallback.Response("OK");
+            }
+            catch (Exception e)
+            {
+                updateResult.Message = "SCADA CR Transaction Prepare finished.";
+                updateResult.Result = ResultType.Failed;
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "SCADA CR Transaction Prepare failed. Message: {0}", e.Message);
+                transactionCallback.Response("ERROR");
+            }
+
+            return updateResult;
         }
 
         public bool Rollback()
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.listOfAnalogCopy.Clear();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Transaction rollback successfully finished!");
+                return true;
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction rollback error. Message: {0}", e.Message);
+                return false;
+            }
         }
 
         #endregion Transaction

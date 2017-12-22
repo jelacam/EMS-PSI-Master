@@ -91,12 +91,9 @@ namespace EMS.Services.SCADACommandingService
                 }
             }
 
-
-
             message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
             Console.WriteLine(message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-
 
             message = "The SCADA Commanding Service is started.";
             Console.WriteLine("\n{0}", message);
@@ -139,6 +136,5 @@ namespace EMS.Services.SCADACommandingService
         {
             this.scadaCMD.TestWrite();
         }
-
     }
 }
