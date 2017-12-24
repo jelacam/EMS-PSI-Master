@@ -59,6 +59,7 @@ namespace EMS.Services.TransactionManagerService
             }
             else
             {
+                toRespond = 1;
                 updateResult = TransactionNMSProxy.Instance.Prepare(delta);
             }
 
