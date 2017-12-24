@@ -13,7 +13,10 @@ namespace TransactionManager
     {
         public static void Main(string[] args)
         {
-            try
+			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkMagenta, 1, 0);
+			Console.Title = "Transaction Manager Service";
+
+			try
             {
                 string message = "Starting Transaction Manager Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

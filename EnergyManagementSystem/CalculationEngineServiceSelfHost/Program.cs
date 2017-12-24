@@ -20,6 +20,9 @@ namespace EMS.Services.CalculationEngineService
 		/// <param name="args">arguments for method</param>
 		private static void Main(string[] args)
 		{
+			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkGreen, 1, 2);
+			Console.Title = "Calculation Engine Service";
+
 			try
 			{
 				string message = "Starting Calculation Engine Service...";
