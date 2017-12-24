@@ -50,10 +50,6 @@ namespace SmoothModbus
 			{
 				byte[] valueInBytes = new byte[sizeofType];
 				Array.Copy(byteArray, startIndex + i * sizeofType, valueInBytes, 0, sizeofType);
-			//	valueInBytes = valueInBytes.Reverse().ToArray();
-				//var v = valueInBytes[2];
-				//valueInBytes[2] = valueInBytes[3];
-				//valueInBytes[3] = v;
 
 				genericArray[i] = ((T)typeToConversionFunction[typeof(T)].Invoke(valueInBytes));
 			}
