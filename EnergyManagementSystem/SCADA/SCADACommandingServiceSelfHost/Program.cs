@@ -24,8 +24,11 @@ namespace SCADACommandingServiceSelfHost
         /// <param name="args"></param>
         private static void Main(string[] args)
         {
-            try
-            {
+			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 1);
+			Console.Title = "SCADA Commanding Service";
+
+			try
+			{
                 string message = "Starting SCADA Commanding Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);

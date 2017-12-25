@@ -84,11 +84,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\3rdPartyLibs\x86\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -105,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleOptions.cs" />
     <Compile Include="GDA\Association.cs" />
     <Compile Include="EnumDescs.cs" />
     <Compile Include="Enums.cs" />
