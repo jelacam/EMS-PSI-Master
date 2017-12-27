@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -111,6 +111,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SmoothModbusTest", "SmoothModbusTest", "{9CEF90F1-E2AE-4790-BD12-CA70AEA83AC1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothModbusTest", "Test\SmoothModbusTest\SmoothModbusTest.csproj", "{DE2E0A5C-2428-44C5-9E63-EA47BC8F424F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEPubSubContract", "ServiceContracts\CEPubSubContract\CEPubSubContract.csproj", "{001A5767-0640-4E4E-8AD8-22AEBFD8C069}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -533,6 +535,18 @@ Global
 		{DE2E0A5C-2428-44C5-9E63-EA47BC8F424F}.Release|x64.Build.0 = Release|Any CPU
 		{DE2E0A5C-2428-44C5-9E63-EA47BC8F424F}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE2E0A5C-2428-44C5-9E63-EA47BC8F424F}.Release|x86.Build.0 = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|x64.Build.0 = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Debug|x86.Build.0 = Debug|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|x64.ActiveCfg = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|x64.Build.0 = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|x86.ActiveCfg = Release|Any CPU
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -577,6 +591,7 @@ Global
 		{11CEC80D-0F65-4125-A948-FD4302064F6B} = {CEFC4CE4-EF4A-4E34-AB3D-251825F77105}
 		{9CEF90F1-E2AE-4790-BD12-CA70AEA83AC1} = {4EC6767A-09E0-44D1-B4E9-2F55124C116B}
 		{DE2E0A5C-2428-44C5-9E63-EA47BC8F424F} = {9CEF90F1-E2AE-4790-BD12-CA70AEA83AC1}
+		{001A5767-0640-4E4E-8AD8-22AEBFD8C069} = {CEFC4CE4-EF4A-4E34-AB3D-251825F77105}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F2A5C02-A2F4-4021-990E-9A05482EA2E3}
