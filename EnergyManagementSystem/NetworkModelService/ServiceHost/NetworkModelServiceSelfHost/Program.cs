@@ -5,14 +5,18 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
 using EMS.Common;
+using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace EMS.Services.NetworkModelService
 {
 	public class Program
 	{
-		
+
 		private static void Main(string[] args)
 		{
+			ConsoleOptions.SetWindowOptions(ConsoleColor.White, 0, 0);
+			Console.Title = "Network Model Service";
 			try
 			{
 				string message = "Starting Network Model Service...";
@@ -20,7 +24,7 @@ namespace EMS.Services.NetworkModelService
 				Console.WriteLine("\n{0}\n", message);
 
 				using (NetworkModelService nms = new NetworkModelService())
-				{					
+				{
 					nms.Start();
 
 					message = "Press <Enter> to stop the service.";
@@ -39,6 +43,8 @@ namespace EMS.Services.NetworkModelService
 				CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
 				Console.ReadLine();
 			}
+
 		}
+
 	}
 }

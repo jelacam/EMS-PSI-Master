@@ -21,6 +21,10 @@ namespace SCADACollectingServiceSelfHost
 		/// <param name="args">arguments for method</param>
 		private static void Main(string[] args)
 		{
+
+			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 1, 1);
+			Console.Title = "SCADA Collecting Service";
+
 			try
 			{
 				string message = "Starting SCADA Collecting Service ...";

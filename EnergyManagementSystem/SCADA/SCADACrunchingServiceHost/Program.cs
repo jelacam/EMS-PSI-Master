@@ -21,8 +21,11 @@ namespace SCADACrunchingServiceHost
 		/// <param name="args">arguments for method</param>
 		private static void Main(string[] args)
         {
-            try
-            {
+			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 2);
+			Console.Title = "SCADA Crunching Service";
+
+			try
+			{
                 string message = "Starting SCADA Crunching Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);
