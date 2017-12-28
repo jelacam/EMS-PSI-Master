@@ -4,10 +4,10 @@ namespace EMS.Services.CalculationEngineService.PubSub
 {
     public class OptimizationEventArgs : EventArgs
     {
-        private int optimizationResult;
+        private float optimizationResult;
         private string message;
 
-        public int OptimizationResult
+        public float OptimizationResult
         {
             get { return optimizationResult; }
             set { optimizationResult = value; }

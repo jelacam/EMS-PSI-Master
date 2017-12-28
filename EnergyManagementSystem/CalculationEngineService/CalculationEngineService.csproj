@@ -71,6 +71,7 @@
     <Compile Include="CrToCe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PubSub\OptimizationEventArgs.cs" />
+    <Compile Include="PubSub\PublisherService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">
@@ -84,6 +85,10 @@
     <ProjectReference Include="..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
       <Project>{D322124E-3C27-45ED-86BB-84DC5621845A}</Project>
       <Name>CalculationEngineContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\CEPubSubContract\CEPubSubContract.csproj">
+      <Project>{001A5767-0640-4E4E-8AD8-22AEBFD8C069}</Project>
+      <Name>CEPubSubContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\ScadaCMDContract\ScadaCMDContract.csproj">
       <Project>{E5EB974E-55E9-4C8C-9DBF-DB4530F4904E}</Project>
