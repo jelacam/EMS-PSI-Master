@@ -11,17 +11,20 @@ namespace EMS.Services.CalculationEngineService
     using CommonMeasurement;
     using EMS.Common;
     using EMS.ServiceContracts;
+    using PubSub;
 
     /// <summary>
     /// Class for CalculationEngine
     /// </summary>
     public class CalculationEngine
     {
+        PublisherService publisher = null;
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculationEngine" /> class
         /// </summary>
         public CalculationEngine()
         {
+            publisher = new PublisherService();
         }
 
         /// <summary>
@@ -42,6 +45,9 @@ namespace EMS.Services.CalculationEngineService
                         measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
 						CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
 						Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+
+                       
+                        publisher.PublishOptimizationResults(measurements[i].CurrentValue);
                     }
 
                     result = true;

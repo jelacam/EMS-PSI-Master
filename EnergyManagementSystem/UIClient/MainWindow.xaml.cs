@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using UIClient.PubSub;
 using UIClient.View;
 using UIClient.ViewModel;
 
@@ -24,14 +25,22 @@ namespace UIClient
 			DataContext = new MainWindowViewModel();
 			InitializeComponent();
 
-			//string message = string.Format("Network Model Service Test Client is up and running...");
-			//Console.WriteLine(message);
-			//CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            //string message = string.Format("Network Model Service Test Client is up and running...");
+            //Console.WriteLine(message);
+            //CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-			//message = string.Format("Result directory: {0}", Config.Instance.ResultDirecotry);
-			//Console.WriteLine(message);
-			//CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            //message = string.Format("Result directory: {0}", Config.Instance.ResultDirecotry);
+            //Console.WriteLine(message);
+            //CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
+            try
+            {
+                CeSubscribeProxy.Instance.Subscribe();
+            }
+            catch(Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Publisher Service! \n {0}", e.Message);
+            }
 		}
 		
 	}
