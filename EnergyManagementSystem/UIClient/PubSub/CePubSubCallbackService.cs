@@ -9,15 +9,19 @@ using System.Threading.Tasks;
 
 namespace UIClient.PubSub
 {
-
     public class CePubSubCallbackService : ICePubSubCallbackContract
     {
+        /// <summary>
+        /// This method will receive optimization result form CalculationEngine service.
+        /// </summary>
+        /// <param name="result"></param>
         public void OptimizationResults(float result)
         {
             Console.WriteLine("OperationContext id: {0}", OperationContext.Current.SessionId);
             Console.WriteLine(string.Format("OPTIMIZATION RESULT: {0}", result.ToString()));
-            
-            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "OPTIMIZATION RESULT: {0} | SessionID: {1}", result.ToString(), OperationContext.Current.SessionId);
+
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "OPTIMIZATION RESULT: {0} | SessionID: {1}",
+                                   result.ToString(), OperationContext.Current.SessionId);
         }
     }
 }

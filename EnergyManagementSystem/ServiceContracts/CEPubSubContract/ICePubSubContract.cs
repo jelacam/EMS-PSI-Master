@@ -24,7 +24,7 @@ namespace EMS.ServiceContracts
     }
 
     /// <summary>
-    /// Communication between service and client is duplex, so this interface represent a callback contract whitch
+    /// Communication between service and client is duplex, so this interface represent a callback contract which
     /// the service uses to pass new information to subscribed list of clients.
     /// </summary>
     public interface ICePubSubCallbackContract
