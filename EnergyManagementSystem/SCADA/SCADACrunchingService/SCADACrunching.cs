@@ -32,6 +32,10 @@ namespace EMS.Services.SCADACrunchingService
 
         private ITransactionCallback transactionCallback;
 
+		private float minRaw = 0;
+
+		private float maxRaw = 4095;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
         /// </summary>
@@ -144,6 +148,10 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns>returns true if success</returns>
         public bool SendValues(byte[] value)
         {
+			float eguVal;
+			bool alarmRaw = false;
+			bool alarmEGU = false;
+
             string function = Enum.GetName(typeof(FunctionCode), value[0]);
             Console.WriteLine("Function executed: {0}", function);
 
@@ -151,17 +159,27 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Byte count: {0}", arrayLength);
 
             List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-            foreach (AnalogLocation analogLoc in this.listOfAnalog)
-            {
-                // startIndex = 2 because first two bytes a metadata
-                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
-                this.CheckForAlarms(values[0], analogLoc.Analog);
+			foreach (AnalogLocation analogLoc in this.listOfAnalog)
+			{
+				// startIndex = 2 because first two bytes a metadata
+				float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
+				
+				alarmRaw = AlarmsEventsProxy.Instance.CheckForRawAlarms(values[0], minRaw, maxRaw);
+				if (alarmRaw == false)
+				{
+					eguVal = this.ConvertFromRawToEGUValue(values[0], minRaw, maxRaw, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+					alarmEGU = AlarmsEventsProxy.Instance.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
 
-                MeasurementUnit measUnit = new MeasurementUnit();
-                measUnit.Gid = analogLoc.Analog.PowerSystemResource;
-                measUnit.CurrentValue = values[0];
-                listOfMeasUnit.Add(measUnit);
-            }
+					if (alarmEGU == false)
+					{
+						MeasurementUnit measUnit = new MeasurementUnit();
+						measUnit.Gid = analogLoc.Analog.PowerSystemResource;
+						//measUnit.CurrentValue = eguVal;
+						measUnit.CurrentValue = values[0];
+						listOfMeasUnit.Add(measUnit);
+					}
+				}
+			}
 
             bool isSuccess = false;
             try
@@ -204,5 +222,10 @@ namespace EMS.Services.SCADACrunchingService
                 Console.WriteLine("Alarm on Gid = {0}", analog.GlobalId);
             }
         }
+
+		private float ConvertFromRawToEGUValue(float value, float minRaw, float maxRaw, float minEGU, float maxEGU)
+		{
+			return ((value - minRaw) / (maxRaw - minRaw)) * (maxEGU - minEGU) + minEGU;
+		}
     }
 }

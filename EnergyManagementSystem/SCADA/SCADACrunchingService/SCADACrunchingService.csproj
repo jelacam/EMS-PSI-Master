@@ -77,6 +77,10 @@
       <Project>{ade96497-7c11-40b6-ae82-57f956c9f104}</Project>
       <Name>DataModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\AlarmsEventsContract\AlarmsEventsContract.csproj">
+      <Project>{dc58aa82-434d-4c1b-936a-0af3e79cbdc5}</Project>
+      <Name>AlarmsEventsContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
       <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
       <Name>CalculationEngineContract</Name>

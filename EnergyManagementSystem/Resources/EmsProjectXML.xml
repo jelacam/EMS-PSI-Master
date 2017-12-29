@@ -91,9 +91,9 @@
 	</cim:EnergyConsumer>
 	
 	<cim:Analog rdf:ID="Analog_1">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>400</cim:Analog.maxValue>
+		<cim:Analog.minValue>0</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_1"/>
@@ -103,9 +103,9 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_2">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>70</cim:Analog.maxValue>
+		<cim:Analog.minValue>30</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_2"/>
@@ -115,9 +115,9 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_3">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>110</cim:Analog.maxValue>
+		<cim:Analog.minValue>90</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_3"/>
@@ -127,9 +127,9 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_4">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>100</cim:Analog.maxValue>
+		<cim:Analog.minValue>0</cim:Analog.minValue>
+		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_1"/>
@@ -139,9 +139,9 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_5">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>0</cim:Analog.minValue>
+		<cim:Analog.normalValue>75</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_2"/>
@@ -151,9 +151,9 @@
 	</cim:Analog>
 
 	<cim:Analog rdf:ID="Analog_6">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>50</cim:Analog.maxValue>
+		<cim:Analog.minValue>2</cim:Analog.minValue>
+		<cim:Analog.normalValue>20</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_3"/>

@@ -8,7 +8,7 @@ namespace EMS.Common
 	public static class ConsoleOptions
 	{
 		#region WindowsOption
-		public static void SetWindowOptions(ConsoleColor consoleForegroundColor, int column, int row, int numberOfColumns = 2, int numerOfRows = 3)
+		public static void SetWindowOptions(ConsoleColor consoleForegroundColor, int column, int row, int numberOfColumns = 3, int numerOfRows = 3)
 		{
 			Console.WindowWidth = 50;
 			Console.WindowHeight = 1;
