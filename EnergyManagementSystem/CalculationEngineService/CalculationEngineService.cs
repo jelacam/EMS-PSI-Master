@@ -10,6 +10,7 @@ namespace EMS.Services.CalculationEngineService
     using System.Collections.Generic;
     using System.ServiceModel;
     using EMS.Common;
+    using PubSub;
 
     /// <summary>
     /// Class for CalculationEngineService
@@ -80,6 +81,7 @@ namespace EMS.Services.CalculationEngineService
         {
             this.hosts = new List<ServiceHost>();
             this.hosts.Add(new ServiceHost(typeof(CrToCe)));
+            this.hosts.Add(new ServiceHost(typeof(PublisherService)));
         }
 
         /// <summary>
