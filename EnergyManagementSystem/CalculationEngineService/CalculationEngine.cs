@@ -34,6 +34,7 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>returns true if optimization was successful</returns>
         public bool Optimize(List<MeasurementUnit> measurements)
         {
+            bool alarmOptimized = true;
             bool result = false;
             if (measurements != null)
             {
@@ -43,14 +44,20 @@ namespace EMS.Services.CalculationEngineService
                     for (int i = 0; i < measurements.Count; i++)
                     {
                         measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
-						CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
-						Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+                        alarmOptimized = this.CheckForOptimizedAlarms(measurements[i].CurrentValue, measurements[i].MinValue, measurements[i].MaxValue, measurements[i].Gid);
+                        if (alarmOptimized == false)
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+                            Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
 
-                       
-                        publisher.PublishOptimizationResults(measurements[i].CurrentValue);
+                            publisher.PublishOptimizationResults(measurements[i].CurrentValue);
+                        }
                     }
 
-                    result = true;
+                    if (alarmOptimized == false)
+                    {
+                        result = true;
+                    }
 
                     try
                     {
@@ -69,6 +76,34 @@ namespace EMS.Services.CalculationEngineService
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Checking for alarms on optimized value
+        /// </summary>
+        /// <param name="value">value to check</param>
+        /// <param name="minOptimized">low limit</param>
+        /// <param name="maxOptimized">high limit</param>
+        /// <param name="gid">gid of measurement</param>
+        /// <returns></returns>
+        private bool CheckForOptimizedAlarms(float value, float minOptimized, float maxOptimized, long gid)
+        {
+            bool retVal = false;
+            if (value < minOptimized)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low optimized limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on low optimized limit on gid: {0}", gid);
+            }
+
+            if (value > maxOptimized)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high optimized limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on high optimized limit on gid: {0}", gid);
+            }
+
+            return retVal;
         }
     }
 }

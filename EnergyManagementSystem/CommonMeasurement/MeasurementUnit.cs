@@ -24,6 +24,16 @@ namespace EMS.CommonMeasurement
         private float currentValue;
 
         /// <summary>
+        /// minValue for MeasurementUnit
+        /// </summary>
+        private float minValue;
+
+        /// <summary>
+        /// maxValue for MeasurementUnit
+        /// </summary>
+        private float maxValue;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MeasurementUnit" /> class
         /// </summary>
         public MeasurementUnit()
@@ -59,6 +69,38 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.currentValue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets MinValue of the entity
+        /// </summary>
+        public float MinValue
+        {
+            get
+            {
+                return this.minValue;
+            }
+
+            set
+            {
+                this.minValue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets MaxValue of the entity
+        /// </summary>
+        public float MaxValue
+        {
+            get
+            {
+                return this.maxValue;
+            }
+
+            set
+            {
+                this.maxValue = value;
             }
         }
     }

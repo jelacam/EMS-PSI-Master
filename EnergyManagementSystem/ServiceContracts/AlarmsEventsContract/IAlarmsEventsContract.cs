@@ -20,27 +20,5 @@ namespace EMS.ServiceContracts
 		/// </summary>
 		[OperationContract]
 		void Test();
-
-		/// <summary>
-		/// Checking for low and high alarm on raw value
-		/// </summary>
-		/// <param name="value">value to check</param>
-		/// <param name="min">low limit</param>
-		/// <param name="max">high limit</param>
-		/// <returns>True if alarm exist</returns>
-		[OperationContract]
-		bool CheckForRawAlarms(float value, float min,float max);
-
-		/// <summary>
-		/// Checking for low and high alarm on egu value
-		/// </summary>
-		/// <param name="value">value to check</param>
-		/// <param name="min">low limit</param>
-		/// <param name="max">high limit</param>
-		/// <returns>True if alarm exist</returns>
-		[OperationContract]
-		bool CheckForEGUAlarms(float value, float min, float max);
-		
-		//alarmi kad se optimizuje
 	}
 }

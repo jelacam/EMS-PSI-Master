@@ -26,15 +26,24 @@ namespace EMS.Services.SCADACrunchingService
         /// </summary>
         private List<AnalogLocation> listOfAnalog;
 
+        /// <summary>
+        /// list for storing copy of AnalogLocation values
+        /// </summary>
         private List<AnalogLocation> listOfAnalogCopy;
 
         private UpdateResult updateResult;
 
         private ITransactionCallback transactionCallback;
 
-		private float minRaw = 0;
+        /// <summary>
+        /// minimal raw value for simulator
+        /// </summary>
+        private float minRaw = 0;
 
-		private float maxRaw = 4095;
+        /// <summary>
+        /// maximal raw value for simulator
+        /// </summary>
+        private float maxRaw = 4095;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
@@ -148,9 +157,9 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns>returns true if success</returns>
         public bool SendValues(byte[] value)
         {
-			float eguVal;
-			bool alarmRaw = false;
-			bool alarmEGU = false;
+            float eguVal;
+            bool alarmRaw;
+            bool alarmEGU;
 
             string function = Enum.GetName(typeof(FunctionCode), value[0]);
             Console.WriteLine("Function executed: {0}", function);
@@ -159,27 +168,29 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Byte count: {0}", arrayLength);
 
             List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-			foreach (AnalogLocation analogLoc in this.listOfAnalog)
-			{
-				// startIndex = 2 because first two bytes a metadata
-				float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
-				
-				alarmRaw = AlarmsEventsProxy.Instance.CheckForRawAlarms(values[0], minRaw, maxRaw);
-				if (alarmRaw == false)
-				{
-					eguVal = this.ConvertFromRawToEGUValue(values[0], minRaw, maxRaw, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-					alarmEGU = AlarmsEventsProxy.Instance.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+            foreach (AnalogLocation analogLoc in this.listOfAnalog)
+            {
+                // startIndex = 2 because first two bytes a metadata
+                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
 
-					if (alarmEGU == false)
-					{
-						MeasurementUnit measUnit = new MeasurementUnit();
-						measUnit.Gid = analogLoc.Analog.PowerSystemResource;
-						//measUnit.CurrentValue = eguVal;
-						measUnit.CurrentValue = values[0];
-						listOfMeasUnit.Add(measUnit);
-					}
-				}
-			}
+                alarmRaw = this.CheckForRawAlarms(values[0], minRaw, maxRaw, analogLoc.Analog.PowerSystemResource);
+                if (alarmRaw == false)
+                {
+                    eguVal = this.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                    alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+
+                    if (alarmEGU == false)
+                    {
+                        MeasurementUnit measUnit = new MeasurementUnit();
+                        measUnit.Gid = analogLoc.Analog.PowerSystemResource;
+                        measUnit.MinValue = analogLoc.Analog.MinValue;
+                        measUnit.MaxValue = analogLoc.Analog.MaxValue;
+                        measUnit.CurrentValue = eguVal;
+                        // measUnit.CurrentValue = values[0];
+                        listOfMeasUnit.Add(measUnit);
+                    }
+                }
+            }
 
             bool isSuccess = false;
             try
@@ -194,8 +205,8 @@ namespace EMS.Services.SCADACrunchingService
 
             if (isSuccess)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Successfuly sent list to CE, list with {0} items.", listOfMeasUnit.Count);
-                Console.WriteLine("Successfuly sent list to CE, list with {0} items.", listOfMeasUnit.Count);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Successfuly sent list with {0} items to CE.", listOfMeasUnit.Count);
+                Console.WriteLine("Successfuly sent list with {0} items to CE.", listOfMeasUnit.Count);
             }
 
             return isSuccess;
@@ -210,22 +221,74 @@ namespace EMS.Services.SCADACrunchingService
         }
 
         /// <summary>
-        /// Method for checking alarms
+        /// Converts raw value to egu value
         /// </summary>
-        /// <param name="value">measured value</param>
-        /// <param name="analog">analog instance</param>
-        private void CheckForAlarms(float value, Analog analog)
+        /// <param name="value">value to convert</param>
+        /// <param name="minEGU">minimal egu value</param>
+        /// <param name="maxEGU">maximal egu value</param>
+        /// <returns>value in egu format</returns>
+        private float ConvertFromRawToEGUValue(float value, float minEGU, float maxEGU)
         {
-            if (value < analog.MinValue || value > analog.MaxValue)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on Gid = {0}", analog.GlobalId);
-                Console.WriteLine("Alarm on Gid = {0}", analog.GlobalId);
-            }
+            minEGU = minEGU * (float)0.9;
+            maxEGU = maxEGU * (float)1.1;
+            float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
+            return retVal;
         }
 
-		private float ConvertFromRawToEGUValue(float value, float minRaw, float maxRaw, float minEGU, float maxEGU)
-		{
-			return ((value - minRaw) / (maxRaw - minRaw)) * (maxEGU - minEGU) + minEGU;
-		}
+        /// <summary>
+        /// Checking for alarms on egu value
+        /// </summary>
+        /// <param name="value">value to check</param>
+        /// <param name="minRaw">low limit</param>
+        /// <param name="maxRaw">high limit</param>
+        /// <param name="gid">gid of measurement</param>
+        /// <returns></returns>
+        private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
+        {
+            bool retVal = false;
+            if (value < minRaw)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);
+            }
+
+            if (value > maxRaw)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on high raw limit on gid: {0}", gid);
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Checking for alarms on egu value
+        /// </summary>
+        /// <param name="value">value to check</param>
+        /// <param name="minEGU">low limit</param>
+        /// <param name="maxEGU">high limit</param>
+        /// <param name="gid">gid of measurement</param>
+        /// <returns></returns>
+        private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
+        {
+            bool retVal = false;
+            if (value < minEGU)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
+            }
+
+            if (value > maxEGU)
+            {
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
+            }
+
+            return retVal;
+        }
     }
 }

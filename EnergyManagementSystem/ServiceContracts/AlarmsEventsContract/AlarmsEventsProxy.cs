@@ -77,18 +77,7 @@ namespace EMS.ServiceContracts
 		/// </summary>
 		public void Test()
 		{
-			//throw new NotImplementedException();
 			proxy.Test();
-		}
-
-		public bool CheckForRawAlarms(float value, float min, float max)
-		{
-			return proxy.CheckForRawAlarms(value, min, max);
-		}
-
-		public bool CheckForEGUAlarms(float value, float min, float max)
-		{
-			return proxy.CheckForEGUAlarms(value, min, max);
 		}
 	}
 }

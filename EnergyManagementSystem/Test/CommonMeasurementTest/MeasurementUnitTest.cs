@@ -59,5 +59,29 @@ namespace CommonMeasurementTest
 			mu.CurrentValue = currentValue;
 			Assert.AreEqual(mu.CurrentValue, currentValue);
 		}
-	}
+
+        /// <summary>
+		/// Unit test for MeasurementUnit MinValue setter
+		/// </summary>
+		[Test]
+        [TestCase(1623, TestName = "MeasurementUnitMinValueProperty")]
+        public void MinValueProperty(long minValue)
+        {
+            MeasurementUnit mu = new MeasurementUnit();
+            mu.MinValue = minValue;
+            Assert.AreEqual(mu.MinValue, minValue);
+        }
+
+        /// <summary>
+		/// Unit test for MeasurementUnit MaxValue setter
+		/// </summary>
+		[Test]
+        [TestCase(1623, TestName = "MeasurementUnitMaxValueProperty")]
+        public void MaxValueProperty(long maxValue)
+        {
+            MeasurementUnit mu = new MeasurementUnit();
+            mu.MaxValue = maxValue;
+            Assert.AreEqual(mu.MaxValue, maxValue);
+        }
+    }
 }

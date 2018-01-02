@@ -54,15 +54,5 @@ namespace EMS.Services.AlarmsEventsService
 				throw new Exception(message);
 			}
 		}
-
-		public bool CheckForEGUAlarms(float value, float min, float max)
-		{
-			return false;
-		}
-
-		public bool CheckForRawAlarms(float value, float min, float max)
-		{
-			return false;
-		}
 	}
 }
