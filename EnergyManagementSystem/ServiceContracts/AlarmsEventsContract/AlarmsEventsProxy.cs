@@ -8,6 +8,7 @@ namespace EMS.ServiceContracts
 {
 	using System;
 	using System.ServiceModel;
+	using CommonMeasurement;
 
 	/// <summary>
 	/// Class for IAlarmsEventsContract and IDisposable implementation
@@ -78,6 +79,15 @@ namespace EMS.ServiceContracts
 		public void Test()
 		{
 			proxy.Test();
+		}
+
+		/// <summary>
+		/// Adds new alarm
+		/// </summary>
+		/// <param name="alarm">alarm to add</param>
+		public void AddAlarm(AlarmHelper alarm)
+		{
+			proxy.AddAlarm(alarm);
 		}
 	}
 }

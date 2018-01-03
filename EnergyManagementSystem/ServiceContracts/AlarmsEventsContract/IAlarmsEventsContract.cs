@@ -8,6 +8,7 @@ namespace EMS.ServiceContracts
 {
 	using System;
 	using System.ServiceModel;
+	using CommonMeasurement;
 
 	/// <summary>
 	/// Contract for AlarmsEvents
@@ -20,5 +21,12 @@ namespace EMS.ServiceContracts
 		/// </summary>
 		[OperationContract]
 		void Test();
+
+		/// <summary>
+		/// Adds new alarm
+		/// </summary>
+		/// <param name="alarm">alarm to add</param>
+		[OperationContract]
+		void AddAlarm(AlarmHelper alarm);
 	}
 }

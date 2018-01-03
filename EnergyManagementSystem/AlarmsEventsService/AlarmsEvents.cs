@@ -9,18 +9,39 @@ namespace EMS.Services.AlarmsEventsService
 	using System;
 	using Common;
 	using ServiceContracts;
+	using System.Collections.Generic;
+	using CommonMeasurement;
 
 	/// <summary>
 	/// Class for ICalculationEngineContract implementation
 	/// </summary>
 	public class AlarmsEvents : IAlarmsEventsContract
 	{
+		private List<AlarmHelper> alarms;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AlarmsEvents" /> class
 		/// </summary>
 		public AlarmsEvents()
 		{
+			this.Alarms = new List<AlarmHelper>();
 		}
+
+		/// <summary>
+		/// Gets or sets Alarms of the entity
+		/// </summary>
+		public List<AlarmHelper> Alarms
+		{
+			get
+			{
+				return this.alarms;
+			}
+
+			set
+			{
+				this.alarms = value;
+			}
+		}		
 
 		/// <summary>
 		/// Test method
@@ -34,6 +55,25 @@ namespace EMS.Services.AlarmsEventsService
 			catch (Exception ex)
 			{
 				string message = string.Format("Greska", ex.Message);
+				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+				throw new Exception(message);
+			}
+		}
+
+		/// <summary>
+		/// Adds new alarm
+		/// </summary>
+		/// <param name="alarm">alarm to add</param>
+		public void AddAlarm(AlarmHelper alarm)
+		{	
+			try
+			{
+				this.alarms.Add(alarm);
+				Console.WriteLine("AlarmsEvents: AddAlarm method");
+			}
+			catch (Exception ex)
+			{
+				string message = string.Format("Greska ", ex.Message);
 				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
 				throw new Exception(message);
 			}

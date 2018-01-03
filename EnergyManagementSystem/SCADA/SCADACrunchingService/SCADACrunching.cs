@@ -313,16 +313,21 @@ namespace EMS.Services.SCADACrunchingService
         private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
         {
             bool retVal = false;
+			AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
             if (value < minRaw)
             {
+				ah.Type = AlarmType.rawMin;
+				AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);			
             }
 
             if (value > maxRaw)
             {
-                retVal = true;
+				ah.Type = AlarmType.rawMax;
+				AlarmsEventsProxy.Instance.AddAlarm(ah);
+				retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on high raw limit on gid: {0}", gid);
             }
@@ -341,16 +346,21 @@ namespace EMS.Services.SCADACrunchingService
         private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
         {
             bool retVal = false;
-            if (value < minEGU)
+			AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
+			if (value < minEGU)
             {
-                retVal = true;
+				ah.Type = AlarmType.eguMin;
+				AlarmsEventsProxy.Instance.AddAlarm(ah);
+				retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
             }
 
             if (value > maxEGU)
             {
-                retVal = true;
+				ah.Type = AlarmType.eguMax;
+				AlarmsEventsProxy.Instance.AddAlarm(ah);
+				retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
             }
