@@ -33,14 +33,7 @@ namespace UIClient
             //Console.WriteLine(message);
             //CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-            try
-            {
-                CeSubscribeProxy.Instance.Subscribe();
-            }
-            catch(Exception e)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Publisher Service! \n {0}", e.Message);
-            }
+          
 		}
 		
 	}

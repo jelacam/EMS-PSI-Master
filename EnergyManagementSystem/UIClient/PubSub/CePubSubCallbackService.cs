@@ -11,17 +11,34 @@ namespace UIClient.PubSub
 {
     public class CePubSubCallbackService : ICePubSubCallbackContract
     {
+
+        private Action<object> callbackAction;
+
+        public Action<object> CallbackAction
+        {
+            get
+            {
+                return callbackAction;
+            }
+
+            set
+            {
+                callbackAction = value;
+            }
+        }
+
         /// <summary>
         /// This method will receive optimization result form CalculationEngine service.
         /// </summary>
         /// <param name="result"></param>
-        public void OptimizationResults(float result)
+        public void OptimizationResults(MeasurementUI result)
         {
             Console.WriteLine("OperationContext id: {0}", OperationContext.Current.SessionId);
             Console.WriteLine(string.Format("OPTIMIZATION RESULT: {0}", result.ToString()));
 
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "OPTIMIZATION RESULT: {0} | SessionID: {1}",
                                    result.ToString(), OperationContext.Current.SessionId);
+            CallbackAction(result);
         }
     }
 }

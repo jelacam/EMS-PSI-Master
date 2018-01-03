@@ -49,8 +49,29 @@ namespace EMS.Services.CalculationEngineService
                         {
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
                             Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].CurrentValue);
+                        }
+                        else
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1} ALARM!", measurements[i].Gid, measurements[i].CurrentValue);
+                            Console.WriteLine("gid: {0} value: {1} ALARM!", measurements[i].Gid, measurements[i].CurrentValue);
 
-                            publisher.PublishOptimizationResults(measurements[i].CurrentValue);
+                        }
+
+                        MeasurementUI measUI = new MeasurementUI()
+                        {
+                            Gid = measurements[i].Gid,
+                            AlarmType = alarmOptimized ? "Alarm while optimizing" : string.Empty,
+                            MeasurementValue = measurements[i].CurrentValue
+                        };
+
+                        try
+                        {
+                            publisher.PublishOptimizationResults(measUI);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw ex;
                         }
                     }
 
@@ -61,11 +82,11 @@ namespace EMS.Services.CalculationEngineService
 
                     try
                     {
-						if (ScadaCMDProxy.Instance.SendDataToSimulator(measurements))
-						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
-							Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
-						}
+                        if (ScadaCMDProxy.Instance.SendDataToSimulator(measurements))
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+                            Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+                        }
                     }
                     catch (System.Exception ex)
                     {

@@ -27,6 +27,21 @@ namespace EMS.Services.CalculationEngineService.PubSub
         public void OptimizationResultHandler(object sender, OptimizationEventArgs e)
         {
             callback.OptimizationResults(e.OptimizationResult);
+
+            callback.CallbackAction?.Invoke(e.OptimizationResult);
+        }
+
+        /// <summary>
+        /// Clients call this service opeartion to subscribe.
+        /// A optimization result event handler is registered for this client instance.
+        /// </summary>
+        /// <param name="callbackAction"></param>
+        public void SubscribeWithCallback(Action<object> callbackAction)
+        {
+            callback = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
+            callback.CallbackAction = callbackAction;
+            optimizationResultHandler = new OptimizationResultEventHandler(OptimizationResultHandler);
+            OptimizationResultEvent += optimizationResultHandler;
         }
 
         /// <summary>
@@ -50,7 +65,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         /// A optimization result event is raised. The optimization result event handlers for each subscriber will execute.
         /// </summary>
         /// <param name="result"></param>
-        public void PublishOptimizationResults(float result)
+        public void PublishOptimizationResults(MeasurementUI result)
         {
             OptimizationEventArgs e = new OptimizationEventArgs
             {
@@ -59,6 +74,11 @@ namespace EMS.Services.CalculationEngineService.PubSub
             };
 
             OptimizationResultEvent(this, e);
+        }
+
+        public void SetCallback(Action<MeasurementUI> callbackAction)
+        {
+            throw new NotImplementedException();
         }
     }
 }

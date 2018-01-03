@@ -177,16 +177,16 @@ namespace EMS.Services.SCADACrunchingService
                 if (alarmRaw == false)
                 {
                     eguVal = this.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-                    alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
-
+                    //alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+                    alarmEGU = false;
                     if (alarmEGU == false)
                     {
                         MeasurementUnit measUnit = new MeasurementUnit();
                         measUnit.Gid = analogLoc.Analog.PowerSystemResource;
                         measUnit.MinValue = analogLoc.Analog.MinValue;
                         measUnit.MaxValue = analogLoc.Analog.MaxValue;
-                        measUnit.CurrentValue = eguVal;
-                        // measUnit.CurrentValue = values[0];
+                     //   measUnit.CurrentValue = eguVal;
+                        measUnit.CurrentValue = values[0];
                         listOfMeasUnit.Add(measUnit);
                     }
                 }

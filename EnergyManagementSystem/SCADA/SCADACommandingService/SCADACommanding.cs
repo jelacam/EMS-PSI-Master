@@ -192,8 +192,8 @@ namespace EMS.Services.SCADACommandingService
                 try
                 {
                     float rawVal = this.ConvertFromEGUToRawValue(measurements[i].CurrentValue, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-                    modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
-                    // modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, measurements[i].CurrentValue);
+                   // modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
+                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, measurements[i].CurrentValue);
                 }
                 catch (System.Exception ex)
                 {

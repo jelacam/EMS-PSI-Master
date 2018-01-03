@@ -101,14 +101,19 @@
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
+    <Compile Include="PubSub\CallbackEventArgs.cs" />
     <Compile Include="PubSub\CePubSubCallbackService.cs" />
     <Compile Include="PubSub\CeSubscribeProxy.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\DashboardViewModel.cs" />
     <Compile Include="ViewModel\ImporterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="TestGda.cs" />
     <Compile Include="ViewModel\NMSViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImporterView.xaml.cs">
       <DependentUpon>ImporterView.xaml</DependentUpon>
     </Compile>
@@ -165,6 +170,10 @@
     <Page Include="Themes\IG\Theme.Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ImporterView.xaml">
       <SubType>Designer</SubType>

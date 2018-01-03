@@ -21,7 +21,7 @@ namespace UIClient.PubSub
         {
             get
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     context = new InstanceContext(new CePubSubCallbackService());
                     factory = new DuplexChannelFactory<ICePubSubContract>(context, "PubSub");
@@ -32,7 +32,7 @@ namespace UIClient.PubSub
 
             set
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     proxy = value;
                 }
@@ -47,7 +47,7 @@ namespace UIClient.PubSub
             }
         }
 
-        public void PublishOptimizationResults(float result)
+        public void PublishOptimizationResults(MeasurementUI result)
         {
             CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Client does not have permissions to publis optimization results!");
             throw new Exception("Client does not have permissions to publis optimization results!");
@@ -61,6 +61,11 @@ namespace UIClient.PubSub
         public void Unsubscribe()
         {
             proxy.Unsubscribe();
+        }
+
+        public void SubscribeWithCallback(Action<object> callbackAction)
+        {
+            proxy.SubscribeWithCallback(callbackAction);
         }
     }
 }

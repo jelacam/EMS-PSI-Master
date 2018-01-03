@@ -28,6 +28,14 @@
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>
+			<TabItem Header="Dashboard" Style="{StaticResource TabItemStyle}">
+				<TabItem.ContentTemplate>
+					<DataTemplate>
+						<view:DashboardView DataContext="{Binding DashboardViewModel}"/>
+					</DataTemplate>
+				</TabItem.ContentTemplate>
+			</TabItem>
+			
 		</TabControl>
 	</Grid>
 </Window>
