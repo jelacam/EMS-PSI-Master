@@ -42,10 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlarmsEvents.cs" />
     <Compile Include="AlarmsEventsService.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="CrToAe.cs" />
+    <Compile Include="AlarmsEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,11 +7,13 @@
 namespace EMS.Services.AlarmsEventsService
 {
 	using System;
+	using Common;
+	using ServiceContracts;
 
 	/// <summary>
-	/// Class for AlarmsEvents
+	/// Class for ICalculationEngineContract implementation
 	/// </summary>
-	public class AlarmsEvents
+	public class AlarmsEvents : IAlarmsEventsContract
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AlarmsEvents" /> class
@@ -25,7 +27,16 @@ namespace EMS.Services.AlarmsEventsService
 		/// </summary>
 		public void Test()
 		{
-			Console.WriteLine("AlarmsEvents: Test method");
+			try
+			{
+				Console.WriteLine("AlarmsEvents: Test method");
+			}
+			catch (Exception ex)
+			{
+				string message = string.Format("Greska", ex.Message);
+				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+				throw new Exception(message);
+			}
 		}
 	}
 }

@@ -32,7 +32,6 @@ namespace EMS.Services.AlarmsEventsService
 		public AlarmsEventsService()
 		{
 			this.ae = new AlarmsEvents();
-			CrToAe.AlarmsEvents = this.ae;
 			this.InitializeHosts();
 		}
 
@@ -79,7 +78,7 @@ namespace EMS.Services.AlarmsEventsService
 		private void InitializeHosts()
 		{
 			this.hosts = new List<ServiceHost>();
-			this.hosts.Add(new ServiceHost(typeof(CrToAe)));
+			this.hosts.Add(new ServiceHost(typeof(AlarmsEvents)));
 		}
 
 		/// <summary>
