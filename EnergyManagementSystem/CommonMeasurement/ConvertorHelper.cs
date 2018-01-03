@@ -1,0 +1,85 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="ConvertorHelper.cs" company="EMS-Team">
+// Copyright (c) EMS-Team. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace EMS.CommonMeasurement
+{
+	using System;
+
+	/// <summary>
+	/// Class for converting
+	/// </summary>
+	public class ConvertorHelper
+	{
+		/// <summary>
+		/// minimal raw value for simulator
+		/// </summary>
+		private float minRaw = 0;
+
+		/// <summary>
+		/// maximal raw value for simulator
+		/// </summary>
+		private float maxRaw = 4095;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ConvertorHelper" /> class
+		/// </summary>
+		public ConvertorHelper()
+		{
+			this.minRaw = 0;
+			this.maxRaw = 4095;
+		}
+
+		/// <summary>
+		/// Gets MinRaw of the entity
+		/// </summary>
+		public float MinRaw
+		{
+			get
+			{
+				return this.minRaw;
+			}			
+		}
+
+		/// <summary>
+		/// Gets MaxRaw of the entity
+		/// </summary>
+		public float MaxRaw
+		{
+			get
+			{
+				return this.maxRaw;
+			}			
+		}
+
+		/// <summary>
+		/// Converts raw value to egu value
+		/// </summary>
+		/// <param name="value">value to convert</param>
+		/// <param name="minEGU">minimal egu value</param>
+		/// <param name="maxEGU">maximal egu value</param>
+		/// <returns>value in egu format</returns>
+		public float ConvertFromRawToEGUValue(float value, float minEGU, float maxEGU)
+		{
+			minEGU = minEGU * (float)0.9;
+			maxEGU = maxEGU * (float)1.1;
+			float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
+			return retVal;
+		}
+
+		/// <summary>
+		/// Converts egu value to raw value
+		/// </summary>
+		/// <param name="value">value to convert</param>
+		/// <param name="minEGU">minimal egu value</param>
+		/// <param name="maxEGU">maximal egu value</param>
+		/// <returns>value in raw format</returns>
+		public float ConvertFromEGUToRawValue(float value, float minEGU, float maxEGU)
+		{
+			float retVal = ((value - minEGU) / (maxEGU - minEGU)) * (this.maxRaw - this.minRaw) + this.minRaw;
+			return retVal;
+		}
+	}
+}

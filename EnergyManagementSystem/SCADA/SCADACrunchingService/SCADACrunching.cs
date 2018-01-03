@@ -35,23 +35,20 @@ namespace EMS.Services.SCADACrunchingService
 
         private ITransactionCallback transactionCallback;
 
-        /// <summary>
-        /// minimal raw value for simulator
-        /// </summary>
-        private float minRaw = 0;
+		/// <summary>
+		/// instance of ConvertorHelper class
+		/// </summary>
+		private ConvertorHelper convertorHelper;
 
-        /// <summary>
-        /// maximal raw value for simulator
-        /// </summary>
-        private float maxRaw = 4095;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SCADACrunching" /> class
-        /// </summary>
-        public SCADACrunching()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SCADACrunching" /> class
+		/// </summary>
+		public SCADACrunching()
         {
-            // TODO treba izmeniti kad se napravi transakcija sa NMS-om
-            this.listOfAnalog = new List<AnalogLocation>();
+			this.convertorHelper = new ConvertorHelper();
+
+			// TODO treba izmeniti kad se napravi transakcija sa NMS-om
+			this.listOfAnalog = new List<AnalogLocation>();
             this.listOfAnalogCopy = new List<AnalogLocation>();
 
             //for (int i = 0; i < 5; i++)
@@ -173,10 +170,10 @@ namespace EMS.Services.SCADACrunchingService
                 // startIndex = 2 because first two bytes a metadata
                 float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
 
-                alarmRaw = this.CheckForRawAlarms(values[0], minRaw, maxRaw, analogLoc.Analog.PowerSystemResource);
+                alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
                 if (alarmRaw == false)
                 {
-                    eguVal = this.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                    eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                     alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
                     if (alarmEGU == false)
@@ -218,21 +215,6 @@ namespace EMS.Services.SCADACrunchingService
         public void Test()
         {
             Console.WriteLine("Test");
-        }
-
-        /// <summary>
-        /// Converts raw value to egu value
-        /// </summary>
-        /// <param name="value">value to convert</param>
-        /// <param name="minEGU">minimal egu value</param>
-        /// <param name="maxEGU">maximal egu value</param>
-        /// <returns>value in egu format</returns>
-        private float ConvertFromRawToEGUValue(float value, float minEGU, float maxEGU)
-        {
-            minEGU = minEGU * (float)0.9;
-            maxEGU = maxEGU * (float)1.1;
-            float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
-            return retVal;
         }
 
         /// <summary>

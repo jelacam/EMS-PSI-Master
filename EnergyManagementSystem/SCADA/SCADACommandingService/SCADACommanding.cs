@@ -41,15 +41,10 @@ namespace EMS.Services.SCADACommandingService
         /// </summary>
         private ITransactionCallback transactionCallback;
 
-        /// <summary>
-        /// minimal raw value for simulator
-        /// </summary>
-        private float minRaw = 0;
-
-        /// <summary>
-        /// maximal raw value for simulator
-        /// </summary>
-        private float maxRaw = 4095;
+		/// <summary>
+		/// instance of ConvertorHelper class
+		/// </summary>
+		private ConvertorHelper convertorHelper;
 
         /// <summary>
         /// Constructor SCADACommanding class
@@ -61,6 +56,8 @@ namespace EMS.Services.SCADACommandingService
 
             listOfAnalog = new List<AnalogLocation>();
             listOfAnalogCopy = new List<AnalogLocation>();
+
+			this.convertorHelper = new ConvertorHelper();
 
             //CreateCMDAnalogLocation();
         }
@@ -191,7 +188,7 @@ namespace EMS.Services.SCADACommandingService
                 AnalogLocation analogLoc = listOfAnalog.Where(x => x.Analog.PowerSystemResource == measurements[i].Gid).SingleOrDefault();
                 try
                 {
-                    float rawVal = this.ConvertFromEGUToRawValue(measurements[i].CurrentValue, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                    float rawVal = convertorHelper.ConvertFromEGUToRawValue(measurements[i].CurrentValue, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
                     // modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, measurements[i].CurrentValue);
                 }
@@ -231,19 +228,6 @@ namespace EMS.Services.SCADACommandingService
         public void Test()
         {
             Console.WriteLine("Test method");
-        }
-
-        /// <summary>
-        /// Converts egu value to raw value
-        /// </summary>
-        /// <param name="value">value to convert</param>
-        /// <param name="minEGU">minimal egu value</param>
-        /// <param name="maxEGU">maximal egu value</param>
-        /// <returns>value in raw format</returns>
-        private float ConvertFromEGUToRawValue(float value, float minEGU, float maxEGU)
-        {
-            float retVal = ((value - minEGU) / (maxEGU - minEGU)) * (this.maxRaw - this.minRaw) + this.minRaw;
-            return retVal;
-        }
+        }      
     }
 }
