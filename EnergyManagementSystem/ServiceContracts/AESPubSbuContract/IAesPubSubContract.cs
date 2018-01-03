@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using EMS.CommonMeasurement;
 
 namespace EMS.ServiceContracts
 {
@@ -36,6 +37,6 @@ namespace EMS.ServiceContracts
     public interface IAesPubSubCallbackContract
     {
         [OperationContract(IsOneWay = false)]
-        void AlarmsEvents(string alarm);
+        void AlarmsEvents(AlarmHelper alarm);
     }
 }

@@ -45,6 +45,12 @@
     <Compile Include="IAesPubSubContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842C81-93DE-4490-A3D0-BC420C97B850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

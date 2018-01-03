@@ -1,12 +1,13 @@
-﻿using System;
+﻿using EMS.CommonMeasurement;
+using System;
 
 namespace EMS.Services.AlarmsEventsService.PubSub
 {
     public class AlarmsEventsEventArgs : EventArgs
     {
-        private string alarm;
+        private AlarmHelper alarm;
 
-        public string Alarm
+        public AlarmHelper Alarm
         {
             get { return alarm; }
             set { alarm = value; }

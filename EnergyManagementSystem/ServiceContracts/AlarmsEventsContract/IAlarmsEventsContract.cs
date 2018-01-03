@@ -17,9 +17,7 @@ namespace EMS.ServiceContracts
 	public interface IAlarmsEventsContract
 	{
 
-        [OperationContract]
-        void PublishAlarmEvents(string alarm);
-
+       
 		/// <summary>
 		/// Adds new alarm
 		/// </summary>

@@ -30,9 +30,10 @@ namespace EMS.Services.AlarmsEventsService
 			this.Alarms = new List<AlarmHelper>();
 		}
 
-        public void PublishAlarmEvents(string alarm)
-        {
-            publisher.PublishAlarmsEvents(alarm);
+        //public void PublishAlarmEvents(string alarm)
+        //{
+        //    publisher.PublishAlarmsEvents(alarm);
+        //}
 		/// <summary>
 		/// Gets or sets Alarms of the entity
 		/// </summary>
@@ -48,24 +49,24 @@ namespace EMS.Services.AlarmsEventsService
 				this.alarms = value;
 			}
 		}		
-        }
+        
 
         /// <summary>
         /// Test method
         /// </summary>
-        public void Test()
-		{
-			try
-			{
-				Console.WriteLine("AlarmsEvents: Test method");
-			}
-			catch (Exception ex)
-			{
-				string message = string.Format("Greska", ex.Message);
-				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				throw new Exception(message);
-			}
-		}
+  //      public void Test()
+		//{
+		//	try
+		//	{
+		//		Console.WriteLine("AlarmsEvents: Test method");
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		string message = string.Format("Greska", ex.Message);
+		//		CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+		//		throw new Exception(message);
+		//	}
+		//}
 
 		/// <summary>
 		/// Adds new alarm
@@ -75,9 +76,11 @@ namespace EMS.Services.AlarmsEventsService
 		{	
 			try
 			{
-				this.alarms.Add(alarm);
+				this.Alarms.Add(alarm);
 				Console.WriteLine("AlarmsEvents: AddAlarm method");
-			}
+
+                publisher.PublishAlarmsEvents(alarm);
+            }
 			catch (Exception ex)
 			{
 				string message = string.Format("Greska ", ex.Message);

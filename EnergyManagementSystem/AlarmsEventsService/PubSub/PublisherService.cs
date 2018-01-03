@@ -8,6 +8,7 @@
     using System.ServiceModel;
     using ServiceContracts;
     using Common;
+    using CommonMeasurement;
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class PublisherService : IAesPubSubContract
@@ -53,7 +54,7 @@
         /// An alarm event is raised. The alarm event handlers for each subscriber will execute.
         /// </summary>
         /// <param name="alarm"></param>
-        public void PublishAlarmsEvents(string alarm)
+        public void PublishAlarmsEvents(AlarmHelper alarm)
         {
             // TODO dodati novi alarm u kolekciju alarma 
             // ako se novi klijent instancira on ce od alarm servisa raditi integrity update za alarme i dobice listu svih alarma

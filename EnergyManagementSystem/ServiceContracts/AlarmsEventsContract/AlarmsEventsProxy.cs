@@ -74,10 +74,6 @@ namespace EMS.ServiceContracts
 		}
 
 
-        public void PublishAlarmEvents(string alarm)
-        {
-            proxy.PublishAlarmEvents(alarm);
-		}
 
 		/// <summary>
 		/// Adds new alarm
