@@ -91,9 +91,9 @@
 	</cim:EnergyConsumer>
 	
 	<cim:Analog rdf:ID="Analog_1">
-		<cim:Analog.maxValue></cim:Analog.maxValue>
-		<cim:Analog.minValue></cim:Analog.minValue>
-		<cim:Analog.normalValue></cim:Analog.normalValue>
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>5</cim:Analog.minValue>
+		<cim:Analog.normalValue>20</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_1"/>

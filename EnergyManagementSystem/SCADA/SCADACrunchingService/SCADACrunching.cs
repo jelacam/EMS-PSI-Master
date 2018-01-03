@@ -24,14 +24,16 @@ namespace EMS.Services.SCADACrunchingService
         /// <summary>
         /// list for storing AnalogLocation values
         /// </summary>
-        private List<AnalogLocation> listOfAnalog;
+        private static List<AnalogLocation> listOfAnalog;
 
         /// <summary>
         /// list for storing copy of AnalogLocation values
         /// </summary>
-        private List<AnalogLocation> listOfAnalogCopy;
+        private static List<AnalogLocation> listOfAnalogCopy;
 
         private UpdateResult updateResult;
+
+        private ModelResourcesDesc modelResourcesDesc;
 
         private ITransactionCallback transactionCallback;
 
@@ -45,14 +47,16 @@ namespace EMS.Services.SCADACrunchingService
         /// </summary>
         private float maxRaw = 4095;
 
+        private string message = string.Empty;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
         /// </summary>
         public SCADACrunching()
         {
             // TODO treba izmeniti kad se napravi transakcija sa NMS-om
-            this.listOfAnalog = new List<AnalogLocation>();
-            this.listOfAnalogCopy = new List<AnalogLocation>();
+            listOfAnalog = new List<AnalogLocation>();
+            listOfAnalogCopy = new List<AnalogLocation>();
 
             //for (int i = 0; i < 5; i++)
             //{
@@ -67,6 +71,8 @@ namespace EMS.Services.SCADACrunchingService
             //        Length = 2
             //    });
             //}
+
+            modelResourcesDesc = new ModelResourcesDesc();
         }
 
         #region Transaction
@@ -98,16 +104,25 @@ namespace EMS.Services.SCADACrunchingService
             {
                 transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
                 updateResult = new UpdateResult();
+                listOfAnalogCopy = new List<AnalogLocation>();
 
-                this.listOfAnalogCopy = new List<AnalogLocation>();
+                // napravi kopiju od originala 
+                foreach (AnalogLocation alocation in listOfAnalog)
+                {
+                    listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
+                }
+
+
+                
                 Analog analog = null;
-                int i = 0; // analog counter for address
+                //int i = 0; // analog counter for address
+                int i = listOfAnalogCopy.Count;
 
                 foreach (ResourceDescription analogRd in delta.InsertOperations)
                 {
                     analog = ResourcesDescriptionConverter.ConvertToAnalog(analogRd);
 
-                    this.listOfAnalogCopy.Add(new AnalogLocation()
+                    listOfAnalogCopy.Add(new AnalogLocation()
                     {
                         Analog = analog,
                         StartAddress = i * 2, // float value 4 bytes
@@ -137,7 +152,7 @@ namespace EMS.Services.SCADACrunchingService
         {
             try
             {
-                this.listOfAnalogCopy.Clear();
+                listOfAnalogCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Transaction rollback successfully finished!");
                 return true;
             }
@@ -168,7 +183,7 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Byte count: {0}", arrayLength);
 
             List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-            foreach (AnalogLocation analogLoc in this.listOfAnalog)
+            foreach (AnalogLocation analogLoc in listOfAnalog)
             {
                 // startIndex = 2 because first two bytes a metadata
                 float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
@@ -218,6 +233,75 @@ namespace EMS.Services.SCADACrunchingService
         public void Test()
         {
             Console.WriteLine("Test");
+        }
+
+        /// <summary>
+        /// Method implements integrity update logic for scada cr component
+        /// </summary>
+        /// <returns></returns>
+        public bool InitiateIntegrityUpdate()
+        {
+            List<ModelCode> properties = new List<ModelCode>(10);
+            ModelCode modelCode = ModelCode.ANALOG;
+            int iteratorId = 0;
+            int resourcesLeft = 0;
+            int numberOfResources = 2;
+       
+
+            List<ResourceDescription> retList = new List<ResourceDescription>(5);
+            try
+            {
+                properties = modelResourcesDesc.GetAllPropertyIds(modelCode);
+
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                while (resourcesLeft > 0)
+                {
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+            }
+            catch (Exception e)
+            {
+                message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);
+                Console.WriteLine(message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                return false;
+            }
+
+
+            listOfAnalog.Clear();
+
+            try
+            {
+                int i = 0;
+                foreach (ResourceDescription rd in retList)
+                {
+                    Analog analog = ResourcesDescriptionConverter.ConvertToAnalog(rd);
+                    listOfAnalog.Add(new AnalogLocation()
+                    {
+                        Analog = analog,
+                        StartAddress = i++ * 2,
+                        Length = 2  
+                    });
+                   
+                }
+            }
+            catch (Exception e)
+            {
+                message = string.Format("Conversion to Analog object failed.\n\t{0}", e.Message);
+                Console.WriteLine(message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                return false;
+            }
+
+            message = string.Format("Integrity update: Number of Analog values: {0}", listOfAnalog.Count.ToString());
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            Console.WriteLine("Number of analog values: {0}", listOfAnalog.Count.ToString());
+            return true;
         }
 
         /// <summary>
