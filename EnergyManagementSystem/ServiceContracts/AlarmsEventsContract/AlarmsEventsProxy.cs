@@ -33,7 +33,7 @@ namespace EMS.ServiceContracts
 			{
 				if (proxy == null)
 				{
-					factory = new ChannelFactory<IAlarmsEventsContract>("*");
+					factory = new ChannelFactory<IAlarmsEventsContract>("AlarmsEventsEndpoint");
 					proxy = factory.CreateChannel();
 					IContextChannel cc = proxy as IContextChannel;
 				}
@@ -72,12 +72,10 @@ namespace EMS.ServiceContracts
 			}
 		}
 
-		/// <summary>
-		/// Test method
-		/// </summary>
-		public void Test()
-		{
-			proxy.Test();
-		}
-	}
+
+        public void PublishAlarmEvents(string alarm)
+        {
+            proxy.PublishAlarmEvents(alarm);
+        }
+    }
 }

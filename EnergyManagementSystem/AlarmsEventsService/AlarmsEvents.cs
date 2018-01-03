@@ -6,26 +6,35 @@
 
 namespace EMS.Services.AlarmsEventsService
 {
-	using System;
-	using Common;
-	using ServiceContracts;
+    using System;
+    using Common;
+    using ServiceContracts;
+    using PubSub;
 
-	/// <summary>
-	/// Class for ICalculationEngineContract implementation
-	/// </summary>
-	public class AlarmsEvents : IAlarmsEventsContract
+    /// <summary>
+    /// Class for ICalculationEngineContract implementation
+    /// </summary>
+    public class AlarmsEvents : IAlarmsEventsContract
 	{
+        PublisherService publisher;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AlarmsEvents" /> class
 		/// </summary>
 		public AlarmsEvents()
 		{
+            publisher = new PublisherService();
 		}
 
-		/// <summary>
-		/// Test method
-		/// </summary>
-		public void Test()
+        public void PublishAlarmEvents(string alarm)
+        {
+            publisher.PublishAlarmsEvents(alarm);
+        }
+
+        /// <summary>
+        /// Test method
+        /// </summary>
+        public void Test()
 		{
 			try
 			{

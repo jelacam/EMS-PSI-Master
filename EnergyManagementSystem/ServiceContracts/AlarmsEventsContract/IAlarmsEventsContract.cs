@@ -15,10 +15,9 @@ namespace EMS.ServiceContracts
 	[ServiceContract]
 	public interface IAlarmsEventsContract
 	{
-		/// <summary>
-		/// Test method
-		/// </summary>
-		[OperationContract]
-		void Test();
+
+        [OperationContract]
+        void PublishAlarmEvents(string alarm);
+
 	}
 }

@@ -29,7 +29,7 @@ namespace EMS.Services.SCADACollectingService
 		{
 			this.modbusClient = new ModbusClient("localhost", 502);
 			this.modbusClient.Connect();
-            this.modbusClient.WriteSingleRegister(0, 2040f);
+            this.modbusClient.WriteSingleRegister(0, 10f);
            
 		}
 

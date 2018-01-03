@@ -202,6 +202,16 @@ namespace EMS.Services.SCADACrunchingService
                         // measUnit.CurrentValue = values[0];
                         listOfMeasUnit.Add(measUnit);
                     }
+                    else
+                    {
+                        // desio se alarm - posalji vrednost na AES
+                        AlarmsEventsProxy.Instance.PublishAlarmEvents(analogLoc.Analog.Mrid);
+                    }
+                }
+                else
+                {
+                    // desio se alarm - posalji vrednost na AES
+                    AlarmsEventsProxy.Instance.PublishAlarmEvents(analogLoc.Analog.Mrid);
                 }
             }
 
