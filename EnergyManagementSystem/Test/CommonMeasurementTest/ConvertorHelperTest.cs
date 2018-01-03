@@ -75,7 +75,7 @@ namespace CommonMeasurementTest
 		/// Unit test for ConvertorHelper ConvertFromEGUToRawValue method
 		/// </summary>
 		[Test]
-		[TestCase(1623, 0, 100, TestName = "ConvertorHelperConvertFromEGUToRawValueMethod")]
+		[TestCase(10, 0, 100, TestName = "ConvertorHelperConvertFromEGUToRawValueMethod")]
 		public void ConvertFromEGUToRawValueMethod(float value, float minEGU, float maxEGU)
 		{
 			float retval = this.ch.ConvertFromEGUToRawValue(value, minEGU, maxEGU);

@@ -50,6 +50,10 @@
     <Compile Include="PubSub\PublisherService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{892cbe15-9ed7-4540-81fa-0eaaba592138}</Project>
       <Name>Common</Name>

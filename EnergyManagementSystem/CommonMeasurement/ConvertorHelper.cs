@@ -16,12 +16,12 @@ namespace EMS.CommonMeasurement
 		/// <summary>
 		/// minimal raw value for simulator
 		/// </summary>
-		private float minRaw = 0;
+		private float minRaw;
 
 		/// <summary>
 		/// maximal raw value for simulator
 		/// </summary>
-		private float maxRaw = 4095;
+		private float maxRaw;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConvertorHelper" /> class
@@ -63,8 +63,11 @@ namespace EMS.CommonMeasurement
 		/// <returns>value in egu format</returns>
 		public float ConvertFromRawToEGUValue(float value, float minEGU, float maxEGU)
 		{
-			minEGU = minEGU * (float)0.9;
-			maxEGU = maxEGU * (float)1.1;
+			if (value != 0)
+			{
+				minEGU = minEGU * (float)0.9;
+				maxEGU = maxEGU * (float)1.1;
+			}
 			float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
 			return retVal;
 		}
