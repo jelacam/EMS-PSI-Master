@@ -86,6 +86,7 @@ namespace EMS.Services.SCADACrunchingService
 
                 listOfAnalogCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction: Commit phase successfully finished.");
+                Console.WriteLine("Number of Analog values: {0}", listOfAnalog.Count);
                 return true;
             }
             catch (Exception e)

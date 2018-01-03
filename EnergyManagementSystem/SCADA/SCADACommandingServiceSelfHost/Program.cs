@@ -37,7 +37,22 @@ namespace SCADACommandingServiceSelfHost
                 {
                     scadaCMD.Start();
 
-                    //scadaCMD.TestWrite();
+                    try
+                    {
+                        bool integrityResult = scadaCMD.IntegrityUpdate();
+                        if (integrityResult)
+                        {
+                            message = "Integrity Update finished successfully.";
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                            Console.WriteLine(message);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        message = "Integrity Update failed. " + e.Message;
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                        Console.WriteLine(message);
+                    }
 
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
