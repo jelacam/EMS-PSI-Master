@@ -40,7 +40,7 @@ namespace EMS.CommonMeasurement
 			get
 			{
 				return this.minRaw;
-			}			
+			}
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace EMS.CommonMeasurement
 			get
 			{
 				return this.maxRaw;
-			}			
+			}
 		}
 
 		/// <summary>
@@ -60,14 +60,25 @@ namespace EMS.CommonMeasurement
 		/// <param name="value">value to convert</param>
 		/// <param name="minEGU">minimal egu value</param>
 		/// <param name="maxEGU">maximal egu value</param>
-		/// <returns>value in egu format</returns>
+		/// <returns>returns value in egu format</returns>
 		public float ConvertFromRawToEGUValue(float value, float minEGU, float maxEGU)
 		{
+			if (value < this.minRaw)
+			{
+				value = this.minRaw;
+			}
+
+			if (value > this.maxRaw)
+			{
+				value = this.maxRaw;
+			}
+
 			if (value != 0)
 			{
 				minEGU = minEGU * (float)0.9;
 				maxEGU = maxEGU * (float)1.1;
 			}
+
 			float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
 			return retVal;
 		}
@@ -78,9 +89,19 @@ namespace EMS.CommonMeasurement
 		/// <param name="value">value to convert</param>
 		/// <param name="minEGU">minimal egu value</param>
 		/// <param name="maxEGU">maximal egu value</param>
-		/// <returns>value in raw format</returns>
+		/// <returns>returns value in raw format</returns>
 		public float ConvertFromEGUToRawValue(float value, float minEGU, float maxEGU)
 		{
+			if (value < minEGU)
+			{
+				value = minEGU;
+			}
+
+			if (value > maxEGU)
+			{
+				value = maxEGU;
+			}
+
 			float retVal = ((value - minEGU) / (maxEGU - minEGU)) * (this.maxRaw - this.minRaw) + this.minRaw;
 			return retVal;
 		}

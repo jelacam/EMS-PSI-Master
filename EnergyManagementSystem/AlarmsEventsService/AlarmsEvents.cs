@@ -6,19 +6,26 @@
 
 namespace EMS.Services.AlarmsEventsService
 {
-    using System;
-    using Common;
-    using ServiceContracts;
-    using PubSub;
+	using System;
+	using Common;
+	using ServiceContracts;
+	using PubSub;
 	using System.Collections.Generic;
 	using CommonMeasurement;
 
-    /// <summary>
-    /// Class for ICalculationEngineContract implementation
-    /// </summary>
-    public class AlarmsEvents : IAlarmsEventsContract
+	/// <summary>
+	/// Class for ICalculationEngineContract implementation
+	/// </summary>
+	public class AlarmsEvents : IAlarmsEventsContract
 	{
-        PublisherService publisher;
+		/// <summary>
+		/// entity for storing PublisherService instance
+		/// </summary>
+		private PublisherService publisher;
+
+		/// <summary>
+		/// list for storing AlarmHelper entities
+		/// </summary>
 		private List<AlarmHelper> alarms;
 
 		/// <summary>
@@ -26,14 +33,10 @@ namespace EMS.Services.AlarmsEventsService
 		/// </summary>
 		public AlarmsEvents()
 		{
-            publisher = new PublisherService();
+			this.Publisher = new PublisherService();
 			this.Alarms = new List<AlarmHelper>();
 		}
 
-        //public void PublishAlarmEvents(string alarm)
-        //{
-        //    publisher.PublishAlarmsEvents(alarm);
-        //}
 		/// <summary>
 		/// Gets or sets Alarms of the entity
 		/// </summary>
@@ -48,39 +51,36 @@ namespace EMS.Services.AlarmsEventsService
 			{
 				this.alarms = value;
 			}
-		}		
-        
+		}
 
-        /// <summary>
-        /// Test method
-        /// </summary>
-  //      public void Test()
-		//{
-		//	try
-		//	{
-		//		Console.WriteLine("AlarmsEvents: Test method");
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		string message = string.Format("Greska", ex.Message);
-		//		CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-		//		throw new Exception(message);
-		//	}
-		//}
+		/// <summary>
+		/// Gets or sets Publisher of the entity
+		/// </summary>
+		public PublisherService Publisher
+		{
+			get
+			{
+				return this.publisher;
+			}
+
+			set
+			{
+				this.publisher = value;
+			}
+		}
 
 		/// <summary>
 		/// Adds new alarm
 		/// </summary>
 		/// <param name="alarm">alarm to add</param>
 		public void AddAlarm(AlarmHelper alarm)
-		{	
+		{
 			try
 			{
 				this.Alarms.Add(alarm);
+				this.Publisher.PublishAlarmsEvents(alarm);
 				Console.WriteLine("AlarmsEvents: AddAlarm method");
-
-                publisher.PublishAlarmsEvents(alarm);
-            }
+			}
 			catch (Exception ex)
 			{
 				string message = string.Format("Greska ", ex.Message);

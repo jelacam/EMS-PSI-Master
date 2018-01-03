@@ -109,9 +109,7 @@ namespace EMS.Services.SCADACrunchingService
                 {
                     listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
                 }
-
-
-                
+              
                 Analog analog = null;
                 //int i = 0; // analog counter for address
                 int i = listOfAnalogCopy.Count;
@@ -181,31 +179,22 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Byte count: {0}", arrayLength);
 
             List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-            foreach (AnalogLocation analogLoc in listOfAnalog)
-            {
-                // startIndex = 2 because first two bytes a metadata
-                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
+			foreach (AnalogLocation analogLoc in listOfAnalog)
+			{
+				// startIndex = 2 because first two bytes a metadata
+				float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
 
-                alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
-                if (alarmRaw == false)
-                {
-                    eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-                    alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+				alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
+				eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+				alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                    if (alarmEGU == false)
-                    {
-                        MeasurementUnit measUnit = new MeasurementUnit();
-                        measUnit.Gid = analogLoc.Analog.PowerSystemResource;
-                        measUnit.MinValue = analogLoc.Analog.MinValue;
-                        measUnit.MaxValue = analogLoc.Analog.MaxValue;
-                        measUnit.CurrentValue = eguVal;
-                        // measUnit.CurrentValue = values[0];
-                        listOfMeasUnit.Add(measUnit);
-                    }
-                  
-                }
-               
-            }
+				MeasurementUnit measUnit = new MeasurementUnit();
+				measUnit.Gid = analogLoc.Analog.PowerSystemResource;
+				measUnit.MinValue = analogLoc.Analog.MinValue;
+				measUnit.MaxValue = analogLoc.Analog.MaxValue;
+				measUnit.CurrentValue = eguVal;
+				listOfMeasUnit.Add(measUnit);
+			}
 
             bool isSuccess = false;
             try
@@ -225,15 +214,15 @@ namespace EMS.Services.SCADACrunchingService
             }
 
             return isSuccess;
-        }
+		}
 
-        /// <summary>
-        /// Test method
-        /// </summary>
-        public void Test()
-        {
-            Console.WriteLine("Test");
-        }
+		/// <summary>
+		/// Test method
+		/// </summary>
+		public void Test()
+		{
+			Console.WriteLine("SCADA Crunching: Test method");
+		}
 
         /// <summary>
         /// Method implements integrity update logic for scada cr component
@@ -247,7 +236,6 @@ namespace EMS.Services.SCADACrunchingService
             int resourcesLeft = 0;
             int numberOfResources = 2;
        
-
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
             try
             {
@@ -272,9 +260,7 @@ namespace EMS.Services.SCADACrunchingService
                 return false;
             }
 
-
             listOfAnalog.Clear();
-
             try
             {
                 int i = 0;
@@ -311,7 +297,7 @@ namespace EMS.Services.SCADACrunchingService
         /// <param name="minRaw">low limit</param>
         /// <param name="maxRaw">high limit</param>
         /// <param name="gid">gid of measurement</param>
-        /// <returns></returns>
+        /// <returns>returns true if alarm exists</returns>
         private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
         {
             bool retVal = false;
@@ -337,15 +323,15 @@ namespace EMS.Services.SCADACrunchingService
             return retVal;
         }
 
-        /// <summary>
-        /// Checking for alarms on egu value
-        /// </summary>
-        /// <param name="value">value to check</param>
-        /// <param name="minEGU">low limit</param>
-        /// <param name="maxEGU">high limit</param>
-        /// <param name="gid">gid of measurement</param>
-        /// <returns></returns>
-        private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
+		/// <summary>
+		/// Checking for alarms on egu value
+		/// </summary>
+		/// <param name="value">value to check</param>
+		/// <param name="minEGU">low limit</param>
+		/// <param name="maxEGU">high limit</param>
+		/// <param name="gid">gid of measurement</param>
+		/// <returns>returns true if alarm exists</returns>
+		private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
         {
             bool retVal = false;
 			AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
