@@ -101,6 +101,8 @@
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
+    <Compile Include="PubSub\AePubSubCallbackService.cs" />
+    <Compile Include="PubSub\AlarmsEventsSubscribeProxy.cs" />
     <Compile Include="PubSub\CePubSubCallbackService.cs" />
     <Compile Include="PubSub\CeSubscribeProxy.cs" />
     <Compile Include="RelayCommand.cs" />
@@ -220,9 +222,17 @@
       <Project>{F680D34F-C148-4314-8914-B2DF3E7B17AF}</Project>
       <Name>CIMAdapter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\AESPubSbuContract\AESPubSbuContract.csproj">
+      <Project>{d7d1b621-4053-4a57-8a65-b7b3157f12b2}</Project>
+      <Name>AESPubSbuContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\CEPubSubContract\CEPubSubContract.csproj">
       <Project>{001A5767-0640-4E4E-8AD8-22AEBFD8C069}</Project>

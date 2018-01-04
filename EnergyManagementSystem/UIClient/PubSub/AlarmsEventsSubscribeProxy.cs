@@ -1,30 +1,28 @@
-﻿using System;
+﻿using EMS.ServiceContracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EMS.CommonMeasurement;
 using System.ServiceModel;
-using EMS.ServiceContracts;
-using EMS.Common;
 
 namespace UIClient.PubSub
 {
-    public class CeSubscribeProxy : ICePubSubContract, IDisposable
+    public class AlarmsEventsSubscribeProxy : IAesPubSubContract, IDisposable
     {
-
-        private static ICePubSubContract proxy;
-        private static DuplexChannelFactory<ICePubSubContract> factory;
+        private static IAesPubSubContract proxy;
+        private static DuplexChannelFactory<IAesPubSubContract> factory;
         private static InstanceContext context;
 
-
-        public static ICePubSubContract Instance
+        public static IAesPubSubContract Instance
         {
             get
             {
                 if(proxy == null)
                 {
-                    context = new InstanceContext(new CePubSubCallbackService());
-                    factory = new DuplexChannelFactory<ICePubSubContract>(context, "CalculationEnginePubSub");
+                    context = new InstanceContext(new AePubSubCallbackService());
+                    factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
                     proxy = factory.CreateChannel();
                 }
                 return proxy;
@@ -38,6 +36,7 @@ namespace UIClient.PubSub
                 }
             }
         }
+        
 
         public void Dispose()
         {
@@ -45,12 +44,6 @@ namespace UIClient.PubSub
             {
                 factory = null;
             }
-        }
-
-        public void PublishOptimizationResults(float result)
-        {
-            CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Client does not have permissions to publis optimization results!");
-            throw new Exception("Client does not have permissions to publis optimization results!");
         }
 
         public void Subscribe()
