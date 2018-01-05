@@ -13,9 +13,6 @@ namespace EMS.ServiceContracts
         [OperationContract(IsOneWay = false, IsInitiating = true)]
         void Subscribe();
 
-        [OperationContract(IsOneWay = false, IsInitiating = true)]
-        void SubscribeWithCallback(Action<object> callbackAction);
-
         [OperationContract(IsOneWay = false, IsTerminating = true)]
         void Unsubscribe();
 
@@ -35,7 +32,5 @@ namespace EMS.ServiceContracts
     {
         [OperationContract(IsOneWay = false)]
         void OptimizationResults(MeasurementUI result);
-
-        Action<object> CallbackAction { get; set; }
     }
 }

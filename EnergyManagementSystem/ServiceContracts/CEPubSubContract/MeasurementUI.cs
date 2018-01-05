@@ -13,5 +13,7 @@ namespace EMS.ServiceContracts
         public float MeasurementValue { get; set; }
 
         public string AlarmType { get; set; }
+
+        public float TimeStamp { get; set; }
     }
 }

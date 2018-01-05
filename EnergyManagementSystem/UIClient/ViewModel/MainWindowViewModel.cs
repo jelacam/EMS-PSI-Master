@@ -6,7 +6,7 @@
 
         public MainWindowViewModel()
         {
-            dashboardViewModel = new DashboardViewModel();
+            DashboardViewModel = new DashboardViewModel();
         }
 
         public DashboardViewModel DashboardViewModel
@@ -19,6 +19,7 @@
             set
             {
                 dashboardViewModel = value;
+                OnPropertyChanged();
             }
         }
     }

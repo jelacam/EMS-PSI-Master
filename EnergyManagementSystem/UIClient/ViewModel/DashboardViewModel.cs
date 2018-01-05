@@ -2,6 +2,7 @@
 using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -12,12 +13,43 @@ namespace UIClient.ViewModel
 {
     public class DashboardViewModel : ViewModelBase
     {
+        private CeSubscribeProxy ceSubscribeProxy;
+
+        private Dictionary<long, ObservableCollection<MeasurementUI>> generatorsContainer = new Dictionary<long, ObservableCollection<MeasurementUI>>();
+        float count = 0;
+
+        public string Tekst
+        {
+            get { return "Proba"; }
+        }
+        public Dictionary<long, ObservableCollection<MeasurementUI>> GeneratorsContainer
+        {
+            get
+            {
+                return generatorsContainer;
+            }
+
+            set
+            {
+                generatorsContainer = value;
+            }
+        }
+
+        public ObservableCollection<MeasurementUI> PrviGenerator
+        {
+            get
+            {
+                var v = generatorsContainer.ToList()[0].Value;
+                return generatorsContainer.ToList()[0].Value;
+            }
+        }
 
         public DashboardViewModel()
         {
             try
             {
-                CeSubscribeProxy.Instance.SubscribeWithCallback(CallbackAction);
+                ceSubscribeProxy = new CeSubscribeProxy(CallbackAction);
+                ceSubscribeProxy.Subscribe();
             }
             catch (Exception e)
             {
@@ -25,14 +57,45 @@ namespace UIClient.ViewModel
             }
         }
 
-        public void CallbackAction(object measuremntUI)
+        private void CallbackAction(object obj)
         {
-            var bv = measuremntUI;
+            MeasurementUI measUI = obj as MeasurementUI;
+
+            if(obj == null)
+            {
+                throw (new Exception("CallbackAction receive wrong param"));
+            }
+
+            AddMeasurment(measUI);
+        }
+
+        /// <summary>
+        /// Add measurent in propertly queue
+        /// </summary>
+        /// <param name="measUI"></param>
+        private void AddMeasurment(MeasurementUI measUI)
+        {
+            ObservableCollection<MeasurementUI> tempQueue;
+            
+            if(GeneratorsContainer.TryGetValue(measUI.Gid,out tempQueue))
+            {
+                measUI.TimeStamp = tempQueue.Count;
+                tempQueue.Add(measUI);
+            }
+            else
+            {
+                tempQueue = new ObservableCollection<MeasurementUI>();
+                measUI.TimeStamp = 0;
+                tempQueue.Add(measUI);
+                GeneratorsContainer.Add(measUI.Gid, tempQueue);
+            }
+            OnPropertyChanged("GeneratorsContainer");
+            OnPropertyChanged("PrviGenerator");
         }
 
         protected override void OnDispose()
         {
-            CeSubscribeProxy.Instance.Unsubscribe();
+            ceSubscribeProxy.Unsubscribe();
             base.OnDispose();
         }
     }

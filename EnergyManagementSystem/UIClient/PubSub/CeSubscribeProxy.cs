@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ServiceModel;
 using EMS.ServiceContracts;
 using EMS.Common;
@@ -12,32 +8,54 @@ namespace UIClient.PubSub
     public class CeSubscribeProxy : ICePubSubContract, IDisposable
     {
 
-        private static ICePubSubContract proxy;
-        private static DuplexChannelFactory<ICePubSubContract> factory;
-        private static InstanceContext context;
+        private ICePubSubContract proxy;
+        private DuplexChannelFactory<ICePubSubContract> factory;
+        private InstanceContext context;
 
-
-        public static ICePubSubContract Instance
+        public ICePubSubContract Proxy
         {
             get
             {
-                if (proxy == null)
-                {
-                    context = new InstanceContext(new CePubSubCallbackService());
-                    factory = new DuplexChannelFactory<ICePubSubContract>(context, "PubSub");
-                    proxy = factory.CreateChannel();
-                }
                 return proxy;
             }
 
             set
             {
-                if (proxy == null)
-                {
-                    proxy = value;
-                }
+                proxy = value;
             }
         }
+
+        public CeSubscribeProxy(Action<object> callbackAction)
+        {
+            if (Proxy == null)
+            {
+                context = new InstanceContext(new CePubSubCallbackService() { CallbackAction = callbackAction});
+                factory = new DuplexChannelFactory<ICePubSubContract>(context, "PubSub");
+                Proxy = factory.CreateChannel();
+            }
+        }
+
+        /*  public static ICePubSubContract Instance
+          {
+              get
+              {
+                  if (proxy == null)
+                  {
+                      context = new InstanceContext(new CePubSubCallbackService());
+                      factory = new DuplexChannelFactory<ICePubSubContract>(context, "PubSub");
+                      proxy = factory.CreateChannel();
+                  }
+                  return proxy;
+              }
+
+              set
+              {
+                  if (proxy == null)
+                  {
+                      proxy = value;
+                  }
+              }
+          }*/
 
         public void Dispose()
         {
@@ -55,17 +73,12 @@ namespace UIClient.PubSub
 
         public void Subscribe()
         {
-            proxy.Subscribe();
+            Proxy.Subscribe();
         }
 
         public void Unsubscribe()
         {
-            proxy.Unsubscribe();
-        }
-
-        public void SubscribeWithCallback(Action<object> callbackAction)
-        {
-            proxy.SubscribeWithCallback(callbackAction);
+            Proxy.Unsubscribe();
         }
     }
 }
