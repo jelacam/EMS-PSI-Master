@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EMS.Common;
 using System.Configuration;
 
 
 namespace EMS.Services.NetworkModelService
 {
-	public class Config 
+    public class Config 
 	{
 
 		private string connectionString = string.Empty;

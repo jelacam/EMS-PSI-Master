@@ -27,6 +27,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         public void OptimizationResultHandler(object sender, OptimizationEventArgs e)
         {
             callback.OptimizationResults(e.OptimizationResult);
+
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         /// A optimization result event is raised. The optimization result event handlers for each subscriber will execute.
         /// </summary>
         /// <param name="result"></param>
-        public void PublishOptimizationResults(float result)
+        public void PublishOptimizationResults(MeasurementUI result)
         {
             OptimizationEventArgs e = new OptimizationEventArgs
             {
@@ -58,7 +59,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
                 Message = "Optimization result"
             };
 
-            OptimizationResultEvent(this, e);
+            OptimizationResultEvent?.Invoke(this, e);
         }
     }
 }

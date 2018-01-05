@@ -8,10 +8,6 @@ namespace SCADACommandingServiceSelfHost
     using EMS.Common;
     using EMS.Services.SCADACommandingService;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Class for Main method
@@ -24,11 +20,11 @@ namespace SCADACommandingServiceSelfHost
         /// <param name="args"></param>
         private static void Main(string[] args)
         {
-			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 1);
-			Console.Title = "SCADA Commanding Service";
+            ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 1);
+            Console.Title = "SCADA Commanding Service";
 
-			try
-			{
+            try
+            {
                 string message = "Starting SCADA Commanding Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);

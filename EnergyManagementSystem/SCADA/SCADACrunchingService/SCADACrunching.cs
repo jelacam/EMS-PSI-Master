@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="SCADACrunching.cs" company="EMS-Team">
 // Copyright (c) EMS-Team. All rights reserved.
 // </copyright>
@@ -37,22 +37,22 @@ namespace EMS.Services.SCADACrunchingService
 
         private ITransactionCallback transactionCallback;
 
-		/// <summary>
-		/// instance of ConvertorHelper class
-		/// </summary>
-		private ConvertorHelper convertorHelper;
+        /// <summary>
+        /// instance of ConvertorHelper class
+        /// </summary>
+        private ConvertorHelper convertorHelper;
 
-		/// <summary>
+        /// <summary>
         private string message = string.Empty;
 
-		/// Initializes a new instance of the <see cref="SCADACrunching" /> class
-		/// </summary>
-		public SCADACrunching()
+        /// Initializes a new instance of the <see cref="SCADACrunching" /> class
+        /// </summary>
+        public SCADACrunching()
         {
-			this.convertorHelper = new ConvertorHelper();
+            this.convertorHelper = new ConvertorHelper();
 
-			// TODO treba izmeniti kad se napravi transakcija sa NMS-om
-			listOfAnalog = new List<AnalogLocation>();
+            // TODO treba izmeniti kad se napravi transakcija sa NMS-om
+            listOfAnalog = new List<AnalogLocation>();
             listOfAnalogCopy = new List<AnalogLocation>();
 
             //for (int i = 0; i < 5; i++)
@@ -109,7 +109,7 @@ namespace EMS.Services.SCADACrunchingService
                 {
                     listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
                 }
-              
+
                 Analog analog = null;
                 //int i = 0; // analog counter for address
                 int i = listOfAnalogCopy.Count;
@@ -179,22 +179,22 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Byte count: {0}", arrayLength);
 
             List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-			foreach (AnalogLocation analogLoc in listOfAnalog)
-			{
-				// startIndex = 2 because first two bytes a metadata
-				float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
+            foreach (AnalogLocation analogLoc in listOfAnalog)
+            {
+                // startIndex = 2 because first two bytes a metadata
+                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
 
-				alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
-				eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-				alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+                alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
+                eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-				MeasurementUnit measUnit = new MeasurementUnit();
-				measUnit.Gid = analogLoc.Analog.PowerSystemResource;
-				measUnit.MinValue = analogLoc.Analog.MinValue;
-				measUnit.MaxValue = analogLoc.Analog.MaxValue;
-				measUnit.CurrentValue = eguVal;
-				listOfMeasUnit.Add(measUnit);
-			}
+                MeasurementUnit measUnit = new MeasurementUnit();
+                measUnit.Gid = analogLoc.Analog.PowerSystemResource;
+                measUnit.MinValue = analogLoc.Analog.MinValue;
+                measUnit.MaxValue = analogLoc.Analog.MaxValue;
+                measUnit.CurrentValue = eguVal;
+                listOfMeasUnit.Add(measUnit);
+            }
 
             bool isSuccess = false;
             try
@@ -214,15 +214,15 @@ namespace EMS.Services.SCADACrunchingService
             }
 
             return isSuccess;
-		}
+        }
 
-		/// <summary>
-		/// Test method
-		/// </summary>
-		public void Test()
-		{
-			Console.WriteLine("SCADA Crunching: Test method");
-		}
+        /// <summary>
+        /// Test method
+        /// </summary>
+        public void Test()
+        {
+            Console.WriteLine("SCADA Crunching: Test method");
+        }
 
         /// <summary>
         /// Method implements integrity update logic for scada cr component
@@ -235,7 +235,7 @@ namespace EMS.Services.SCADACrunchingService
             int iteratorId = 0;
             int resourcesLeft = 0;
             int numberOfResources = 2;
-       
+
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
             try
             {
@@ -271,9 +271,9 @@ namespace EMS.Services.SCADACrunchingService
                     {
                         Analog = analog,
                         StartAddress = i++ * 2,
-                        Length = 2  
+                        Length = 2
                     });
-                   
+
                 }
             }
             catch (Exception e)
@@ -301,21 +301,21 @@ namespace EMS.Services.SCADACrunchingService
         private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
         {
             bool retVal = false;
-			AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
+            AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
             if (value < minRaw)
             {
-				ah.Type = AlarmType.rawMin;
-				AlarmsEventsProxy.Instance.AddAlarm(ah);
+                ah.Type = AlarmType.rawMin;
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);			
+                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);
             }
 
             if (value > maxRaw)
             {
-				ah.Type = AlarmType.rawMax;
-				AlarmsEventsProxy.Instance.AddAlarm(ah);
-				retVal = true;
+                ah.Type = AlarmType.rawMax;
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on high raw limit on gid: {0}", gid);
             }
@@ -323,32 +323,32 @@ namespace EMS.Services.SCADACrunchingService
             return retVal;
         }
 
-		/// <summary>
-		/// Checking for alarms on egu value
-		/// </summary>
-		/// <param name="value">value to check</param>
-		/// <param name="minEGU">low limit</param>
-		/// <param name="maxEGU">high limit</param>
-		/// <param name="gid">gid of measurement</param>
-		/// <returns>returns true if alarm exists</returns>
-		private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
+        /// <summary>
+        /// Checking for alarms on egu value
+        /// </summary>
+        /// <param name="value">value to check</param>
+        /// <param name="minEGU">low limit</param>
+        /// <param name="maxEGU">high limit</param>
+        /// <param name="gid">gid of measurement</param>
+        /// <returns>returns true if alarm exists</returns>
+        private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
         {
             bool retVal = false;
-			AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
-			if (value < minEGU)
+            AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
+            if (value < minEGU)
             {
-				ah.Type = AlarmType.eguMin;
-				AlarmsEventsProxy.Instance.AddAlarm(ah);
-				retVal = true;
+                ah.Type = AlarmType.eguMin;
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
             }
 
             if (value > maxEGU)
             {
-				ah.Type = AlarmType.eguMax;
-				AlarmsEventsProxy.Instance.AddAlarm(ah);
-				retVal = true;
+                ah.Type = AlarmType.eguMax;
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
             }

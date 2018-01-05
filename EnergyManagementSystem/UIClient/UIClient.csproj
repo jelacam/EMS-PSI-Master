@@ -59,6 +59,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WPFToolkit.DataVisualization.3.5.50211.1\lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
       <Private>True</Private>
@@ -101,16 +105,22 @@
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
+    <Compile Include="Converters\TestConverter.cs" />
+    <Compile Include="PubSub\CallbackEventArgs.cs" />
     <Compile Include="PubSub\AePubSubCallbackService.cs" />
     <Compile Include="PubSub\AlarmsEventsSubscribeProxy.cs" />
     <Compile Include="PubSub\CePubSubCallbackService.cs" />
     <Compile Include="PubSub\CeSubscribeProxy.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\DashboardViewModel.cs" />
     <Compile Include="ViewModel\ImporterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="TestGda.cs" />
     <Compile Include="ViewModel\NMSViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\DashboardView.xaml.cs">
+      <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ImporterView.xaml.cs">
       <DependentUpon>ImporterView.xaml</DependentUpon>
     </Compile>
@@ -167,6 +177,10 @@
     <Page Include="Themes\IG\Theme.Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ImporterView.xaml">
       <SubType>Designer</SubType>

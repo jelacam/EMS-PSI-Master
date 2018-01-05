@@ -32,16 +32,6 @@ namespace UIClient
             //message = string.Format("Result directory: {0}", Config.Instance.ResultDirecotry);
             //Console.WriteLine(message);
             //CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-
-            try
-            {
-                CeSubscribeProxy.Instance.Subscribe();
-            }
-            catch(Exception e)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to CalculationEngine Publisher Service! \n {0}", e.Message);
-            }
-
             try
             {
                 AlarmsEventsSubscribeProxy.Instance.Subscribe();

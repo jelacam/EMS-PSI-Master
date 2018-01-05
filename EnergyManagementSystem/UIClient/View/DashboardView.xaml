@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="UIClient.View.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIClient.View"
+			 xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+             xmlns:converters="clr-namespace:UIClient.Converters"
+			 mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+	<UserControl.Resources>
+		<converters:TestConverter x:Key="TestConvetrer"/>
+	</UserControl.Resources>
+	<Grid>
+		<ItemsControl ItemsSource="{Binding GeneratorsContainer}">
+
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key}" Background="DimGray" 
+                             Foreground="DarkBlue" IsEnabled="True"
+							 Width="400" Height="250">
+						<chartingToolkit:LineSeries Title="Value"  
+                                    ItemsSource="{Binding Path=Value}" 
+                                    DependentValueBinding="{Binding Path=MeasurementValue}" 
+                                    IndependentValueBinding="{Binding Path=TimeStamp}"
+                                    IsSelectionEnabled="False"
+                                    >
+							<chartingToolkit:LineSeries.DataPointStyle>
+								<Style TargetType="chartingToolkit:LineDataPoint">
+									<Setter Property="Background" Value="Purple"/>
+								</Style>
+							</chartingToolkit:LineSeries.DataPointStyle>
+							<chartingToolkit:LineSeries.IndependentAxis>
+								<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+							</chartingToolkit:LineSeries.IndependentAxis>
+							<chartingToolkit:LineSeries.DependentRangeAxis>
+								<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+							</chartingToolkit:LineSeries.DependentRangeAxis>
+						</chartingToolkit:LineSeries>
+					</chartingToolkit:Chart>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Grid>
+</UserControl>

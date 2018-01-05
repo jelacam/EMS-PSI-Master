@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 
 namespace EMS.ServiceContracts
 {
@@ -20,7 +21,7 @@ namespace EMS.ServiceContracts
         /// </summary>
         /// <param name="result"></param>
         [OperationContract(IsOneWay = false)]
-        void PublishOptimizationResults(float result);
+        void PublishOptimizationResults(MeasurementUI result);
     }
 
     /// <summary>
@@ -30,6 +31,6 @@ namespace EMS.ServiceContracts
     public interface ICePubSubCallbackContract
     {
         [OperationContract(IsOneWay = false)]
-        void OptimizationResults(float result);
+        void OptimizationResults(MeasurementUI result);
     }
 }
