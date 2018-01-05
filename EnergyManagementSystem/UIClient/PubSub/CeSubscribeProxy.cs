@@ -30,7 +30,7 @@ namespace UIClient.PubSub
             if (Proxy == null)
             {
                 context = new InstanceContext(new CePubSubCallbackService() { CallbackAction = callbackAction});
-                factory = new DuplexChannelFactory<ICePubSubContract>(context, "PubSub");
+                factory = new DuplexChannelFactory<ICePubSubContract>(context, "CalculationEnginePubSub");
                 Proxy = factory.CreateChannel();
             }
         }

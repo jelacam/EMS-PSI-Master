@@ -120,8 +120,8 @@ namespace EMS.Services.CalculationEngineService
             if (value > maxOptimized)
             {
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high optimized limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on high optimized limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high optimized limit on gid: {0} - Sinal value: {1}"  , gid, value);
+                Console.WriteLine("Alarm on high optimized limit on gid: {0}  - Sinal value: {1}", gid, value);
             }
 
             return retVal;

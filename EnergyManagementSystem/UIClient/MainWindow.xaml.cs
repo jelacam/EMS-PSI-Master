@@ -32,9 +32,16 @@ namespace UIClient
             //message = string.Format("Result directory: {0}", Config.Instance.ResultDirecotry);
             //Console.WriteLine(message);
             //CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            try
+            {
+                AlarmsEventsSubscribeProxy.Instance.Subscribe();
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to AlarmsEvents Publisher Service! \n {0}", e.Message);
+            }
 
-          
-		}
+        }
 		
 	}
 }

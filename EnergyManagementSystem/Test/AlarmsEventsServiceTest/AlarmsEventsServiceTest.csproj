@@ -1,26 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6A58DB48-FC29-48D0-B429-A40640AAB21D}</ProjectGuid>
+    <ProjectGuid>{BDA45825-200C-4E87-8D5B-4BDAC39A7074}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EMS.Services.AlarmsEventsService</RootNamespace>
-    <AssemblyName>AlarmsEventsService</AssemblyName>
+    <RootNamespace>AlarmsEventsServiceTest</RootNamespace>
+    <AssemblyName>AlarmsEventsServiceTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,9 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,32 +47,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlarmsEventsService.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="AlarmsEvents.cs" />
+    <Compile Include="AlarmsEventsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PubSub\AlarmsEventsEventArgs.cs" />
-    <Compile Include="PubSub\PublisherService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">
+    <ProjectReference Include="..\..\AlarmsEventsService\AlarmsEventsService.csproj">
+      <Project>{6a58db48-fc29-48d0-b429-a40640aab21d}</Project>
+      <Name>AlarmsEventsService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CommonMeasurement\CommonMeasurement.csproj">
       <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
       <Name>CommonMeasurement</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{892cbe15-9ed7-4540-81fa-0eaaba592138}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceContracts\AESPubSbuContract\AESPubSbuContract.csproj">
-      <Project>{d7d1b621-4053-4a57-8a65-b7b3157f12b2}</Project>
-      <Name>AESPubSbuContract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceContracts\AlarmsEventsContract\AlarmsEventsContract.csproj">
-      <Project>{dc58aa82-434d-4c1b-936a-0af3e79cbdc5}</Project>
-      <Name>AlarmsEventsContract</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

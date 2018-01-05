@@ -85,6 +85,10 @@
       <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
       <Name>CalculationEngineContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\NetworkModelQueryContract\NetworkModelGDAContract.csproj">
+      <Project>{b726fb71-d295-41ee-9644-b2b0b1bc8911}</Project>
+      <Name>NetworkModelGDAContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\ScadaCRContract\ScadaCRContract.csproj">
       <Project>{FEDD8D01-0F4E-421F-9BC8-15E6F4BD9AF7}</Project>
       <Name>ScadaCRContract</Name>

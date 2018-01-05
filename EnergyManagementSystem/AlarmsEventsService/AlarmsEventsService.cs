@@ -6,15 +6,16 @@
 
 namespace EMS.Services.AlarmsEventsService
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ServiceModel;
-	using EMS.Common;
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+    using EMS.Common;
+    using PubSub;
 
-	/// <summary>
-	/// Class for AlarmsEventsService
-	/// </summary>
-	public class AlarmsEventsService : IDisposable
+    /// <summary>
+    /// Class for AlarmsEventsService
+    /// </summary>
+    public class AlarmsEventsService : IDisposable
 	{
 		/// <summary>
 		/// AlarmsEvents instance
@@ -32,7 +33,6 @@ namespace EMS.Services.AlarmsEventsService
 		public AlarmsEventsService()
 		{
 			this.ae = new AlarmsEvents();
-			CrToAe.AlarmsEvents = this.ae;
 			this.InitializeHosts();
 		}
 
@@ -79,7 +79,8 @@ namespace EMS.Services.AlarmsEventsService
 		private void InitializeHosts()
 		{
 			this.hosts = new List<ServiceHost>();
-			this.hosts.Add(new ServiceHost(typeof(CrToAe)));
+			this.hosts.Add(new ServiceHost(typeof(AlarmsEvents)));
+            this.hosts.Add(new ServiceHost(typeof(PublisherService)));
 		}
 
 		/// <summary>

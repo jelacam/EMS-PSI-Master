@@ -16,12 +16,7 @@ namespace UIClient.ViewModel
         private CeSubscribeProxy ceSubscribeProxy;
 
         private Dictionary<long, ObservableCollection<MeasurementUI>> generatorsContainer = new Dictionary<long, ObservableCollection<MeasurementUI>>();
-        float count = 0;
 
-        public string Tekst
-        {
-            get { return "Proba"; }
-        }
         public Dictionary<long, ObservableCollection<MeasurementUI>> GeneratorsContainer
         {
             get
@@ -32,15 +27,6 @@ namespace UIClient.ViewModel
             set
             {
                 generatorsContainer = value;
-            }
-        }
-
-        public ObservableCollection<MeasurementUI> PrviGenerator
-        {
-            get
-            {
-                var v = generatorsContainer.ToList()[0].Value;
-                return generatorsContainer.ToList()[0].Value;
             }
         }
 
@@ -89,8 +75,7 @@ namespace UIClient.ViewModel
                 tempQueue.Add(measUI);
                 GeneratorsContainer.Add(measUI.Gid, tempQueue);
             }
-            OnPropertyChanged("GeneratorsContainer");
-            OnPropertyChanged("PrviGenerator");
+            OnPropertyChanged(nameof(GeneratorsContainer));
         }
 
         protected override void OnDispose()

@@ -34,6 +34,23 @@ namespace SCADACrunchingServiceHost
                 {
                     scadaCR.Start();
 
+                    try
+                    {
+                        bool integrityResult = scadaCR.IntegrityUpdate();
+                        if(integrityResult)
+                        {
+                            message = "Integrity Update finished successfully.";
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                            Console.WriteLine(message);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        message = "Integrity Update failed. " + e.Message;
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                        Console.WriteLine(message);
+                    }
+
                     message = "Press <Enter> to stop the service.";
                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                     Console.WriteLine(message);

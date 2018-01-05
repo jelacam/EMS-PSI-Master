@@ -43,6 +43,11 @@ namespace EMS.Services.SCADACommandingService
             StartHosts();
         }
 
+        public bool IntegrityUpdate()
+        {
+            return scadaCMD.InitiateIntegrityUpdate();
+        }
+
         /// <summary>
         /// Initialize service hosts
         /// </summary>

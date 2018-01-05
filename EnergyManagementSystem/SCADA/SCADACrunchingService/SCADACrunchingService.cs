@@ -73,6 +73,15 @@ namespace EMS.Services.SCADACrunchingService
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        ///  Integrity Update 
+        /// </summary>
+        /// <returns></returns>
+        public bool IntegrityUpdate()
+        {
+            return scadaCR.InitiateIntegrityUpdate();
+        }
+
 		/// <summary>
 		/// Initialize service hosts
 		/// </summary>

@@ -52,11 +52,11 @@ namespace EMS.CommonMeasurement
             {
                 analog.SetProperty(property);
             }
-            property = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID);
-            if (property != null)
-            {
-                analog.SetProperty(property);
-            }
+            //property = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID);
+            //if (property != null)
+            //{
+            //    analog.SetProperty(property);
+            //}
             property = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_MRID);
             if (property != null)
             {

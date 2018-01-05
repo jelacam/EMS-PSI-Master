@@ -8,6 +8,7 @@ namespace EMS.ServiceContracts
 {
 	using System;
 	using System.ServiceModel;
+	using CommonMeasurement;
 
 	/// <summary>
 	/// Class for IAlarmsEventsContract and IDisposable implementation
@@ -33,7 +34,7 @@ namespace EMS.ServiceContracts
 			{
 				if (proxy == null)
 				{
-					factory = new ChannelFactory<IAlarmsEventsContract>("*");
+					factory = new ChannelFactory<IAlarmsEventsContract>("AlarmsEventsEndpoint");
 					proxy = factory.CreateChannel();
 					IContextChannel cc = proxy as IContextChannel;
 				}
@@ -72,12 +73,15 @@ namespace EMS.ServiceContracts
 			}
 		}
 
+
+
 		/// <summary>
-		/// Test method
+		/// Adds new alarm
 		/// </summary>
-		public void Test()
+		/// <param name="alarm">alarm to add</param>
+		public void AddAlarm(AlarmHelper alarm)
 		{
-			proxy.Test();
-		}
-	}
+			proxy.AddAlarm(alarm);
+        }
+    }
 }

@@ -59,7 +59,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
                 Message = "Optimization result"
             };
 
-            OptimizationResultEvent(this, e);
+            OptimizationResultEvent?.Invoke(this, e);
         }
     }
 }
