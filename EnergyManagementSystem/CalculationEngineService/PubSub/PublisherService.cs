@@ -1,4 +1,5 @@
-﻿using EMS.ServiceContracts;
+﻿using EMS.Common;
+using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,6 @@ namespace EMS.Services.CalculationEngineService.PubSub
         public void OptimizationResultHandler(object sender, OptimizationEventArgs e)
         {
             callback.OptimizationResults(e.OptimizationResult);
-
         }
 
         /// <summary>
@@ -59,7 +59,19 @@ namespace EMS.Services.CalculationEngineService.PubSub
                 Message = "Optimization result"
             };
 
-            OptimizationResultEvent?.Invoke(this, e);
+            try
+            {
+                // Ovakav nacin radi na VS 2017. Prethodne verzije nemaju kompajler za C#6
+                // pa ne moze da kompajlira ovakav kod
+                //OptimizationResultEvent?.Invoke(this, e);
+                OptimizationResultEvent(this, e);
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("CES does not have any subscribed clinet for publishing new optimization result. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
+                Console.WriteLine(message);
+            }
         }
     }
 }

@@ -20,8 +20,8 @@ namespace EMS.ServiceContracts
         /// Opeation which the data source program calls to provide the service with new information
         /// </summary>
         /// <param name="result"></param>
-        [OperationContract(IsOneWay = false)]
-        void PublishOptimizationResults(MeasurementUI result);
+        //[OperationContract(IsOneWay = false)]
+        //void PublishOptimizationResults(MeasurementUI result);
     }
 
     /// <summary>

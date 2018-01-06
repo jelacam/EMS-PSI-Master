@@ -30,10 +30,9 @@ namespace EMS.Services.SCADACollectingService
             modbusClient = new ModbusClient("localhost", 502);
             modbusClient.Connect();
 
-            modbusClient.WriteSingleRegister(0, 4f);
-            modbusClient.WriteSingleRegister(2, 5f);
-            modbusClient.WriteSingleRegister(4, 7f);
-
+            modbusClient.WriteSingleRegister(0, 10f);
+            //modbusClient.WriteSingleRegister(2, 7f);
+            //modbusClient.WriteSingleRegister(4, 7f);
         }
 
         public void StartCollectingData()

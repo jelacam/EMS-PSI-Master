@@ -30,6 +30,7 @@
         {
             callback.AlarmsEvents(e.Alarm);
         }
+
         /// <summary>
         /// Clients call this service opeartion to subscribe.
         /// A alarms events event handler is registered for this client instance.
@@ -42,7 +43,7 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public void Unsubscribe()
         {
@@ -56,7 +57,7 @@
         /// <param name="alarm"></param>
         public void PublishAlarmsEvents(AlarmHelper alarm)
         {
-            // TODO dodati novi alarm u kolekciju alarma 
+            // TODO dodati novi alarm u kolekciju alarma
             // ako se novi klijent instancira on ce od alarm servisa raditi integrity update za alarme i dobice listu svih alarma
 
             AlarmsEventsEventArgs e = new AlarmsEventsEventArgs()
@@ -70,11 +71,10 @@
             }
             catch (Exception ex)
             {
-                string message = string.Format("AES does not have any subscribed clinet for publishing new alarms. {0}", ex.Message);
+                string message = string.Format("AES does not have any subscribed client for publishing new alarms. {0}", ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
                 Console.WriteLine(message);
             }
         }
-       
     }
 }
