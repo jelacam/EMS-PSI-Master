@@ -53,7 +53,7 @@ namespace CommonMeasurementTest
 		/// </summary>
 		[Test]
 		[TestCase(1623, TestName = "MeasurementUnitCurrentValueProperty")]
-		public void CurrentValueProperty(long currentValue)
+		public void CurrentValueProperty(float currentValue)
 		{
 			MeasurementUnit mu = new MeasurementUnit();
 			mu.CurrentValue = currentValue;
@@ -65,7 +65,7 @@ namespace CommonMeasurementTest
 		/// </summary>
 		[Test]
         [TestCase(1623, TestName = "MeasurementUnitMinValueProperty")]
-        public void MinValueProperty(long minValue)
+        public void MinValueProperty(float minValue)
         {
             MeasurementUnit mu = new MeasurementUnit();
             mu.MinValue = minValue;
@@ -77,11 +77,35 @@ namespace CommonMeasurementTest
 		/// </summary>
 		[Test]
         [TestCase(1623, TestName = "MeasurementUnitMaxValueProperty")]
-        public void MaxValueProperty(long maxValue)
+        public void MaxValueProperty(float maxValue)
         {
             MeasurementUnit mu = new MeasurementUnit();
             mu.MaxValue = maxValue;
             Assert.AreEqual(mu.MaxValue, maxValue);
         }
-    }
+
+		/// <summary>
+		/// Unit test for MeasurementUnit OptimizedLinear setter
+		/// </summary>
+		[Test]
+		[TestCase(1623, TestName = "MeasurementUnitOptimizedLinearProperty")]
+		public void OptimizedLinearProperty(float optimizedLinear)
+		{
+			MeasurementUnit mu = new MeasurementUnit();
+			mu.OptimizedLinear = optimizedLinear;
+			Assert.AreEqual(mu.OptimizedLinear, optimizedLinear);
+		}
+
+		/// <summary>
+		/// Unit test for MeasurementUnit OptimizedGeneric setter
+		/// </summary>
+		[Test]
+		[TestCase(1623, TestName = "MeasurementUnitOptimizedGenericProperty")]
+		public void OptimizedGenericProperty(float optimizedGeneric)
+		{
+			MeasurementUnit mu = new MeasurementUnit();
+			mu.OptimizedGeneric = optimizedGeneric;
+			Assert.AreEqual(mu.OptimizedGeneric, optimizedGeneric);
+		}
+	}
 }

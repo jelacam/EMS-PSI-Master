@@ -7,9 +7,8 @@
 namespace EMS.Services.NetworkModelService.DataModel.Wires
 {
     using System.Collections.Generic;
-    using EMS.Common;
-    using Core;
-    using Production;
+	using Core;
+	using EMS.Common;
 
     /// <summary>
     /// SynchronousMachine class
@@ -24,24 +23,37 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         /// <summary>
         /// minQ of synchronous machine
         /// </summary>
-        private float minQ;
-
-       
+        private float minQ;      
 
         /// <summary>
         /// operatingMode of synchronous machine
         /// </summary>
         private SynchronousMachineOperatingMode operatingMode;
 
-        private long fuel = 0;
+		/// <summary>
+		/// fuel of synchronous machine
+		/// </summary>
+		private long fuel = 0;
 
-        private bool active;
+		/// <summary>
+		/// active of synchronous machine
+		/// </summary>
+		private bool active;
 
-        private float loadPct;
+		/// <summary>
+		/// loadPct of synchronous machine
+		/// </summary>
+		private float loadPct;
 
-        private float maxCosPhi;
+		/// <summary>
+		/// maxCosPhi of synchronous machine
+		/// </summary>
+		private float maxCosPhi;
 
-        private float minCosPhi;
+		/// <summary>
+		/// minCosPhi of synchronous machine
+		/// </summary>
+		private float minCosPhi;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SynchronousMachine" /> class
@@ -51,35 +63,79 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         {
         }
 
-
-        public long Fuel
+		/// <summary>
+		/// Gets or sets Fuel of the entity
+		/// </summary>
+		public long Fuel
         {
-            get { return fuel; }
-            set { fuel = value; }
+            get
+			{
+				return this.fuel;
+			}
+            set
+			{
+				this.fuel = value;
+			}
         }
 
-        public bool Active
+		/// <summary>
+		/// Gets or sets Active of the entity
+		/// </summary>
+		public bool Active
         {
-            get { return active; }
-            set { active = value; }
+            get
+			{
+				return this.active;
+			}
+            set
+			{
+				this.active = value;
+			}
         }
 
-        public float LoadPct
+		/// <summary>
+		/// Gets or sets LoadPct of the entity
+		/// </summary>
+		public float LoadPct
         {
-            get { return loadPct; }
-            set { loadPct = value; }
+            get
+			{
+				return this.loadPct;
+			}
+            set
+			{
+				this.loadPct = value;
+			}
         }
 
-        public float MaxCosPhi
-        {
-            get { return maxCosPhi;  }
-            set { maxCosPhi = value; }
+		/// <summary>
+		/// Gets or sets MaxCosPhi of the entity
+		/// </summary>
+		public float MaxCosPhi
+		{
+			get
+			{
+				return this.maxCosPhi;
+			}
+			set
+			{
+				this.maxCosPhi = value;
+			}
         }
 
-        public float MinCosPhi
+		/// <summary>
+		/// Gets or sets MinCosPhi of the entity
+		/// </summary>
+		public float MinCosPhi
         {
-            get { return minCosPhi; }
-            set { minCosPhi = value; }
+            get
+			{
+				return this.minCosPhi;
+			}
+            set
+			{
+				this.minCosPhi = value;
+			}
         }
 
         /// <summary>
@@ -114,8 +170,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-     
-
         /// <summary>
         /// Gets or sets OperatingMode of the entity
         /// </summary>
@@ -131,8 +185,6 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                 this.operatingMode = value;
             }
         }
-
-
 
         /// <summary>
         /// Checks are the entities equals

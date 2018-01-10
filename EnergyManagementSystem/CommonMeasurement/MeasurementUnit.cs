@@ -23,6 +23,16 @@ namespace EMS.CommonMeasurement
         /// </summary>
         private float currentValue;
 
+		/// <summary>
+		/// optimizedLinear  for MeasurementUnit
+		/// </summary>
+		private float optimizedLinear;
+
+		/// <summary>
+		/// optimizedGeneric  for MeasurementUnit
+		/// </summary>
+		private float optimizedGeneric;
+
         /// <summary>
         /// minValue for MeasurementUnit
         /// </summary>
@@ -103,5 +113,37 @@ namespace EMS.CommonMeasurement
                 this.maxValue = value;
             }
         }
-    }
+
+		/// <summary>
+		/// Gets or sets OptimizedLinear of the entity
+		/// </summary>
+		public float OptimizedLinear
+		{
+			get
+			{
+				return this.optimizedLinear;
+			}
+
+			set
+			{
+				this.optimizedLinear = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets OptimizedGeneric of the entity
+		/// </summary>
+		public float OptimizedGeneric
+		{
+			get
+			{
+				return this.optimizedGeneric;
+			}
+
+			set
+			{
+				this.optimizedGeneric = value;
+			}
+		}
+	}
 }
