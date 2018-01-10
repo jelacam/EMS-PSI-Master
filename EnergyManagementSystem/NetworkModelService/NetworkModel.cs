@@ -762,6 +762,7 @@ namespace EMS.Services.NetworkModelService
             bf.Serialize(ms, obj);
             return ms.ToArray();
         }
+
         // Convert a byte array to an Object
         private Object ByteArrayToObject(byte[] arrBytes)
         {
@@ -773,29 +774,38 @@ namespace EMS.Services.NetworkModelService
             return obj;
         }
 
-
         private void SaveDelta(Delta delta)
         {
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
             {
-                
+                try
+                {
+                    connection.Open();
+                    string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
+                    SqlCommand cmd = new SqlCommand(sql, connection);
+                    cmd.Parameters.Add("@param_id", SqlDbType.VarChar).Value = delta.Id.ToString();
+                    cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
+                    cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
+                    cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
+                    cmd.CommandType = CommandType.Text;
 
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
 
-                connection.Open();
-                string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
-                SqlCommand cmd = new SqlCommand(sql, connection);
-                cmd.Parameters.Add("@param_id", SqlDbType.VarChar).Value = delta.Id.ToString();
-                cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
-                cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
-                cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
-                cmd.CommandType = CommandType.Text;
-
-                cmd.ExecuteNonQuery();
-                connection.Close();
+                    string message = string.Format("Insert new Delta into database successfully finished. ");
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                    Console.WriteLine(message);
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed to insert new Delta into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
             }
 
-
             #region save to file
+
             /*
             bool fileExisted = false;
 
@@ -839,34 +849,48 @@ namespace EMS.Services.NetworkModelService
             fs.Close();
             fs.Dispose();
 
-            
             */
-            #endregion
+
+            #endregion save to file
         }
 
         private List<Delta> ReadAllDeltas()
         {
-
-            List<Delta> result = new List<Delta>();
+            string message = string.Empty;
+            List<Delta> result = new List<Delta>(5);
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
             {
-                connection.Open();
-                string sql = "SELECT DELTA from Delta";
-                SqlCommand cmd = new SqlCommand(sql, connection);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                try
                 {
-                    byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
-                    result.Add(ByteArrayToObject(delta_byte) as Delta);
-                }
+                    connection.Open();
+                    string sql = "SELECT DELTA from Delta";
+                    SqlCommand cmd = new SqlCommand(sql, connection);
 
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
+                        result.Add(ByteArrayToObject(delta_byte) as Delta);
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    message = string.Format("Failed to read Delta from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                    return new List<Delta>();
+                }
             }
+
+            message = string.Format("Successfully read {0} Delta from database.", result.Count.ToString());
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            Console.WriteLine(message);
 
             return result;
 
-            #region old 
+            #region old
 
             //List<Delta> result = new List<Delta>();
             //if (!File.Exists(Config.Instance.ConnectionString))
@@ -904,7 +928,7 @@ namespace EMS.Services.NetworkModelService
 
             //return result;
 
-            #endregion
+            #endregion old
         }
 
         #endregion Delta serialization
