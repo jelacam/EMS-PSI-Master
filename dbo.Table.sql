@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Delta]
 (
-	[Id] INT NOT NULL,
+	[Id] VARCHAR(MAX) NOT NULL,
 	[Time] DATETIME NOT NULL,
 	[Delta] VARBINARY(MAX) NOT NULL
 )
