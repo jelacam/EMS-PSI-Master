@@ -10,6 +10,9 @@ using EMS.Services.NetworkModelService.DataModel;
 using EMS.Services.NetworkModelService.DataModel.Core;
 using EMS.ServiceContracts;
 using System.ServiceModel;
+using System.Data.SqlClient;
+using System.Data;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EMS.Services.NetworkModelService
 {
@@ -749,8 +752,51 @@ namespace EMS.Services.NetworkModelService
 
         #region Delta serialization
 
+        // Convert an object to a byte array
+        private byte[] ObjectToByteArray(Object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, obj);
+            return ms.ToArray();
+        }
+        // Convert a byte array to an Object
+        private Object ByteArrayToObject(byte[] arrBytes)
+        {
+            MemoryStream memStream = new MemoryStream();
+            BinaryFormatter binForm = new BinaryFormatter();
+            memStream.Write(arrBytes, 0, arrBytes.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            Object obj = (Object)binForm.Deserialize(memStream);
+            return obj;
+        }
+
+
         private void SaveDelta(Delta delta)
         {
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                
+
+
+                connection.Open();
+                string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.Add("@param_id", SqlDbType.VarChar).Value = delta.Id.ToString();
+                cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
+                cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
+                cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
+                cmd.CommandType = CommandType.Text;
+
+                cmd.ExecuteNonQuery();
+                connection.Close();
+            }
+
+
+            #region save to file
+            /*
             bool fileExisted = false;
 
             if (File.Exists(Config.Instance.ConnectionString))
@@ -792,46 +838,73 @@ namespace EMS.Services.NetworkModelService
             bw.Dispose();
             fs.Close();
             fs.Dispose();
+
+            
+            */
+            #endregion
         }
 
         private List<Delta> ReadAllDeltas()
         {
+
             List<Delta> result = new List<Delta>();
 
-            if (!File.Exists(Config.Instance.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
             {
-                return result;
-            }
+                connection.Open();
+                string sql = "SELECT DELTA from Delta";
+                SqlCommand cmd = new SqlCommand(sql, connection);
 
-            FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.Read);
-            fs.Seek(0, SeekOrigin.Begin);
-
-            if (fs.Position < fs.Length) // if it is not empty stream
-            {
-                BinaryReader br = new BinaryReader(fs);
-
-                int deltaCount = br.ReadInt32();
-                int deltaLength = 0;
-                byte[] deltaSerialized = null;
-                Delta delta = null;
-
-                for (int i = 0; i < deltaCount; i++)
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    deltaLength = br.ReadInt32();
-                    deltaSerialized = new byte[deltaLength];
-                    br.Read(deltaSerialized, 0, deltaLength);
-                    delta = Delta.Deserialize(deltaSerialized);
-                    result.Add(delta);
+                    byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
+                    result.Add(ByteArrayToObject(delta_byte) as Delta);
                 }
 
-                br.Close();
-                br.Dispose();
             }
 
-            fs.Close();
-            fs.Dispose();
-
             return result;
+
+            #region old 
+
+            //List<Delta> result = new List<Delta>();
+            //if (!File.Exists(Config.Instance.ConnectionString))
+            //{
+            //    return result;
+            //}
+
+            //FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.Read);
+            //fs.Seek(0, SeekOrigin.Begin);
+
+            //if (fs.Position < fs.Length) // if it is not empty stream
+            //{
+            //    BinaryReader br = new BinaryReader(fs);
+
+            //    int deltaCount = br.ReadInt32();
+            //    int deltaLength = 0;
+            //    byte[] deltaSerialized = null;
+            //    Delta delta = null;
+
+            //    for (int i = 0; i < deltaCount; i++)
+            //    {
+            //        deltaLength = br.ReadInt32();
+            //        deltaSerialized = new byte[deltaLength];
+            //        br.Read(deltaSerialized, 0, deltaLength);
+            //        delta = Delta.Deserialize(deltaSerialized);
+            //        result.Add(delta);
+            //    }
+
+            //    br.Close();
+            //    br.Dispose();
+            //}
+
+            //fs.Close();
+            //fs.Dispose();
+
+            //return result;
+
+            #endregion
         }
 
         #endregion Delta serialization
@@ -898,7 +971,7 @@ namespace EMS.Services.NetworkModelService
                 }
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }

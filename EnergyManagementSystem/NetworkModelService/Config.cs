@@ -16,7 +16,11 @@ namespace EMS.Services.NetworkModelService
 
 		private Config()
 		{
-			connectionString = ConfigurationManager.ConnectionStrings["networkModelconnectionString"].ConnectionString;
+            // connection string to nms db
+            connectionString = ConfigurationManager.ConnectionStrings["networkModelDbConnectionString"].ConnectionString;
+            
+            // connection string to file
+            //connectionString = ConfigurationManager.ConnectionStrings["networkModelconnectionString"].ConnectionString;
 		}
 
 		#region Static members
