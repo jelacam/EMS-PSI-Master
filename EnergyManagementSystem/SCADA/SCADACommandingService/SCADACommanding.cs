@@ -254,9 +254,9 @@ namespace EMS.Services.SCADACommandingService
                 return false;
             }
 
-            message = string.Format("Integrity update: Number of Analog values: {0}", listOfAnalog.Count.ToString());
+            message = string.Format("Integrity update: Number of {0} values: {1}", modelCode.ToString(), listOfAnalog.Count.ToString());
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-            Console.WriteLine("Number of analog values: {0}", listOfAnalog.Count.ToString());
+            Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCode.ToString(), listOfAnalog.Count.ToString());
             return true;
         }
 

@@ -29,11 +29,28 @@ namespace EMS.Services.CalculationEngineService
 				CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 				Console.WriteLine("\n{0}\n", message);
 
-				using (CalculationEngineService ces = new CalculationEngineService())
-				{
-					ces.Start();
+                using (CalculationEngineService ces = new CalculationEngineService())
+                {
+                    ces.Start();
 
-					message = "Press <Enter> to stop the service.";
+                    try
+                    {
+                        bool integrityResult = ces.IntegrityUpdate();
+                        if (integrityResult)
+                        {
+                            message = "Integrity Update finished successfully.";
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                            Console.WriteLine(message);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        message = "Integrity Update failed. " + e.Message;
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                        Console.WriteLine(message);
+                    }
+
+                    message = "Press <Enter> to stop the service.";
 					CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 					Console.WriteLine(message);
 					Console.ReadLine();

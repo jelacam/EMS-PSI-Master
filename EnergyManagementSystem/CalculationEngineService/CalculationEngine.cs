@@ -28,6 +28,11 @@ namespace EMS.Services.CalculationEngineService
 		private Model model;
 		private List<OptimisationModel> loms;
 
+
+        private List<ResourceDescription> internalSynchMachines;
+        private List<ResourceDescription> internalEmsFuels;
+
+
 		PublisherService publisher = null;
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CalculationEngine" /> class
@@ -35,6 +40,8 @@ namespace EMS.Services.CalculationEngineService
 		public CalculationEngine()
 		{
 			publisher = new PublisherService();
+            internalEmsFuels = new List<ResourceDescription>(5);
+            internalSynchMachines = new List<ResourceDescription>(5);
 		}
 
 		/// <summary>
@@ -202,5 +209,96 @@ namespace EMS.Services.CalculationEngineService
 
 			return measurements;
 		}
-	}
+
+
+        #region IntegrityUpdate
+
+        /// <summary>
+        /// Method implements integrity update logic for scada cr component
+        /// </summary>
+        /// <returns></returns>
+        public bool InitiateIntegrityUpdate()
+        {
+            ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+
+            List<ModelCode> properties = new List<ModelCode>(10);
+            ModelCode modelCodeEmsFuel = ModelCode.EMSFUEL;
+            ModelCode modelCodeSynchM = ModelCode.SYNCHRONOUSMACHINE;
+
+            int iteratorId = 0;
+            int resourcesLeft = 0;
+            int numberOfResources = 2;
+            string message = string.Empty;
+
+            List<ResourceDescription> retList = new List<ResourceDescription>(5);
+
+            try
+            {
+                // first get all synchronous machines from NMS
+                properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchM);
+
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchM, properties);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                while (resourcesLeft > 0)
+                {
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                // add synchronous machines to internal collection
+                internalSynchMachines.AddRange(retList);
+            }
+            catch (Exception e)
+            {
+                message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchM, e.Message);
+                Console.WriteLine(message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                return false;
+            }
+
+            message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeSynchM.ToString(), internalSynchMachines.Count.ToString());
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeSynchM.ToString(), internalSynchMachines.Count.ToString());
+            
+            // clear retList for getting new model from NMS
+            retList.Clear();
+
+            try
+            {
+                // second get all ems fuels from NMS
+                properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEmsFuel);
+
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEmsFuel, properties);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                while (resourcesLeft > 0)
+                {
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                // add ems fuels to internal collection
+                internalEmsFuels.AddRange(retList);
+            }
+            catch (Exception e)
+            {
+                message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEmsFuel, e.Message);
+                Console.WriteLine(message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                return false;
+            }
+
+            message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalSynchMachines.Count.ToString());
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalSynchMachines.Count.ToString());
+            return true;
+        }
+
+        #endregion 
+    }
 }

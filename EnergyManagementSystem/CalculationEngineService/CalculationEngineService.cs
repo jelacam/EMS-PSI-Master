@@ -122,6 +122,15 @@ namespace EMS.Services.CalculationEngineService
             message = "The Calculation Engine Service is started.";
             Console.WriteLine("\n{0}", message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-        }       
+        }   
+        
+        /// <summary>
+        /// Integrity update for Calculation Engine service
+        /// </summary>
+        /// <returns></returns>
+        public bool IntegrityUpdate()
+        {
+            return ce.InitiateIntegrityUpdate();
+        }    
     }
 }
