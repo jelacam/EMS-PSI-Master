@@ -55,7 +55,7 @@ namespace EMS.ServiceContracts
 
         public bool SendDataToSimulator(List<MeasurementUnit> measurements)
         {
-			return proxy.SendDataToSimulator(measurements);
+            return proxy.SendDataToSimulator(measurements);
         }
 
         public void Test()

@@ -35,7 +35,7 @@ namespace FTN.ESI.SIMES.CIM.Model
             // init common stereotypes list
             int index = 0;
             StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeConcrete));
-			StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeCIMDatatype));
+            StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeCIMDatatype));
             StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeCompound));
             StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeAttribute));
             StereotypeList.Add(new ProfileElementStereotype(index++, ProfileElementStereotype.StereotypeEnumeration));

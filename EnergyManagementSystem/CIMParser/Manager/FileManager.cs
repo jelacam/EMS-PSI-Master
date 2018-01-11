@@ -119,7 +119,7 @@ namespace CIM.Manager
             }
             else if (time1.HasValue && time2.HasValue)
             {
-                isEqual = (DateTime.Compare(time1.Value, time2.Value) == 0);
+                isEqual = DateTime.Compare(time1.Value, time2.Value) == 0;
             }
             return isEqual;
         }

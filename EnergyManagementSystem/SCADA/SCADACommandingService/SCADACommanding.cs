@@ -45,10 +45,10 @@ namespace EMS.Services.SCADACommandingService
         /// </summary>
         private ITransactionCallback transactionCallback;
 
-		/// <summary>
-		/// instance of ConvertorHelper class
-		/// </summary>
-		private ConvertorHelper convertorHelper;
+        /// <summary>
+        /// instance of ConvertorHelper class
+        /// </summary>
+        private ConvertorHelper convertorHelper;
 
         /// <summary>
         /// Constructor SCADACommanding class
@@ -61,7 +61,7 @@ namespace EMS.Services.SCADACommandingService
             listOfAnalog = new List<AnalogLocation>();
             listOfAnalogCopy = new List<AnalogLocation>();
 
-			this.convertorHelper = new ConvertorHelper();
+            this.convertorHelper = new ConvertorHelper();
             modelResourcesDesc = new ModelResourcesDesc();
             //CreateCMDAnalogLocation();
         }

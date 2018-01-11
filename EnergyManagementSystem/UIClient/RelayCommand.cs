@@ -3,107 +3,107 @@ using System.Windows.Input;
 
 namespace UIClient
 {
-	public class RelayCommand:RelayCommand<object>
-	{
-		#region Constructors
+    public class RelayCommand : RelayCommand<object>
+    {
+        #region Constructors
 
-		public RelayCommand(Action<object> execute)
-			: base(execute, null)
-		{
-		}
+        public RelayCommand(Action<object> execute)
+        : base(execute, null)
+        {
+        }
 
-		public RelayCommand(Action<object> execute, Predicate<object> canExecute)
-			: base(execute, canExecute)
-		{
-		}
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        : base(execute, canExecute)
+        {
+        }
 
-		#endregion // Constructors
-	}
+        #endregion // Constructors
+    }
 
-	public class RelayCommand<T> : ICommand
-	{
-		#region Fields
+    public class RelayCommand<T> : ICommand
+    {
+        #region Fields
 
-		private Action<T> execute;
-		private Predicate<T> canExecute;
-		
-		#endregion // Fields
+        private Action<T> execute;
+        private Predicate<T> canExecute;
 
-		#region Constructors
+        #endregion // Fields
 
-		public RelayCommand(Action<T> execute)
-			: this(execute, null)
-		{
-		}
+        #region Constructors
 
-		public RelayCommand(Action<T> execute, Predicate<T> canExecute)
-		{
-			if (execute == null)
-			{
-				throw new ArgumentNullException("execute");
-			}
+        public RelayCommand(Action<T> execute)
+        : this(execute, null)
+        {
+        }
 
-			this.execute = execute;
-			this.canExecute = canExecute;
-		}
-		#endregion // Constructors
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        {
+            if (execute == null)
+            {
+                throw new ArgumentNullException("execute");
+            }
 
-		#region Events
+            this.execute = execute;
+            this.canExecute = canExecute;
+        }
+        #endregion // Constructors
 
-		public event EventHandler CanExecuteChanged
-		{
-			add
-			{
-				if (canExecute != null)
-				{
-					CommandManager.RequerySuggested += value;
-				}
-			}
+        #region Events
 
-			remove
-			{
-				if (canExecute != null)
-				{
-					CommandManager.RequerySuggested -= value;
-				}
-			}
-		}
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                if (canExecute != null)
+                {
+                    CommandManager.RequerySuggested += value;
+                }
+            }
 
-		/// <summary>
-		/// Fired if the <see cref="IsActive"/> property changes.
-		/// </summary>
-		public event EventHandler IsActiveChanged;
+            remove
+            {
+                if (canExecute != null)
+                {
+                    CommandManager.RequerySuggested -= value;
+                }
+            }
+        }
 
-		#endregion // Events
+        /// <summary>
+        /// Fired if the <see cref="IsActive"/> property changes.
+        /// </summary>
+        public event EventHandler IsActiveChanged;
 
-		#region Properties
-	
-		public void SetCanExecute(Predicate<T> method)
-		{
-			canExecute = method;
-		}
+        #endregion // Events
 
-		public void SetExecute(Action<T> method)
-		{
-			execute = method;
-		}
-		#endregion // Properties
+        #region Properties
 
-		#region ICommand Members
+        public void SetCanExecute(Predicate<T> method)
+        {
+            canExecute = method;
+        }
 
-		public bool CanExecute(object parameter)
-		{
-			return this.canExecute == null ? true : this.canExecute((T)parameter);
-		}
+        public void SetExecute(Action<T> method)
+        {
+            execute = method;
+        }
+        #endregion // Properties
 
-		public void Execute(object parameter)
-		{
-			//TODO Logging
-			this.execute((T)parameter);
-		}
+        #region ICommand Members
 
-		#endregion // ICommand Members
+        public bool CanExecute(object parameter)
+        {
+            return this.canExecute == null ? true : this.canExecute((T)parameter);
+        }
 
-	}
+        public void Execute(object parameter)
+        {
+            //TODO Logging
+            this.execute((T)parameter);
+        }
+
+        #endregion // ICommand Members
+
+    }
 
 }

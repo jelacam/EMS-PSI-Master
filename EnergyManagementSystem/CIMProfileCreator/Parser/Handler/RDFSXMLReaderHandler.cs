@@ -39,24 +39,24 @@ namespace FTN.ESI.SIMES.CIM.Parser.Handler
         private const string xmlBase = "xml:base";
 
         private const string separator = StringManipulationManager.SeparatorSharp;
-		#endregion CONST
+        #endregion CONST
 
-		#region FIELDS
-		private string content = string.Empty; //// text content of element
+        #region FIELDS
+        private string content = string.Empty; //// text content of element
         private Profile profile;
         private SortedDictionary<ProfileElementTypes, List<ProfileElement>> allByType;
         //// helper map:  parent class uri,   properties
         ////   ie.        package uri,      classes
         private Dictionary<string, Stack<ProfileElement>> belongingMap;
-		private static SortedList<string, string> details = new SortedList<string, string>();
-        
+        private static SortedList<string, string> details = new SortedList<string, string>();
+
         //// for checking if document can't be processed as CIM-RDFS
         private bool documentIdentifiedLikeRDFS = false;
         private int checkedElementsCount = 0;
         private bool abort = false;
-		#endregion FIELDS
+        #endregion FIELDS
 
-		/// <summary>
+        /// <summary>
         /// Gets the Profile object which is the finall product of parsing RDFS document.
         /// </summary>
         public Profile Profile
@@ -66,10 +66,10 @@ namespace FTN.ESI.SIMES.CIM.Parser.Handler
                 return profile;
             }
         }
-		
 
-		#region IHandler Members
-		public void StartDocument(string filePath)
+
+        #region IHandler Members
+        public void StartDocument(string filePath)
         {
             profile = new Profile();
             profile.SourcePath = filePath;
@@ -439,101 +439,101 @@ namespace FTN.ESI.SIMES.CIM.Parser.Handler
                 List<ProfileElement> moveFromUnknownToEnumElement = new List<ProfileElement>();
                 foreach (ProfileElementTypes type in profile.ProfileMap.Keys)
                 {
-					switch (type)
-					{
-						case ProfileElementTypes.ClassCategory:
-							{
-								List<ClassCategory> list = profile.ProfileMap[type].Cast<ClassCategory>().ToList();
-								foreach (ClassCategory element in list)
-								{
-									//// search for classes of class categories
-									if ((belongingMap != null) && (belongingMap.ContainsKey(element.URI)))
-									{
-										Stack<ProfileElement> stack = belongingMap[element.URI];
-										ProfileElement classInPackage;
-										while (stack.Count > 0)
-										{
-											classInPackage = stack.Pop();
-											if (ExtractSimpleNameFromResourceURI(classInPackage.Type).Equals("Class"))
-											{
-												Class cl = (Class)classInPackage;
-												element.AddToMembersOfClassCategory(cl);
-												cl.BelongsToCategoryAsObject = element;
-											}
-											else
-											{
-												ClassCategory cl = (ClassCategory)classInPackage;
-												element.AddToMembersOfClassCategory(cl);
-												cl.BelongsToCategoryAsObject = element;
-											}
-										}
-									}
-								}
-								break;
-							}
-						case ProfileElementTypes.Class:
-							{
-								List<Class> list = profile.ProfileMap[type].Cast<Class>().ToList();
-								foreach (Class element in list)
-								{
-									if (element.SubClassOf != null)
-									{
-										Class uppclass = (Class)profile.FindProfileElementByUri(element.SubClassOf);
-										element.SubClassOfAsObject = uppclass;
+                    switch (type)
+                    {
+                        case ProfileElementTypes.ClassCategory:
+                            {
+                                List<ClassCategory> list = profile.ProfileMap[type].Cast<ClassCategory>().ToList();
+                                foreach (ClassCategory element in list)
+                                {
+                                    //// search for classes of class categories
+                                    if ((belongingMap != null) && (belongingMap.ContainsKey(element.URI)))
+                                    {
+                                        Stack<ProfileElement> stack = belongingMap[element.URI];
+                                        ProfileElement classInPackage;
+                                        while (stack.Count > 0)
+                                        {
+                                            classInPackage = stack.Pop();
+                                            if (ExtractSimpleNameFromResourceURI(classInPackage.Type).Equals("Class"))
+                                            {
+                                                Class cl = (Class)classInPackage;
+                                                element.AddToMembersOfClassCategory(cl);
+                                                cl.BelongsToCategoryAsObject = element;
+                                            }
+                                            else
+                                            {
+                                                ClassCategory cl = (ClassCategory)classInPackage;
+                                                element.AddToMembersOfClassCategory(cl);
+                                                cl.BelongsToCategoryAsObject = element;
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        case ProfileElementTypes.Class:
+                            {
+                                List<Class> list = profile.ProfileMap[type].Cast<Class>().ToList();
+                                foreach (Class element in list)
+                                {
+                                    if (element.SubClassOf != null)
+                                    {
+                                        Class uppclass = (Class)profile.FindProfileElementByUri(element.SubClassOf);
+                                        element.SubClassOfAsObject = uppclass;
 
-										if (uppclass != null)
-										{
-											uppclass.AddToMySubclasses(element);
-										}
-									}
+                                        if (uppclass != null)
+                                        {
+                                            uppclass.AddToMySubclasses(element);
+                                        }
+                                    }
 
-									//// search for attributes of class and classCategory of class
-									if ((belongingMap != null) && (belongingMap.ContainsKey(element.URI)))
-									{
-										Stack<ProfileElement> stack = belongingMap[element.URI];
-										Property property;
-										while (stack.Count > 0)
-										{
-											property = (Property)stack.Pop();
-											element.AddToMyProperties(property);
-											property.DomainAsObject = element;
-										}
-									}
-								}
-								break;
-							}
-						case ProfileElementTypes.Property:
-							{
-								List<Property> list = profile.ProfileMap[type].Cast<Property>().ToList();
-								foreach (Property element in list)
-								{
-									if (!element.IsPropertyDataTypeSimple)
-									{
-										element.DataTypeAsComplexObject = profile.FindProfileElementByUri(element.DataType);
-									}
-									if (!string.IsNullOrEmpty(element.Range))
-									{
-										element.RangeAsObject = profile.FindProfileElementByUri(element.Range);
-									}
-								}
-								break;
-							}
-						case ProfileElementTypes.Unknown:
-							{
-								List<EnumMember> list = profile.ProfileMap[type].Cast<EnumMember>().ToList();
-								foreach (EnumMember element in list)
-								{
-									Class enumElement = (Class)profile.FindProfileElementByUri(element.Type);
-									if (enumElement != null)
-									{
-										element.EnumerationObject = enumElement;
-										enumElement.AddToMyEnumerationMembers(element);
-										moveFromUnknownToEnumElement.Add(element);
-									}
-								}
-								break;
-							}
-					}
+                                    //// search for attributes of class and classCategory of class
+                                    if ((belongingMap != null) && (belongingMap.ContainsKey(element.URI)))
+                                    {
+                                        Stack<ProfileElement> stack = belongingMap[element.URI];
+                                        Property property;
+                                        while (stack.Count > 0)
+                                        {
+                                            property = (Property)stack.Pop();
+                                            element.AddToMyProperties(property);
+                                            property.DomainAsObject = element;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        case ProfileElementTypes.Property:
+                            {
+                                List<Property> list = profile.ProfileMap[type].Cast<Property>().ToList();
+                                foreach (Property element in list)
+                                {
+                                    if (!element.IsPropertyDataTypeSimple)
+                                    {
+                                        element.DataTypeAsComplexObject = profile.FindProfileElementByUri(element.DataType);
+                                    }
+                                    if (!string.IsNullOrEmpty(element.Range))
+                                    {
+                                        element.RangeAsObject = profile.FindProfileElementByUri(element.Range);
+                                    }
+                                }
+                                break;
+                            }
+                        case ProfileElementTypes.Unknown:
+                            {
+                                List<EnumMember> list = profile.ProfileMap[type].Cast<EnumMember>().ToList();
+                                foreach (EnumMember element in list)
+                                {
+                                    Class enumElement = (Class)profile.FindProfileElementByUri(element.Type);
+                                    if (enumElement != null)
+                                    {
+                                        element.EnumerationObject = enumElement;
+                                        enumElement.AddToMyEnumerationMembers(element);
+                                        moveFromUnknownToEnumElement.Add(element);
+                                    }
+                                }
+                                break;
+                            }
+                    }
                 }
                 if (moveFromUnknownToEnumElement.Count > 0)
                 {

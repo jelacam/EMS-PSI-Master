@@ -23,9 +23,9 @@ namespace CIM.Model
         protected string type; //// type of CIM object
         protected string id; //// unique object ID
         protected string name = string.Empty; //// value of the IdentifiedObject.name attribute (or XXX.name) if it is defined
-        protected string namespaceString = CIMConstants.CIMNamespace;        
-		protected CIMModelContext modelContext;
-		protected int typeCode; //// code of CIM object type
+        protected string namespaceString = CIMConstants.CIMNamespace;
+        protected CIMModelContext modelContext;
+        protected int typeCode; //// code of CIM object type
 
         //// map of all atributes of this CIM object
         protected SortedDictionary<int, List<ObjectAttribute>> myAttributes; //// <int (code of fullName), Attribute>        
@@ -33,7 +33,7 @@ namespace CIM.Model
         //// the IDs of all objects linked to this object packed in diferent lists by object type
         protected SortedDictionary<string, List<string>> parents; //// <string (type), List<string (mrid) > >
         protected SortedDictionary<string, List<string>> children; //// <string (type), List<string (mrid) > >
-        
+
         //// special category of children : embedded children - all of these children are also in the children map
         protected SortedDictionary<string, List<string>> embeddedChildren; //// <string (embeddedListName), List<string (mrid) > >
         protected string embeddedParentId = string.Empty;
@@ -53,27 +53,27 @@ namespace CIM.Model
         protected bool isModified = false;
 
 
-		//public CIMObject()
-		//{
-		//    type = string.Empty;
-		//    id = null;
-		//    myAttributes = new SortedDictionary<int, List<ObjectAttribute>>();
-		//    children = new SortedDictionary<string, List<string>>();
-		//    parents = new SortedDictionary<string, List<string>>();
-		//}
+        //public CIMObject()
+        //{
+        //    type = string.Empty;
+        //    id = null;
+        //    myAttributes = new SortedDictionary<int, List<ObjectAttribute>>();
+        //    children = new SortedDictionary<string, List<string>>();
+        //    parents = new SortedDictionary<string, List<string>>();
+        //}
 
-		public CIMObject(CIMModelContext cimModelContext, string typeName)
+        public CIMObject(CIMModelContext cimModelContext, string typeName)
         {
-			this.modelContext = cimModelContext;
-			typeCode = -1;
-			if (this.modelContext != null)
-			{
-				typeCode = modelContext.AddOrReadCodeForCIMType(typeName);
-			}
+            this.modelContext = cimModelContext;
+            typeCode = -1;
+            if (this.modelContext != null)
+            {
+                typeCode = modelContext.AddOrReadCodeForCIMType(typeName);
+            }
             id = null;
             myAttributes = new SortedDictionary<int, List<ObjectAttribute>>();
             children = new SortedDictionary<string, List<string>>();
-            parents = new SortedDictionary<string, List<string>>();            
+            parents = new SortedDictionary<string, List<string>>();
         }
         /// <summary>
         /// Gets and sets the identifed type of this CIMObject.
@@ -167,7 +167,7 @@ namespace CIM.Model
             {
                 isDefinedAsEmbedded = value;
             }
-        }        
+        }
 
         /// <summary>
         /// Gets and sets the indication of whether or not this
@@ -254,16 +254,16 @@ namespace CIM.Model
         /// <para>Key in the map matches the value of "FullName" property of each attribute.</para> 
         /// </summary>
 		public SortedDictionary<int, List<ObjectAttribute>> MyAttributes
-		{
-			get
-			{
-				return myAttributes;
-			}
-			set
-			{
-				myAttributes = value;
-			}
-		}       
+        {
+            get
+            {
+                return myAttributes;
+            }
+            set
+            {
+                myAttributes = value;
+            }
+        }
 
         /// <summary>
         /// Gets the list of all attributes (ObjectAttributes) of this CIMObject.
@@ -271,29 +271,29 @@ namespace CIM.Model
         /// </summary>
         public List<ObjectAttribute> MyAttributesAsList
         {
-			get
-			{
-				List<ObjectAttribute> attributesList = null;
-				if ((myAttributes != null) && (myAttributes.Count > 0))
-				{
-					attributesList = new List<ObjectAttribute>();
-					foreach (int attrCode in myAttributes.Keys)
-					{
-						foreach (ObjectAttribute attribute in myAttributes[attrCode])
-						{
-							attributesList.Add(attribute);
-						}
-					}
-				}
-				return attributesList;
-			}
-		}
+            get
+            {
+                List<ObjectAttribute> attributesList = null;
+                if ((myAttributes != null) && (myAttributes.Count > 0))
+                {
+                    attributesList = new List<ObjectAttribute>();
+                    foreach (int attrCode in myAttributes.Keys)
+                    {
+                        foreach (ObjectAttribute attribute in myAttributes[attrCode])
+                        {
+                            attributesList.Add(attribute);
+                        }
+                    }
+                }
+                return attributesList;
+            }
+        }
 
         /// <summary>
         /// Gets the boolean indicator whether or not this CIMObject has some ObjectAttributes in MyAttributes list.
         /// </summary>
         public bool HasAttributes
-        {            
+        {
             get
             {
                 bool hasAttributes = false;
@@ -303,7 +303,7 @@ namespace CIM.Model
                 }
                 return hasAttributes;
             }
-        }        
+        }
 
         /// <summary>
         /// Gets the short description for this CIMObject.
@@ -366,16 +366,16 @@ namespace CIM.Model
             }
         }
 
-		/// <summary>
-		/// Gets the CIM model context instance of this object.
-		/// </summary>
-		public CIMModelContext ModelContext
-		{
-			get
-			{
-				return modelContext;
-			}
-		}
+        /// <summary>
+        /// Gets the CIM model context instance of this object.
+        /// </summary>
+        public CIMModelContext ModelContext
+        {
+            get
+            {
+                return modelContext;
+            }
+        }
 
         /// <summary>
         /// Gets and sets the validation status, where:
@@ -402,26 +402,26 @@ namespace CIM.Model
         /// <para>See also: <see cref="ValidationStatus"/></para>
         /// </summary>
 		public int ValidationStatusExtended
-		{
-			get
-			{
-				int status = validationStatus;
-				if (myAttributes != null)
-				{
-					foreach (int attrCode in myAttributes.Keys)
-					{
-						foreach (ObjectAttribute attribute in myAttributes[attrCode])
-						{
-							if (attribute.ValidationStatus == 2)
-							{
-								status = -1;
-							}
-						}
-					}
-				}
-				return status;
-			}
-		}
+        {
+            get
+            {
+                int status = validationStatus;
+                if (myAttributes != null)
+                {
+                    foreach (int attrCode in myAttributes.Keys)
+                    {
+                        foreach (ObjectAttribute attribute in myAttributes[attrCode])
+                        {
+                            if (attribute.ValidationStatus == 2)
+                            {
+                                status = -1;
+                            }
+                        }
+                    }
+                }
+                return status;
+            }
+        }
 
         /// <summary>
         /// Gets the list of identifiers of validation messages attached to this object
@@ -445,35 +445,35 @@ namespace CIM.Model
         /// <param name="attr">object attribute</param>
         /// <returns>true if attribute has been successfuly added, false if there was duplicate attribute</returns>
 		public bool AddAttribute(ObjectAttribute attr)
-		{
-			bool success = false;
-			if (myAttributes == null)
-			{
-				myAttributes = new SortedDictionary<int, List<ObjectAttribute>>();
-			}
+        {
+            bool success = false;
+            if (myAttributes == null)
+            {
+                myAttributes = new SortedDictionary<int, List<ObjectAttribute>>();
+            }
 
-			List<ObjectAttribute> attrList = null;
-			if (!myAttributes.ContainsKey(attr.Code))
-			{
-				attrList = new List<ObjectAttribute>();
-				//// add attribute in list and in map
-				attrList.Add(attr);
-				myAttributes.Add(attr.Code, attrList);
-				success = true;
-			}
-			else
-			{
-				myAttributes.TryGetValue(attr.Code, out attrList);
-				attrList.Add(attr);
-				success = true;
-			}
+            List<ObjectAttribute> attrList = null;
+            if (!myAttributes.ContainsKey(attr.Code))
+            {
+                attrList = new List<ObjectAttribute>();
+                //// add attribute in list and in map
+                attrList.Add(attr);
+                myAttributes.Add(attr.Code, attrList);
+                success = true;
+            }
+            else
+            {
+                myAttributes.TryGetValue(attr.Code, out attrList);
+                attrList.Add(attr);
+                success = true;
+            }
 
-			if (string.Compare(CIMConstants.AttributeNameIdentifiedObjectName, attr.FullName) == 0)
-			{
-				name = attr.Value;
-			}
-			return success;
-		}
+            if (string.Compare(CIMConstants.AttributeNameIdentifiedObjectName, attr.FullName) == 0)
+            {
+                name = attr.Value;
+            }
+            return success;
+        }
 
         /// <summary>
         /// Method returns object attribute of this CIMObject with given FullName value, 
@@ -484,24 +484,24 @@ namespace CIM.Model
         /// <returns>ObjectAttribute with given full fullName or null</returns>
         public ObjectAttribute GetAttribute(string fullName, out List<ObjectAttribute> multipleAtts)
         {
-			int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
-			ObjectAttribute attribute = null;
-			multipleAtts = null;
-			if (myAttributes != null)
-			{
-				if (myAttributes.ContainsKey(attributeCode))
-				{
-					if ((myAttributes[attributeCode] != null) && (myAttributes[attributeCode].Count > 0))
-					{
-						attribute = myAttributes[attributeCode][0];
-						if (myAttributes[attributeCode].Count > 1)
-						{
-							multipleAtts = myAttributes[attributeCode].GetRange(1, myAttributes[attributeCode].Count - 1);
-						}
-					}
-				}
-			}
-			return attribute;
+            int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
+            ObjectAttribute attribute = null;
+            multipleAtts = null;
+            if (myAttributes != null)
+            {
+                if (myAttributes.ContainsKey(attributeCode))
+                {
+                    if ((myAttributes[attributeCode] != null) && (myAttributes[attributeCode].Count > 0))
+                    {
+                        attribute = myAttributes[attributeCode][0];
+                        if (myAttributes[attributeCode].Count > 1)
+                        {
+                            multipleAtts = myAttributes[attributeCode].GetRange(1, myAttributes[attributeCode].Count - 1);
+                        }
+                    }
+                }
+            }
+            return attribute;
         }
 
         /// <summary>
@@ -512,19 +512,19 @@ namespace CIM.Model
         /// <returns>list of ObjectAttributes with given full fullName or null</returns>
         public List<ObjectAttribute> GetAttributeList(string fullName)
         {
-			int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
-			List<ObjectAttribute> attributes = null;
-			if (myAttributes != null)
-			{
-				if (myAttributes.ContainsKey(attributeCode))
-				{
-					if ((myAttributes[attributeCode] != null) && (myAttributes[attributeCode].Count > 0))
-					{
-						attributes = myAttributes[attributeCode];
-					}
-				}
-			}
-			return attributes;
+            int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
+            List<ObjectAttribute> attributes = null;
+            if (myAttributes != null)
+            {
+                if (myAttributes.ContainsKey(attributeCode))
+                {
+                    if ((myAttributes[attributeCode] != null) && (myAttributes[attributeCode].Count > 0))
+                    {
+                        attributes = myAttributes[attributeCode];
+                    }
+                }
+            }
+            return attributes;
         }
 
         /// <summary>
@@ -534,18 +534,18 @@ namespace CIM.Model
         /// <param name="fullName">value of FullName property of attribute from MyAttributes map of this CIM object</param>
         public void RemoveAttributes(string fullName)
         {
-			int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
-			if (myAttributes != null)
-			{
-				if (myAttributes.ContainsKey(attributeCode))
-				{
-					myAttributes.Remove(attributeCode);
-					if (string.Compare(fullName, CIMConstants.AttributeNameIdentifiedObjectName) == 0)
-					{
-						name = string.Empty;
-					}
-				}
-			}            
+            int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
+            if (myAttributes != null)
+            {
+                if (myAttributes.ContainsKey(attributeCode))
+                {
+                    myAttributes.Remove(attributeCode);
+                    if (string.Compare(fullName, CIMConstants.AttributeNameIdentifiedObjectName) == 0)
+                    {
+                        name = string.Empty;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -557,51 +557,51 @@ namespace CIM.Model
         /// <param name="fullName">value of FullName property of attribute from MyAttributes map of this CIM object</param>
         public void RemoveAttribute(string fullName, int index)
         {
-			int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
-			if (myAttributes != null)
-			{
-				if (myAttributes.ContainsKey(attributeCode))
-				{
-					List<ObjectAttribute> attrList = null;
-					myAttributes.TryGetValue(attributeCode, out attrList);
-					if ((attrList != null) && (attrList.Count > 0))
-					{
-						if (attrList.Count == 1) /// remove entirely
+            int attributeCode = modelContext.ReadCodeOfAttribute(fullName);
+            if (myAttributes != null)
+            {
+                if (myAttributes.ContainsKey(attributeCode))
+                {
+                    List<ObjectAttribute> attrList = null;
+                    myAttributes.TryGetValue(attributeCode, out attrList);
+                    if ((attrList != null) && (attrList.Count > 0))
+                    {
+                        if (attrList.Count == 1) /// remove entirely
 						{
-							RemoveAttributes(fullName);
-						}
-						else
-						{
-							if ((index >= 0) && (index < attrList.Count))
-							{
-								attrList.RemoveAt(index);
-							}
-						}
-					}
-				}
-			}
+                            RemoveAttributes(fullName);
+                        }
+                        else
+                        {
+                            if ((index >= 0) && (index < attrList.Count))
+                            {
+                                attrList.RemoveAt(index);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-		/// <summary>
-		/// Method removes the given object attribute from the MyAttributes list of
-		/// this CIMObject.
-		/// </summary>
-		/// <param name="objectAttribute">attribute from MyAttributes map of this CIM object</param>
-		public void RemoveAttribute(ObjectAttribute objectAttribute)
-		{
-			if ((myAttributes != null) && (objectAttribute != null))
-			{
-				if (myAttributes.ContainsKey(objectAttribute.Code))
-				{
-					List<ObjectAttribute> attrList = null;
-					myAttributes.TryGetValue(objectAttribute.Code, out attrList);
-					if ((attrList != null) && (attrList.Contains(objectAttribute)))
-					{
-						attrList.Remove(objectAttribute);
-					}
-				}
-			}
-		}
+        /// <summary>
+        /// Method removes the given object attribute from the MyAttributes list of
+        /// this CIMObject.
+        /// </summary>
+        /// <param name="objectAttribute">attribute from MyAttributes map of this CIM object</param>
+        public void RemoveAttribute(ObjectAttribute objectAttribute)
+        {
+            if ((myAttributes != null) && (objectAttribute != null))
+            {
+                if (myAttributes.ContainsKey(objectAttribute.Code))
+                {
+                    List<ObjectAttribute> attrList = null;
+                    myAttributes.TryGetValue(objectAttribute.Code, out attrList);
+                    if ((attrList != null) && (attrList.Contains(objectAttribute)))
+                    {
+                        attrList.Remove(objectAttribute);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Method checks if attribute with given fullName exists in MyAttributes map.
@@ -610,12 +610,12 @@ namespace CIM.Model
         /// <returns>true if specified fullName exists as a key in MyAttributes map, otherwise false</returns>
         public bool AttributeExists(string fullName)
         {
-			bool exists = false;
-			if (myAttributes != null)
-			{
-				exists = myAttributes.ContainsKey(modelContext.ReadCodeOfAttribute(fullName));
-			}
-			return exists;
+            bool exists = false;
+            if (myAttributes != null)
+            {
+                exists = myAttributes.ContainsKey(modelContext.ReadCodeOfAttribute(fullName));
+            }
+            return exists;
         }
 
         /// <summary>
@@ -625,25 +625,25 @@ namespace CIM.Model
         /// <returns>list of object's attributes</returns>
         public List<ObjectAttribute> FindAttributeByShortName(string shortName)
         {
-			List<ObjectAttribute> attributes = null;
-			if ((myAttributes != null) && !string.IsNullOrEmpty(shortName))
-			{
-				foreach (int attrCode in myAttributes.Keys)
-				{
-					foreach (ObjectAttribute attribute in myAttributes[attrCode])
-					{
-						if (string.Compare(attribute.ShortName, shortName) == 0)
-						{
-							if (attributes == null)
-							{
-								attributes = new List<ObjectAttribute>();
-							}
-							attributes.Add(attribute);
-						}
-					}
-				}
-			}
-			return attributes;
+            List<ObjectAttribute> attributes = null;
+            if ((myAttributes != null) && !string.IsNullOrEmpty(shortName))
+            {
+                foreach (int attrCode in myAttributes.Keys)
+                {
+                    foreach (ObjectAttribute attribute in myAttributes[attrCode])
+                    {
+                        if (string.Compare(attribute.ShortName, shortName) == 0)
+                        {
+                            if (attributes == null)
+                            {
+                                attributes = new List<ObjectAttribute>();
+                            }
+                            attributes.Add(attribute);
+                        }
+                    }
+                }
+            }
+            return attributes;
         }
 
         /// <summary>
@@ -654,29 +654,29 @@ namespace CIM.Model
         /// <returns></returns>
         public List<ObjectAttribute> GetMyAttributesWithValue(string value, bool isReference)
         {
-			List<ObjectAttribute> attributesWithValue = null;
-			if (myAttributes != null)
-			{
-				foreach (int attrCode in myAttributes.Keys)
-				{
-					foreach (ObjectAttribute attribute in myAttributes[attrCode])
-					{
-						if (attribute.IsReference == isReference)
-						{
-							if ((!isReference && (string.Compare(attribute.Value, value) == 0))
-								|| (isReference && (string.Compare(attribute.ValueOfReference, value) == 0)))
-							{
-								if (attributesWithValue == null)
-								{
-									attributesWithValue = new List<ObjectAttribute>();
-								}
-								attributesWithValue.Add(attribute);
-							}
-						}
-					}
-				}
-			}
-			return attributesWithValue;
+            List<ObjectAttribute> attributesWithValue = null;
+            if (myAttributes != null)
+            {
+                foreach (int attrCode in myAttributes.Keys)
+                {
+                    foreach (ObjectAttribute attribute in myAttributes[attrCode])
+                    {
+                        if (attribute.IsReference == isReference)
+                        {
+                            if ((!isReference && (string.Compare(attribute.Value, value) == 0))
+                                || (isReference && (string.Compare(attribute.ValueOfReference, value) == 0)))
+                            {
+                                if (attributesWithValue == null)
+                                {
+                                    attributesWithValue = new List<ObjectAttribute>();
+                                }
+                                attributesWithValue.Add(attribute);
+                            }
+                        }
+                    }
+                }
+            }
+            return attributesWithValue;
         }
         #endregion public : Attributes methods
 
@@ -752,25 +752,25 @@ namespace CIM.Model
         /// <param name="cimObject">new parent object (CIMObject) which will be addeed into parents map of this CIM object</param>
         /// <returns>true if adding parent is successful, otherwise false</returns>
 		public bool AddParent(CIMObject cimObject)
-		{
-			bool success = false;
-			if ((!string.IsNullOrEmpty(cimObject.CIMType)) && (!string.IsNullOrEmpty(cimObject.ID)))
-			{
-				if (parents.ContainsKey(cimObject.CIMType))
-				{
-					parents[cimObject.CIMType].Add(cimObject.id);
-				}
-				else
-				{
-					List<string> temp = new List<string>();
-					temp.Add(cimObject.id);
-					parents.Add(cimObject.CIMType, temp);
-				}
+        {
+            bool success = false;
+            if ((!string.IsNullOrEmpty(cimObject.CIMType)) && (!string.IsNullOrEmpty(cimObject.ID)))
+            {
+                if (parents.ContainsKey(cimObject.CIMType))
+                {
+                    parents[cimObject.CIMType].Add(cimObject.id);
+                }
+                else
+                {
+                    List<string> temp = new List<string>();
+                    temp.Add(cimObject.id);
+                    parents.Add(cimObject.CIMType, temp);
+                }
 
-				success = true;
-			}
-			return success;
-		}
+                success = true;
+            }
+            return success;
+        }
 
         /// <summary>
         /// Method removes given parent object(it's ID) from map of all parents of this CIMObject.        
@@ -827,7 +827,7 @@ namespace CIM.Model
         /// </summary>
         /// <param name="type">Type of all CIMObjects whose IDs are in the IDList</param>
         /// <param name="IDList">list of IDs of children objects</param>
-        public void SetChildrenOfType(string type, List<string> IDList) 
+        public void SetChildrenOfType(string type, List<string> IDList)
         {
             if (!string.IsNullOrEmpty(type) && (IDList != null))
             {
@@ -870,11 +870,11 @@ namespace CIM.Model
             List<string> childrenOfType = new List<string>();
             if (children.ContainsKey(type))
             {
-                childrenOfType = children[type];                
+                childrenOfType = children[type];
             }
             return childrenOfType;
         }
-        
+
         /// <summary>
         /// Method adds new child object(it's ID) into existing map of all children of this CIMObject.
         /// <para>Child object must have not empty values for it's properties CIMType and ID, or it won't be added to the map.</para>
@@ -883,25 +883,25 @@ namespace CIM.Model
         /// </summary>
         /// <param name="cimObject">new child object (CIMObject) which will be addeed into children map of this CIM object</param>
         /// <returns>true if adding child is successful, otherwise false</returns>
-		public bool AddChild(CIMObject cimObject)
-		{
-			bool success = false;
-			if ((!string.IsNullOrEmpty(cimObject.CIMType)) && (!string.IsNullOrEmpty(cimObject.ID)))
-			{
-				if (children.ContainsKey(cimObject.CIMType))
-				{
-					children[cimObject.CIMType].Add(cimObject.id);
-				}
-				else
-				{
-					List<string> temp = new List<string>();
-					temp.Add(cimObject.ID);
-					children.Add(cimObject.CIMType, temp);
-				}
-				success = true;
-			}
-			return success;
-		}
+        public bool AddChild(CIMObject cimObject)
+        {
+            bool success = false;
+            if ((!string.IsNullOrEmpty(cimObject.CIMType)) && (!string.IsNullOrEmpty(cimObject.ID)))
+            {
+                if (children.ContainsKey(cimObject.CIMType))
+                {
+                    children[cimObject.CIMType].Add(cimObject.id);
+                }
+                else
+                {
+                    List<string> temp = new List<string>();
+                    temp.Add(cimObject.ID);
+                    children.Add(cimObject.CIMType, temp);
+                }
+                success = true;
+            }
+            return success;
+        }
 
         /// <summary>
         /// Method removes given child object(it's ID) from map of all children of this CIMObject.        
@@ -1036,29 +1036,29 @@ namespace CIM.Model
         /// <param name="cimObject">new embedded child object (CIMObject)</param>
         /// <returns>true if adding embedded child is successful, otherwise false</returns>
 		public bool AddEmbeddedChild(string embeddedCategory, CIMObject cimObject)
-		{
-			bool success = false;
-			if ((!string.IsNullOrEmpty(embeddedCategory)) && (cimObject != null) && (!string.IsNullOrEmpty(cimObject.ID)))
-			{
-				if (embeddedChildren == null)
-				{
-					embeddedChildren = new SortedDictionary<string, List<string>>();
-				}
+        {
+            bool success = false;
+            if ((!string.IsNullOrEmpty(embeddedCategory)) && (cimObject != null) && (!string.IsNullOrEmpty(cimObject.ID)))
+            {
+                if (embeddedChildren == null)
+                {
+                    embeddedChildren = new SortedDictionary<string, List<string>>();
+                }
 
-				if (embeddedChildren.ContainsKey(embeddedCategory))
-				{
-					embeddedChildren[embeddedCategory].Add(cimObject.ID);
-				}
-				else
-				{
-					List<string> temp = new List<string>();
-					temp.Add(cimObject.ID);
-					embeddedChildren.Add(embeddedCategory, temp);
-				}
-				success = true;
-			}
-			return success;
-		}
+                if (embeddedChildren.ContainsKey(embeddedCategory))
+                {
+                    embeddedChildren[embeddedCategory].Add(cimObject.ID);
+                }
+                else
+                {
+                    List<string> temp = new List<string>();
+                    temp.Add(cimObject.ID);
+                    embeddedChildren.Add(embeddedCategory, temp);
+                }
+                success = true;
+            }
+            return success;
+        }
 
         #endregion public : Embedded children methods
 
@@ -1155,6 +1155,6 @@ namespace CIM.Model
                 retVal += " - \n";
 
             return retVal;
-        }               
+        }
     }
 }

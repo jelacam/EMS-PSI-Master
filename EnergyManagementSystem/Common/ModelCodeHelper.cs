@@ -96,18 +96,18 @@ namespace EMS.Common
             return Enum.TryParse(strDmsType, true, out dmsType);
         }
 
-		public static long GetInheritanceOnlyFromModelCode(ModelCode code)
-		{
-			return (long)((long)code & (long)ModelCodeMask.MASK_INHERITANCE_ONLY);
-		}
+        public static long GetInheritanceOnlyFromModelCode(ModelCode code)
+        {
+            return (long)((long)code & (long)ModelCodeMask.MASK_INHERITANCE_ONLY);
+        }
 
-		public static bool IsInheritanceByModelCode(ModelCode parent,ModelCode child)
-		{
-			long inhParent = GetInheritanceOnlyFromModelCode(parent);
-			long inhChild = GetInheritanceOnlyFromModelCode(child);
+        public static bool IsInheritanceByModelCode(ModelCode parent, ModelCode child)
+        {
+            long inhParent = GetInheritanceOnlyFromModelCode(parent);
+            long inhChild = GetInheritanceOnlyFromModelCode(child);
 
-			bool result = (inhParent | inhChild) == inhChild;
-			return result;
-		}
+            bool result = (inhParent | inhChild) == inhChild;
+            return result;
+        }
     }
 }

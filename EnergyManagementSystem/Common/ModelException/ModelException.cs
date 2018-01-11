@@ -6,145 +6,145 @@ using System.Runtime.Serialization;
 
 namespace EMS.Common
 {
-	
-	[DataContract]
-	public class ModelFault
-	{
-		private ErrorCode code = ErrorCode.Unknown;		
-		private long globalId = 0;
-		private string message = String.Empty;		
 
-		public ModelFault()
-		{
-		}
+    [DataContract]
+    public class ModelFault
+    {
+        private ErrorCode code = ErrorCode.Unknown;
+        private long globalId = 0;
+        private string message = String.Empty;
 
-		public ModelFault(ModelException modelException)
-		{
-			
-			globalId = modelException.GlobalID;
-			code = modelException.Code;
-			message = modelException.Message;			
-		}
+        public ModelFault()
+        {
+        }
 
-		public ModelFault(Exception exception)
-		{			
-			message = exception.Message;
-		}
+        public ModelFault(ModelException modelException)
+        {
 
-		public ModelFault(string message)
-		{
-			this.message = message;
-		}
+            globalId = modelException.GlobalID;
+            code = modelException.Code;
+            message = modelException.Message;
+        }
 
-		public ModelFault(ModelFault modelFault)
-		{			
-			globalId = modelFault.GlobalID;
-			code = modelFault.Code;
-			message = modelFault.Message;			
-		}
+        public ModelFault(Exception exception)
+        {
+            message = exception.Message;
+        }
 
-		[DataMember]
-		public ErrorCode Code
-		{
-			get
-			{
-				return code;
-			}
+        public ModelFault(string message)
+        {
+            this.message = message;
+        }
 
-			set
-			{
-				code = value;
-			}
-		}
-		
-		[DataMember]
-		public string Message
-		{
-			get 
-			{
-				return message; 
-			}
+        public ModelFault(ModelFault modelFault)
+        {
+            globalId = modelFault.GlobalID;
+            code = modelFault.Code;
+            message = modelFault.Message;
+        }
 
-			set 
-			{ 
-				message = value;
-			}
-		}
+        [DataMember]
+        public ErrorCode Code
+        {
+            get
+            {
+                return code;
+            }
 
-		[DataMember]
-		public long GlobalID
-		{
-			get
-			{
-				return globalId;
-			}
+            set
+            {
+                code = value;
+            }
+        }
 
-			set
-			{
-				globalId = value;
-			}
-		}		
-	}
-	
-	public class ModelException : Exception
-	{
-		private ErrorCode code = ErrorCode.Unknown;		
-		private long globalId = 0;		
+        [DataMember]
+        public string Message
+        {
+            get
+            {
+                return message;
+            }
 
-		public ModelException() : base(string.Empty)
-		{
-		}
+            set
+            {
+                message = value;
+            }
+        }
 
-		public ModelException(string message) : base(message)
-		{
-		}
+        [DataMember]
+        public long GlobalID
+        {
+            get
+            {
+                return globalId;
+            }
 
-		public ModelException(ErrorCode code, string message)
-			: base(message)
-		{
-			this.code = code;
-		}
-	
-		public ModelException(ErrorCode code, long globalId, string message)
-			: base(message)
-		{
-			this.code = code;			
-			this.globalId = globalId;
-		}
+            set
+            {
+                globalId = value;
+            }
+        }
+    }
 
-		public ModelException(ErrorCode code, long globalId, long localId, string message)
-			: base(message)
-		{
-			this.code = code;			
-			this.globalId = globalId;
-		}
+    public class ModelException : Exception
+    {
+        private ErrorCode code = ErrorCode.Unknown;
+        private long globalId = 0;
 
-		[DataMember]
-		public long GlobalID
-		{
-			get
-			{
-				return globalId;
-			}
+        public ModelException() : base(string.Empty)
+        {
+        }
 
-			set
-			{
-				globalId = value;
-			}
-		}
+        public ModelException(string message) : base(message)
+        {
+        }
 
-		[DataMember]
-		public ErrorCode Code
-		{
-			get
-			{
-				return code;
-			}
+        public ModelException(ErrorCode code, string message)
+        : base(message)
+        {
+            this.code = code;
+        }
 
-			set
-			{
-				code = value;
-			}
-		}
-	}
+        public ModelException(ErrorCode code, long globalId, string message)
+        : base(message)
+        {
+            this.code = code;
+            this.globalId = globalId;
+        }
+
+        public ModelException(ErrorCode code, long globalId, long localId, string message)
+        : base(message)
+        {
+            this.code = code;
+            this.globalId = globalId;
+        }
+
+        [DataMember]
+        public long GlobalID
+        {
+            get
+            {
+                return globalId;
+            }
+
+            set
+            {
+                globalId = value;
+            }
+        }
+
+        [DataMember]
+        public ErrorCode Code
+        {
+            get
+            {
+                return code;
+            }
+
+            set
+            {
+                code = value;
+            }
+        }
+    }
 }

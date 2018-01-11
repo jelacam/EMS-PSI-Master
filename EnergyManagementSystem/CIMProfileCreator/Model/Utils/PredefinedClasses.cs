@@ -313,31 +313,31 @@ namespace FTN.ESI.SIMES.CIM.Model.Utils
         {
 
             Property property;
-			List<PredefinedProperty> predefinedProperties = null;
+            List<PredefinedProperty> predefinedProperties = null;
 
-			if (predifinedClasses.TryGetValue(entity.Name, out predefinedProperties))
-			{
-				entity.BelongsToCategory = "#Package_Domain";
-				foreach (PredefinedProperty prop in predefinedProperties)//oneClass.Value)
-				{
-					property = new Property();
-					property.URI = prop.URI;
-					property.DataType = prop.type;
-					property.Label = prop.URI.Split('.')[1];
-					if (prop.type.Equals("#UnitSymbol"))
-					{
-						property.Range = "#UnitSymbol";
-						property.RangeAsObject = profile.FindProfileElementByUri("#UnitSymbol");
-					}
-					if (prop.type.Equals("#UnitMultiplier"))
-					{
-						property.Range = "#UnitMultiplier";
-						property.RangeAsObject = profile.FindProfileElementByUri("#UnitMultiplier");
-					}
+            if (predifinedClasses.TryGetValue(entity.Name, out predefinedProperties))
+            {
+                entity.BelongsToCategory = "#Package_Domain";
+                foreach (PredefinedProperty prop in predefinedProperties)//oneClass.Value)
+                {
+                    property = new Property();
+                    property.URI = prop.URI;
+                    property.DataType = prop.type;
+                    property.Label = prop.URI.Split('.')[1];
+                    if (prop.type.Equals("#UnitSymbol"))
+                    {
+                        property.Range = "#UnitSymbol";
+                        property.RangeAsObject = profile.FindProfileElementByUri("#UnitSymbol");
+                    }
+                    if (prop.type.Equals("#UnitMultiplier"))
+                    {
+                        property.Range = "#UnitMultiplier";
+                        property.RangeAsObject = profile.FindProfileElementByUri("#UnitMultiplier");
+                    }
 
-					entity.AddToMyProperties(property);
-				}
-			}
+                    entity.AddToMyProperties(property);
+                }
+            }
         }
     }
 }

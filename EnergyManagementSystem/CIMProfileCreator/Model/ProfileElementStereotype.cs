@@ -14,10 +14,10 @@ namespace FTN.ESI.SIMES.CIM.Model
     {
         /// <summary> "concrete" stereotype </summary>
         public const string StereotypeConcrete = "concrete";
-		/// <summary> "cimdatatype" stereotype </summary>
-		public const string StereotypeCIMDatatype = "cimdatatype";
+        /// <summary> "cimdatatype" stereotype </summary>
+        public const string StereotypeCIMDatatype = "cimdatatype";
         /// <summary> "compound" stereotype </summary>
-        public const string StereotypeCompound = "compound";        
+        public const string StereotypeCompound = "compound";
         /// <summary> "enumeration" stereotype </summary>
         public const string StereotypeEnumeration = "enumeration";
         /// <summary> "attribute" stereotype </summary>
@@ -47,7 +47,7 @@ namespace FTN.ESI.SIMES.CIM.Model
         [BrowsableAttribute(false)]
         public int Code
         {
-            get 
+            get
             {
                 return code;
             }
@@ -82,7 +82,7 @@ namespace FTN.ESI.SIMES.CIM.Model
             get
             {
                 return StringManipulationManager.ExtractShortestName(name, StringManipulationManager.SeparatorSharp);
-            }            
+            }
         }
 
         public override bool Equals(object obj)
@@ -91,7 +91,7 @@ namespace FTN.ESI.SIMES.CIM.Model
             if ((obj != null) && (obj is ProfileElementStereotype) && !string.IsNullOrEmpty(this.name))
             {
                 equal = string.Equals(((ProfileElementStereotype)obj).name, this.name);
-            }                
+            }
             return equal;
         }
 

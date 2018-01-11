@@ -8,76 +8,76 @@ using System.Threading;
 
 namespace EMS.Common
 {
-	[DataContract]		
-	public class DeltaDB
-	{
-		private long id;
-		private byte[] direct;
+    [DataContract]
+    public class DeltaDB
+    {
+        private long id;
+        private byte[] direct;
 
-		public DeltaDB()
-		{
-		}
+        public DeltaDB()
+        {
+        }
 
-		public DeltaDB(long id, byte[] deltaDBBinary)
-		{
-			DeltaDB deltaDB = DeltaDB.Deserialize(deltaDBBinary);
+        public DeltaDB(long id, byte[] deltaDBBinary)
+        {
+            DeltaDB deltaDB = DeltaDB.Deserialize(deltaDBBinary);
 
-			this.id = id;
-			this.direct = deltaDB.direct;
-		}
+            this.id = id;
+            this.direct = deltaDB.direct;
+        }
 
-		public DeltaDB(byte[] deltaDBBinary)
-		{
-			DeltaDB deltaDB = DeltaDB.Deserialize(deltaDBBinary);
+        public DeltaDB(byte[] deltaDBBinary)
+        {
+            DeltaDB deltaDB = DeltaDB.Deserialize(deltaDBBinary);
 
-			this.id = deltaDB.id;
-			this.direct = deltaDB.direct;
-		}
-		
-		public DeltaDB(long id)
-		{
-			this.id = id;			
-		}
+            this.id = deltaDB.id;
+            this.direct = deltaDB.direct;
+        }
 
-		[DataMember]		
-		public long Id
-		{
-			get { return id; }
-			set { id = value; }
-		}
+        public DeltaDB(long id)
+        {
+            this.id = id;
+        }
 
-		[DataMember]		
-		public byte[] Direct
-		{
-			get { return direct; }
-			set { direct = value; }
-		}
-		
+        [DataMember]
+        public long Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
 
-		public byte[] Serialize()
-		{
-			// to do: Fix this
-			return new byte[0];
-			////using (Serializer serializer = serializerFactory.CreateSerializer())
-			////{
-			////    serializer.Serialize(this);
+        [DataMember]
+        public byte[] Direct
+        {
+            get { return direct; }
+            set { direct = value; }
+        }
 
-			////    MemoryStream ms = new MemoryStream();
-			////    serializer.GetSerializedData(ms);
-			////    ms.Close();
-			////    return ms.ToArray();
-			////}
-		}
 
-		public static DeltaDB Deserialize(byte[] deltaDBBinary)
-		{
-			// to do: Fix this
-			return new DeltaDB();
+        public byte[] Serialize()
+        {
+            // to do: Fix this
+            return new byte[0];
+            ////using (Serializer serializer = serializerFactory.CreateSerializer())
+            ////{
+            ////    serializer.Serialize(this);
 
-			////using (Deserializer deserializer = deserializerFactory.CreateDeserializer(new ArraySegment<byte>(deltaDBBinary, 0, deltaDBBinary.Length)))
-			////{
-			////    return (DeltaDB)deserializer.Deserialize();
-			////}
-		}
-	}
+            ////    MemoryStream ms = new MemoryStream();
+            ////    serializer.GetSerializedData(ms);
+            ////    ms.Close();
+            ////    return ms.ToArray();
+            ////}
+        }
+
+        public static DeltaDB Deserialize(byte[] deltaDBBinary)
+        {
+            // to do: Fix this
+            return new DeltaDB();
+
+            ////using (Deserializer deserializer = deserializerFactory.CreateDeserializer(new ArraySegment<byte>(deltaDBBinary, 0, deltaDBBinary.Length)))
+            ////{
+            ////    return (DeltaDB)deserializer.Deserialize();
+            ////}
+        }
+    }
 }

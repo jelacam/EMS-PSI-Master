@@ -6,47 +6,47 @@
 
 namespace EMS.Services.SCADACrunchingService
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ServiceModel;
-	using EMS.Common;
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+    using EMS.Common;
 
-	/// <summary>
-	/// SCADACrunchingService represents SCADA Crunching component
-	/// </summary>
-	public class SCADACrunchingService : IDisposable
+    /// <summary>
+    /// SCADACrunchingService represents SCADA Crunching component
+    /// </summary>
+    public class SCADACrunchingService : IDisposable
     {
-		/// <summary>
-		/// Instance of SCADA Crunching logic
-		/// </summary>
-		private SCADACrunching scadaCR = null;
+        /// <summary>
+        /// Instance of SCADA Crunching logic
+        /// </summary>
+        private SCADACrunching scadaCR = null;
 
-		/// <summary>
-		/// ServiceHost list
-		/// </summary>
-		private List<ServiceHost> hosts = null;
+        /// <summary>
+        /// ServiceHost list
+        /// </summary>
+        private List<ServiceHost> hosts = null;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SCADACrunchingService"/> class
-		/// Creates new SCADACrunching instance and initialize hosts
-		/// </summary>
-		public SCADACrunchingService()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SCADACrunchingService"/> class
+        /// Creates new SCADACrunching instance and initialize hosts
+        /// </summary>
+        public SCADACrunchingService()
         {
             this.scadaCR = new SCADACrunching();
             this.InitializeHosts();
         }
 
-		/// <summary>
-		/// Starting hosts
-		/// </summary>
-		public void Start()
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
+        public void Start()
         {
             this.StartHosts();
-        }		
+        }
 
-		/// <summary>
-		/// Closing hosts
-		/// </summary>
+        /// <summary>
+        /// Closing hosts
+        /// </summary>
         public void CloseHosts()
         {
             if (this.hosts == null || this.hosts.Count == 0)
@@ -64,10 +64,10 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("\n\n{0}", message);
         }
 
-		/// <summary>
-		/// Dispose method
-		/// </summary>
-		public void Dispose()
+        /// <summary>
+        /// Dispose method
+        /// </summary>
+        public void Dispose()
         {
             this.CloseHosts();
             GC.SuppressFinalize(this);
@@ -82,61 +82,61 @@ namespace EMS.Services.SCADACrunchingService
             return scadaCR.InitiateIntegrityUpdate();
         }
 
-		/// <summary>
-		/// Initialize service hosts
-		/// </summary>
-		private void InitializeHosts()
-		{
-			this.hosts = new List<ServiceHost>();
-			this.hosts.Add(new ServiceHost(typeof(SCADACrunching)));
-		}
+        /// <summary>
+        /// Initialize service hosts
+        /// </summary>
+        private void InitializeHosts()
+        {
+            this.hosts = new List<ServiceHost>();
+            this.hosts.Add(new ServiceHost(typeof(SCADACrunching)));
+        }
 
-		/// <summary>
-		/// Starting hosts
-		/// </summary>
-		private void StartHosts()
-		{
-			if (this.hosts == null || this.hosts.Count == 0)
-			{
-				throw new Exception("SCADA Crunching Services can not be opend because it is not initialized.");
-			}
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
+        private void StartHosts()
+        {
+            if (this.hosts == null || this.hosts.Count == 0)
+            {
+                throw new Exception("SCADA Crunching Services can not be opend because it is not initialized.");
+            }
 
-			string message = string.Empty;
-			foreach (ServiceHost host in this.hosts)
-			{
-				try
-				{
-					host.Open();
+            string message = string.Empty;
+            foreach (ServiceHost host in this.hosts)
+            {
+                try
+                {
+                    host.Open();
 
-					message = string.Format("The WCF service {0} is ready.", host.Description.Name);
-					Console.WriteLine(message);
-					CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                    message = string.Format("The WCF service {0} is ready.", host.Description.Name);
+                    Console.WriteLine(message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-					foreach (Uri uri in host.BaseAddresses)
-					{
-						Console.WriteLine(uri);
-						CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
-					}
+                    foreach (Uri uri in host.BaseAddresses)
+                    {
+                        Console.WriteLine(uri);
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
+                    }
 
-					Console.WriteLine("\n");
-				}
-				catch (CommunicationException ce)
-				{
-					Console.WriteLine(ce.Message);
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message);
-				}
-			}
+                    Console.WriteLine("\n");
+                }
+                catch (CommunicationException ce)
+                {
+                    Console.WriteLine(ce.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
 
-			message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
-			Console.WriteLine(message);
-			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
+            Console.WriteLine(message);
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-			message = "The SCADA Crunching Service is started.";
-			Console.WriteLine("\n{0}", message);
-			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-		}
-	}
+            message = "The SCADA Crunching Service is started.";
+            Console.WriteLine("\n{0}", message);
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+        }
+    }
 }

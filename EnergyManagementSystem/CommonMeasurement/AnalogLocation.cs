@@ -1,11 +1,11 @@
-﻿//
+﻿
 // <copyright file="CMDAnalogLocation.cs" company="EMSTeam">
 //     Company copyright tag.
 // </copyright>
-//
+
 namespace EMS.CommonMeasurement
 {
-using EMS.Services.NetworkModelService.DataModel.Meas;
+    using EMS.Services.NetworkModelService.DataModel.Meas;
     using System;
 
     /// <summary>
@@ -14,16 +14,16 @@ using EMS.Services.NetworkModelService.DataModel.Meas;
     public class AnalogLocation : ICloneable
     {
         /// <summary>
-		/// Initializes a new instance of the <see cref="AnalogLocation" /> class
-		/// </summary>
+        /// Initializes a new instance of the <see cref="AnalogLocation" /> class
+        /// </summary>
         public AnalogLocation()
         {
         }
 
         /// <summary>
-		/// Gets or sets Analog of the entity
-		/// </summary>
-		public Analog Analog { get; set; }
+        /// Gets or sets Analog of the entity
+        /// </summary>
+        public Analog Analog { get; set; }
 
         /// <summary>
         /// Gets or sets StartAddress of the entity

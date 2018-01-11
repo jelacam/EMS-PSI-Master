@@ -23,15 +23,15 @@ namespace EMS.CommonMeasurement
         /// </summary>
         private float currentValue;
 
-		/// <summary>
-		/// optimizedLinear  for MeasurementUnit
-		/// </summary>
-		private float optimizedLinear;
+        /// <summary>
+        /// optimizedLinear  for MeasurementUnit
+        /// </summary>
+        private float optimizedLinear;
 
-		/// <summary>
-		/// optimizedGeneric  for MeasurementUnit
-		/// </summary>
-		private float optimizedGeneric;
+        /// <summary>
+        /// optimizedGeneric  for MeasurementUnit
+        /// </summary>
+        private float optimizedGeneric;
 
         /// <summary>
         /// minValue for MeasurementUnit
@@ -114,36 +114,36 @@ namespace EMS.CommonMeasurement
             }
         }
 
-		/// <summary>
-		/// Gets or sets OptimizedLinear of the entity
-		/// </summary>
-		public float OptimizedLinear
-		{
-			get
-			{
-				return this.optimizedLinear;
-			}
+        /// <summary>
+        /// Gets or sets OptimizedLinear of the entity
+        /// </summary>
+        public float OptimizedLinear
+        {
+            get
+            {
+                return this.optimizedLinear;
+            }
 
-			set
-			{
-				this.optimizedLinear = value;
-			}
-		}
+            set
+            {
+                this.optimizedLinear = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets OptimizedGeneric of the entity
-		/// </summary>
-		public float OptimizedGeneric
-		{
-			get
-			{
-				return this.optimizedGeneric;
-			}
+        /// <summary>
+        /// Gets or sets OptimizedGeneric of the entity
+        /// </summary>
+        public float OptimizedGeneric
+        {
+            get
+            {
+                return this.optimizedGeneric;
+            }
 
-			set
-			{
-				this.optimizedGeneric = value;
-			}
-		}
-	}
+            set
+            {
+                this.optimizedGeneric = value;
+            }
+        }
+    }
 }

@@ -7,19 +7,19 @@ using CIM.Handler;
 
 namespace CIMParser
 {
-	public static class CIMModelLoader
-	{
+    public static class CIMModelLoader
+    {
         public static CIMModelLoaderResult LoadCIMXMLModel(Stream stream, string fileName, out CIMModel model, string enumMappingFilePath = "")
-		{
+        {
             CIMModelLoaderResult result = new CIMModelLoaderResult();
-			try
-			{
+            try
+            {
                 bool success;
                 TimeSpan durationOfParsing = new TimeSpan(0);
                 CIMXMLReaderHandler handler = new CIMXMLReaderHandler();
 
                 handler = (CIMXMLReaderHandler)XMLParser.DoParse(handler, stream, fileName, out success, out durationOfParsing);
-                
+
                 if (success)
                 {
                     model = handler.Model;
@@ -30,15 +30,15 @@ namespace CIMParser
                     model = null;
                     result.Success = false;
                 }
-			}
-			catch(Exception e)
-			{
+            }
+            catch (Exception e)
+            {
                 model = null;
                 result.Success = false;
                 result.Report.AppendLine("XML FORMAT ERROR! XML FILE: " + Path.GetFileName(fileName) + "\n\t Description: " + e.Message);
-			}
+            }
             return result;
-		}
+        }
 
         public static CIMModelLoaderResult LoadCIMModelForDifference(ref CIMDifference cimDifference)
         {
@@ -53,16 +53,16 @@ namespace CIMParser
                     //// call parsing for begin version: 
                     CIMRDFComparerXMLHandler handler = new CIMRDFComparerXMLHandler();
                     handler = (CIMRDFComparerXMLHandler)XMLParsingManager.DoParse(handler, XMLParsingManager.ParsingFileTypes.CIMModelFile, cimDifference.Extract, out success, out durationOfParsing);
-					if (success)
-					{
-						cimDifference.Model = handler.Model;
-						cimDifference.Model.Header = handler.Start;
-						cimDifference.AddRDFNamespaces(handler.Namespaces);
-					}
-					else
-					{
-						throw new Exception("Failed to parse extract RDF. ");
-					}
+                    if (success)
+                    {
+                        cimDifference.Model = handler.Model;
+                        cimDifference.Model.Header = handler.Start;
+                        cimDifference.AddRDFNamespaces(handler.Namespaces);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to parse extract RDF. ");
+                    }
 
                     //// call parsing for after version: 
                     CIMDifferenceXMLHandler diffHandler = new CIMDifferenceXMLHandler();
@@ -74,18 +74,18 @@ namespace CIMParser
                         cimDifference.Removed = diffHandler.Removed;
                         cimDifference.AddRDFNamespaces(handler.Namespaces);
                     }
-					else
-					{
-						throw new Exception("Failed to parse difference RDF. ");
-					}
+                    else
+                    {
+                        throw new Exception("Failed to parse difference RDF. ");
+                    }
                 }
                 catch (Exception e)
                 {
                     result.Report.AppendLine("Error loading CIM/XML model: " + e.Message);
-					result.Success = false;
+                    result.Success = false;
                 }
             }
-            else 
+            else
             {
                 result.Report.AppendLine("CIMDifference is null.");
                 result.Success = false;

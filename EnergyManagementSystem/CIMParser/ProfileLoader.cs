@@ -59,13 +59,15 @@ namespace CIMParser
 
         protected virtual void OnMessage(string message)
         {
-            if(Message != null)
+            if (Message != null)
+            {
                 Message(this, message);
+            }
         }
 
         protected virtual void OnDoneParsing(Profile profile)
         {
-            if(profile != null)
+            if (profile != null)
             {
                 DoneParsing(this, profile);
             }
@@ -94,9 +96,9 @@ namespace CIMParser
             entity.TypeAsEnumValue = ProfileElementTypes.Class;
             entity.Label = StringManipulationManager.ExtractAllAfterSeparator(modelClass.name, StringManipulationManager.SeparatorSharp);
             List<ProfileElement> packages = profile.GetAllProfileElementsOfType(ProfileElementTypes.ClassCategory);
-            foreach(ProfileElement pack in packages)
+            foreach (ProfileElement pack in packages)
             {
-                if(pack.UniqueName.Equals(entity.BelongsToCategory))
+                if (pack.UniqueName.Equals(entity.BelongsToCategory))
                 {
                     entity.BelongsToCategoryAsObject = pack;
                     pack.AddToMembersOfClassCategory(entity);
@@ -108,7 +110,7 @@ namespace CIMParser
             //-----------------------------------------------------------------------------
 
 
-            if(entity.BelongsToCategoryAsObject == null)
+            if (entity.BelongsToCategoryAsObject == null)
             {
                 //looking for package (and we know which one - CPackage) and adding it to hierarchy
                 ProfileElement newPackage = new ProfileElement();
@@ -128,26 +130,26 @@ namespace CIMParser
             //PARENT: assumption is that all the classes needed are in profile, 
             //we dont need to add additional, not mentioned in profile
             entity.SubClassOf = modelClass.parentClassName == null ? string.Empty : modelClass.parentClassName;
-            if(!string.IsNullOrEmpty(entity.SubClassOf))
+            if (!string.IsNullOrEmpty(entity.SubClassOf))
             {
                 bool foundInModel = false;
                 List<ProfileElement> classes = profile.GetAllProfileElementsOfType(ProfileElementTypes.Class);
-                foreach(ProfileElement temp in classes)
+                foreach (ProfileElement temp in classes)
                 {
-                    if(temp.URI.Equals(entity.SubClassOf))
+                    if (temp.URI.Equals(entity.SubClassOf))
                     {
                         entity.SubClassOfAsObject = temp;
                         break;
                     }
                 }
-                if(!foundInModel)
+                if (!foundInModel)
                 {
                     entity.SubClassOf = string.Empty;
                 }
             }
 
             //FIELDS
-            foreach(CAttribute att in modelClass.attributes)
+            foreach (CAttribute att in modelClass.attributes)
             {
                 addAttributeToElement(entity, att, modelClass);
             }
@@ -164,7 +166,7 @@ namespace CIMParser
             newProperty.URI = att.name;
             newProperty.DataType = att.type;
 
-            if(ProfileElementStereotype.StereotypeEnumeration.Equals(modelClass.stereotype))
+            if (ProfileElementStereotype.StereotypeEnumeration.Equals(modelClass.stereotype))
             {
                 newProperty.DataType = "int";
                 newProperty.TypeAsEnumValue = ProfileElementTypes.EnumerationElement;
@@ -173,23 +175,23 @@ namespace CIMParser
             else
             {
                 newProperty.TypeAsEnumValue = ProfileElementTypes.Property;
-                if(!newProperty.IsPropertyDataTypeSimple)
+                if (!newProperty.IsPropertyDataTypeSimple)
                 {
                     List<ProfileElement> list = new List<ProfileElement>();
                     list.AddRange(profile.GetAllProfileElementsOfType(ProfileElementTypes.Class));
                     list.AddRange(predefined);
                     list.AddRange(newPredefined);
                     //if it is not simple, then it is a reference in profile, or another missing one?
-                    foreach(ProfileElement type in list)
+                    foreach (ProfileElement type in list)
                     {
-                        if(type.UniqueName.Equals(att.type))
+                        if (type.UniqueName.Equals(att.type))
                         {
                             //if its from profile, add needed references
                             newProperty.DataTypeAsComplexObject = type;
                             break;
                         }
                     }
-                    if(newProperty.DataTypeAsComplexObject == null)
+                    if (newProperty.DataTypeAsComplexObject == null)
                     {
                         //not found so it has to be added in next iteration
                         //create flawed element so that it can be found
@@ -214,14 +216,16 @@ namespace CIMParser
         {
             List<ProfileElement> elList = new List<ProfileElement>();
             elList = profile.GetAllProfileElementsOfType(ProfileElementTypes.Class);
-            if(elList != null)
+            if (elList != null)
             {
-                if(elList.Count > 0)
+                if (elList.Count > 0)
                 {
-                    foreach(ProfileElement e in elList)
+                    foreach (ProfileElement e in elList)
                     {
-                        if(string.IsNullOrEmpty(e.BelongsToCategory))
+                        if (string.IsNullOrEmpty(e.BelongsToCategory))
+                        {
                             predefined.Add(e);
+                        }
                     }
                 }
             }
@@ -243,27 +247,27 @@ namespace CIMParser
             List<ProfileElement> list = new List<ProfileElement>();
             profile.ProfileMap.TryGetValue(ProfileElementTypes.ClassCategory, out list);
             //PACKAGES
-            if(list != null)
+            if (list != null)
             {
                 //IN EACH PACKAGE
-                foreach(ProfileElement package in list)
+                foreach (ProfileElement package in list)
                 {
 
 
                     //check URI
-                    if(package.URI.StartsWith("#"))
+                    if (package.URI.StartsWith("#"))
                     {
                         package.URI = profile.BaseNS + package.URI;
                     }
 
                     List<ProfileElement> classes = package.MembersOfClassCategory;
-                    if(classes != null)
+                    if (classes != null)
                     {
-                        foreach(ProfileElement elem in classes)
+                        foreach (ProfileElement elem in classes)
                         {
-                            if(elem.TypeAsEnumValue == ProfileElementTypes.Class)
+                            if (elem.TypeAsEnumValue == ProfileElementTypes.Class)
                             {
-                                if(elem.URI.StartsWith("#"))
+                                if (elem.URI.StartsWith("#"))
                                 {
                                     elem.URI = profile.BaseNS + elem.URI;
                                 }
@@ -284,12 +288,12 @@ namespace CIMParser
         /// <param name="profile">Profile profile that is being checked</param>
         private void checkEnumerationURI(ProfileElement elem, Profile profile)
         {
-            if(elem.MyEnumerationMembers != null)
+            if (elem.MyEnumerationMembers != null)
             {
 
-                foreach(ProfileElement enumMember in elem.MyEnumerationMembers)
+                foreach (ProfileElement enumMember in elem.MyEnumerationMembers)
                 {
-                    if(enumMember.URI.StartsWith("#"))
+                    if (enumMember.URI.StartsWith("#"))
                     {
                         enumMember.URI = profile.BaseNS + enumMember.URI;
                     }
@@ -304,11 +308,11 @@ namespace CIMParser
         /// <param name="profile">Profile profile that is being checked</param>
         private void checkPropertiesURI(ProfileElement elem, Profile profile)
         {
-            if(elem.MyProperties != null)
+            if (elem.MyProperties != null)
             {
-                foreach(ProfileElement property in elem.MyProperties)
+                foreach (ProfileElement property in elem.MyProperties)
                 {
-                    if(property.URI.StartsWith("#"))
+                    if (property.URI.StartsWith("#"))
                     {
                         property.URI = profile.BaseNS + property.URI;
                     }

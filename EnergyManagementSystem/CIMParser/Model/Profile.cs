@@ -285,7 +285,8 @@ namespace CIM.Model
         }
 
 
-        public List<ProfileElement> GetAllProfileElementsOfType(ProfileElementTypes type) {
+        public List<ProfileElement> GetAllProfileElementsOfType(ProfileElementTypes type)
+        {
             List<ProfileElement> elementsOfType = new List<ProfileElement>();
             if (profileMap != null)
             {

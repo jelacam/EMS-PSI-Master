@@ -14,76 +14,76 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
     /// </summary>
     public class EnergyConsumer : ConductingEquipment
     {
-		/// <summary>
-		/// pFixed of energy consumer
-		/// </summary>
+        /// <summary>
+        /// pFixed of energy consumer
+        /// </summary>
         private float pFixed;
 
-		/// <summary>
-		/// pFixedPct of energy consumer
-		/// </summary>
-		private float pFixedPct;
+        /// <summary>
+        /// pFixedPct of energy consumer
+        /// </summary>
+        private float pFixedPct;
 
-		/// <summary>
-		/// qFixed of energy consumer
-		/// </summary>
-		private float qFixed;
+        /// <summary>
+        /// qFixed of energy consumer
+        /// </summary>
+        private float qFixed;
 
-		/// <summary>
-		/// qFixedPct of energy consumer
-		/// </summary>
-		private float qFixedPct;
+        /// <summary>
+        /// qFixedPct of energy consumer
+        /// </summary>
+        private float qFixedPct;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="EnergyConsumer" /> class
-		/// </summary>
-		/// <param name="globalId">globalId of the entity</param>
-		public EnergyConsumer(long globalId) : base(globalId)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnergyConsumer" /> class
+        /// </summary>
+        /// <param name="globalId">globalId of the entity</param>
+        public EnergyConsumer(long globalId) : base(globalId)
         {
         }
 
-		/// <summary>
-		/// Gets or sets PFixed of the entity
-		/// </summary>
-		public float PFixed
+        /// <summary>
+        /// Gets or sets PFixed of the entity
+        /// </summary>
+        public float PFixed
         {
             get { return this.pFixed; }
             set { this.pFixed = value; }
         }
 
-		/// <summary>
-		/// Gets or sets PFixedPct of the entity
-		/// </summary>
-		public float PFixedPct
+        /// <summary>
+        /// Gets or sets PFixedPct of the entity
+        /// </summary>
+        public float PFixedPct
         {
             get { return this.pFixedPct; }
             set { this.pFixedPct = value; }
         }
 
-		/// <summary>
-		/// Gets or sets QFixed of the entity
-		/// </summary>
-		public float QFixed
+        /// <summary>
+        /// Gets or sets QFixed of the entity
+        /// </summary>
+        public float QFixed
         {
             get { return this.qFixed; }
             set { this.qFixed = value; }
         }
 
-		/// <summary>
-		/// Gets or sets QFixedPct of the entity
-		/// </summary>
-		public float QFixedPct
+        /// <summary>
+        /// Gets or sets QFixedPct of the entity
+        /// </summary>
+        public float QFixedPct
         {
             get { return this.qFixedPct; }
             set { this.qFixedPct = value; }
         }
 
-		/// <summary>
-		/// Chechs are the entities equals
-		/// </summary>
-		/// <param name="obj">object to compare with</param>
-		/// <returns>indicator of equality</returns>
-		public override bool Equals(object obj)
+        /// <summary>
+        /// Chechs are the entities equals
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <returns>indicator of equality</returns>
+        public override bool Equals(object obj)
         {
             if (base.Equals(obj))
             {
@@ -96,23 +96,23 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-		/// <summary>
-		/// Returns hash code of the entity
-		/// </summary>
-		/// <returns>hash code</returns>
-		public override int GetHashCode()
+        /// <summary>
+        /// Returns hash code of the entity
+        /// </summary>
+        /// <returns>hash code</returns>
+        public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-		#region IAccess implementation
+        #region IAccess implementation
 
-		/// <summary>
-		/// Checks if the entity has a property
-		/// </summary>
-		/// <param name="t">model code of property</param>
-		/// <returns>indicator of has property</returns>
-		public override bool HasProperty(ModelCode t)
+        /// <summary>
+        /// Checks if the entity has a property
+        /// </summary>
+        /// <param name="t">model code of property</param>
+        /// <returns>indicator of has property</returns>
+        public override bool HasProperty(ModelCode t)
         {
             switch (t)
             {
@@ -127,11 +127,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-		/// <summary>
-		/// Gets the property
-		/// </summary>
-		/// <param name="prop">property to get</param>
-		public override void GetProperty(Property prop)
+        /// <summary>
+        /// Gets the property
+        /// </summary>
+        /// <param name="prop">property to get</param>
+        public override void GetProperty(Property prop)
         {
             switch (prop.Id)
             {
@@ -157,11 +157,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             }
         }
 
-		/// <summary>
-		/// Sets the property
-		/// </summary>
-		/// <param name="property">property to set</param>
-		public override void SetProperty(Property property)
+        /// <summary>
+        /// Sets the property
+        /// </summary>
+        /// <param name="property">property to set</param>
+        public override void SetProperty(Property property)
         {
             switch (property.Id)
             {

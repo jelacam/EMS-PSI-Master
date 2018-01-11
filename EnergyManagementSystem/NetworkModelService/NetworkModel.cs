@@ -373,7 +373,7 @@ namespace EMS.Services.NetworkModelService
         /// Inserts entity into the network model.
         /// </summary>
         /// <param name="rd">Description of the resource that should be inserted</param>
-		private void InsertEntity(ResourceDescription rd)
+        private void InsertEntity(ResourceDescription rd)
         {
             if (rd == null)
             {
@@ -758,7 +758,9 @@ namespace EMS.Services.NetworkModelService
         private byte[] ObjectToByteArray(Object obj)
         {
             if (obj == null)
+            {
                 return null;
+            }
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream();
             bf.Serialize(ms, obj);
@@ -1008,6 +1010,7 @@ namespace EMS.Services.NetworkModelService
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 return false;
             }
         }

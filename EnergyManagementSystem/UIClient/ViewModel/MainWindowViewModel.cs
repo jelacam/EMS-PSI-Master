@@ -1,7 +1,7 @@
 ﻿namespace UIClient.ViewModel
 {
-	public class MainWindowViewModel : ViewModelBase
-	{
+    public class MainWindowViewModel : ViewModelBase
+    {
         private DashboardViewModel dashboardViewModel;
 
         public MainWindowViewModel()

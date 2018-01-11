@@ -11,7 +11,7 @@ namespace FTN.ESI.SIMES.CIM.Core
         public StringBuilder CreateProfile(string namespc, string fileName, string productName, string AssemblyVersion, Profile profile)
         {
             sb = new StringBuilder();
-            
+
             ////GENERATE CLASSES AND ENUMERATIONS
             CodeDOMUtil cdom = new CodeDOMUtil(namespc);
             cdom.Message += new CodeDOMUtil.MessageEventHandler(cdom_Message);
@@ -19,16 +19,16 @@ namespace FTN.ESI.SIMES.CIM.Core
 
             ////WRITE FILES
             cdom.WriteFiles(AssemblyVersion);
-            
+
             ////COMPILE
-			if(productName.Equals(string.Empty))
-			{
-				cdom.CompileCode(fileName + "CIMProfile");
-			}
-			else
-			{
-				cdom.CompileCode(fileName + "CIMProfile_" + productName);
-			}
+            if (productName.Equals(string.Empty))
+            {
+                cdom.CompileCode(fileName + "CIMProfile");
+            }
+            else
+            {
+                cdom.CompileCode(fileName + "CIMProfile_" + productName);
+            }
 
             return sb;
         }
@@ -37,5 +37,5 @@ namespace FTN.ESI.SIMES.CIM.Core
         {
             this.sb.Append(message);
         }
-    }    
+    }
 }

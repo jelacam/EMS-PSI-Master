@@ -11,12 +11,12 @@ using System.ServiceModel;
 namespace EMS.Common
 {
     [Serializable]
-    [DataContract]	
-	public class PropertyValue
-	{
-        List<long> longValues = new List<long>();
-        List<float> floatValues = new List<float>();
-        List<string> stringValues = new List<string>();
+    [DataContract]
+    public class PropertyValue
+    {
+        private List<long> longValues = new List<long>();
+        private List<float> floatValues = new List<float>();
+        private List<string> stringValues = new List<string>();
 
         public PropertyValue()
         {
@@ -59,68 +59,80 @@ namespace EMS.Common
             this.StringValues = stringValues;
         }
 
-		public long LongValue
-		{
+        public long LongValue
+        {
             get { return longValues.Count == 0 ? 0 : longValues.First(); }
-            set { longValues.Clear(); longValues.Add(value); }
-		}
+            set
+            {
+                longValues.Clear();
+                longValues.Add(value);
+            }
+        }
 
-		public float FloatValue
-		{
+        public float FloatValue
+        {
             get { return floatValues.Count == 0 ? 0 : floatValues.First(); }
-            set { floatValues.Clear(); floatValues.Add(value); }
-		}
+            set
+            {
+                floatValues.Clear();
+                floatValues.Add(value);
+            }
+        }
 
-		public string StringValue
-		{
+        public string StringValue
+        {
             get { return stringValues.Count == 0 ? string.Empty : stringValues.First(); }
-            set { stringValues.Clear(); stringValues.Add(value); }
-		}
-	
-		[DataMember]
-		public List<long> LongValues
-		{
+            set
+            {
+                stringValues.Clear();
+                stringValues.Add(value);
+            }
+        }
+
+        [DataMember]
+        public List<long> LongValues
+        {
             get { return longValues; }
             set { longValues = value; }
-		}
+        }
 
         [DataMember]
-		public List<float> FloatValues
-		{
+        public List<float> FloatValues
+        {
             get { return floatValues; }
             set { floatValues = value; }
-		}
+        }
 
         [DataMember]
-		public List<string> StringValues
-		{
+        public List<string> StringValues
+        {
             get { return stringValues; }
             set { stringValues = value; }
-		}	
+        }
 
 
-		/// <summary>
-		/// Compares two PropertyValue objects on specific way - used for joins.
-		/// </summary>
-		/// <param name="first"></param>
-		/// <param name="second"></param>
-		/// <returns>TRUE if condition is fulfilled and FALSE in other case.</returns>
-		public static bool operator ==(PropertyValue first, PropertyValue second)
-		{
-			if (Object.ReferenceEquals(first, null) && Object.ReferenceEquals(second, null))
-			{
-				return true;
-			}
-			else if ((Object.ReferenceEquals(first, null) && !Object.ReferenceEquals(second, null)) || (!Object.ReferenceEquals(first, null) && Object.ReferenceEquals(second, null)))
-			{
-				return false;
-			}
-			else
-			{
-				if (!CompareHelper.CompareLists(first.longValues, second.longValues))
+        /// <summary>
+        /// Compares two PropertyValue objects on specific way - used for joins.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns>TRUE if condition is fulfilled and FALSE in other case.</returns>
+        public static bool operator ==(PropertyValue first, PropertyValue second)
+        {
+            if (Object.ReferenceEquals(first, null) && Object.ReferenceEquals(second, null))
+            {
+                return true;
+            }
+            else if ((Object.ReferenceEquals(first, null) && !Object.ReferenceEquals(second, null)) || (!Object.ReferenceEquals(first, null) && Object.ReferenceEquals(second, null)))
+            {
+                return false;
+            }
+            else
+            {
+                if (!CompareHelper.CompareLists(first.longValues, second.longValues))
                 {
                     return false;
-				}
+                }
                 else if (!CompareHelper.CompareLists(first.stringValues, second.stringValues))
                 {
                     return false;
@@ -131,23 +143,23 @@ namespace EMS.Common
                 }
 
                 return true;
-			}
-		}
+            }
+        }
 
-		public static bool operator !=(PropertyValue first, PropertyValue second)
-		{
-			return !(first == second);
-		}
+        public static bool operator !=(PropertyValue first, PropertyValue second)
+        {
+            return !(first == second);
+        }
 
-		public override bool Equals(object obj)
-		{
-			return obj is PropertyValue && this == (PropertyValue)obj;
-		}
+        public override bool Equals(object obj)
+        {
+            return obj is PropertyValue && this == (PropertyValue)obj;
+        }
 
-		public override int GetHashCode()
-		{
-			int hashCode = longValues.GetHashCode() + floatValues.GetHashCode() + stringValues.GetHashCode();	
-			return hashCode;
-		}
-	}
+        public override int GetHashCode()
+        {
+            int hashCode = longValues.GetHashCode() + floatValues.GetHashCode() + stringValues.GetHashCode();
+            return hashCode;
+        }
+    }
 }

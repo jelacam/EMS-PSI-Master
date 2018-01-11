@@ -45,7 +45,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Production
             {
                 EMSFuel x = (EMSFuel)obj;
                 return x.fuelType == this.fuelType && x.unitPrice == this.unitPrice && 
-                       CompareHelper.CompareLists(x.SynchronousMachines , this.SynchronousMachines, true);
+                       CompareHelper.CompareLists(x.SynchronousMachines, this.SynchronousMachines, true);
             }
             else
             {
@@ -62,7 +62,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Production
 
         public override bool HasProperty(ModelCode t)
         {
-            switch(t)
+            switch (t)
             {
                 case ModelCode.EMSFUEL_FUELTYPE:
                 case ModelCode.EMSFUEL_UNITPRICE:
@@ -76,7 +76,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Production
 
         public override void GetProperty(Property prop)
         {
-            switch(prop.Id)
+            switch (prop.Id)
             {
                 case ModelCode.EMSFUEL_FUELTYPE:
                     prop.SetValue((short)this.FuelType);
@@ -99,7 +99,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Production
 
         public override void SetProperty(Property prop)
         {
-            switch(prop.Id)
+            switch (prop.Id)
             {
                 case ModelCode.EMSFUEL_FUELTYPE:
                     this.FuelType = (EmsFuelType)prop.AsEnum();

@@ -18,7 +18,7 @@ namespace EMS.Services.TransactionManagerService
         {
             get
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     InstanceContext context = new InstanceContext(new TransactionManager());
                     factory = new DuplexChannelFactory<ITransactionContract>(context, "NMSTransactionEndpoint");
@@ -29,7 +29,7 @@ namespace EMS.Services.TransactionManagerService
 
             set
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     proxy = value;
                 }

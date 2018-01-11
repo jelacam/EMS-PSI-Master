@@ -22,7 +22,7 @@ namespace FTN.ESI.SIMES.CIM.Model
 
         }
 
-        
+
         #region Class specifics
         /// <summary>
         /// Class Specific property.
@@ -39,7 +39,7 @@ namespace FTN.ESI.SIMES.CIM.Model
                 belongsToCategory = value;
             }
         }
-		
+
         /// <summary>
         /// Class Specific property.
         /// <para>Gets and sets the URI string of super class(base class).</para>
@@ -138,7 +138,7 @@ namespace FTN.ESI.SIMES.CIM.Model
                 }
             }
         }
-        
+
         /// <summary>
         /// Method adds given ProfileElement to the MySubclasses list.
         /// </summary>

@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CIM.Model
 {
-    class CObjectModel
+    public class CObjectModel
     {
         public List<CPackage> packages = new List<CPackage>();
         public Hashtable classes = new Hashtable();

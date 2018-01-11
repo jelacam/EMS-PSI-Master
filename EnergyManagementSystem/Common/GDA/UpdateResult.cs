@@ -5,47 +5,47 @@ using System.Text;
 using System.Runtime.Serialization;
 
 namespace EMS.Common
-{	
-	public enum ResultType : byte
-	{
-		Succeeded = 0,	
-		Failed = 1	
-	}
+{
+    public enum ResultType : byte
+    {
+        Succeeded = 0,
+        Failed = 1
+    }
 
-	[DataContract]
-	public class UpdateResult
-	{
-		private Dictionary<long, long> globalIdPairs;
-		private string message;
-		private ResultType result;		
+    [DataContract]
+    public class UpdateResult
+    {
+        private Dictionary<long, long> globalIdPairs;
+        private string message;
+        private ResultType result;
 
-		public UpdateResult()			
-		{
-			globalIdPairs = new Dictionary<long, long>();
-			message = string.Empty;
-			result = ResultType.Succeeded;			
-		}
+        public UpdateResult()
+        {
+            globalIdPairs = new Dictionary<long, long>();
+            message = string.Empty;
+            result = ResultType.Succeeded;
+        }
 
-		[DataMember]
-		public Dictionary<long, long> GlobalIdPairs
-		{
-			get { return globalIdPairs; }
-			set { globalIdPairs = value; }
-		}
+        [DataMember]
+        public Dictionary<long, long> GlobalIdPairs
+        {
+            get { return globalIdPairs; }
+            set { globalIdPairs = value; }
+        }
 
-		[DataMember]
-		public string Message
-		{
-			get { return message; }
-			set { message = value; }
-		}
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
 
-		[DataMember]
-		public ResultType Result
-		{
-			get { return result; }
-			set { result = value; }
-		}
+        [DataMember]
+        public ResultType Result
+        {
+            get { return result; }
+            set { result = value; }
+        }
 
         public override string ToString()
         {
@@ -62,5 +62,5 @@ namespace EMS.Common
 
             return sb.ToString();
         }
-	}
+    }
 }

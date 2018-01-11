@@ -27,7 +27,7 @@ namespace EMS.Services.SCADACommandingService
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SCADACommandingService"/> class
-		/// Creates new SCADACommanding instance and initialize hosts
+        /// Creates new SCADACommanding instance and initialize hosts
         /// </summary>
         public SCADACommandingService()
         {

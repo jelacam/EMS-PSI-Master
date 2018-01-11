@@ -6,138 +6,138 @@
 
 namespace EMS.Services.SCADACollectingService
 {
-	using System;
-	using System.Collections.Generic;
-	using System.ServiceModel;
-	using Common;
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+    using Common;
 
-	/// <summary>
-	/// SCADACollectingService represents SCADA Collecting component
-	/// </summary>
-	public class SCADACollectingService : IDisposable
-	{
-		/// <summary>
-		/// Instance of SCADA Collecting logic
-		/// </summary>
-		private SCADACollecting scadaCL = null;
+    /// <summary>
+    /// SCADACollectingService represents SCADA Collecting component
+    /// </summary>
+    public class SCADACollectingService : IDisposable
+    {
+        /// <summary>
+        /// Instance of SCADA Collecting logic
+        /// </summary>
+        private SCADACollecting scadaCL = null;
 
-		/// <summary>
-		/// ServiceHost list
-		/// </summary>
-		private List<ServiceHost> hosts = null;
+        /// <summary>
+        /// ServiceHost list
+        /// </summary>
+        private List<ServiceHost> hosts = null;
 
-		
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SCADACollectingService"/> class
-		/// Creates new SCADACollecting instance and initialize hosts
-		/// </summary>
-		public SCADACollectingService()
-		{
-			this.scadaCL = new SCADACollecting();
-			this.InitializeHosts();
-		}
 
-		/// <summary>
-		/// Starting hosts
-		/// </summary>
-		public void Start()
-		{
-			this.StartHosts();
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SCADACollectingService"/> class
+        /// Creates new SCADACollecting instance and initialize hosts
+        /// </summary>
+        public SCADACollectingService()
+        {
+            this.scadaCL = new SCADACollecting();
+            this.InitializeHosts();
+        }
 
-		/// <summary>
-		/// Starting collecting data from simulator
-		/// </summary>
-		public void StartCollectingData()
-		{
-			this.scadaCL.StartCollectingData();
-		}
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
+        public void Start()
+        {
+            this.StartHosts();
+        }
 
-		/// <summary>
-		/// Dispose method
-		/// </summary>
-		public void Dispose()
-		{
-			this.CloseHosts();
-			GC.SuppressFinalize(this);
-		}
+        /// <summary>
+        /// Starting collecting data from simulator
+        /// </summary>
+        public void StartCollectingData()
+        {
+            this.scadaCL.StartCollectingData();
+        }
 
-		/// <summary>
-		/// Initialize service hosts
-		/// </summary>
-		private void InitializeHosts()
-		{
-			this.hosts = new List<ServiceHost>();
-			this.hosts.Add(new ServiceHost(typeof(SCADACollecting)));
-		}
+        /// <summary>
+        /// Dispose method
+        /// </summary>
+        public void Dispose()
+        {
+            this.CloseHosts();
+            GC.SuppressFinalize(this);
+        }
 
-		/// <summary>
-		/// Starting hosts
-		/// </summary>
-		private void StartHosts()
-		{
-			if (this.hosts == null || this.hosts.Count == 0)
-			{
-				throw new Exception("SCADA Collecting Services can not be opened because it is not initialized.");
-			}
+        /// <summary>
+        /// Initialize service hosts
+        /// </summary>
+        private void InitializeHosts()
+        {
+            this.hosts = new List<ServiceHost>();
+            this.hosts.Add(new ServiceHost(typeof(SCADACollecting)));
+        }
 
-			string message = string.Empty;
-			foreach (ServiceHost host in this.hosts)
-			{
-				try
-				{
-					host.Open();
+        /// <summary>
+        /// Starting hosts
+        /// </summary>
+        private void StartHosts()
+        {
+            if (this.hosts == null || this.hosts.Count == 0)
+            {
+                throw new Exception("SCADA Collecting Services can not be opened because it is not initialized.");
+            }
 
-					message = string.Format("The WCF service {0} is ready.", host.Description.Name);
-					Console.WriteLine(message);
-					CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            string message = string.Empty;
+            foreach (ServiceHost host in this.hosts)
+            {
+                try
+                {
+                    host.Open();
 
-					foreach (Uri uri in host.BaseAddresses)
-					{
-						Console.WriteLine(uri);
-						CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
-					}
+                    message = string.Format("The WCF service {0} is ready.", host.Description.Name);
+                    Console.WriteLine(message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-					Console.WriteLine("\n");
-				}
-				catch (CommunicationException ce)
-				{
-					Console.WriteLine(ce.Message);
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message);
-				}
-			}
+                    foreach (Uri uri in host.BaseAddresses)
+                    {
+                        Console.WriteLine(uri);
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, uri.ToString());
+                    }
 
-			message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
-			Console.WriteLine(message);
-			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                    Console.WriteLine("\n");
+                }
+                catch (CommunicationException ce)
+                {
+                    Console.WriteLine(ce.Message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
 
-			message = "The SCADA Collecting Service is started.";
-			Console.WriteLine("\n{0}", message);
-			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-		}
+            message = string.Format("Trace level: {0}", CommonTrace.TraceLevel);
+            Console.WriteLine(message);
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
-		/// <summary>
-		/// Closing hosts
-		/// </summary>
-		private void CloseHosts()
-		{
-			if (this.hosts == null || this.hosts.Count == 0)
-			{
-				throw new Exception("SCADA Collecting Services can not be closed because it is not initialized.");
-			}
+            message = "The SCADA Collecting Service is started.";
+            Console.WriteLine("\n{0}", message);
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+        }
 
-			foreach (ServiceHost host in this.hosts)
-			{
-				host.Close();
-			}
+        /// <summary>
+        /// Closing hosts
+        /// </summary>
+        private void CloseHosts()
+        {
+            if (this.hosts == null || this.hosts.Count == 0)
+            {
+                throw new Exception("SCADA Collecting Services can not be closed because it is not initialized.");
+            }
 
-			string message = "The SCADA Collecting Service is closed.";
-			CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-			Console.WriteLine("\n\n{0}", message);
-		}
-	}
+            foreach (ServiceHost host in this.hosts)
+            {
+                host.Close();
+            }
+
+            string message = "The SCADA Collecting Service is closed.";
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+            Console.WriteLine("\n\n{0}", message);
+        }
+    }
 }

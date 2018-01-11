@@ -9,7 +9,7 @@ namespace CIM.Model
         ContainedExternal
     };
     
-    class CClass
+    public class CClass
     {
         public string name;
         public string stereotype;

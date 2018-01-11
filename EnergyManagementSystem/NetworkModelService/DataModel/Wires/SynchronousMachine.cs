@@ -7,8 +7,8 @@
 namespace EMS.Services.NetworkModelService.DataModel.Wires
 {
     using System.Collections.Generic;
-	using Core;
-	using EMS.Common;
+    using Core;
+    using EMS.Common;
 
     /// <summary>
     /// SynchronousMachine class
@@ -23,37 +23,37 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         /// <summary>
         /// minQ of synchronous machine
         /// </summary>
-        private float minQ;      
+        private float minQ;
 
         /// <summary>
         /// operatingMode of synchronous machine
         /// </summary>
         private SynchronousMachineOperatingMode operatingMode;
 
-		/// <summary>
-		/// fuel of synchronous machine
-		/// </summary>
-		private long fuel = 0;
+        /// <summary>
+        /// fuel of synchronous machine
+        /// </summary>
+        private long fuel = 0;
 
-		/// <summary>
-		/// active of synchronous machine
-		/// </summary>
-		private bool active;
+        /// <summary>
+        /// active of synchronous machine
+        /// </summary>
+        private bool active;
 
-		/// <summary>
-		/// loadPct of synchronous machine
-		/// </summary>
-		private float loadPct;
+        /// <summary>
+        /// loadPct of synchronous machine
+        /// </summary>
+        private float loadPct;
 
-		/// <summary>
-		/// maxCosPhi of synchronous machine
-		/// </summary>
-		private float maxCosPhi;
+        /// <summary>
+        /// maxCosPhi of synchronous machine
+        /// </summary>
+        private float maxCosPhi;
 
-		/// <summary>
-		/// minCosPhi of synchronous machine
-		/// </summary>
-		private float minCosPhi;
+        /// <summary>
+        /// minCosPhi of synchronous machine
+        /// </summary>
+        private float minCosPhi;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SynchronousMachine" /> class
@@ -63,79 +63,79 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
         {
         }
 
-		/// <summary>
-		/// Gets or sets Fuel of the entity
-		/// </summary>
-		public long Fuel
+        /// <summary>
+        /// Gets or sets Fuel of the entity
+        /// </summary>
+        public long Fuel
         {
             get
-			{
-				return this.fuel;
-			}
+            {
+                return this.fuel;
+            }
             set
-			{
-				this.fuel = value;
-			}
+            {
+                this.fuel = value;
+            }
         }
 
-		/// <summary>
-		/// Gets or sets Active of the entity
-		/// </summary>
-		public bool Active
+        /// <summary>
+        /// Gets or sets Active of the entity
+        /// </summary>
+        public bool Active
         {
             get
-			{
-				return this.active;
-			}
+            {
+                return this.active;
+            }
             set
-			{
-				this.active = value;
-			}
+            {
+                this.active = value;
+            }
         }
 
-		/// <summary>
-		/// Gets or sets LoadPct of the entity
-		/// </summary>
-		public float LoadPct
+        /// <summary>
+        /// Gets or sets LoadPct of the entity
+        /// </summary>
+        public float LoadPct
         {
             get
-			{
-				return this.loadPct;
-			}
+            {
+                return this.loadPct;
+            }
             set
-			{
-				this.loadPct = value;
-			}
+            {
+                this.loadPct = value;
+            }
         }
 
-		/// <summary>
-		/// Gets or sets MaxCosPhi of the entity
-		/// </summary>
-		public float MaxCosPhi
-		{
-			get
-			{
-				return this.maxCosPhi;
-			}
-			set
-			{
-				this.maxCosPhi = value;
-			}
-        }
-
-		/// <summary>
-		/// Gets or sets MinCosPhi of the entity
-		/// </summary>
-		public float MinCosPhi
+        /// <summary>
+        /// Gets or sets MaxCosPhi of the entity
+        /// </summary>
+        public float MaxCosPhi
         {
             get
-			{
-				return this.minCosPhi;
-			}
+            {
+                return this.maxCosPhi;
+            }
             set
-			{
-				this.minCosPhi = value;
-			}
+            {
+                this.maxCosPhi = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets MinCosPhi of the entity
+        /// </summary>
+        public float MinCosPhi
+        {
+            get
+            {
+                return this.minCosPhi;
+            }
+            set
+            {
+                this.minCosPhi = value;
+            }
         }
 
         /// <summary>
@@ -197,8 +197,8 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             {
                 SynchronousMachine s = (SynchronousMachine)obj;
                 return s.MaxQ == this.MaxQ && s.MinQ == this.MinQ && s.OperatingMode == this.OperatingMode &&
-                       s.Fuel == this.Fuel && s.Active == this.Active && s.LoadPct == this.LoadPct && s.MaxCosPhi == this.MaxCosPhi &&
-                       s.MinCosPhi == this.MinCosPhi;
+                s.Fuel == this.Fuel && s.Active == this.Active && s.LoadPct == this.LoadPct && s.MaxCosPhi == this.MaxCosPhi &&
+                s.MinCosPhi == this.MinCosPhi;
             }
             else
             {
@@ -278,7 +278,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
                 case ModelCode.SYNCHRONOUSMACHINE_MINCOSPHI:
                     prop.SetValue(this.MinCosPhi);
                     break;
-                
+
 
                 default:
                     base.GetProperty(prop);

@@ -47,9 +47,9 @@ namespace UIClient.ViewModel
         {
             MeasurementUI measUI = obj as MeasurementUI;
 
-            if(obj == null)
+            if (obj == null)
             {
-                throw (new Exception("CallbackAction receive wrong param"));
+                throw new Exception("CallbackAction receive wrong param");
             }
 
             AddMeasurment(measUI);
@@ -63,7 +63,7 @@ namespace UIClient.ViewModel
         {
             ObservableCollection<MeasurementUI> tempQueue;
             
-            if(GeneratorsContainer.TryGetValue(measUI.Gid,out tempQueue))
+            if (GeneratorsContainer.TryGetValue(measUI.Gid, out tempQueue))
             {
                 measUI.TimeStamp = tempQueue.Count;
                 tempQueue.Add(measUI);

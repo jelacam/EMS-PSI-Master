@@ -7,114 +7,114 @@ using EMS.Common;
 using EMS.Services.NetworkModelService.DataModel.Core;
 
 namespace EMS.Services.NetworkModelService
-{	
-	public class ResourceIterator
-	{
+{
+    public class ResourceIterator
+    {
         private static NetworkModel networkModel = null;
 
-		private List<long> globalDs = new List<long>();
-		private Dictionary<EMSType, List<ModelCode>> class2PropertyIDs = new Dictionary<EMSType, List<ModelCode>>(); 	
-		
-		private int lastReadIndex = 0; // index of the last read resource description
-		private int maxReturnNo = 5000;
-        
+        private List<long> globalDs = new List<long>();
+        private Dictionary<EMSType, List<ModelCode>> class2PropertyIDs = new Dictionary<EMSType, List<ModelCode>>();
+
+        private int lastReadIndex = 0; // index of the last read resource description
+        private int maxReturnNo = 5000;
+
         public static NetworkModel NetworkModel
         {
             set { ResourceIterator.networkModel = value; }
         }
 
-		public ResourceIterator()
-		{			
-		}
+        public ResourceIterator()
+        {
+        }
 
-		public ResourceIterator(List<long> globalIDs, Dictionary<EMSType, List<ModelCode>> class2PropertyIDs)
-		{
-			this.globalDs = globalIDs;
-			this.class2PropertyIDs = class2PropertyIDs;
-		}
-		
-		public int ResourcesLeft()
-		{
-			return globalDs.Count - lastReadIndex;
-		}
+        public ResourceIterator(List<long> globalIDs, Dictionary<EMSType, List<ModelCode>> class2PropertyIDs)
+        {
+            this.globalDs = globalIDs;
+            this.class2PropertyIDs = class2PropertyIDs;
+        }
 
-		public int ResourcesTotal()
-		{
-			return globalDs.Count;
-		}
+        public int ResourcesLeft()
+        {
+            return globalDs.Count - lastReadIndex;
+        }
 
-		public List<ResourceDescription> Next(int n)
-		{
-			try
-			{
-				if (n < 0)
-				{
-					return null;
-				}
+        public int ResourcesTotal()
+        {
+            return globalDs.Count;
+        }
 
-				if (n > maxReturnNo)
-				{
-					n = maxReturnNo;
-				}
+        public List<ResourceDescription> Next(int n)
+        {
+            try
+            {
+                if (n < 0)
+                {
+                    return null;
+                }
 
-				List<long> resultIDs;
+                if (n > maxReturnNo)
+                {
+                    n = maxReturnNo;
+                }
 
-				if (ResourcesLeft() < n)
-				{
-					resultIDs = globalDs.GetRange(lastReadIndex, globalDs.Count - lastReadIndex);
-					lastReadIndex = globalDs.Count;
-				}
-				else
-				{
-					resultIDs = globalDs.GetRange(lastReadIndex, n);
-					lastReadIndex += n;
-				}
+                List<long> resultIDs;
 
-				List<ResourceDescription> result = CollectData(resultIDs);
+                if (ResourcesLeft() < n)
+                {
+                    resultIDs = globalDs.GetRange(lastReadIndex, globalDs.Count - lastReadIndex);
+                    lastReadIndex = globalDs.Count;
+                }
+                else
+                {
+                    resultIDs = globalDs.GetRange(lastReadIndex, n);
+                    lastReadIndex += n;
+                }
 
-				return result;
-			}
-			catch (Exception ex)
-			{
-				string message = string.Format("Failed to get next set of ResourceDescription iterators. {0}", ex.Message);
-                CommonTrace.WriteTrace(CommonTrace.TraceError, message);                
+                List<ResourceDescription> result = CollectData(resultIDs);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("Failed to get next set of ResourceDescription iterators. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                 throw new Exception(message);
-			}
-		}
+            }
+        }
 
-		public List<ResourceDescription> GetRange(int index, int n)
-		{
-			try
-			{
-				if (n > maxReturnNo)
-				{
-					n = maxReturnNo;
-				}
+        public List<ResourceDescription> GetRange(int index, int n)
+        {
+            try
+            {
+                if (n > maxReturnNo)
+                {
+                    n = maxReturnNo;
+                }
 
-				List<long> resultIDs = globalDs.GetRange(index, n);
+                List<long> resultIDs = globalDs.GetRange(index, n);
 
-				List<ResourceDescription> result = CollectData(resultIDs);
+                List<ResourceDescription> result = CollectData(resultIDs);
 
-				return result;
-			}
+                return result;
+            }
             catch (Exception ex)
             {
                 string message = string.Format("Failed to get range of ResourceDescription iterators. index:{0}, count:{1}. {2}", index, n, ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				throw new Exception(message);
+                throw new Exception(message);
             }
-		}
+        }
 
-		public void Rewind()
-		{
-			lastReadIndex = 0;
-		}
+        public void Rewind()
+        {
+            lastReadIndex = 0;
+        }
 
-		private List<ResourceDescription> CollectData(List<long> resultIDs)
-		{
-			try
-			{
-				List<ResourceDescription> result = new List<ResourceDescription>();
+        private List<ResourceDescription> CollectData(List<long> resultIDs)
+        {
+            try
+            {
+                List<ResourceDescription> result = new List<ResourceDescription>();
 
                 List<ModelCode> propertyIds = null;
                 foreach (long globalId in resultIDs)
@@ -123,13 +123,13 @@ namespace EMS.Services.NetworkModelService
                     result.Add(networkModel.GetValues(globalId, propertyIds));
                 }
 
-				return result;
-			}
-			catch (Exception ex)
-			{
+                return result;
+            }
+            catch (Exception ex)
+            {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Collecting ResourceDescriptions failed. Exception: " + ex.Message);
-				throw;
-			}
-		}
-	}
+                throw;
+            }
+        }
+    }
 }

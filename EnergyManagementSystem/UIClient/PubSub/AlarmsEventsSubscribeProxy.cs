@@ -19,7 +19,7 @@ namespace UIClient.PubSub
         {
             get
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     context = new InstanceContext(new AePubSubCallbackService());
                     factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
@@ -30,7 +30,7 @@ namespace UIClient.PubSub
 
             set
             {
-                if(proxy == null)
+                if (proxy == null)
                 {
                     proxy = value;
                 }

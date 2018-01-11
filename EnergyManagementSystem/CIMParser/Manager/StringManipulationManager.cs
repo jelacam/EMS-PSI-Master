@@ -9,7 +9,7 @@ namespace CIM.Manager
     /// <para>@author: Stanislava Selena</para>
     /// </summary>
     public class StringManipulationManager
-    {        
+    {
         /// <summary> " " </summary>
         public const string SeparatorSpace = " ";
         /// <summary> "#" </summary>
@@ -37,7 +37,7 @@ namespace CIM.Manager
         /// <summary> greater-than character </summary>
         public const string SymbolGreaterThan = ">";
         /// <summary> greater-than character in XML "&gt;" </summary>
-        public const string SymbolGreaterThanInXML = "&gt;";        
+        public const string SymbolGreaterThanInXML = "&gt;";
         /// <summary> minus "-" character </summary>
         public const string SeparatorMinus = "-";
 
@@ -114,7 +114,7 @@ namespace CIM.Manager
             {
                 formatedDateTime = string.Format("{0:yyyy-MM-dd_HH.mm.ss}", dateTime);
             }
-            
+
             return formatedDateTime;
         }
 
@@ -158,10 +158,12 @@ namespace CIM.Manager
         public static string[] SplitStringForDateInitialization_TimeOnly(string time)
         {
             string[] temp = time.Split(':');
-            for(int i =0; i<temp.Length; i++)
+            for (int i = 0; i < temp.Length; i++)
             {
-                while(temp[i][0] == '0' && temp[i].Length > 1)
+                while (temp[i][0] == '0' && temp[i].Length > 1)
+                {
                     temp[i] = temp[i].Remove(0, 1);
+                }
             }
             return temp;
         }
@@ -190,7 +192,7 @@ namespace CIM.Manager
                         output.Append(" ");
                     }
                     output.Append(character);
-                }                
+                }
             }
             return output.ToString().Trim();
         }
@@ -236,25 +238,25 @@ namespace CIM.Manager
         /// <returns>extracted string</returns>
         public static string ExtractTypeOfList(string value)
         {
-            value = value.Substring(value.IndexOf('[')+1);
+            value = value.Substring(value.IndexOf('[') + 1);
             value = value.Remove(value.IndexOf(']'));
             return value;
         }
 
-		/// <summary>
-		/// Method capitalizes the first letter of the given string value
-		/// </summary>
-		/// <param name="value">string that will be processed</param>
-		/// <returns>string with capitalized first letter</returns>
-		public static string CreateHungarianNotation(string value)
-		{
-			if(string.IsNullOrEmpty(value))
-			{
-				return string.Empty;
-			}
-			char[] a = value.ToCharArray();
-			a[0] = char.ToUpper(a[0]);
-			return new string(a);
-		}
+        /// <summary>
+        /// Method capitalizes the first letter of the given string value
+        /// </summary>
+        /// <param name="value">string that will be processed</param>
+        /// <returns>string with capitalized first letter</returns>
+        public static string CreateHungarianNotation(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+            char[] a = value.ToCharArray();
+            a[0] = char.ToUpper(a[0]);
+            return new string(a);
+        }
     }
 }

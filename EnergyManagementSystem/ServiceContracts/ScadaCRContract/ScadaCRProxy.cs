@@ -6,28 +6,28 @@
 
 namespace EMS.ServiceContracts
 {
-	using System;
-	using System.ServiceModel;
+    using System;
+    using System.ServiceModel;
 
-	/// <summary>
-	/// Class for IScadaCRContract and IDisposable implementation
-	/// </summary>
-	public class ScadaCRProxy : IScadaCRContract, IDisposable
+    /// <summary>
+    /// Class for IScadaCRContract and IDisposable implementation
+    /// </summary>
+    public class ScadaCRProxy : IScadaCRContract, IDisposable
     {
-		/// <summary>
-		/// proxy object
-		/// </summary>
+        /// <summary>
+        /// proxy object
+        /// </summary>
         private static IScadaCRContract proxy;
 
-		/// <summary>
-		/// ChannelFactory object
-		/// </summary>
+        /// <summary>
+        /// ChannelFactory object
+        /// </summary>
         private static ChannelFactory<IScadaCRContract> factory;
 
-		/// <summary>
-		/// Gets or sets instance of IScadaCRContract
-		/// </summary>
-		public static IScadaCRContract Instance
+        /// <summary>
+        /// Gets or sets instance of IScadaCRContract
+        /// </summary>
+        public static IScadaCRContract Instance
         {
             get
             {
@@ -49,9 +49,9 @@ namespace EMS.ServiceContracts
             }
         }
 
-		/// <summary>
-		/// Dispose method
-		/// </summary>
+        /// <summary>
+        /// Dispose method
+        /// </summary>
         public void Dispose()
         {
             if (factory != null)
@@ -60,20 +60,20 @@ namespace EMS.ServiceContracts
             }
         }
 
-		/// <summary>
-		/// Test method
-		/// </summary>
-		public void Test()
+        /// <summary>
+        /// Test method
+        /// </summary>
+        public void Test()
         {
             proxy.Test();
         }
 
-		/// <summary>
-		/// SendValues method implementation
-		/// </summary>
-		/// <param name="value">values to send</param>
-		/// <returns>returns true if success</returns>
-		public bool SendValues(byte[] value)
+        /// <summary>
+        /// SendValues method implementation
+        /// </summary>
+        /// <param name="value">values to send</param>
+        /// <returns>returns true if success</returns>
+        public bool SendValues(byte[] value)
         {
             return proxy.SendValues(value);
         }

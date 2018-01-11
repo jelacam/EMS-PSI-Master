@@ -6,26 +6,26 @@
 
 namespace SCADACrunchingServiceHost
 {
-	using System;
-	using EMS.Common;
-	using EMS.Services.SCADACrunchingService;
+    using System;
+    using EMS.Common;
+    using EMS.Services.SCADACrunchingService;
 
-	/// <summary>
-	/// Class for Main method
-	/// </summary>
-	public class Program
+    /// <summary>
+    /// Class for Main method
+    /// </summary>
+    public class Program
     {
-		/// <summary>
-		/// Main method
-		/// </summary>
-		/// <param name="args">arguments for method</param>
-		private static void Main(string[] args)
+        /// <summary>
+        /// Main method
+        /// </summary>
+        /// <param name="args">arguments for method</param>
+        private static void Main(string[] args)
         {
-			ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 2);
-			Console.Title = "SCADA Crunching Service";
+            ConsoleOptions.SetWindowOptions(ConsoleColor.DarkYellow, 0, 2);
+            Console.Title = "SCADA Crunching Service";
 
-			try
-			{
+            try
+            {
                 string message = "Starting SCADA Crunching Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);
@@ -37,7 +37,7 @@ namespace SCADACrunchingServiceHost
                     try
                     {
                         bool integrityResult = scadaCR.IntegrityUpdate();
-                        if(integrityResult)
+                        if (integrityResult)
                         {
                             message = "Integrity Update finished successfully.";
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

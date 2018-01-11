@@ -9,46 +9,46 @@ using System.Threading.Tasks;
 
 namespace UIClient.ViewModel
 {
-	public abstract class ViewModelBase:INotifyPropertyChanged,IDisposable
-	{
-		private bool disposed = false;
+    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
+    {
+        private bool disposed = false;
 
-		protected bool Disposed { get { return disposed; } }
+        protected bool Disposed { get { return disposed; } }
 
-		/// <summary>
-		/// Invoked when this object is being removed from the application
-		/// and will be subject to garbage collection.
-		/// </summary>
-		public virtual void Dispose()
-		{
-			GC.SuppressFinalize(this);
-		}
+        /// <summary>
+        /// Invoked when this object is being removed from the application
+        /// and will be subject to garbage collection.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
 
-		#region NotifyPropertyChanged
+        #region NotifyPropertyChanged
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
-		public void OnPropertyChanged(params string[] propertyNames)
-		{
-			foreach (string propertyName in propertyNames)
-			{
-				OnPropertyChanged(propertyName);
-			}
-		}
+        public void OnPropertyChanged(params string[] propertyNames)
+        {
+            foreach (string propertyName in propertyNames)
+            {
+                OnPropertyChanged(propertyName);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Child classes can override this method to perform
-		/// clean-up logic, such as removing event handlers.
-		/// </summary>
-		protected virtual void OnDispose()
-		{
-		}
-	}
+        /// <summary>
+        /// Child classes can override this method to perform
+        /// clean-up logic, such as removing event handlers.
+        /// </summary>
+        protected virtual void OnDispose()
+        {
+        }
+    }
 }

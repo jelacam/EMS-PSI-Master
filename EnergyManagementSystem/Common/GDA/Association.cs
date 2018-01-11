@@ -6,105 +6,105 @@ using System.Text;
 
 namespace EMS.Common
 {
-	[DataContract]
-	
-	public class Association
-	{
-		private bool inverse;
-		private ModelCode propertyId;
-		private ModelCode type;
+    [DataContract]
 
-		public Association()
-		{
-			this.inverse = false;
-			this.propertyId = 0;
-			this.type = 0;
-		}
+    public class Association
+    {
+        private bool inverse;
+        private ModelCode propertyId;
+        private ModelCode type;
 
-		public Association(ModelCode property)
-		{
-			this.inverse = false;
-			this.propertyId = property;
-			this.type = 0;
-		}
+        public Association()
+        {
+            this.inverse = false;
+            this.propertyId = 0;
+            this.type = 0;
+        }
 
-		public Association(ModelCode property, bool inverse)
-		{
-			this.inverse = inverse;
-			this.propertyId = property;
-			this.type = 0;
-		}
+        public Association(ModelCode property)
+        {
+            this.inverse = false;
+            this.propertyId = property;
+            this.type = 0;
+        }
 
-		public Association(ModelCode property, ModelCode type)
-		{
-			this.inverse = false;
-			this.propertyId = property;
-			this.type = type;
-		}
+        public Association(ModelCode property, bool inverse)
+        {
+            this.inverse = inverse;
+            this.propertyId = property;
+            this.type = 0;
+        }
 
-		public Association(ModelCode property, ModelCode type, bool inverse)
-		{
-			this.inverse = inverse;
-			this.propertyId = property;
-			this.type = type;
-		}
+        public Association(ModelCode property, ModelCode type)
+        {
+            this.inverse = false;
+            this.propertyId = property;
+            this.type = type;
+        }
 
-		public Association(string property, string type)
-		{
-			if ((property != "") && (type != ""))
-			{
-				this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
-				this.type = (ModelCode)Enum.Parse(typeof(ModelCode), type);
-			}
-			else if ((property != "") && (type == ""))
-			{
-				this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
-			}
-		}
+        public Association(ModelCode property, ModelCode type, bool inverse)
+        {
+            this.inverse = inverse;
+            this.propertyId = property;
+            this.type = type;
+        }
 
-		public Association(string property, string type, string inverse)
-		{
-			if (type != null && type != "")
-			{
-				this.type = (ModelCode)Enum.Parse(typeof(ModelCode), type);
-			}
+        public Association(string property, string type)
+        {
+            if ((property != "") && (type != ""))
+            {
+                this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
+                this.type = (ModelCode)Enum.Parse(typeof(ModelCode), type);
+            }
+            else if ((property != "") && (type == ""))
+            {
+                this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
+            }
+        }
 
-			if (property != null && property != "")
-			{
-				this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
-			}
+        public Association(string property, string type, string inverse)
+        {
+            if (type != null && type != "")
+            {
+                this.type = (ModelCode)Enum.Parse(typeof(ModelCode), type);
+            }
 
-			if (inverse != null && inverse != "")
-			{
-				this.inverse = Boolean.Parse(inverse);
-			}
-			else if ((property == "") && (type == "") && (inverse == ""))
-			{
-				this.inverse = false;
-				this.propertyId = 0;
-				this.type = 0;
-			}
-		}
+            if (property != null && property != "")
+            {
+                this.propertyId = (ModelCode)Enum.Parse(typeof(ModelCode), property);
+            }
 
-		[DataMember]
-		public bool Inverse
-		{
-			get { return inverse; }
-			set { inverse = value; }
-		}
+            if (inverse != null && inverse != "")
+            {
+                this.inverse = Boolean.Parse(inverse);
+            }
+            else if ((property == "") && (type == "") && (inverse == ""))
+            {
+                this.inverse = false;
+                this.propertyId = 0;
+                this.type = 0;
+            }
+        }
 
-		[DataMember]
-		public ModelCode PropertyId
-		{
-			get { return propertyId; }
-			set { propertyId = value; }
-		}
+        [DataMember]
+        public bool Inverse
+        {
+            get { return inverse; }
+            set { inverse = value; }
+        }
 
-		[DataMember]
-		public ModelCode Type
-		{
-			get { return type; }
-			set { type = value; }
-		}
-	}
+        [DataMember]
+        public ModelCode PropertyId
+        {
+            get { return propertyId; }
+            set { propertyId = value; }
+        }
+
+        [DataMember]
+        public ModelCode Type
+        {
+            get { return type; }
+            set { type = value; }
+        }
+    }
 }

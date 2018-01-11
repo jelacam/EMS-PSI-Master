@@ -43,7 +43,7 @@
         }
 
         /// <summary>
-        ///
+        /// Clients call this service opeartion to unsubscribe.
         /// </summary>
         public void Unsubscribe()
         {

@@ -18,7 +18,7 @@ namespace CIM.Model
             Tertiary,
             Quaternary,
             Other
-        };
+        }
 
         /// <summary>
         /// List of possible voltage levels (used in this application).
@@ -27,15 +27,15 @@ namespace CIM.Model
         {
             None = 0,
             LV,
-            HVMV,            
-            HV          
-        };
+            HVMV,
+            HV
+        }
 
         /// <summary> cim namespace "cim" </summary>
         public const string CIMNamespace = "cim";
 
-		/// <summary> Predefied CIM type "IdentifiedObject" </summary>
-		public const string TypeNameIdentifiedObject = "IdentifiedObject";
+        /// <summary> Predefied CIM type "IdentifiedObject" </summary>
+        public const string TypeNameIdentifiedObject = "IdentifiedObject";
         /// <summary> Predefied CIM type "ConnectivityNode" </summary>
         public const string TypeNameConnectivityNode = "ConnectivityNode";
         /// <summary> Predefied CIM type "Terminal" </summary>
@@ -64,21 +64,21 @@ namespace CIM.Model
         /// <summary> Predefied expected CIM attribute for TransformerWinding: "ratedU" </summary>
         public const string AttributeNameTransformerWindingVoltageU = "ratedU";
         /// <summary> Predefied expected CIM attribute of TransformerWinding: "windingType" </summary>
-        public const string AttributeNameTransformerWindingType = "windingType";               
+        public const string AttributeNameTransformerWindingType = "windingType";
         /// <summary> Predefied expected CIM attribute of BaseVoltage: "nominalVoltage" </summary>
         public const string AttributeNameBaseVoltageNominalVoltage = "nominalVoltage";
         /// <summary> Predefied expected CIM attribute "name" </summary>
         public const string AttributeNameIdentifiedObjectNameShort = "name";
-		/// <summary> Predefied expected CIM attribute "EquipmentContainer" </summary>
-		public const string AttributeNameEquipmentContainer = "EquipmentContainer";
-		/// <summary> Predefied expected CIM attribute "ConnectivityNodeContainer" </summary>
-		public const string AttributeNameConnectivityNodeContainer = "ConnectivityNodeContainer";
+        /// <summary> Predefied expected CIM attribute "EquipmentContainer" </summary>
+        public const string AttributeNameEquipmentContainer = "EquipmentContainer";
+        /// <summary> Predefied expected CIM attribute "ConnectivityNodeContainer" </summary>
+        public const string AttributeNameConnectivityNodeContainer = "ConnectivityNodeContainer";
         /// <summary> Predefied expected CIM attribute "IdentifiedObject.name" </summary>
         public const string AttributeNameIdentifiedObjectName = "IdentifiedObject.name";
         /// <summary> Predefied expected CIM attribute "IdentifiedObject.mRID" </summary>
         public const string AttributeNameIdentifiedObjectMRID = "IdentifiedObject.mRID";
-		/// <summary> Predefied expected CIM attribute "Terminal.sequenceNumber" </summary>
-		public const string AttributeNameTerminalSequenceNumber = "Terminal.sequenceNumber";
+        /// <summary> Predefied expected CIM attribute "Terminal.sequenceNumber" </summary>
+        public const string AttributeNameTerminalSequenceNumber = "Terminal.sequenceNumber";
 
         /// <summary> string "primary" - Predefied expected value of attribute "TransformerWinding.windingType" </summary>
         public const string TransformerWindingTypePrimary = "primary";

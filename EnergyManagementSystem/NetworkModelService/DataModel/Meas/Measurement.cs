@@ -15,62 +15,62 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
     /// </summary>
     public class Measurement : IdentifiedObject
     {
-		/// <summary>
-		/// measurementType of measurement
-		/// </summary>
-		private string measurementType = string.Empty;
+        /// <summary>
+        /// measurementType of measurement
+        /// </summary>
+        private string measurementType = string.Empty;
 
-		/// <summary>
-		/// unitSymbol of measurement
-		/// </summary>
-		private UnitSymbol unitSymbol;
+        /// <summary>
+        /// unitSymbol of measurement
+        /// </summary>
+        private UnitSymbol unitSymbol;
 
-		/// <summary>
-		/// powerSystemResource of measurement
-		/// </summary>
-		private long powerSystemResource = 0;
+        /// <summary>
+        /// powerSystemResource of measurement
+        /// </summary>
+        private long powerSystemResource = 0;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Measurement" /> class
-		/// </summary>
-		/// <param name="globalId">globalId of the entity</param>
-		public Measurement(long globalId) : base(globalId)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Measurement" /> class
+        /// </summary>
+        /// <param name="globalId">globalId of the entity</param>
+        public Measurement(long globalId) : base(globalId)
         {
         }
 
-		/// <summary>
-		/// Gets or sets MeasurementType of the entity
-		/// </summary>
-		public string MeasurementType
+        /// <summary>
+        /// Gets or sets MeasurementType of the entity
+        /// </summary>
+        public string MeasurementType
         {
             get { return this.measurementType; }
             set { this.measurementType = value; }
         }
 
-		/// <summary>
-		/// Gets or sets UnitSymbol of the entity
-		/// </summary>
-		public UnitSymbol UnitSymbol
+        /// <summary>
+        /// Gets or sets UnitSymbol of the entity
+        /// </summary>
+        public UnitSymbol UnitSymbol
         {
             get { return this.unitSymbol; }
             set { this.unitSymbol = value; }
         }
 
-		/// <summary>
-		/// Gets or sets PowerSystemResource of the entity
-		/// </summary>
+        /// <summary>
+        /// Gets or sets PowerSystemResource of the entity
+        /// </summary>
         public long PowerSystemResource
         {
             get { return this.powerSystemResource; }
             set { this.powerSystemResource = value; }
         }
 
-		/// <summary>
-		/// Chechs are the entities equals
-		/// </summary>
-		/// <param name="obj">object to compare with</param>
-		/// <returns>indicator of equality</returns>
-		public override bool Equals(object obj)
+        /// <summary>
+        /// Chechs are the entities equals
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <returns>indicator of equality</returns>
+        public override bool Equals(object obj)
         {
             if (base.Equals(obj))
             {
@@ -83,23 +83,23 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-		/// <summary>
-		/// Returns hash code of the entity
-		/// </summary>
-		/// <returns>hash code</returns>
-		public override int GetHashCode()
+        /// <summary>
+        /// Returns hash code of the entity
+        /// </summary>
+        /// <returns>hash code</returns>
+        public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-		#region IAccess implementation
+        #region IAccess implementation
 
-		/// <summary>
-		/// Checks if the entity has a property
-		/// </summary>
-		/// <param name="t">model code of property</param>
-		/// <returns>indicator of has property</returns>
-		public override bool HasProperty(ModelCode t)
+        /// <summary>
+        /// Checks if the entity has a property
+        /// </summary>
+        /// <param name="t">model code of property</param>
+        /// <returns>indicator of has property</returns>
+        public override bool HasProperty(ModelCode t)
         {
             switch (t)
             {
@@ -113,11 +113,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-		/// <summary>
-		/// Gets the property
-		/// </summary>
-		/// <param name="prop">property to get</param>
-		public override void GetProperty(Property prop)
+        /// <summary>
+        /// Gets the property
+        /// </summary>
+        /// <param name="prop">property to get</param>
+        public override void GetProperty(Property prop)
         {
             switch (prop.Id)
             {
@@ -139,11 +139,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-		/// <summary>
-		/// Sets the property
-		/// </summary>
-		/// <param name="property">property to set</param>
-		public override void SetProperty(Property property)
+        /// <summary>
+        /// Sets the property
+        /// </summary>
+        /// <param name="property">property to set</param>
+        public override void SetProperty(Property property)
         {
             switch (property.Id)
             {
@@ -165,16 +165,16 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             }
         }
 
-		#endregion IAccess implementation
+        #endregion IAccess implementation
 
-		#region IReference implementation
+        #region IReference implementation
 
-		/// <summary>
-		/// Get references
-		/// </summary>
-		/// <param name="references">collection of references</param>
-		/// <param name="refType">type of reference</param>
-		public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
+        /// <summary>
+        /// Get references
+        /// </summary>
+        /// <param name="references">collection of references</param>
+        /// <param name="refType">type of reference</param>
+        public override void GetReferences(Dictionary<ModelCode, List<long>> references, TypeOfReference refType)
         {
             if (this.powerSystemResource != 0 && (refType == TypeOfReference.Reference || refType == TypeOfReference.Both))
             {

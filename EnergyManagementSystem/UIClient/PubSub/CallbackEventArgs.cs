@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UIClient.PubSub
 {
-    public class CallbackEventArgs:EventArgs
+    public class CallbackEventArgs : EventArgs
     {
         public object EventData;
     }

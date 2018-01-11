@@ -10,14 +10,14 @@ using CIM.Manager;
 
 namespace CIM.Util
 {
-	/// <summary>
-	/// Class used to generate codeDOM trees from Profile, write files and compile them to DLL
-	/// </summary>
+    /// <summary>
+    /// Class used to generate codeDOM trees from Profile, write files and compile them to DLL
+    /// </summary>
     public class CodeDOMUtil
     {
-        public CodeDOMUtil(string type) 
+        public CodeDOMUtil(string type)
         {
-            defaultNS = type;           
+            defaultNS = type;
         }
 
         #region FIELDS
@@ -47,17 +47,17 @@ namespace CIM.Util
         /// </summary>
         private string defaultNS = "RDF";
 
-		public string DefaultNS
-		{
-			get
-			{
-				return defaultNS;
-			}
-			set
-			{
-				defaultNS = value;
-			}
-		}
+        public string DefaultNS
+        {
+            get
+            {
+                return defaultNS;
+            }
+            set
+            {
+                defaultNS = value;
+            }
+        }
 
         #endregion
 
@@ -77,8 +77,10 @@ namespace CIM.Util
 
         protected virtual void OnMessage(string message)
         {
-            if(Message != null)
+            if (Message != null)
+            {
                 Message(this, message);
+            }
         }
 
         #endregion
@@ -94,25 +96,27 @@ namespace CIM.Util
             List<ProfileElement> list = new List<ProfileElement>();
             profile.ProfileMap.TryGetValue(ProfileElementTypes.ClassCategory, out list);
             Files.Clear();
-            if(list != null)
+            if (list != null)
             {
                 //in each package create class and all connected to it - package is  c# namespace
-                foreach(ProfileElement package in list)
+                foreach (ProfileElement package in list)
                 {
                     OnMessage("\r\n Package:\t" + package.Name);
                     List<ProfileElement> classes = package.MembersOfClassCategory;
-                    if(classes != null)
+                    if (classes != null)
                     {
 
                         //FOREACH KLASS IN PACKAGE
-                        foreach(ProfileElement entity in classes)
+                        foreach (ProfileElement entity in classes)
                         {
 
                             CodeCompileUnit unit = BuildCodeCompileUnit(profile, package, entity);
-                            if(unit != null)
+                            if (unit != null)
+                            {
                                 //add it to the list, unless its null
                                 //null value appears when its type is not class
                                 Files.Add(unit);
+                            }
                         }
                     }
                     OnMessage("\r\n");
@@ -133,12 +137,12 @@ namespace CIM.Util
         {
             OnMessage("\r\n\t--------------Writing files--------------");
             int counter = 0;
-            foreach(CodeCompileUnit unit in Files)
+            foreach (CodeCompileUnit unit in Files)
             {
-                if(unit != null)
+                if (unit != null)
                 {
                     String sourceFile;
-                    if(provider.FileExtension[0] == '.')
+                    if (provider.FileExtension[0] == '.')
                     {
                         sourceFile = ".\\classes\\" + unit.Namespaces[0].Types[0].Name + provider.FileExtension;
                     }
@@ -146,7 +150,7 @@ namespace CIM.Util
                     {
                         sourceFile = ".\\classes\\" + unit.Namespaces[0].Types[0].Name + "." + provider.FileExtension;
                     }
-                    if(!System.IO.Directory.Exists(".\\classes\\"))
+                    if (!System.IO.Directory.Exists(".\\classes\\"))
                     {
                         System.IO.Directory.CreateDirectory(".\\classes\\");
                     }
@@ -165,12 +169,12 @@ namespace CIM.Util
         /// </summary>
         public void CompileCode(string fileName)
         {
-            if(string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName))
             {
                 OnMessage("\r\nWARNING: missing file name.");
                 return;
             }
-            if(Files.Count == 0)
+            if (Files.Count == 0)
             {
                 OnMessage("\r\nWARNING: No classes generated! Nothing to compile.");
                 return;
@@ -178,9 +182,9 @@ namespace CIM.Util
             OnMessage("\r\n\t-------------Compiling code-------------");
 
             List<string> paths = new List<string>();
-            foreach(CodeCompileUnit unit in Files)
+            foreach (CodeCompileUnit unit in Files)
             {
-                if(unit != null)
+                if (unit != null)
                 {
                     String sourceFile = ".\\classes\\" + unit.Namespaces[0].Types[0].Name + ".cs";
                     paths.Add(sourceFile);
@@ -191,21 +195,21 @@ namespace CIM.Util
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;
             //parameters.OutputAssembly = ".\\DLL\\" + fileName + ".dll";
-			parameters.OutputAssembly = ".\\" + fileName + ".dll";
+            parameters.OutputAssembly = ".\\" + fileName + ".dll";
             parameters.ReferencedAssemblies.Add("System.dll");
             parameters.TreatWarningsAsErrors = false;
 
-            if(!System.IO.Directory.Exists(".\\DLL\\"))
+            if (!System.IO.Directory.Exists(".\\DLL\\"))
             {
                 System.IO.Directory.CreateDirectory(".\\DLL\\");
             }
 
             CompilerResults cr = provider.CompileAssemblyFromFile(parameters, paths.ToArray());
 
-            if(cr.Errors.Count > 0)
+            if (cr.Errors.Count > 0)
             {
                 OnMessage("\r\n Errors encountered while building \r\n\r\n");
-                foreach(CompilerError ce in cr.Errors)
+                foreach (CompilerError ce in cr.Errors)
                 {
                     OnMessage(ce.ToString() + "\r\n");
                 }
@@ -232,10 +236,10 @@ namespace CIM.Util
         private CodeCompileUnit BuildCodeCompileUnit(Profile profile, ProfileElement package, ProfileElement entity)
         {
             CodeCompileUnit unit = null;
-            
-            if(entity.TypeAsEnumValue == ProfileElementTypes.Class)
+
+            if (entity.TypeAsEnumValue == ProfileElementTypes.Class)
             {
-                if(entity.IsEnumeration)
+                if (entity.IsEnumeration)
                 {
                     //enumeration
                     OnMessage("\r\n\t Enumeration:\t" + entity.Name);
@@ -287,9 +291,9 @@ namespace CIM.Util
             enumeration.IsEnum = true;
             enumeration.Attributes = MemberAttributes.Public;
             enumeration.TypeAttributes = TypeAttributes.Public;
-            if(entity.MyEnumerationMembers != null)
+            if (entity.MyEnumerationMembers != null)
             {
-                foreach(ProfileElement enumMember in entity.MyEnumerationMembers)
+                foreach (ProfileElement enumMember in entity.MyEnumerationMembers)
                 {
                     /*
                      * REPLACES '-' with "MINUS" because in enumeration '-' is not a valid character
@@ -297,8 +301,10 @@ namespace CIM.Util
                     string value = enumMember.Name;
                     value = StringManipulationManager.ReplaceInvalidEnumerationCharacters(value);
                     CodeMemberField val = new CodeMemberField(typeof(int), value);
-                    if(!string.IsNullOrEmpty(enumMember.Comment))
+                    if (!string.IsNullOrEmpty(enumMember.Comment))
+                    {
                         val.Comments.Add(new CodeCommentStatement(enumMember.Comment, true));
+                    }
                     enumeration.Members.Add(val);
                 }
             }
@@ -339,7 +345,7 @@ namespace CIM.Util
             file.Attributes = MemberAttributes.Public;
 
             //parent class... adding namespace also
-            if(entity.SubClassOfAsObject != null)
+            if (entity.SubClassOfAsObject != null)
             {
                 file.BaseTypes.Add(new CodeTypeReference(entity.SubClassOfAsObject.Name));
 
@@ -368,67 +374,69 @@ namespace CIM.Util
             }
 
 
-            if(!string.IsNullOrEmpty(entity.Comment))
+            if (!string.IsNullOrEmpty(entity.Comment))
+            {
                 file.Comments.Add(new CodeCommentStatement(entity.Comment, true));
+            }
             //dataType - local variable just as a little help
             string dataType = string.Empty;
 
             List<ProfileElement> fields = new List<ProfileElement>();
             fields = entity.MyProperties;
-            if(fields != null)
+            if (fields != null)
             {
-                foreach(ProfileElement field in fields)
+                foreach (ProfileElement field in fields)
                 {
                     //class field
-                    if(field.TypeAsEnumValue == ProfileElementTypes.Property)
+                    if (field.TypeAsEnumValue == ProfileElementTypes.Property)
                     {
                         dataType = field.DataType;
 
                         //if data type is null... it is probably a reference
-                        if(field.IsPropertyDataTypeSimple)
+                        if (field.IsPropertyDataTypeSimple)
                         {
                             //SIMPLE VALUE
                             dataType = field.DataTypeAsSimple.ToString();
 
                             //multiplicity
-                            if(field.Multiplicity == ProfileElementMultiplicity.ExactlyOne || field.Multiplicity == ProfileElementMultiplicity.ZeroOrOne)
+                            if (field.Multiplicity == ProfileElementMultiplicity.ExactlyOne || field.Multiplicity == ProfileElementMultiplicity.ZeroOrOne)
                             {
                                 //create field
                                 string fieldName = "cim_" + field.Name;
 
-                                CodeMemberField att = new CodeMemberField((String.Compare(dataType,"system.string",true)==0)?(dataType):(dataType + "?"), fieldName);
-								//CodeMemberField att = new CodeMemberField(dataType, fieldName);
+                                CodeMemberField att = new CodeMemberField((String.Compare(dataType, "system.string", true) == 0) ? dataType : dataType + "?", fieldName);
+                                //CodeMemberField att = new CodeMemberField(dataType, fieldName);
 
-								
+
                                 att.Attributes = MemberAttributes.Private;
-                                if(!string.IsNullOrEmpty(field.Comment))
+                                if (!string.IsNullOrEmpty(field.Comment))
                                 {
                                     att.Comments.Add(new CodeCommentStatement(field.Comment, true));
                                 }
                                 file.Members.Add(att);
 
                                 //property for the field
-								////this property is different because it has to remove "?" 
-								CreatePropertyForField(file, dataType, att, true, true);
+                                ////this property is different because it has to remove "?" 
+                                CreatePropertyForField(file, dataType, att, true, true);
                             }
                             //when multiplicity is more then 1 we have to add List
-                            if(field.Multiplicity == ProfileElementMultiplicity.OneOrMore || field.Multiplicity == ProfileElementMultiplicity.ZeroOrMore)
+                            if (field.Multiplicity == ProfileElementMultiplicity.OneOrMore || field.Multiplicity == ProfileElementMultiplicity.ZeroOrMore)
                             {
                                 //import list namespace
                                 nameSpace.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
 
                                 string fieldName = "cim_" + field.Name;
 
-                                CodeMemberField att = new CodeMemberField(new CodeTypeReference("List",new CodeTypeReference[]{new CodeTypeReference(dataType) }),fieldName);
+                                CodeMemberField att = new CodeMemberField(new CodeTypeReference("List", new CodeTypeReference[] { new CodeTypeReference(dataType) }), fieldName);
                                 att.Attributes = MemberAttributes.Private;
                                 att.InitExpression = new CodeObjectCreateExpression(new CodeTypeReference("List", new CodeTypeReference[] { new CodeTypeReference(dataType) }));
-                                if(!string.IsNullOrEmpty(field.Comment))
+                                if (!string.IsNullOrEmpty(field.Comment))
                                 {
                                     att.Comments.Add(new CodeCommentStatement(field.Comment, true));
                                 }
                                 file.Members.Add(att);
 
-								CreatePropertyForField(file, att, true, true);
+                                CreatePropertyForField(file, att, true, true);
                             }
                         }
                         else
@@ -447,59 +455,63 @@ namespace CIM.Util
                             ProfileElement temp1 = null;
                             //in case when both are null - u have to set at least one...
                             //if not say its an error
-                            if(field.RangeAsObject == null && field.DataTypeAsComplexObject == null)
+                            if (field.RangeAsObject == null && field.DataTypeAsComplexObject == null)
                             {
-                                if(!string.IsNullOrEmpty(field.Range))
+                                if (!string.IsNullOrEmpty(field.Range))
                                 {
                                     //find what element is it and place it in RangeAsObject
                                     temp1 = profile.FindProfileElementByUri(field.Range);
-                                    if(temp1 != null)
+                                    if (temp1 != null)
                                     {
                                         field.RangeAsObject = temp1;
                                     }
                                     else
+                                    {
                                         break;
+                                    }
                                 }
                                 //if range was nonexistent and we still need temp 
-                                if(temp1 == null)
+                                if (temp1 == null)
                                 {
-                                    if(!string.IsNullOrEmpty(field.DataType))
+                                    if (!string.IsNullOrEmpty(field.DataType))
                                     {
                                         temp1 = profile.FindProfileElementByUri(field.DataType);
-                                        if(temp1 != null)
+                                        if (temp1 != null)
                                         {
                                             field.DataTypeAsComplexObject = temp1;
                                         }
                                         else
+                                        {
                                             break;
+                                        }
                                     }
                                 }
                             }
 
                             string ns = string.Empty;
-                            if(field.RangeAsObject != null)
+                            if (field.RangeAsObject != null)
                             {
                                 string pack = field.RangeAsObject.BelongsToCategoryAsObject != null ? field.RangeAsObject.BelongsToCategoryAsObject.Name : "global";
                                 typeName = field.RangeAsObject.Name;
                                 temp1 = field.RangeAsObject;
                             }
-                            if(field.DataTypeAsComplexObject != null)
+                            if (field.DataTypeAsComplexObject != null)
                             {
                                 string pack = field.DataTypeAsComplexObject.BelongsToCategoryAsObject != null ? field.DataTypeAsComplexObject.BelongsToCategoryAsObject.Name : "global";
                                 typeName = field.DataTypeAsComplexObject.Name;
                                 temp1 = field.DataTypeAsComplexObject;
                             }
-                            if(temp1 == null)
+                            if (temp1 == null)
                             {
                                 OnMessage("\r\nERROR - missing reference, or invalid URI on property:" + field.UniqueName + "in class:" + entity.UniqueName);
                                 OnMessage("\r\nProcess canceled!");
                             }
-                            while(temp1.BelongsToCategoryAsObject != null)
+                            while (temp1.BelongsToCategoryAsObject != null)
                             {
                                 temp1 = temp1.BelongsToCategoryAsObject;
                                 ns = temp1.Name + (string.IsNullOrEmpty(ns) ? ns : ("." + ns));
                             }
-                            if(string.IsNullOrEmpty(ns))
+                            if (string.IsNullOrEmpty(ns))
                             {
                                 OnMessage("\r\nWARNING: Missing namespace declaration! This might make your code flawed and prevent compiling!");
                                 OnMessage("\r\nWarning Info: Type referenced: " + temp1.UniqueName + "\r\n              From field: " + entity.UniqueName + "." + field.Label);
@@ -515,52 +527,52 @@ namespace CIM.Util
                             }
 
                             //multiplicity check
-                            if(field.Multiplicity == ProfileElementMultiplicity.ZeroOrOne || field.Multiplicity == ProfileElementMultiplicity.ExactlyOne)
+                            if (field.Multiplicity == ProfileElementMultiplicity.ZeroOrOne || field.Multiplicity == ProfileElementMultiplicity.ExactlyOne)
                             {
                                 //creating field 
                                 string fieldName = "cim_" + field.Name;
-								
-								CodeMemberField att = null;
-								ProfileElement type = null;
-								if(field.DataTypeAsComplexObject != null)
-								{
-									type = field.DataTypeAsComplexObject;
-								}
-								if(field.RangeAsObject != null)
-								{
-									type = field.RangeAsObject;
-								}
-								if(type != null && type.IsEnumeration)
-								{
-									att = new CodeMemberField(typeName + "?", fieldName);
-									att.Attributes = MemberAttributes.Private;
 
-									if(!string.IsNullOrEmpty(field.Comment))
-									{
-										att.Comments.Add(new CodeCommentStatement(field.Comment, true));
-									}
+                                CodeMemberField att = null;
+                                ProfileElement type = null;
+                                if (field.DataTypeAsComplexObject != null)
+                                {
+                                    type = field.DataTypeAsComplexObject;
+                                }
+                                if (field.RangeAsObject != null)
+                                {
+                                    type = field.RangeAsObject;
+                                }
+                                if (type != null && type.IsEnumeration)
+                                {
+                                    att = new CodeMemberField(typeName + "?", fieldName);
+                                    att.Attributes = MemberAttributes.Private;
 
-									file.Members.Add(att);
-									//property for the field
-									CreatePropertyForEnumField(file, att, typeName, true, true);
-								}
-								else
-								{
-									att = new CodeMemberField(typeName, fieldName);
-									att.Attributes = MemberAttributes.Private;
+                                    if (!string.IsNullOrEmpty(field.Comment))
+                                    {
+                                        att.Comments.Add(new CodeCommentStatement(field.Comment, true));
+                                    }
 
-									if(!string.IsNullOrEmpty(field.Comment))
-									{
-										att.Comments.Add(new CodeCommentStatement(field.Comment, true));
-									}
+                                    file.Members.Add(att);
+                                    //property for the field
+                                    CreatePropertyForEnumField(file, att, typeName, true, true);
+                                }
+                                else
+                                {
+                                    att = new CodeMemberField(typeName, fieldName);
+                                    att.Attributes = MemberAttributes.Private;
 
-									file.Members.Add(att);
-									//property for the field
-									CreatePropertyForField(file, att, true, true);
-								}
+                                    if (!string.IsNullOrEmpty(field.Comment))
+                                    {
+                                        att.Comments.Add(new CodeCommentStatement(field.Comment, true));
+                                    }
+
+                                    file.Members.Add(att);
+                                    //property for the field
+                                    CreatePropertyForField(file, att, true, true);
+                                }
                             }
                             //when multiplicity is more then 1 we have to add List
-                            if(field.Multiplicity == ProfileElementMultiplicity.OneOrMore || field.Multiplicity == ProfileElementMultiplicity.ZeroOrMore)
+                            if (field.Multiplicity == ProfileElementMultiplicity.OneOrMore || field.Multiplicity == ProfileElementMultiplicity.ZeroOrMore)
                             {
                                 //import List namespace
                                 nameSpace.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
@@ -571,9 +583,11 @@ namespace CIM.Util
                                 CodeMemberField att = new CodeMemberField(new CodeTypeReference("List", new CodeTypeReference[] { new CodeTypeReference(typeName) }), fieldName);
                                 att.Attributes = MemberAttributes.Private;
                                 att.InitExpression = new CodeObjectCreateExpression(new CodeTypeReference("List", new CodeTypeReference[] { new CodeTypeReference(typeName) }));
-                                
-                                if(!string.IsNullOrEmpty(field.Comment))
+
+                                if (!string.IsNullOrEmpty(field.Comment))
+                                {
                                     att.Comments.Add(new CodeCommentStatement(field.Comment, true));
+                                }
                                 file.Members.Add(att);
 
                                 CreatePropertyForField(file, att, true, true);
@@ -587,73 +601,73 @@ namespace CIM.Util
             return unit;
         }
 
-		#region PROPERTY methods
+        #region PROPERTY methods
 
-		private void CreatePropertyForEnumField(CodeTypeDeclaration file, CodeMemberField att, string typeName, bool get, bool set)
-		{
-			CodeMemberProperty prop = new CodeMemberProperty();
-			prop.Attributes = MemberAttributes.Public;
-			prop.Type = new CodeTypeReference(typeName);
-			prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
-			if(prop.Name.Equals(file.Name))
-			{
-				prop.Name = prop.Name + "P";
-			}
-			if(get)
-			{
+        private void CreatePropertyForEnumField(CodeTypeDeclaration file, CodeMemberField att, string typeName, bool get, bool set)
+        {
+            CodeMemberProperty prop = new CodeMemberProperty();
+            prop.Attributes = MemberAttributes.Public;
+            prop.Type = new CodeTypeReference(typeName);
+            prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
+            if (prop.Name.Equals(file.Name))
+            {
+                prop.Name = prop.Name + "P";
+            }
+            if (get)
+            {
 
-				prop.HasGet = true;
-				prop.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name + ".GetValueOrDefault()"));
-			}
-			if(set)
-			{
-				prop.HasSet = true;
-				prop.SetStatements.Add(new CodeSnippetExpression("this." + att.Name + " = value"));
-			}
-			file.Members.Add(prop);
+                prop.HasGet = true;
+                prop.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name + ".GetValueOrDefault()"));
+            }
+            if (set)
+            {
+                prop.HasSet = true;
+                prop.SetStatements.Add(new CodeSnippetExpression("this." + att.Name + " = value"));
+            }
+            file.Members.Add(prop);
 
-			CreateHasValueProperty(file, att);
-		}
+            CreateHasValueProperty(file, att);
+        }
 
-		private void CreatePropertyForField(CodeTypeDeclaration file, string dataType, CodeMemberField att, bool get, bool set)
-		{
-			CodeMemberProperty prop = new CodeMemberProperty();
-			prop.Attributes = MemberAttributes.Public;
+        private void CreatePropertyForField(CodeTypeDeclaration file, string dataType, CodeMemberField att, bool get, bool set)
+        {
+            CodeMemberProperty prop = new CodeMemberProperty();
+            prop.Attributes = MemberAttributes.Public;
 
-			prop.Type = new CodeTypeReference(dataType);
-			prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
-			if(prop.Name.Equals(file.Name))
-			{
-				prop.Name = prop.Name + "P";
-			}
-			if(get)
-			{
+            prop.Type = new CodeTypeReference(dataType);
+            prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
+            if (prop.Name.Equals(file.Name))
+            {
+                prop.Name = prop.Name + "P";
+            }
+            if (get)
+            {
 
-				prop.HasGet = true;
+                prop.HasGet = true;
                 prop.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name + ((String.Compare(dataType, "system.string", true) == 0) ? string.Empty : ".GetValueOrDefault()")));
-			}
-			if(set)
-			{
-				prop.HasSet = true;
-				prop.SetStatements.Add(new CodeSnippetExpression("this." + att.Name + " = value"));
-			}
-			file.Members.Add(prop);
+            }
+            if (set)
+            {
+                prop.HasSet = true;
+                prop.SetStatements.Add(new CodeSnippetExpression("this." + att.Name + " = value"));
+            }
+            file.Members.Add(prop);
 
-			CreateHasValueProperty(file, att);
-		}
+            CreateHasValueProperty(file, att);
+        }
 
-		private static void CreateHasValueProperty(CodeTypeDeclaration file, CodeMemberField att)
-		{
-			CodeMemberProperty propHasValue = new CodeMemberProperty();
-			propHasValue.Attributes = MemberAttributes.Public;
+        private static void CreateHasValueProperty(CodeTypeDeclaration file, CodeMemberField att)
+        {
+            CodeMemberProperty propHasValue = new CodeMemberProperty();
+            propHasValue.Attributes = MemberAttributes.Public;
 
-			propHasValue.Type = new CodeTypeReference(typeof(bool));
-			propHasValue.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4)) + "HasValue";
-			propHasValue.HasGet = true;
-			propHasValue.HasSet = false;
-			propHasValue.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name + " != null"));
-			file.Members.Add(propHasValue);
-		}
+            propHasValue.Type = new CodeTypeReference(typeof(bool));
+            propHasValue.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4)) + "HasValue";
+            propHasValue.HasGet = true;
+            propHasValue.HasSet = false;
+            propHasValue.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name + " != null"));
+            file.Members.Add(propHasValue);
+        }
 
         /// <summary>
         /// Method creates property field for member field <c>att</c> inside <c>file</c> class
@@ -667,31 +681,31 @@ namespace CIM.Util
             CodeMemberProperty prop = new CodeMemberProperty();
             prop.Attributes = MemberAttributes.Public;
 
-			prop.Type = att.Type;
-			prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
-			if(prop.Name.Equals(file.Name))
-			{
-				prop.Name = prop.Name + "P";
-			}
-            if(get)
+            prop.Type = att.Type;
+            prop.Name = StringManipulationManager.CreateHungarianNotation(att.Name.Substring(4));
+            if (prop.Name.Equals(file.Name))
             {
-				
-                prop.HasGet = true;
-				prop.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name));
+                prop.Name = prop.Name + "P";
             }
-            if(set)
+            if (get)
+            {
+
+                prop.HasGet = true;
+                prop.GetStatements.Add(new CodeSnippetExpression("return this." + att.Name));
+            }
+            if (set)
             {
                 prop.HasSet = true;
                 prop.SetStatements.Add(new CodeSnippetExpression("this." + att.Name + " = value"));
             }
             file.Members.Add(prop);
 
-			CreateHasValueProperty(file, att);
+            CreateHasValueProperty(file, att);
         }
 
-		#endregion
+        #endregion
 
-		/// <summary>
+        /// <summary>
         /// Method creates predefined class that contains ID and other needed fields
         /// </summary>
         private void CreateParentClass()

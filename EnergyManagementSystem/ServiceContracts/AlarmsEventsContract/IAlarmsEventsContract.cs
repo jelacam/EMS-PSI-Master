@@ -6,23 +6,23 @@
 
 namespace EMS.ServiceContracts
 {
-	using System;
-	using System.ServiceModel;
-	using CommonMeasurement;
+    using System;
+    using System.ServiceModel;
+    using CommonMeasurement;
 
-	/// <summary>
-	/// Contract for AlarmsEvents
-	/// </summary>
-	[ServiceContract]
-	public interface IAlarmsEventsContract
-	{
+    /// <summary>
+    /// Contract for AlarmsEvents
+    /// </summary>
+    [ServiceContract]
+    public interface IAlarmsEventsContract
+    {
 
-       
-		/// <summary>
-		/// Adds new alarm
-		/// </summary>
-		/// <param name="alarm">alarm to add</param>
-		[OperationContract]
-		void AddAlarm(AlarmHelper alarm);
-	}
+
+        /// <summary>
+        /// Adds new alarm
+        /// </summary>
+        /// <param name="alarm">alarm to add</param>
+        [OperationContract]
+        void AddAlarm(AlarmHelper alarm);
+    }
 }
