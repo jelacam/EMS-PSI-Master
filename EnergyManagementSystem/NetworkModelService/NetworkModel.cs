@@ -40,6 +40,8 @@ namespace EMS.Services.NetworkModelService
 
         private Delta deltaToCommit;
 
+        private int deltaCount = 0;
+
         /// <summary>
         /// Initializes a new instance of the Model class.
         /// </summary>
@@ -783,7 +785,7 @@ namespace EMS.Services.NetworkModelService
                     connection.Open();
                     string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
                     SqlCommand cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.Add("@param_id", SqlDbType.VarChar).Value = delta.Id.ToString();
+                    cmd.Parameters.Add("@param_id", SqlDbType.Int).Value = ++deltaCount;
                     cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
                     cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
                     cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
@@ -864,7 +866,7 @@ namespace EMS.Services.NetworkModelService
                 try
                 {
                     connection.Open();
-                    string sql = "SELECT DELTA from Delta";
+                    string sql = "SELECT DELTA FROM Delta ORDER BY Id, Time ASC";
                     SqlCommand cmd = new SqlCommand(sql, connection);
 
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -883,6 +885,8 @@ namespace EMS.Services.NetworkModelService
                     return new List<Delta>();
                 }
             }
+
+            deltaCount = result.Count;
 
             message = string.Format("Successfully read {0} Delta from database.", result.Count.ToString());
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
