@@ -805,6 +805,8 @@ namespace EMS.Services.NetworkModelService
                     Console.WriteLine(message);
                 }
             }
+            // Trace delta 
+            TraceDelta(delta);
 
             #region save to file
 
@@ -874,6 +876,9 @@ namespace EMS.Services.NetworkModelService
                     {
                         byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
                         result.Add(ByteArrayToObject(delta_byte) as Delta);
+
+                        // trce delta
+                        TraceDelta(ByteArrayToObject(delta_byte) as Delta);
                     }
                     connection.Close();
                 }
@@ -891,6 +896,8 @@ namespace EMS.Services.NetworkModelService
             message = string.Format("Successfully read {0} Delta from database.", result.Count.ToString());
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             Console.WriteLine(message);
+
+            
 
             return result;
 
