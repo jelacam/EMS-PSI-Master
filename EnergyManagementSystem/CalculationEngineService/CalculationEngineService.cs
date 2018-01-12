@@ -82,6 +82,7 @@ namespace EMS.Services.CalculationEngineService
             this.hosts = new List<ServiceHost>();
             this.hosts.Add(new ServiceHost(typeof(CrToCe)));
             this.hosts.Add(new ServiceHost(typeof(PublisherService)));
+            this.hosts.Add(new ServiceHost(typeof(CalculationEngine)));
         }
 
         /// <summary>

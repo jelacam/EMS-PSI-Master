@@ -16,11 +16,12 @@ namespace EMS.Services.CalculationEngineService
 	using Microsoft.SolverFoundation.Services;
 	using NetworkModelService.DataModel.Wires;
 	using NetworkModelService.DataModel.Production;
+    using System.ServiceModel;
 
-	/// <summary>
-	/// Class for CalculationEngine
-	/// </summary>
-	public class CalculationEngine
+    /// <summary>
+    /// Class for CalculationEngine
+    /// </summary>
+    public class CalculationEngine : ITransactionContract
     {
         private Dictionary<long, SynchronousMachine> generators = new Dictionary<long, SynchronousMachine>();
         private float powerOfConsumers = 34567;
@@ -29,15 +30,22 @@ namespace EMS.Services.CalculationEngineService
         private Model model;
         private List<OptimisationModel> loms;
 
-        private List<ResourceDescription> internalSynchMachines;
-        private List<ResourceDescription> internalEmsFuels;
+        private static List<ResourceDescription> internalSynchMachines = new List<ResourceDescription>(5);
+        private static List<ResourceDescription> internalEmsFuels = new List<ResourceDescription>(5);
 
-		private Dictionary<long, SynchronousMachine> dSynchronousMachine;
+        private static List<ResourceDescription> internalSynchMachinesCopy = new List<ResourceDescription>(5);
+        private static List<ResourceDescription> internalEmsFuelsCopy = new List<ResourceDescription>(5);
+
+        private Dictionary<long, SynchronousMachine> dSynchronousMachine;
 		private Dictionary<long, EMSFuel> dEMSFuel;
 
 		private object lockObj = new object();
 
         private PublisherService publisher = null;
+
+        private ITransactionCallback transactionCallback;
+
+        private UpdateResult updateResult;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculationEngine" /> class
@@ -45,9 +53,11 @@ namespace EMS.Services.CalculationEngineService
         public CalculationEngine()
         {
             publisher = new PublisherService();
-            internalEmsFuels = new List<ResourceDescription>(5);
-            internalSynchMachines = new List<ResourceDescription>(5);
-			this.dSynchronousMachine = new Dictionary<long, SynchronousMachine>();
+            //internalEmsFuels = new List<ResourceDescription>(5);
+            //internalSynchMachines = new List<ResourceDescription>(5);
+            //internalEmsFuelsCopy = new List<ResourceDescription>(5);
+            //internalSynchMachinesCopy = new List<ResourceDescription>(5);
+            this.dSynchronousMachine = new Dictionary<long, SynchronousMachine>();
 			this.dEMSFuel = new Dictionary<long, EMSFuel>();
         }
 
@@ -164,13 +174,13 @@ namespace EMS.Services.CalculationEngineService
 		{
 			lock (lockObj)
 			{
-				foreach (ResourceDescription rd in this.internalSynchMachines)
+				foreach (ResourceDescription rd in internalSynchMachines)
 				{
 					SynchronousMachine sm = ResourcesDescriptionConverter.ConvertToSynchronousMachine(rd);
 					this.dSynchronousMachine.Add(sm.GlobalId, sm);
 				}
 
-				foreach (ResourceDescription rd in this.internalEmsFuels)
+				foreach (ResourceDescription rd in internalEmsFuels)
 				{
 					EMSFuel emsf = ResourcesDescriptionConverter.ConvertToEMSFuel(rd);
 					this.dEMSFuel.Add(emsf.GlobalId, emsf);
@@ -359,13 +369,118 @@ namespace EMS.Services.CalculationEngineService
 					return false;
 				}
 
-				message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalSynchMachines.Count.ToString());
+				message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
 				CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-				Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalSynchMachines.Count.ToString());
+				Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
 				return true;
 			}
 		}
 
-        #endregion 
+
+
+        #endregion
+
+        #region Transaction
+        public UpdateResult Prepare(Delta delta)
+        {
+            try
+            {
+                transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
+                updateResult = new UpdateResult();
+
+                // napravi kopiju od originala
+                internalEmsFuelsCopy.Clear();
+
+                foreach(ResourceDescription rd in internalEmsFuels)
+                {
+                    internalEmsFuelsCopy.Add(rd.Clone() as ResourceDescription);
+                }
+
+                internalSynchMachinesCopy.Clear();
+
+                foreach (ResourceDescription rd in internalSynchMachines)
+                {
+                    internalSynchMachinesCopy.Add(rd.Clone() as ResourceDescription);
+                }
+
+                foreach (ResourceDescription rd in delta.InsertOperations)
+                {
+                    foreach(Property prop in rd.Properties)
+                    {
+                        if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.EMSFUEL))
+                        {
+                            internalEmsFuelsCopy.Add(rd);
+                            break;
+                        }
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
+                        {
+                            internalSynchMachinesCopy.Add(rd);
+                            break;
+                        }
+                    }
+                }
+
+                updateResult.Message = "CE Transaction Prepare finished.";
+                updateResult.Result = ResultType.Succeeded;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CETransaction Prepare finished successfully.");
+                transactionCallback.Response("OK");
+            }
+            catch (Exception e)
+            {
+                updateResult.Message = "CE Transaction Prepare finished.";
+                updateResult.Result = ResultType.Failed;
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "CE Transaction Prepare failed. Message: {0}", e.Message);
+                transactionCallback.Response("ERROR");
+            }
+
+            return updateResult;
+        }
+
+        public bool Commit(Delta delta)
+        {
+            try
+            {
+                internalSynchMachines.Clear();
+                foreach (ResourceDescription rd in internalSynchMachinesCopy)
+                {
+                    internalSynchMachines.Add(rd.Clone() as ResourceDescription);
+                }
+                internalSynchMachinesCopy.Clear();
+
+                internalEmsFuels.Clear();
+                foreach (ResourceDescription rd in internalEmsFuelsCopy)
+                {
+                    internalEmsFuels.Add(rd.Clone() as ResourceDescription);
+                }
+                internalEmsFuelsCopy.Clear();
+
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE Transaction: Commit phase successfully finished.");
+                Console.WriteLine("Number of EMSFuels values: {0}", internalEmsFuels.Count);
+                Console.WriteLine("Number of SynchronousMachines values: {0}", internalSynchMachines.Count);
+                return true;
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "CE Transaction: Failed to Commit changes. Message: {0}", e.Message);
+                return false;
+            }
+        }
+
+        public bool Rollback()
+        {
+            try
+            {
+                internalEmsFuelsCopy.Clear();
+                internalSynchMachinesCopy.Clear();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE Transaction rollback successfully finished!");
+                return true;
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "CE Transaction rollback error. Message: {0}", e.Message);
+                return false;
+            }
+        }
+        #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace EMS.Common
     /// </summary>
     [Serializable]
     [DataContract]
-    public class ResourceDescription
+    public class ResourceDescription : ICloneable
     {
         private long id;
         private List<Property> properties = new List<Property>();
@@ -488,6 +488,17 @@ namespace EMS.Common
             }
 
             return removed;
+        }
+
+        public object Clone()
+        {
+            ResourceDescription resDes = new ResourceDescription();
+            foreach(Property prop in this.Properties)
+            {
+                resDes.AddProperty(prop);
+            }
+
+            return resDes;
         }
 
         public class EqualityComparer : IEqualityComparer<ResourceDescription>
