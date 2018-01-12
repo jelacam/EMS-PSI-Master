@@ -6,14 +6,15 @@
 
 namespace EMS.Services.CalculationEngineService
 {
-    using CommonMeasurement;
-    using NetworkModelService.DataModel.Wires;
-    using System;
+	using System;
+	using CommonMeasurement;
+	using NetworkModelService.DataModel.Wires;
+	using NetworkModelService.DataModel.Production;
 
-    /// <summary>
-    /// class for OptimisationModel
-    /// </summary>
-    public class OptimisationModel
+	/// <summary>
+	/// class for OptimisationModel
+	/// </summary>
+	public class OptimisationModel
     {
         /// <summary>
         /// globalId for OptimisationModel
@@ -201,10 +202,10 @@ namespace EMS.Services.CalculationEngineService
         /// <summary>
         /// Initializes a new instance of the <see cref="OptimisationModel" /> class
         /// </summary>
-        public OptimisationModel(SynchronousMachine sm, MeasurementUnit mu)
+        public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu)
         {
             this.GlobalId = sm.GlobalId;
-            this.Price = 0; // izracunati
+			this.Price = emsf.UnitPrice * mu.CurrentValue; //izracunati
             this.MeasuredValue = mu.CurrentValue;
             this.linearOptimizedValue = 0; //izracunati
             this.GenericOptimizedValue = 0; //izracunati
