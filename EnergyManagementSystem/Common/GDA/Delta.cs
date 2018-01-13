@@ -11,7 +11,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EMS.Common
 {
-
     public enum DeltaOpType : byte
     {
         Insert = 0,
@@ -250,9 +249,11 @@ namespace EMS.Common
                 case DeltaOpType.Insert:
                     operations = insertOps;
                     break;
+
                 case DeltaOpType.Update:
                     operations = updateOps;
                     break;
+
                 case DeltaOpType.Delete:
                     operations = deleteOps;
                     break;
@@ -701,6 +702,7 @@ namespace EMS.Common
                     }
 
                     break;
+
                 case DeltaOpType.Update:
                     for (int i = 0; i < this.updateOps.Count; i++)
                     {
@@ -712,6 +714,7 @@ namespace EMS.Common
                     }
 
                     break;
+
                 case DeltaOpType.Delete:
                     for (int i = 0; i < this.deleteOps.Count; i++)
                     {
@@ -769,6 +772,45 @@ namespace EMS.Common
                 gidNew |= gidOld;
                 return gidNew;
             }
+        }
+
+        /// <summary>
+        /// For passed EMSType, method cretes new Delta object with only
+        /// ResourcesDescription for specified EMStype
+        /// </summary>
+        /// <param name="emsType"></param>
+        /// <returns></returns>
+        public Delta SeparateDeltaForEMSType(EMSType emsType)
+        {
+            Delta newDelta = new Delta();
+
+            foreach (ResourceDescription rd_item in this.InsertOperations)
+            {
+                foreach (Property pr_item in rd_item.Properties)
+                {
+                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+                    {
+                        newDelta.AddDeltaOperation(DeltaOpType.Insert, rd_item.Clone() as ResourceDescription, true);
+                        break;
+                    }
+                }
+            }
+
+            return newDelta;
+        }
+
+        public static Delta operator +(Delta first, Delta second)
+        {
+            Delta delta = new Delta();
+            delta.InsertOperations.AddRange(first.InsertOperations);
+            delta.UpdateOperations.AddRange(first.UpdateOperations);
+            delta.DeleteOperations.AddRange(first.DeleteOperations);
+
+            delta.InsertOperations.AddRange(second.InsertOperations);
+            delta.UpdateOperations.AddRange(second.UpdateOperations);
+            delta.DeleteOperations.AddRange(second.DeleteOperations);
+
+            return delta;
         }
     }
 }

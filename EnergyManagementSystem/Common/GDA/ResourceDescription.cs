@@ -493,7 +493,8 @@ namespace EMS.Common
         public object Clone()
         {
             ResourceDescription resDes = new ResourceDescription();
-            foreach(Property prop in this.Properties)
+            resDes.Id = this.Id;
+            foreach (Property prop in this.Properties)
             {
                 resDes.AddProperty(prop);
             }
