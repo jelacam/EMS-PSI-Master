@@ -193,8 +193,9 @@ namespace EMS.Services.TransactionManagerService
             {
                 commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
                 commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-
                 commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
+
+                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
             }
             else if (toRespond == 2)
             {
@@ -214,7 +215,7 @@ namespace EMS.Services.TransactionManagerService
                 TransactionCMDProxy.Instance.Rollback();
                 TransactionCEProxy.Instance.Rollback();
             }
-
+            toRespond = 1;
             noRespone = 0;
         }
 
