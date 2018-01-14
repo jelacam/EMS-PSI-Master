@@ -85,7 +85,7 @@ namespace EMS.Services.CalculationEngineService
                     Console.WriteLine("CE: Optimize");
                     for (int i = 0; i < measurements.Count; i++)
                     {
-                        measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
+                        //measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
 
                         alarmOptimized = this.CheckForOptimizedAlarms(measurements[i].CurrentValue, measurements[i].MinValue, measurements[i].MaxValue, measurements[i].Gid);
                         if (alarmOptimized == false)

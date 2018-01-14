@@ -23,6 +23,14 @@ namespace EMS.Services.SCADACollectingService
         private ModbusClient modbusClient;
 
         /// <summary>
+        /// Time between 2 samples in miliseconds
+        /// </summary>
+        private const int SAMPLE_TIME = 2500; //miliseconds
+
+        //TODO ovo ce trebati da se cita iz konfiguracionog fajla
+        private ushort numberOfHoldingRegisters = 10; //how much register will read
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SCADACollecting" /> class
         /// </summary>
         public SCADACollecting()
@@ -30,7 +38,7 @@ namespace EMS.Services.SCADACollectingService
             modbusClient = new ModbusClient("localhost", 502);
             modbusClient.Connect();
 
-            modbusClient.WriteSingleRegister(0, 10f);
+            //modbusClient.WriteSingleRegister(0, 10f);
             //modbusClient.WriteSingleRegister(2, 7f);
             //modbusClient.WriteSingleRegister(4, 7f);
         }
@@ -43,7 +51,7 @@ namespace EMS.Services.SCADACollectingService
                 while (true)
                 {
                     GetDataFromSimulator();
-                    Thread.Sleep(5000);
+                    Thread.Sleep(SAMPLE_TIME);
                 }
             });
             task.Start();
@@ -55,7 +63,7 @@ namespace EMS.Services.SCADACollectingService
         /// <returns> true if values are successfully returned </returns>
         public bool GetDataFromSimulator()
         {
-            var values = modbusClient.ReadHoldingRegisters(0, 10);
+            var values = modbusClient.ReadHoldingRegisters(0, numberOfHoldingRegisters);
 
             bool isSuccess = false;
             try
