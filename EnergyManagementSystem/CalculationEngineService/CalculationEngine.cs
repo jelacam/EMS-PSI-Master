@@ -17,13 +17,14 @@ namespace EMS.Services.CalculationEngineService
     using NetworkModelService.DataModel.Wires;
     using NetworkModelService.DataModel.Production;
     using System.ServiceModel;
+    using System.Linq;
 
     /// <summary>
     /// Class for CalculationEngine
     /// </summary>
     public class CalculationEngine : ITransactionContract
     {
-        private Dictionary<long, SynchronousMachine> generators = new Dictionary<long, SynchronousMachine>();
+       // private Dictionary<long, SynchronousMachine> generators = new Dictionary<long, SynchronousMachine>();
         private float powerOfConsumers = 34567;
         private float totalCostLinear = 0;
         private SolverContext context = SolverContext.GetContext();
@@ -32,12 +33,16 @@ namespace EMS.Services.CalculationEngineService
 
         private static List<ResourceDescription> internalSynchMachines = new List<ResourceDescription>(5);
         private static List<ResourceDescription> internalEmsFuels = new List<ResourceDescription>(5);
+        private static List<ResourceDescription> internalEnergyConsumers = new List<ResourceDescription>(5);
 
         private static List<ResourceDescription> internalSynchMachinesCopy = new List<ResourceDescription>(5);
         private static List<ResourceDescription> internalEmsFuelsCopy = new List<ResourceDescription>(5);
+        private static List<ResourceDescription> internalEnergyConsumersCopy = new List<ResourceDescription>(5);
 
-        private Dictionary<long, SynchronousMachine> dSynchronousMachine;
-        private Dictionary<long, EMSFuel> dEMSFuel;
+
+        private IDictionary<long, SynchronousMachine> dSynchronousMachine;
+        private IDictionary<long, EMSFuel> dEMSFuel;
+        private IDictionary<long, EnergyConsumer> energyConsumers;
 
         private object lockObj = new object();
 
@@ -57,8 +62,6 @@ namespace EMS.Services.CalculationEngineService
             //internalSynchMachines = new List<ResourceDescription>(5);
             //internalEmsFuelsCopy = new List<ResourceDescription>(5);
             //internalSynchMachinesCopy = new List<ResourceDescription>(5);
-            this.dSynchronousMachine = new Dictionary<long, SynchronousMachine>();
-            this.dEMSFuel = new Dictionary<long, EMSFuel>();
         }
 
         /// <summary>
@@ -68,8 +71,10 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>returns true if optimization was successful</returns>
         public bool Optimize(List<MeasurementUnit> measurements)
         {
-            this.FillData();
-            List<MeasurementUnit> l = this.LinearOptimization(measurements);
+            
+            // List<MeasurementUnit> l = this.LinearOptimization(measurements);
+            IEnumerable<MeasurementUnit> measurementFromLoads = SeparateLoaders(measurements);
+            IEnumerable<MeasurementUnit> measurementFromGenerators = SeparateGenerators(measurements);
 
             bool alarmOptimized = true;
             bool result = false;
@@ -132,8 +137,17 @@ namespace EMS.Services.CalculationEngineService
                 }
             }
 
-            this.ClearData();
             return result;
+        }
+
+        private IEnumerable<MeasurementUnit> SeparateGenerators(List<MeasurementUnit> measurements)
+        {
+            return measurements.Where(x => dSynchronousMachine.ContainsKey(x.Gid));
+        }
+
+        private IEnumerable<MeasurementUnit> SeparateLoaders(List<MeasurementUnit> measurements)
+        {
+            return measurements.Where(x => energyConsumers.ContainsKey(x.Gid));
         }
 
         /// <summary>
@@ -173,16 +187,26 @@ namespace EMS.Services.CalculationEngineService
         {
             lock (lockObj)
             {
+                this.dSynchronousMachine = new Dictionary<long, SynchronousMachine>();
+                this.dEMSFuel = new Dictionary<long, EMSFuel>();
+                this.energyConsumers = new Dictionary<long, EnergyConsumer>();
+
                 foreach (ResourceDescription rd in internalSynchMachines)
                 {
-                    SynchronousMachine sm = ResourcesDescriptionConverter.ConvertToSynchronousMachine(rd);
+                    SynchronousMachine sm = ResourcesDescriptionConverter.ConvertTo<SynchronousMachine>(rd);
                     this.dSynchronousMachine.Add(sm.GlobalId, sm);
                 }
 
                 foreach (ResourceDescription rd in internalEmsFuels)
                 {
-                    EMSFuel emsf = ResourcesDescriptionConverter.ConvertToEMSFuel(rd);
+                    EMSFuel emsf = ResourcesDescriptionConverter.ConvertTo<EMSFuel>(rd);
                     this.dEMSFuel.Add(emsf.GlobalId, emsf);
+                }
+
+                foreach (ResourceDescription rd in internalEnergyConsumers)
+                {
+                    EnergyConsumer ec = ResourcesDescriptionConverter.ConvertTo<EnergyConsumer>(rd);
+                    this.energyConsumers.Add(ec.GlobalId, ec);
                 }
 
                 this.loms = new List<OptimisationModel>();
@@ -299,6 +323,7 @@ namespace EMS.Services.CalculationEngineService
                 List<ModelCode> properties = new List<ModelCode>(10);
                 ModelCode modelCodeEmsFuel = ModelCode.EMSFUEL;
                 ModelCode modelCodeSynchM = ModelCode.SYNCHRONOUSMACHINE;
+                ModelCode modelCodeEnrgyConsum = ModelCode.ENERGYCONSUMER;
 
                 int iteratorId = 0;
                 int resourcesLeft = 0;
@@ -338,6 +363,8 @@ namespace EMS.Services.CalculationEngineService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeSynchM.ToString(), internalSynchMachines.Count.ToString());
 
+                //GETTING EMSFUEL
+
                 // clear retList for getting new model from NMS
                 retList.Clear();
 
@@ -371,6 +398,45 @@ namespace EMS.Services.CalculationEngineService
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
+                
+                //GETTING EnergyConsumers
+                
+                // clear retList for getting new model from NMS
+                retList.Clear();
+                
+                try
+                {
+                    // get all enenrgy consumers from NMS
+                    properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEnrgyConsum);
+
+                    iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEnrgyConsum, properties);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                    while (resourcesLeft > 0)
+                    {
+                        List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                        retList.AddRange(rds);
+                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                    }
+                    NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                    // add energy consumer to internal collection
+                    internalEnergyConsumers.AddRange(retList);
+                }
+                catch (Exception e)
+                {
+                    message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEnrgyConsum, e.Message);
+                    Console.WriteLine(message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    return false;
+                }
+
+                message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEnrgyConsum.ToString(), internalEnergyConsumers.Count.ToString());
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCodeEnrgyConsum.ToString(), internalEnergyConsumers.Count.ToString());
+
+
+                FillData();
                 return true;
             }
         }
@@ -401,6 +467,13 @@ namespace EMS.Services.CalculationEngineService
                     internalSynchMachinesCopy.Add(rd.Clone() as ResourceDescription);
                 }
 
+                internalEnergyConsumersCopy.Clear();
+
+                foreach (ResourceDescription rd in internalSynchMachines)
+                {
+                    internalEnergyConsumersCopy.Add(rd.Clone() as ResourceDescription);
+                }
+
                 foreach (ResourceDescription rd in delta.InsertOperations)
                 {
                     foreach (Property prop in rd.Properties)
@@ -413,6 +486,12 @@ namespace EMS.Services.CalculationEngineService
                         else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
                         {
                             internalSynchMachinesCopy.Add(rd);
+                            break;
+                        }
+
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.ENERGYCONSUMER))
+                        {
+                            internalEnergyConsumersCopy.Add(rd);
                             break;
                         }
                     }
