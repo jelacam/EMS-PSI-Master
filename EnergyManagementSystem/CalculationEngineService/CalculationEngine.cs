@@ -8,6 +8,7 @@ namespace EMS.Services.CalculationEngineService
 {
     using System;
     using System.Collections.Generic;
+    using System.ServiceModel;
     using CommonMeasurement;
     using EMS.Common;
     using EMS.ServiceContracts;
@@ -24,16 +25,22 @@ namespace EMS.Services.CalculationEngineService
     /// </summary>
     public class CalculationEngine : ITransactionContract
     {
-       // private Dictionary<long, SynchronousMachine> generators = new Dictionary<long, SynchronousMachine>();
-        private float powerOfConsumers = 34567;
+        #region Fields
+
+        private float powerOfConsumers = 230;
         private float totalCostLinear = 0;
-        private SolverContext context = SolverContext.GetContext();
-        private Model model;
+
+        SolverContext context = SolverContext.GetContext();
+
         private List<OptimisationModel> loms;
+        private List<MeasurementUnit> helpMU = new List<MeasurementUnit>();
+        private float minProduction = 0;
+        private float maxProduction = 0;
 
         private static List<ResourceDescription> internalSynchMachines = new List<ResourceDescription>(5);
         private static List<ResourceDescription> internalEmsFuels = new List<ResourceDescription>(5);
         private static List<ResourceDescription> internalEnergyConsumers = new List<ResourceDescription>(5);
+
 
         private static List<ResourceDescription> internalSynchMachinesCopy = new List<ResourceDescription>(5);
         private static List<ResourceDescription> internalEmsFuelsCopy = new List<ResourceDescription>(5);
@@ -46,11 +53,12 @@ namespace EMS.Services.CalculationEngineService
 
         private object lockObj = new object();
 
+
         private PublisherService publisher = null;
-
         private ITransactionCallback transactionCallback;
-
         private UpdateResult updateResult;
+
+        #endregion Fields
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculationEngine" /> class
@@ -62,6 +70,7 @@ namespace EMS.Services.CalculationEngineService
             //internalSynchMachines = new List<ResourceDescription>(5);
             //internalEmsFuelsCopy = new List<ResourceDescription>(5);
             //internalSynchMachinesCopy = new List<ResourceDescription>(5);
+
         }
 
         /// <summary>
@@ -73,8 +82,10 @@ namespace EMS.Services.CalculationEngineService
         {
             
             // List<MeasurementUnit> l = this.LinearOptimization(measurements);
-            IEnumerable<MeasurementUnit> measurementFromLoads = SeparateLoaders(measurements);
+            IEnumerable<MeasurementUnit> measurementFromEnergyConsumers = SeparateEnergyConsumers(measurements);
             IEnumerable<MeasurementUnit> measurementFromGenerators = SeparateGenerators(measurements);
+           // this.HelpFunction();
+           // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
 
             bool alarmOptimized = true;
             bool result = false;
@@ -145,10 +156,11 @@ namespace EMS.Services.CalculationEngineService
             return measurements.Where(x => dSynchronousMachine.ContainsKey(x.Gid));
         }
 
-        private IEnumerable<MeasurementUnit> SeparateLoaders(List<MeasurementUnit> measurements)
+        private IEnumerable<MeasurementUnit> SeparateEnergyConsumers(List<MeasurementUnit> measurements)
         {
             return measurements.Where(x => energyConsumers.ContainsKey(x.Gid));
         }
+        #region Checking alarms
 
         /// <summary>
         /// Checking for alarms on optimized value
@@ -177,6 +189,8 @@ namespace EMS.Services.CalculationEngineService
 
             return retVal;
         }
+
+        #endregion Checking alarms
 
         #region Necessary data
 
@@ -222,11 +236,62 @@ namespace EMS.Services.CalculationEngineService
             {
                 this.dSynchronousMachine.Clear();
                 this.dEMSFuel.Clear();
+                this.helpMU.Clear();
                 this.loms.Clear();
+                this.minProduction = 0;
+                this.maxProduction = 0;
             }
         }
 
         #endregion Necessary data
+
+        private void HelpFunction()
+        {
+            EMSFuel f1 = new EMSFuel(10);
+            f1.FuelType = EmsFuelType.oli;
+            f1.UnitPrice = 20;
+            this.dEMSFuel.Add(f1.GlobalId, f1);
+            EMSFuel f2 = new EMSFuel(20);
+            f2.FuelType = EmsFuelType.hydro;
+            f2.UnitPrice = 15;
+            this.dEMSFuel.Add(f2.GlobalId, f2);
+
+            SynchronousMachine sm1 = new SynchronousMachine(1);
+            sm1.Active = true;
+            sm1.Fuel = 10;
+            sm1.MaxQ = 100;
+            sm1.MinQ = 10;
+            sm1.RatedS = 50;
+            this.dSynchronousMachine.Add(sm1.GlobalId, sm1);
+            this.minProduction += sm1.MinQ;
+            this.maxProduction += sm1.MaxQ;
+            SynchronousMachine sm2 = new SynchronousMachine(2);
+            sm2.Active = true;
+            sm2.Fuel = 20;
+            sm2.MaxQ = 200;
+            sm2.MinQ = 50;
+            sm2.RatedS = 100;
+            this.dSynchronousMachine.Add(sm2.GlobalId, sm2);
+            this.minProduction += sm2.MinQ;
+            this.maxProduction += sm2.MaxQ;
+
+            MeasurementUnit mu1 = new MeasurementUnit();
+            mu1.CurrentValue = 30;
+            mu1.Gid = sm1.GlobalId;
+            mu1.MaxValue = sm1.MaxQ;
+            mu1.MinValue = sm1.MinQ;
+            mu1.OptimizedLinear = 0;
+            mu1.OptimizedGeneric = 0;
+            this.helpMU.Add(mu1);
+            MeasurementUnit mu2 = new MeasurementUnit();
+            mu2.CurrentValue = 130;
+            mu2.Gid = sm2.GlobalId;
+            mu2.MaxValue = sm2.MaxQ;
+            mu2.MinValue = sm2.MinQ;
+            mu2.OptimizedLinear = 0;
+            mu2.OptimizedGeneric = 0;
+            this.helpMU.Add(mu2);
+        }
 
         private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements)
         {
@@ -234,11 +299,10 @@ namespace EMS.Services.CalculationEngineService
             {
                 if (measurements.Count > 0)
                 {
-                    model = context.CreateModel();
+                    Model model = context.CreateModel();
 
-                    bool alarmOptimized = false;
-
-                    Dictionary<string, Decision> decisions = new Dictionary<string, Decision>();
+                    Dictionary<long, Decision> decisions = new Dictionary<long, Decision>();
+                    List<Constraint> constraints = new List<Constraint>();
 
                     for (int i = 0; i < measurements.Count; i++)
                     {
@@ -246,43 +310,40 @@ namespace EMS.Services.CalculationEngineService
                         {
                             SynchronousMachine sm = dSynchronousMachine[measurements[i].Gid];
                             EMSFuel emsf = dEMSFuel[sm.Fuel];
-
                             OptimisationModel om = new OptimisationModel(sm, emsf, measurements[i]);
                             loms.Add(om);
 
                             Decision d = new Decision(Domain.RealNonnegative, "d" + om.GlobalId.ToString());
-                            decisions.Add("d" + om.GlobalId.ToString(), d);
                             model.AddDecision(d);
+                            decisions.Add(om.GlobalId, d);
                         }
                     }
 
-                    string limitMax = "limitMax";
-                    string limitMin = "limitMin";
-                    string managable = "";
+                    Decision help;
                     string goal = "";
-                    string help = "";
+                    string limit = "limit";
+                    string production = minProduction.ToString() + "<=";
 
                     for (int i = 0; i < loms.Count; i++)
                     {
-                        help = "d" + loms[i].GlobalId;
-                        Term tLimitMax = help + "<=" + loms[i].MaxPower;
-                        model.AddConstraint(limitMax + loms[i].GlobalId, tLimitMax);
+                        help = decisions[loms[i].GlobalId];
 
-                        Term tLimitMin = help + ">=" + loms[i].MinPower;
-                        model.AddConstraint(limitMin + loms[i].GlobalId, tLimitMin);
+                        Term tLimit = loms[i].MinPower <= help <= loms[i].MaxPower;
+                        model.AddConstraint(limit + loms[i].GlobalId, tLimit);
 
-                        managable += help + "*" + loms[i].Managable.ToString() + "+";
+                        production += help.ToString() + "+";
 
-                        goal += help + "*" + loms[i].Price.ToString() + "+";
+                        goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
                     }
-                    managable = managable.Substring(0, managable.Length - 1);
-                    managable += "<=" + this.powerOfConsumers.ToString();
-                    Term tManagable = managable;
-                    model.AddConstraint("managable", tManagable);
+
+                    production = production.Substring(0, production.Length - 1);
+                    production += "<=" + maxProduction.ToString();
+                    // Term tProduction = decisions[1] + decisions[2] <= maxProduction;
+                    model.AddConstraint("production", production);
 
                     goal = goal.Substring(0, goal.Length - 1);
-                    Term tGoal = goal;
-                    model.AddGoal("cost", GoalKind.Minimize, tGoal);
+                    // Term tGoal = decisions[1] * loms[0].Price + decisions[2] * loms[1].Price;
+                    model.AddGoal("cost", GoalKind.Minimize, goal);
 
                     Solution solution = context.Solve(new SimplexDirective());
                     Report report = solution.GetReport();
@@ -294,7 +355,7 @@ namespace EMS.Services.CalculationEngineService
                         for (int i = 0; i < measurements.Count; i++)
                         {
                             name = item.Name.Substring(1);
-                            if (Int64.Parse(item.Name) == measurements[i].Gid)
+                            if (Int64.Parse(name) == measurements[i].Gid)
                             {
                                 measurements[i].OptimizedLinear = float.Parse(item.ToString());
                             }

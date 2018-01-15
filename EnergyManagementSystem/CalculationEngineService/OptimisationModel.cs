@@ -205,7 +205,7 @@ namespace EMS.Services.CalculationEngineService
         public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu)
         {
             this.GlobalId = sm.GlobalId;
-			this.Price = emsf.UnitPrice * mu.CurrentValue; //izracunati
+            this.Price = emsf.UnitPrice; //izracunati
             this.MeasuredValue = mu.CurrentValue;
             this.linearOptimizedValue = 0; //izracunati
             this.GenericOptimizedValue = 0; //izracunati
