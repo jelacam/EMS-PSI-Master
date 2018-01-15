@@ -159,7 +159,7 @@ namespace EMS.Services.CalculationEngineService
                         foreach (MeasurementUnit mu in measurements)
                         {
                             cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
-                            cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = DateTime.Now;
+                            cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                             cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
                             cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
@@ -176,6 +176,45 @@ namespace EMS.Services.CalculationEngineService
                 }
             }
             return success;
+        }
+
+        /// <summary>
+        /// Read measurements from history database
+        /// </summary>
+        /// <param name="gid">Global identifikator of object</param>
+        private List<Tuple<double,DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("SELECT * FROM HistoryMeasurement WHERE (GID=@gid) AND (MeasurementTime BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = gid;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[3]), Convert.ToDateTime(reader[2])));
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    string message = string.Format("Failed read Measurements from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
         }
 
         #endregion
