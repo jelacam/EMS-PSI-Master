@@ -14,7 +14,7 @@
 		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
 	</UserControl.Resources>
 	<Grid>
-		<ItemsControl ItemsSource="{Binding GeneratorsContainer}">
+		<ItemsControl ItemsSource="{Binding GeneratorsContainer}" >
 
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
@@ -24,16 +24,12 @@
 			
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" Background="DimGray" 
-                             Foreground="DarkBlue" IsEnabled="True"
+					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+                             Foreground="White" IsEnabled="True"
 							 LegendStyle="{StaticResource LegendStyle}"
 							 Style="{StaticResource DashboardChartStyle}"
 							 Width="400" Height="250">
-						<!--<chartingToolkit:Chart.LegendStyle>
-							<Style TargetType="datavis:Legend">
-								<Setter Property="Width" Value="0" />
-							</Style>
-						</chartingToolkit:Chart.LegendStyle>-->
+
 						<chartingToolkit:LineSeries Title="Value"  
                                     ItemsSource="{Binding Path=Value}" 
                                     DependentValueBinding="{Binding Path=MeasurementValue}" 
@@ -42,7 +38,7 @@
                                     >
 							<chartingToolkit:LineSeries.DataPointStyle>
 								<Style TargetType="chartingToolkit:LineDataPoint">
-									<Setter Property="Background" Value="Purple"/>
+									<Setter Property="Background" Value="DarkGreen"/>
 								</Style>
 							</chartingToolkit:LineSeries.DataPointStyle>
 							<chartingToolkit:LineSeries.IndependentAxis>

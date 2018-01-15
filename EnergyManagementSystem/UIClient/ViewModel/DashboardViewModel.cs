@@ -15,7 +15,10 @@ namespace UIClient.ViewModel
     {
         private CeSubscribeProxy ceSubscribeProxy;
 
+        private const int MAX_DISPLAY_NUMBER = 10;
+
         private Dictionary<long, ObservableCollection<MeasurementUI>> generatorsContainer = new Dictionary<long, ObservableCollection<MeasurementUI>>();
+        private Dictionary<long, long> generatorsCount = new Dictionary<long, long>(); // privremeno dok se ne napravi pravi timestamp
 
         public Dictionary<long, ObservableCollection<MeasurementUI>> GeneratorsContainer
         {
@@ -62,11 +65,15 @@ namespace UIClient.ViewModel
         private void AddMeasurment(MeasurementUI measUI)
         {
             ObservableCollection<MeasurementUI> tempQueue;
-            
+
             if (GeneratorsContainer.TryGetValue(measUI.Gid, out tempQueue))
             {
-                measUI.TimeStamp = tempQueue.Count;
+                measUI.TimeStamp = ++generatorsCount[measUI.Gid]; //temp 
                 tempQueue.Add(measUI);
+                if (tempQueue.Count > MAX_DISPLAY_NUMBER)
+                {
+                    tempQueue.RemoveAt(0);
+                }
             }
             else
             {
@@ -74,6 +81,7 @@ namespace UIClient.ViewModel
                 measUI.TimeStamp = 0;
                 tempQueue.Add(measUI);
                 GeneratorsContainer.Add(measUI.Gid, tempQueue);
+                generatorsCount.Add(measUI.Gid, 0);//temp
             }
             OnPropertyChanged(nameof(GeneratorsContainer));
         }

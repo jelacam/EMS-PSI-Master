@@ -129,7 +129,8 @@
 								<RowDefinition/>
 							</Grid.RowDefinitions>
 
-							<TextBlock Text="{TemplateBinding Title}" Style="{StaticResource TitleStyle}"/>
+							<!--<TextBlock Text="{TemplateBinding Title}" Style="{StaticResource TitleStyle}"/>-->
+							<TextBlock Text="{TemplateBinding Title}"/>
 							<datavis:Legend x:Name="Legend" Grid.Column="1" Canvas.ZIndex="1" VerticalAlignment="Top" 
 											MaxWidth="{Binding ActualWidth, ElementName=ChartArea}" HorizontalAlignment="Right"
 											Header="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Margin="20,6,0,0"/>
