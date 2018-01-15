@@ -84,8 +84,11 @@ namespace EMS.Services.CalculationEngineService
             // List<MeasurementUnit> l = this.LinearOptimization(measurements);
             IEnumerable<MeasurementUnit> measurementFromEnergyConsumers = SeparateEnergyConsumers(measurements);
             IEnumerable<MeasurementUnit> measurementFromGenerators = SeparateGenerators(measurements);
-           // this.HelpFunction();
-           // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
+
+            GAOptimization gao = new GAOptimization(16);
+            gao.StartAlgorithm();
+            // this.HelpFunction();
+            // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
 
             bool alarmOptimized = true;
             bool result = false;
