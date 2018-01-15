@@ -530,10 +530,11 @@ namespace EMS.Services.CalculationEngineService
 
                 internalEnergyConsumersCopy.Clear();
 
-                foreach (ResourceDescription rd in internalSynchMachines)
+                foreach (ResourceDescription rd in internalEnergyConsumers)
                 {
                     internalEnergyConsumersCopy.Add(rd.Clone() as ResourceDescription);
                 }
+
 
                 foreach (ResourceDescription rd in delta.InsertOperations)
                 {
@@ -592,9 +593,17 @@ namespace EMS.Services.CalculationEngineService
                 }
                 internalEmsFuelsCopy.Clear();
 
+                internalEnergyConsumers.Clear();
+                foreach (ResourceDescription rd in internalEnergyConsumersCopy)
+                {
+                    internalEnergyConsumers.Add(rd.Clone() as ResourceDescription);
+                }
+                internalEnergyConsumersCopy.Clear();
+
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE Transaction: Commit phase successfully finished.");
                 Console.WriteLine("Number of EMSFuels values: {0}", internalEmsFuels.Count);
                 Console.WriteLine("Number of SynchronousMachines values: {0}", internalSynchMachines.Count);
+                Console.WriteLine("Number of Energy Consumers values: {0}", internalSynchMachines.Count);
                 return true;
             }
             catch (Exception e)
@@ -610,6 +619,7 @@ namespace EMS.Services.CalculationEngineService
             {
                 internalEmsFuelsCopy.Clear();
                 internalSynchMachinesCopy.Clear();
+                internalEnergyConsumersCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE Transaction rollback successfully finished!");
                 return true;
             }

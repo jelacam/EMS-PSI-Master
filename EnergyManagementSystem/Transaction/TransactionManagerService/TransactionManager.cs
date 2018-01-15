@@ -30,7 +30,7 @@ namespace EMS.Services.TransactionManagerService
 
             List<long> idToRemove = new List<long>(10);
 
-            #region odlDeclarations
+            #region oldDeclarations
 
             int analogProperty = 0;
             int ceProperty = 0;
@@ -40,8 +40,9 @@ namespace EMS.Services.TransactionManagerService
             Delta analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
             Delta emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
             Delta synchMachsDelta = delta.SeparateDeltaForEMSType(EMSType.SYNCHRONOUSMACHINE);
+            Delta energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
 
-            ceDelta = emsFuelsDelta + synchMachsDelta;
+            ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
 
             #region oldcode
 
