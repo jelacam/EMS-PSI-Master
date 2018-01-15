@@ -42,6 +42,9 @@ namespace EMS.Services.NetworkModelService
 
         private int deltaCount = 0;
 
+        private readonly string MODE = "DATABASE";
+        //  private readonly string MODE = "FILE";
+
         /// <summary>
         /// Initializes a new instance of the Model class.
         /// </summary>
@@ -781,175 +784,184 @@ namespace EMS.Services.NetworkModelService
 
         private void SaveDelta(Delta delta)
         {
-            #region sql_save_delta
-
-            /*
-            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            if (MODE == "DATABASE")
             {
-                try
+                #region sql_save_delta
+
+                using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
                 {
-                    connection.Open();
-                    string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
-                    SqlCommand cmd = new SqlCommand(sql, connection);
-                    cmd.Parameters.Add("@param_id", SqlDbType.Int).Value = ++deltaCount;
-                    cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
-                    cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
-                    cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
-                    cmd.CommandType = CommandType.Text;
+                    try
+                    {
+                        connection.Open();
+                        string sql = "INSERT INTO Delta(ID, TIME, DELTA) VALUES(@param_id, @param_time, @param_delta)";
+                        SqlCommand cmd = new SqlCommand(sql, connection);
+                        cmd.Parameters.Add("@param_id", SqlDbType.Int).Value = ++deltaCount;
+                        cmd.Parameters.Add("@param_time", SqlDbType.DateTime).Value = DateTime.Now;
+                        cmd.Parameters.Add("@param_delta", SqlDbType.VarBinary, Int32.MaxValue);
+                        cmd.Parameters["@param_delta"].Value = ObjectToByteArray(delta);
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
 
-                    string message = string.Format("Insert new Delta into database successfully finished. ");
-                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-                    Console.WriteLine(message);
+                        string message = string.Format("Insert new Delta into database successfully finished. ");
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                        Console.WriteLine(message);
+                    }
+                    catch (Exception e)
+                    {
+                        string message = string.Format("Failed to insert new Delta into database. {0}", e.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                        Console.WriteLine(message);
+                    }
                 }
-                catch (Exception e)
+                // Trace delta
+                TraceDelta(delta);
+
+                #endregion sql_save_delta
+            }
+            else if (MODE == "FILE")
+            {
+                #region save to file
+
+                bool fileExisted = false;
+
+                if (File.Exists(Config.Instance.ConnectionString))
                 {
-                    string message = string.Format("Failed to insert new Delta into database. {0}", e.Message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    Console.WriteLine(message);
+                    fileExisted = true;
                 }
+
+                FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                fs.Seek(0, SeekOrigin.Begin);
+
+                BinaryReader br = null;
+                int deltaCount = 0;
+
+                if (fileExisted)
+                {
+                    br = new BinaryReader(fs);
+                    deltaCount = br.ReadInt32();
+                }
+
+                BinaryWriter bw = new BinaryWriter(fs);
+                fs.Seek(0, SeekOrigin.Begin);
+
+                delta.Id = ++deltaCount;
+                byte[] deltaSerialized = delta.Serialize();
+                int deltaLength = deltaSerialized.Length;
+
+                bw.Write(deltaCount);
+                fs.Seek(0, SeekOrigin.End);
+                bw.Write(deltaLength);
+                bw.Write(deltaSerialized);
+
+                if (br != null)
+                {
+                    br.Close();
+                    br.Dispose();
+                }
+
+                bw.Close();
+                bw.Dispose();
+                fs.Close();
+                fs.Dispose();
+
+                #endregion save to file
             }
-            // Trace delta
-            TraceDelta(delta);
-            */
-
-            #endregion sql_save_delta
-
-            #region save to file
-
-            bool fileExisted = false;
-
-            if (File.Exists(Config.Instance.ConnectionString))
-            {
-                fileExisted = true;
-            }
-
-            FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            fs.Seek(0, SeekOrigin.Begin);
-
-            BinaryReader br = null;
-            int deltaCount = 0;
-
-            if (fileExisted)
-            {
-                br = new BinaryReader(fs);
-                deltaCount = br.ReadInt32();
-            }
-
-            BinaryWriter bw = new BinaryWriter(fs);
-            fs.Seek(0, SeekOrigin.Begin);
-
-            delta.Id = ++deltaCount;
-            byte[] deltaSerialized = delta.Serialize();
-            int deltaLength = deltaSerialized.Length;
-
-            bw.Write(deltaCount);
-            fs.Seek(0, SeekOrigin.End);
-            bw.Write(deltaLength);
-            bw.Write(deltaSerialized);
-
-            if (br != null)
-            {
-                br.Close();
-                br.Dispose();
-            }
-
-            bw.Close();
-            bw.Dispose();
-            fs.Close();
-            fs.Dispose();
-
-            #endregion save to file
         }
 
         private List<Delta> ReadAllDeltas()
         {
-            #region sql_read_all_deltas
-
-            /*
-            string message = string.Empty;
-            List<Delta> result = new List<Delta>(5);
-
-            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            if (MODE == "DATABASE")
             {
-                try
-                {
-                    connection.Open();
-                    string sql = "SELECT DELTA FROM Delta ORDER BY Id, Time ASC";
-                    SqlCommand cmd = new SqlCommand(sql, connection);
+                #region sql_read_all_deltas
 
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                string message = string.Empty;
+                List<Delta> result = new List<Delta>(5);
+
+                using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+                {
+                    try
                     {
-                        byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
-                        result.Add(ByteArrayToObject(delta_byte) as Delta);
+                        connection.Open();
+                        string sql = "SELECT DELTA FROM Delta ORDER BY Id, Time ASC";
+                        SqlCommand cmd = new SqlCommand(sql, connection);
 
-                        // trce delta
-                        TraceDelta(ByteArrayToObject(delta_byte) as Delta);
+                        SqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            byte[] delta_byte = reader.GetValue(reader.GetOrdinal("Delta")) as byte[];
+                            result.Add(ByteArrayToObject(delta_byte) as Delta);
+
+                            // trce delta
+                            TraceDelta(ByteArrayToObject(delta_byte) as Delta);
+                        }
+                        connection.Close();
                     }
-                    connection.Close();
+                    catch (Exception e)
+                    {
+                        message = string.Format("Failed to read Delta from database. {0}", e.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                        Console.WriteLine(message);
+                        return new List<Delta>();
+                    }
                 }
-                catch (Exception e)
-                {
-                    message = string.Format("Failed to read Delta from database. {0}", e.Message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    Console.WriteLine(message);
-                    return new List<Delta>();
-                }
-            }
 
-            deltaCount = result.Count;
+                deltaCount = result.Count;
 
-            message = string.Format("Successfully read {0} Delta from database.", result.Count.ToString());
-            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-            Console.WriteLine(message);
+                message = string.Format("Successfully read {0} Delta from database.", result.Count.ToString());
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                Console.WriteLine(message);
 
-            return result;
-            */
-
-            #endregion sql_read_all_deltas
-
-            #region old
-
-            List<Delta> result = new List<Delta>();
-            if (!File.Exists(Config.Instance.ConnectionString))
-            {
                 return result;
+
+
+                #endregion sql_read_all_deltas
             }
-
-            FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.Read);
-            fs.Seek(0, SeekOrigin.Begin);
-
-            if (fs.Position < fs.Length) // if it is not empty stream
+            else if (MODE == "FILE")
             {
-                BinaryReader br = new BinaryReader(fs);
+                #region old
 
-                int deltaCount = br.ReadInt32();
-                int deltaLength = 0;
-                byte[] deltaSerialized = null;
-                Delta delta = null;
-
-                for (int i = 0; i < deltaCount; i++)
+                List<Delta> result = new List<Delta>();
+                if (!File.Exists(Config.Instance.ConnectionString))
                 {
-                    deltaLength = br.ReadInt32();
-                    deltaSerialized = new byte[deltaLength];
-                    br.Read(deltaSerialized, 0, deltaLength);
-                    delta = Delta.Deserialize(deltaSerialized);
-                    result.Add(delta);
+                    return result;
                 }
 
-                br.Close();
-                br.Dispose();
+                FileStream fs = new FileStream(Config.Instance.ConnectionString, FileMode.OpenOrCreate, FileAccess.Read);
+                fs.Seek(0, SeekOrigin.Begin);
+
+                if (fs.Position < fs.Length) // if it is not empty stream
+                {
+                    BinaryReader br = new BinaryReader(fs);
+
+                    int deltaCount = br.ReadInt32();
+                    int deltaLength = 0;
+                    byte[] deltaSerialized = null;
+                    Delta delta = null;
+
+                    for (int i = 0; i < deltaCount; i++)
+                    {
+                        deltaLength = br.ReadInt32();
+                        deltaSerialized = new byte[deltaLength];
+                        br.Read(deltaSerialized, 0, deltaLength);
+                        delta = Delta.Deserialize(deltaSerialized);
+                        result.Add(delta);
+                    }
+
+                    br.Close();
+                    br.Dispose();
+                }
+
+                fs.Close();
+                fs.Dispose();
+
+                return result;
+
+                #endregion old
             }
 
-            fs.Close();
-            fs.Dispose();
-
-            return result;
-
-            #endregion old
+            return null;
         }
 
         #endregion Delta serialization
