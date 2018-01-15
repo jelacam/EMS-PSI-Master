@@ -18,7 +18,7 @@ namespace EMS.Services.CalculationEngineService
 
         private Config()
         {
-            //connectionString = ConfigurationManager.ConnectionStrings["calculationEngineconnectionString"].ConnectionString;
+            connectionString = ConfigurationManager.ConnectionStrings["historyDbConnectionString"].ConnectionString;
         }
 
         #region Static members
