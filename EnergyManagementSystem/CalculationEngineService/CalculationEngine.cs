@@ -13,12 +13,12 @@ namespace EMS.Services.CalculationEngineService
 	using EMS.Common;
 	using EMS.ServiceContracts;
 	using PubSub;
-	using Microsoft.SolverFoundation.Common;
 	using Microsoft.SolverFoundation.Services;
 	using NetworkModelService.DataModel.Wires;
 	using NetworkModelService.DataModel.Production;
-	using System.ServiceModel;
 	using System.Linq;
+	using System.Data.SqlClient;
+	using System.Data;
 
 	/// <summary>
 	/// Class for CalculationEngine
@@ -84,11 +84,11 @@ namespace EMS.Services.CalculationEngineService
 		public bool Optimize(List<MeasurementUnit> measurements)
 		{
 			// proba
-			HelpFunction();
-			List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(helpMU).ToList();
-			List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(helpMU).ToList();
-			powerOfConsumers = CalculateConsumption(measurementFromConsumers);
-			List<MeasurementUnit> measurementsOptimized = LinearOptimization(measurementFromGenerators);
+			//HelpFunction();
+			//List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(helpMU).ToList();
+			//List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(helpMU).ToList();
+			//powerOfConsumers = CalculateConsumption(measurementFromConsumers);
+			//List<MeasurementUnit> measurementsOptimized = LinearOptimization(measurementFromGenerators);
 
 			/*
 			List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(measurements).ToList();
@@ -100,32 +100,38 @@ namespace EMS.Services.CalculationEngineService
 			bool alarmOptimized = true;
 			bool result = false;
 
-			if (measurementsOptimized != null)
+			if (measurements != null)
 			{
-				if (measurementsOptimized.Count > 0)
+				if (measurements.Count > 0)
 				{
+					if (InsertMeasurementsIntoDb(measurements))
+					{
+						Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurements.Count);
+					}
+
 					Console.WriteLine("CE: Optimize");
-					for (int i = 0; i < measurementsOptimized.Count; i++)
+
+					for (int i = 0; i < measurements.Count; i++)
 					{
 						//measurements[i].CurrentValue = measurements[i].CurrentValue * 2;
 
-						alarmOptimized = CheckForOptimizedAlarms(measurementsOptimized[i].OptimizedLinear, measurementsOptimized[i].MinValue, measurementsOptimized[i].MaxValue, measurementsOptimized[i].Gid);
+						alarmOptimized = CheckForOptimizedAlarms(measurements[i].OptimizedLinear, measurements[i].MinValue, measurements[i].MaxValue, measurements[i].Gid);
 						if (alarmOptimized == false)
 						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-							Console.WriteLine("gid: {0} value: {1}", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
+							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurements[i].Gid, measurements[i].OptimizedLinear);
+							Console.WriteLine("gid: {0} value: {1}", measurements[i].Gid, measurements[i].OptimizedLinear);
 						}
 						else
 						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1} ALARM!", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-							Console.WriteLine("gid: {0} value: {1} ALARM!", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
+							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1} ALARM!", measurements[i].Gid, measurements[i].OptimizedLinear);
+							Console.WriteLine("gid: {0} value: {1} ALARM!", measurements[i].Gid, measurements[i].OptimizedLinear);
 						}
 
 						MeasurementUI measUI = new MeasurementUI()
 						{
-							Gid = measurementsOptimized[i].Gid,
+							Gid = measurements[i].Gid,
 							AlarmType = alarmOptimized ? "Alarm while optimizing" : string.Empty,
-							MeasurementValue = measurementsOptimized[i].OptimizedLinear
+							MeasurementValue = measurements[i].OptimizedLinear
 						};
 
 						try
@@ -145,10 +151,10 @@ namespace EMS.Services.CalculationEngineService
 
 					try
 					{
-						if (ScadaCMDProxy.Instance.SendDataToSimulator(measurementsOptimized))
+						if (ScadaCMDProxy.Instance.SendDataToSimulator(measurements))
 						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimized.Count);
-							Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimized.Count);
+							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
+							Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurements.Count);
 						}
 					}
 					catch (Exception ex)
@@ -161,6 +167,87 @@ namespace EMS.Services.CalculationEngineService
 
 			return result;
 		}
+
+		#region Database methods
+
+		/// <summary>
+		/// Insert data into history db
+		/// </summary>
+		/// <param name="measurements">List of measurements</param>
+		/// <returns>Success</returns>
+		private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
+		{
+			bool success = true;
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+					using (SqlCommand cmd = new SqlCommand("InsertMeasurement", connection))
+					{
+						cmd.CommandType = CommandType.StoredProcedure;
+						foreach (MeasurementUnit mu in measurements)
+						{
+							cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
+							cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+							cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
+							cmd.ExecuteNonQuery();
+							cmd.Parameters.Clear();
+						}
+					}
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					success = false;
+					string message = string.Format("Failed to insert new Measurement into database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+			return success;
+		}
+
+		/// <summary>
+		/// Read measurements from history database
+		/// </summary>
+		/// <param name="gid">Global identifikator of object</param>
+		public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+					using (SqlCommand cmd = new SqlCommand("SELECT * FROM HistoryMeasurement WHERE (GID=@gid) AND (MeasurementTime BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = gid;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[3]), Convert.ToDateTime(reader[2])));
+						}
+					}
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+
+					string message = string.Format("Failed read Measurements from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Separate synchronous machines from list of measurement units
@@ -370,7 +457,7 @@ namespace EMS.Services.CalculationEngineService
 					Model model = context.CreateModel();
 
 					Dictionary<long, Decision> decisions = new Dictionary<long, Decision>();
-					List<Constraint> constraints = new List<Constraint>();
+					List<Microsoft.SolverFoundation.Services.Constraint> constraints = new List<Microsoft.SolverFoundation.Services.Constraint>();
 					loms.Clear();
 
 					for (int i = 0; i < measurements.Count(); i++)
@@ -434,7 +521,6 @@ namespace EMS.Services.CalculationEngineService
 					context.ClearModel();
 				}
 			}
-
 			return measurements;
 		}
 
