@@ -55,7 +55,7 @@ namespace EMS.Services.CalculationEngineService
             }
             catch (Exception ex)
             {
-                string message = string.Format("Greska", ex.Message);
+                string message = string.Format("Error: {0}", ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                 throw new Exception(message);
             }

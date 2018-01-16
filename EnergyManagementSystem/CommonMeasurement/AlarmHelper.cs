@@ -6,11 +6,13 @@
 namespace EMS.CommonMeasurement
 {
     using System;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Class for alarms
     /// </summary>
-    public class AlarmHelper
+    public class AlarmHelper : INotifyPropertyChanged
     {
         /// <summary>
         /// stores gid of the entity
@@ -37,6 +39,8 @@ namespace EMS.CommonMeasurement
         /// </summary>
         private DateTime timeStamp;
 
+        private DateTime lastChange;
+
         /// <summary>
         /// stores type of the entity
         /// </summary>
@@ -46,6 +50,16 @@ namespace EMS.CommonMeasurement
         /// stores the message
         /// </summary>
         private string message;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlarmHelper" /> class
@@ -93,6 +107,7 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.value = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -132,6 +147,22 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.timeStamp = value;
+            }
+        }
+
+        public DateTime LastChange
+        {
+            get
+            {
+                return this.lastChange;
+            }
+
+            set
+            {
+                this.lastChange = value;
+                NotifyPropertyChanged();
+
+
             }
         }
 

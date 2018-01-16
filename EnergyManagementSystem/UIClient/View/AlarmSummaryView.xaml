@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="UIClient.View.AlarmSummaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIClient.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+		<DataGrid ItemsSource="{Binding Path = AlarmSummaryQueue }">
+			<!--<DataGrid.RowStyle>
+				<Style TargetType="DataGridRow">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding Gid}" 
+					</Style.Triggers>
+				</Style>
+			</DataGrid.RowStyle>-->
+		</DataGrid>     
+    </Grid>
+</UserControl>

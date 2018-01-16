@@ -5,14 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UIClient.View"
 			 xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+			 xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:converters="clr-namespace:UIClient.Converters"
 			 mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConvetrer"/>
+		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
 	</UserControl.Resources>
 	<Grid>
-		<ItemsControl ItemsSource="{Binding GeneratorsContainer}">
+		<ItemsControl ItemsSource="{Binding GeneratorsContainer}" >
 
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
@@ -22,9 +24,12 @@
 			
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key}" Background="DimGray" 
-                             Foreground="DarkBlue" IsEnabled="True"
+					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+                             Foreground="White" IsEnabled="True"
+							 LegendStyle="{StaticResource LegendStyle}"
+							 Style="{StaticResource DashboardChartStyle}"
 							 Width="400" Height="250">
+
 						<chartingToolkit:LineSeries Title="Value"  
                                     ItemsSource="{Binding Path=Value}" 
                                     DependentValueBinding="{Binding Path=MeasurementValue}" 
@@ -33,7 +38,7 @@
                                     >
 							<chartingToolkit:LineSeries.DataPointStyle>
 								<Style TargetType="chartingToolkit:LineDataPoint">
-									<Setter Property="Background" Value="Purple"/>
+									<Setter Property="Background" Value="DarkGreen"/>
 								</Style>
 							</chartingToolkit:LineSeries.DataPointStyle>
 							<chartingToolkit:LineSeries.IndependentAxis>

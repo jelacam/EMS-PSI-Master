@@ -35,10 +35,19 @@
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>
+
 			<TabItem Header="History" Style="{StaticResource TabItemStyle}">
 				<TabItem.ContentTemplate>
 					<DataTemplate>
 						<view:HistoryView></view:HistoryView>
+					</DataTemplate>
+				</TabItem.ContentTemplate>
+			</TabItem>
+
+			<TabItem Header="Alarm Summary" Style="{StaticResource TabItemStyle}">
+				<TabItem.ContentTemplate>
+					<DataTemplate>
+						<view:AlarmSummaryView DataContext="{Binding Path = DataContext.AlarmSummaryViewModel, RelativeSource={RelativeSource AncestorType=Window}}"/>
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>

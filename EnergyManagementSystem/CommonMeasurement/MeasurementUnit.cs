@@ -48,6 +48,12 @@ namespace EMS.CommonMeasurement
         /// </summary>
         public MeasurementUnit()
         {
+			gid = 0;
+			currentValue = 0;
+			minValue = 0;
+			maxValue = 0;
+			optimizedLinear = 0;
+			optimizedGeneric = 0;
         }
 
         /// <summary>

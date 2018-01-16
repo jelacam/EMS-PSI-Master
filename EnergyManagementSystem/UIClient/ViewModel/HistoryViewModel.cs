@@ -36,7 +36,7 @@ namespace UIClient.ViewModel
 
 		private void ShowDataCommandExecute(object obj)
 		{
-			if (generatorGid != "")
+			if (generatorGid != string.Empty)
 			{
 				if (generatorGid.Trim() != string.Empty)
 				{

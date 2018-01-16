@@ -22,45 +22,119 @@ namespace EMS.Services.TransactionManagerService
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
+
+            // delta object for caclculation engine - contains EMSFuels and SynchronousMachines
+            Delta ceDelta = new Delta();
+
             UpdateResult updateResult = new UpdateResult();
 
             List<long> idToRemove = new List<long>(10);
+
+            #region oldDeclarations
+
             int analogProperty = 0;
-            foreach (ResourceDescription rd_item in delta.InsertOperations)
+            int ceProperty = 0;
+
+            #endregion odlDeclarations
+
+            Delta analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
+            Delta emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
+            Delta synchMachsDelta = delta.SeparateDeltaForEMSType(EMSType.SYNCHRONOUSMACHINE);
+            Delta energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
+
+            ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
+
+            #region oldcode
+
+            //foreach (ResourceDescription rd_item in delta.InsertOperations)
+            //{
+            //    foreach (Property pr_item in rd_item.Properties)
+            //    {
+            //        if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.ANALOG))
+            //        {
+            //            analogProperty++;
+            //        }
+            //        else if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.EMSFUEL) || ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
+            //        {
+            //            ceProperty++;
+            //        }
+            //    }
+
+            //    if (analogProperty == 0)
+            //    {
+            //        idToRemove.Add(rd_item.Id);
+            //    }
+            //    if (ceProperty != 0)
+            //    {
+            //        ceDelta.InsertOperations.Add(rd_item);
+            //    }
+
+            //    analogProperty = 0;
+            //    ceProperty = 0;
+            //}
+
+            //if (idToRemove.Count != 0 && (delta.InsertOperations.Count - idToRemove.Count > 0))
+            //{
+            //    if (ceDelta.InsertOperations.Count != 0)
+            //    {
+            //        toRespond = 4;
+            //        TransactionCEProxy.Instance.Prepare(ceDelta);
+            //    }
+            //    else
+            //    {
+            //        toRespond = 3;
+            //    }
+
+            //    updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+
+            //    foreach (long id in idToRemove)
+            //    {
+            //        delta.RemoveResourceDescription(id, DeltaOpType.Insert);
+            //    }
+
+            //    TransactionCRProxy.Instance.Prepare(delta);
+            //    TransactionCMDProxy.Instance.Prepare(delta);
+            //}
+            //else
+            //{
+            //    if (ceDelta.InsertOperations.Count != 0)
+            //    {
+            //        toRespond = 2;
+            //        TransactionCEProxy.Instance.Prepare(ceDelta);
+            //    }
+            //    else
+            //    {
+            //        toRespond = 1;
+            //    }
+
+            //    updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+            //}
+
+            #endregion oldcode
+
+            if (analogsDelta.InsertOperations.Count != 0)
             {
-                foreach (Property pr_item in rd_item.Properties)
-                {
-                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.ANALOG))
-                    {
-                        analogProperty++;
-                    }
-                }
-
-                if (analogProperty == 0)
-                {
-                    idToRemove.Add(rd_item.Id);
-                }
-
-                analogProperty = 0;
+                toRespond++;
+            }
+            if (ceDelta.InsertOperations.Count != 0)
+            {
+                toRespond++;
             }
 
-            if (idToRemove.Count != 0 && (delta.InsertOperations.Count - idToRemove.Count > 0))
+            // first transaction - send delta to NMS
+            updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+
+            // second transaction - send ceDelta to CE
+            if (toRespond == 2)
             {
-                toRespond = 3;
-                updateResult = TransactionNMSProxy.Instance.Prepare(delta);
-
-                foreach (long id in idToRemove)
-                {
-                    delta.RemoveResourceDescription(id, DeltaOpType.Insert);
-                }
-
-                TransactionCRProxy.Instance.Prepare(delta);
-                TransactionCMDProxy.Instance.Prepare(delta);
+                TransactionCEProxy.Instance.Prepare(ceDelta);
             }
-            else
+            else if (toRespond == 3)
             {
-                toRespond = 1;
-                updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+                // second transaction - send ceDelta to CE, analogDelta to SCADA
+                TransactionCEProxy.Instance.Prepare(ceDelta);
+                TransactionCRProxy.Instance.Prepare(analogsDelta);
+                TransactionCMDProxy.Instance.Prepare(analogsDelta);
             }
 
             return updateResult;
@@ -78,7 +152,7 @@ namespace EMS.Services.TransactionManagerService
                 }
                 else
                 {
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, "An error ocured during model update prepare!");
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "An error occured during model update prepare!");
                 }
 
                 if (noRespone == toRespond)
@@ -113,29 +187,36 @@ namespace EMS.Services.TransactionManagerService
             bool commitResultScadaCMD;
 
             bool commitResultSCADA = true;
+            bool commitResultCE = true;
 
             bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
             if (toRespond == 3)
             {
                 commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
                 commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-
                 commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
+
+                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+            }
+            else if (toRespond == 2)
+            {
+                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
             }
 
-            if (commitResultNMS && commitResultSCADA)
+            if (commitResultNMS && commitResultSCADA && commitResultCE)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for NMS finished!");
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase finished!");
             }
             else
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase for NMS failed!");
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase failed!");
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
                 TransactionNMSProxy.Instance.Rollback();
                 TransactionCRProxy.Instance.Rollback();
                 TransactionCMDProxy.Instance.Rollback();
+                TransactionCEProxy.Instance.Rollback();
             }
-
+            toRespond = 1;
             noRespone = 0;
         }
 
