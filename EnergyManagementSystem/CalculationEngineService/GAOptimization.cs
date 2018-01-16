@@ -45,7 +45,7 @@ namespace EMS.Services.CalculationEngineService
             //create the crossover operator
             var crossover = new Crossover(0.8)
             {
-                CrossoverType = CrossoverType.DoublePointOrdered
+                CrossoverType = CrossoverType.DoublePoint
             };
 
             //create the mutation operator
@@ -64,9 +64,18 @@ namespace EMS.Services.CalculationEngineService
             ga.Operators.Add(mutate);
 
             //run the GA
-            ga.Run(1);
+            //ga.Run(TerminateFun);
         }
 
+        private bool TerminateFun(Population population, int currentGeneration, long currentEvaluation)
+        {
+            return false;
+        }
+
+        private void ga_OnGenerationComplete(object sender, GaEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         public double GetNextDoubleInRange(Random random, double minimum, double maximum)
         {
@@ -102,19 +111,10 @@ namespace EMS.Services.CalculationEngineService
 
         private void ga_OnRunComplete(object sender, GaEventArgs e)
         {
-        }
-
-        private void ga_OnGenerationComplete(object sender, GaEventArgs e)
-        {
             var fittest = e.Population.GetTop(1)[0];
-            var distanceToTravel = CalculateCost(fittest);
-            Console.WriteLine("Generation: {0}, Fitness: {1},Distance: {2}", e.Generation, fittest.Fitness, distanceToTravel);
+            var cost = CalculateCost(fittest);
+            Console.WriteLine("Generation: {0}, Fitness: {1}, Cost: {2}", e.Generation, fittest.Fitness, cost);
         }
 
-        public bool Terminate(Population population,
-            int currentGeneration, long currentEvaluation)
-        {
-            return currentGeneration > 400;
-        }
     }
 }

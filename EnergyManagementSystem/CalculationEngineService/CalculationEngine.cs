@@ -71,6 +71,8 @@ namespace EMS.Services.CalculationEngineService
             //internalEmsFuelsCopy = new List<ResourceDescription>(5);
             //internalSynchMachinesCopy = new List<ResourceDescription>(5);
 
+            
+
         }
 
         /// <summary>
@@ -84,9 +86,9 @@ namespace EMS.Services.CalculationEngineService
             // List<MeasurementUnit> l = this.LinearOptimization(measurements);
             IEnumerable<MeasurementUnit> measurementFromEnergyConsumers = SeparateEnergyConsumers(measurements);
             IEnumerable<MeasurementUnit> measurementFromGenerators = SeparateGenerators(measurements);
-
             GAOptimization gao = new GAOptimization(16);
             gao.StartAlgorithm();
+
             // this.HelpFunction();
             // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
 

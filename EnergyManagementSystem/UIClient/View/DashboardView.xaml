@@ -35,10 +35,12 @@
                                     DependentValueBinding="{Binding Path=MeasurementValue}" 
                                     IndependentValueBinding="{Binding Path=TimeStamp}"
                                     IsSelectionEnabled="False"
+									Style="{StaticResource LineSeriesStyle}"
                                     >
 							<chartingToolkit:LineSeries.DataPointStyle>
 								<Style TargetType="chartingToolkit:LineDataPoint">
 									<Setter Property="Background" Value="DarkGreen"/>
+									<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
 								</Style>
 							</chartingToolkit:LineSeries.DataPointStyle>
 							<chartingToolkit:LineSeries.IndependentAxis>

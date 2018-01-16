@@ -3,12 +3,18 @@
 					xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 					xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 					xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+					xmlns:sys="clr-namespace:System;assembly=mscorlib"
+					xmlns:converters="clr-namespace:UIClient.Converters"
                     xmlns:local="clr-namespace:UIClient.Styles">
-	
+
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
 	<SolidColorBrush x:Key="LigthBrush" Color="#FF6E6E6E"/>
-	
+	<SolidColorBrush x:Key="AxisLineBrush" Color="White"/>
+	<sys:Int32 x:Key="SmallFontSize">24</sys:Int32>
+	<converters:TestConverter x:Key="TestConv"/>
+
+
 	<!-- LegendStyle-->
 	<Style x:Key="LegendStyle" TargetType="datavis:Legend">
 		<Setter Property="Margin" Value="10,0,10,0" />
@@ -42,6 +48,47 @@
 										  Margin="{TemplateBinding Padding}" 
 										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
 										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!--  charting:RangeAxis  -->
+	<Style TargetType="charting:RangeAxis">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="TitleStyle">
+			<Setter.Value>
+				<Style TargetType="datavis:Title">
+					<Setter Property="FontSize" Value="{StaticResource SmallFontSize}" />
+					<Setter Property="Margin" Value="0,0,0,4"/>
+					<Setter Property="Opacity" Value="0.7"/>
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="MajorTickMarkStyle">
+			<Setter.Value>
+				<Style TargetType="Line">
+					<Setter Property="Stroke" Value="{StaticResource AxisLineBrush}" />
+					<Setter Property="X2" Value="4" />
+					<Setter Property="Y2" Value="4" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="MinorTickMarkStyle">
+			<Setter.Value>
+				<Style TargetType="Line">
+					<Setter Property="Stroke" Value="{StaticResource AxisLineBrush}" />
+					<Setter Property="X2" Value="2" />
+					<Setter Property="Y2" Value="2" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="charting:RangeAxis">
+					<Grid x:Name="AxisGrid" Background="{TemplateBinding Background}">
+						<datavis:Title x:Name="AxisTitle" Style="{TemplateBinding TitleStyle}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -144,5 +191,132 @@
 		</Setter>
 	</Style>
 
-	
+	<!--  charting:LineSeries  -->
+	<Style x:Key="LineSeriesStyle" TargetType="charting:LineSeries">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="PolylineStyle">
+			<Setter.Value>
+				<Style TargetType="Polyline">
+					<Setter Property="StrokeThickness" Value="2" />
+					<Setter Property="StrokeMiterLimit" Value="1" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="charting:LineSeries">
+					<Canvas x:Name="PlotArea">
+						<Polyline Points="{TemplateBinding Points}" 
+								  Fill="{TemplateBinding BorderBrush}" 
+								  Stroke="{TemplateBinding Background}" 
+								  Style="{TemplateBinding PolylineStyle}" />
+					</Canvas>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!--  charting:DisplayAxis  -->
+	<Style TargetType="charting:DisplayAxis">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="TitleStyle">
+			<Setter.Value>
+				<Style TargetType="datavis:Title">
+					<Setter Property="FontStyle" Value="Normal" />
+					<Setter Property="Margin" Value="0,4,0,8"/>
+					<Setter Property="Opacity" Value="0.7"/>
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="MajorTickMarkStyle">
+			<Setter.Value>
+				<Style TargetType="Line">
+					<Setter Property="Stroke" Value="{StaticResource AxisLineBrush}" />
+					<Setter Property="X2" Value="4" />
+					<Setter Property="Y2" Value="4" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="charting:DisplayAxis">
+					<Grid x:Name="AxisGrid" Background="{TemplateBinding Background}">
+						<datavis:Title x:Name="AxisTitle" Style="{TemplateBinding TitleStyle}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!--  charting:RangeAxis  -->
+	<Style x:Key="RangeAxisStyle" TargetType="charting:RangeAxis">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="TitleStyle">
+			<Setter.Value>
+				<Style TargetType="datavis:Title">
+					<Setter Property="FontStyle" Value="Normal" />
+					<Setter Property="Margin" Value="0,4,0,8"/>
+					<Setter Property="Opacity" Value="0.7"/>
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="MajorTickMarkStyle">
+			<Setter.Value>
+				<Style TargetType="Line">
+					<Setter Property="Stroke" Value="{StaticResource AxisLineBrush}" />
+					<Setter Property="X2" Value="4" />
+					<Setter Property="Y2" Value="4" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="MinorTickMarkStyle">
+			<Setter.Value>
+				<Style TargetType="Line">
+					<Setter Property="Stroke" Value="{StaticResource AxisLineBrush}" />
+					<Setter Property="X2" Value="2" />
+					<Setter Property="Y2" Value="2" />
+				</Style>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="charting:RangeAxis">
+					<Grid x:Name="AxisGrid" Background="{TemplateBinding Background}">
+						<datavis:Title x:Name="AxisTitle" Style="{TemplateBinding TitleStyle}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!--  charting:AxisLabel  -->
+	<Style x:Key="AxisLabelStyle" TargetType="charting:AxisLabel">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="StringFormat" Value="{}{0}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="charting:AxisLabel">
+					<TextBlock Text="{TemplateBinding FormattedContent}" Foreground="{StaticResource AxisLabelBrush}" FontSize="10"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="charting:LinearAxis" BasedOn="{StaticResource RangeAxisStyle}">
+	</Style>
+	<!--<Style TargetType="charting:DateTimeAxis" BasedOn="{StaticResource DisplayAxisStyle}">
+		<Setter Property="AxisLabelStyle" Value="{StaticResource AxisLabelStyle}"/>
+	</Style>
+	<Style TargetType="charting:CategoryAxis" BasedOn="{StaticResource DisplayAxisStyle}">
+		<Setter Property="AxisLabelStyle" Value="{StaticResource AxisLabelStyle}"/>
+	</Style>-->
+
+	<ControlTemplate x:Key="LineDataPointTemplate" TargetType="charting:LineDataPoint">
+		<Grid x:Name="Root">
+			<Ellipse Name="Marker" Fill="{TemplateBinding BorderBrush}" Width="8" Height="8" 
+					 Opacity="{Binding AlarmType, Converter={StaticResource TestConv}}"
+					 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</Grid>
+	</ControlTemplate>
+
 </ResourceDictionary>
