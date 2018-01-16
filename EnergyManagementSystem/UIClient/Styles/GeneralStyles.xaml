@@ -24,6 +24,16 @@
 		<Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
 		<Setter Property="BorderThickness" Value="0" ></Setter>
 	</Style>
+
+	<Style TargetType="DataGridRow">
+		<Setter Property="Background" Value="Red"></Setter>
+	</Style>
+
+	<Style TargetType="DataGrid">
+		<Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+		<Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+		<Setter Property="Foreground" Value="{StaticResource DarkBrush}"></Setter>
+ 	</Style>
 	
 	<Style TargetType="TabItem" x:Key="TabItemStyle">
 		<Setter Property="Foreground" Value="White"/>

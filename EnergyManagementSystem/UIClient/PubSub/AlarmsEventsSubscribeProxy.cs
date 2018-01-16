@@ -15,27 +15,50 @@ namespace UIClient.PubSub
         private static DuplexChannelFactory<IAesPubSubContract> factory;
         private static InstanceContext context;
 
-        public static IAesPubSubContract Instance
+        public IAesPubSubContract Proxy
         {
             get
             {
-                if (proxy == null)
-                {
-                    context = new InstanceContext(new AePubSubCallbackService());
-                    factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
-                    proxy = factory.CreateChannel();
-                }
                 return proxy;
             }
-
             set
             {
-                if (proxy == null)
-                {
-                    proxy = value;
-                }
+                proxy = value;
             }
         }
+
+        public AlarmsEventsSubscribeProxy(Action<object> callbackAction)
+        {
+            if (Proxy == null)
+            {
+                context = new InstanceContext(new AePubSubCallbackService() { CallbackAction = callbackAction });
+                factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
+                Proxy = factory.CreateChannel();
+            }
+        }
+
+
+        //public static IAesPubSubContract Instance
+        //{
+        //    get
+        //    {
+        //        if (proxy == null)
+        //        {
+        //            context = new InstanceContext(new AePubSubCallbackService());
+        //            factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
+        //            proxy = factory.CreateChannel();
+        //        }
+        //        return proxy;
+        //    }
+
+        //    set
+        //    {
+        //        if (proxy == null)
+        //        {
+        //            proxy = value;
+        //        }
+        //    }
+        //}
         
 
         public void Dispose()

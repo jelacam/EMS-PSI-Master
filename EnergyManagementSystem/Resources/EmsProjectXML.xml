@@ -115,8 +115,8 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_3">
-		<cim:Analog.maxValue>110</cim:Analog.maxValue>
-		<cim:Analog.minValue>90</cim:Analog.minValue>
+		<cim:Analog.maxValue>70</cim:Analog.maxValue>
+		<cim:Analog.minValue>30</cim:Analog.minValue>
 		<cim:Analog.normalValue>100</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>

@@ -12,6 +12,22 @@ namespace UIClient.PubSub
 {
     public class AePubSubCallbackService : IAesPubSubCallbackContract
     {
+
+        private Action<object> callbackAction;
+
+        public Action<object> CallbackAction
+        {
+            get
+            {
+                return callbackAction;
+            }
+
+            set
+            {
+                callbackAction = value;
+            }
+        }
+
         public void AlarmsEvents(AlarmHelper alarm)
         {
             Console.WriteLine("SessionID id: {0}", OperationContext.Current.SessionId);
@@ -20,6 +36,7 @@ namespace UIClient.PubSub
 
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, string.Format("ALARM: {0} on Signal GID: {1} | SessionID id: {2}",
                                                                         alarm.Value.ToString(), alarm.Gid.ToString(), OperationContext.Current.SessionId));
+            CallbackAction(alarm);
         }
     }
 }
