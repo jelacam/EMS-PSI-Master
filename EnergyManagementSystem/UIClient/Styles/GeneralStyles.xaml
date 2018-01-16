@@ -10,7 +10,9 @@
 		<Setter Property="Background" Value="{StaticResource AppBackground}" ></Setter>
 		<Setter Property="Foreground" Value="White" ></Setter>
 	</Style>
-
+	<Style x:Key="Title" TargetType="TextBlock">
+		<Setter Property="FontSize" Value="24"/>
+	</Style>
 	<Style TargetType="Label" >
 		<Setter Property="Foreground" Value="White" ></Setter>
 	</Style>

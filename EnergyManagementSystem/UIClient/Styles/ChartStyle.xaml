@@ -34,8 +34,9 @@
 	</Style>
 
 	<!--  charting:Title  -->
-	<Style TargetType="datavis:Title">
+	<Style x:Key="TitleStyle" TargetType="datavis:Title">
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="Margin" Value="10,0,0,0"/>
 		<Setter Property="VerticalContentAlignment" Value="Top" />
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Template">
@@ -177,7 +178,7 @@
 							</Grid.RowDefinitions>
 
 							<!--<TextBlock Text="{TemplateBinding Title}" Style="{StaticResource TitleStyle}"/>-->
-							<TextBlock Text="{TemplateBinding Title}"/>
+							<TextBlock Text="{TemplateBinding Title}" Margin="20,0,0,0"/>
 							<datavis:Legend x:Name="Legend" Grid.Column="1" Canvas.ZIndex="1" VerticalAlignment="Top" 
 											MaxWidth="{Binding ActualWidth, ElementName=ChartArea}" HorizontalAlignment="Right"
 											Header="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Margin="20,6,0,0"/>
@@ -314,7 +315,7 @@
 	<ControlTemplate x:Key="LineDataPointTemplate" TargetType="charting:LineDataPoint">
 		<Grid x:Name="Root">
 			<Ellipse Name="Marker" Fill="{TemplateBinding BorderBrush}" Width="8" Height="8" 
-					 Opacity="{Binding AlarmType, Converter={StaticResource TestConv}}"
+					 Opacity="0"
 					 VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Grid>
 	</ControlTemplate>

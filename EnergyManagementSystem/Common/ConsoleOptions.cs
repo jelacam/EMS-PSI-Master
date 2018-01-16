@@ -13,7 +13,7 @@ namespace EMS.Common
             Console.WindowWidth = 50;
             Console.WindowHeight = 1;
             Console.BufferWidth = 50;
-            Console.BufferHeight = 1;
+            Console.BufferHeight = Int16.MaxValue - 1;
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = consoleForegroundColor;
             double scalingFactorX = GetScalingFactorX();
