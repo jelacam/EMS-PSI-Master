@@ -64,7 +64,7 @@ namespace EMS.Services.CalculationEngineService
         public bool Optimize(List<MeasurementUnit> measurements)
         {
             this.FillData();
-            List<MeasurementUnit> l = this.LinearOptimization(measurements);
+            //List<MeasurementUnit> l = this.LinearOptimization(measurements);
 
             bool alarmOptimized = true;
             bool result = false;
@@ -72,10 +72,10 @@ namespace EMS.Services.CalculationEngineService
             {
                 if (measurements.Count > 0)
                 {
-                    /*if (InsertMeasurementsIntoDb(measurements))
+                    if (InsertMeasurementsIntoDb(measurements))
                     {
                         Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurements.Count);
-                    }*/
+                    }
 
                     Console.WriteLine("CE: Optimize");
                     for (int i = 0; i < measurements.Count; i++)
@@ -182,7 +182,7 @@ namespace EMS.Services.CalculationEngineService
         /// Read measurements from history database
         /// </summary>
         /// <param name="gid">Global identifikator of object</param>
-        private List<Tuple<double,DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
+        public List<Tuple<double,DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
         {
             List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))

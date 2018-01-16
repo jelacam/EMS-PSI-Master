@@ -35,6 +35,13 @@
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>
+			<TabItem Header="History" Style="{StaticResource TabItemStyle}">
+				<TabItem.ContentTemplate>
+					<DataTemplate>
+						<view:HistoryView></view:HistoryView>
+					</DataTemplate>
+				</TabItem.ContentTemplate>
+			</TabItem>
 		</TabControl>
 	</Grid>
 </Window>

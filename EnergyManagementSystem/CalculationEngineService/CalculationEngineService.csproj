@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="CalculationEngine.cs" />
     <Compile Include="CalculationEngineService.cs" />
+    <Compile Include="CeToUI.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CrToCe.cs" />
     <Compile Include="OptimisationModel.cs" />

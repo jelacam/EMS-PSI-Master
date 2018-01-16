@@ -34,7 +34,8 @@ namespace EMS.Services.CalculationEngineService
         {
             this.ce = new CalculationEngine();
             CrToCe.CalculationEngine = this.ce;
-            this.InitializeHosts();
+			CeToUI.CalculationEngine = this.ce;
+			this.InitializeHosts();
         }
 
         /// <summary>
@@ -81,6 +82,7 @@ namespace EMS.Services.CalculationEngineService
         {
             this.hosts = new List<ServiceHost>();
             this.hosts.Add(new ServiceHost(typeof(CrToCe)));
+			this.hosts.Add(new ServiceHost(typeof(CeToUI)));
             this.hosts.Add(new ServiceHost(typeof(PublisherService)));
         }
 

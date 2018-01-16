@@ -781,7 +781,7 @@ namespace EMS.Services.NetworkModelService
 
 		private void SaveDelta(Delta delta)
 		{
-			  using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			  /*using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
 			  {
 				  try
 				  {
@@ -809,11 +809,11 @@ namespace EMS.Services.NetworkModelService
 				  }
 			  }
 			  // Trace delta 
-			  TraceDelta(delta);
+			  TraceDelta(delta);*/
 
 			#region save to file
 
-			/*bool fileExisted = false;
+			bool fileExisted = false;
 
 			if (File.Exists(Config.Instance.ConnectionString))
 			{
@@ -853,14 +853,14 @@ namespace EMS.Services.NetworkModelService
 			bw.Close();
 			bw.Dispose();
 			fs.Close();
-			fs.Dispose();*/
+			fs.Dispose();
 
 			#endregion save to file
 		}
 
 		private List<Delta> ReadAllDeltas()
 		{
-				string message = string.Empty;
+				/*string message = string.Empty;
 				List<Delta> result = new List<Delta>(5);
 
 				using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -897,11 +897,11 @@ namespace EMS.Services.NetworkModelService
 				CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 				Console.WriteLine(message);
 
-				return result; 
+				return result; */
 
 			#region old
 
-			/*List<Delta> result = new List<Delta>();
+			List<Delta> result = new List<Delta>();
 			if (!File.Exists(Config.Instance.ConnectionString))
 			{
 				return result;
@@ -935,7 +935,7 @@ namespace EMS.Services.NetworkModelService
 			fs.Close();
 			fs.Dispose();
 
-			return result;*/
+			return result;
 
 			#endregion old
 		}
