@@ -215,6 +215,10 @@ namespace EMS.Services.CalculationEngineService
             {
                 this.Managable = 1;
             }
+            else
+            {
+                this.Managable = 0;
+            }
         }
     }
 }
