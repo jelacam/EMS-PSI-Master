@@ -7,66 +7,56 @@
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 		mc:Ignorable="d"
-        Title="Simulator" Height="350" Width="525">
-    <Grid>
+        Title="Simulator" Height="350" Width="900">
+	<Window.Resources>
+		<DataTemplate x:Key="ChartView">
+			<chartingToolkit:Chart Title="Energy Consumer 1" Background="DimGray" 
+                             Foreground="DarkBlue" IsEnabled="True">
+				<chartingToolkit:Chart.LegendStyle>
+					<Style TargetType="datavis:Legend">
+						<Setter Property="Width" Value="0" />
+					</Style>
+				</chartingToolkit:Chart.LegendStyle>
+				<chartingToolkit:LineSeries Title="Value"  
+                                    ItemsSource="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl}}" 
+                                    DependentValueBinding="{Binding Path=Value}" 
+                                    IndependentValueBinding="{Binding Path=Key}"
+                                    IsSelectionEnabled="False"
+                                    >
+					<chartingToolkit:LineSeries.DataPointStyle>
+						<Style TargetType="chartingToolkit:LineDataPoint">
+							<Setter Property="Width" Value="0"/>
+							<Setter Property="Background" Value="Blue"/>
+						</Style>
+					</chartingToolkit:LineSeries.DataPointStyle>
+					<chartingToolkit:LineSeries.IndependentAxis>
+						<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+					</chartingToolkit:LineSeries.IndependentAxis>
+					<chartingToolkit:LineSeries.DependentRangeAxis>
+						<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+					</chartingToolkit:LineSeries.DependentRangeAxis>
+				</chartingToolkit:LineSeries>
+			</chartingToolkit:Chart>
+		</DataTemplate>
+	</Window.Resources>
+	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<chartingToolkit:Chart Name="lineChart1" Title="Line Graph" Background="DimGray" 
-                             Foreground="DarkBlue" IsEnabled="True">
-			<chartingToolkit:Chart.LegendStyle>
-				<Style TargetType="datavis:Legend">
-					<Setter Property="Width" Value="0" />
-				</Style>
-			</chartingToolkit:Chart.LegendStyle>
-			<chartingToolkit:LineSeries Title="Value"  
-                                    ItemsSource="{Binding SimulationData1}" 
-                                    DependentValueBinding="{Binding Path=Value}" 
-                                    IndependentValueBinding="{Binding Path=Key}"
-                                    IsSelectionEnabled="False"
-                                    >
-				<chartingToolkit:LineSeries.DataPointStyle>
-					<Style TargetType="chartingToolkit:LineDataPoint">
-						<Setter Property="Width" Value="0"/>
-						<Setter Property="Background" Value="Blue"/>
-					</Style>
-				</chartingToolkit:LineSeries.DataPointStyle>
-				<chartingToolkit:LineSeries.IndependentAxis>
-					<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
-				</chartingToolkit:LineSeries.IndependentAxis>
-				<chartingToolkit:LineSeries.DependentRangeAxis>
-					<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-				</chartingToolkit:LineSeries.DependentRangeAxis>
-			</chartingToolkit:LineSeries>
-		</chartingToolkit:Chart>
 
-		<chartingToolkit:Chart Grid.Column="1" Name="lineChart2" Title="Line Graph" Background="DimGray" 
-                             Foreground="DarkBlue" IsEnabled="True">
-			<chartingToolkit:Chart.LegendStyle>
-				<Style TargetType="datavis:Legend">
-					<Setter Property="Width" Value="0" />
-				</Style>
-			</chartingToolkit:Chart.LegendStyle>
-			<chartingToolkit:LineSeries Title="Value"  
-                                    ItemsSource="{Binding SimulationData2}" 
-                                    DependentValueBinding="{Binding Path=Value}" 
-                                    IndependentValueBinding="{Binding Path=Key}"
-                                    IsSelectionEnabled="False"
-                                    >
-				<chartingToolkit:LineSeries.DataPointStyle>
-					<Style TargetType="chartingToolkit:LineDataPoint">
-						<Setter Property="Width" Value="0"/>
-						<Setter Property="Background" Value="Blue"/>
-					</Style>
-				</chartingToolkit:LineSeries.DataPointStyle>
-				<chartingToolkit:LineSeries.IndependentAxis>
-					<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
-				</chartingToolkit:LineSeries.IndependentAxis>
-				<chartingToolkit:LineSeries.DependentRangeAxis>
-					<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-				</chartingToolkit:LineSeries.DependentRangeAxis>
-			</chartingToolkit:LineSeries>
-		</chartingToolkit:Chart>
+		<Grid>
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData1}" />
+		</Grid>
+
+		<Grid Grid.Column="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData2}" />
+		</Grid>
+
+		<Grid Grid.Column="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData3}" />
+		</Grid>
+
 	</Grid>
 </Window>

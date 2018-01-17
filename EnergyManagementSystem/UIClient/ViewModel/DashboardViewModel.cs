@@ -20,10 +20,11 @@ namespace UIClient.ViewModel
         private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
         private int attemptsCount = 0;
 
-        private Dictionary<long, ObservableCollection<MeasurementUI>> generatorsContainer = new Dictionary<long, ObservableCollection<MeasurementUI>>();
-        private Dictionary<long, ObservableCollection<MeasurementUI>> energyConsumersContainer = new Dictionary<long, ObservableCollection<MeasurementUI>>();
+        private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
+        private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> energyConsumersContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
         private Dictionary<long, long> generatorsCount = new Dictionary<long, long>(); // privremeno dok se ne napravi pravi timestamp
-        public Dictionary<long, ObservableCollection<MeasurementUI>> GeneratorsContainer
+
+        public ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> GeneratorsContainer
         {
             get
             {
@@ -33,11 +34,10 @@ namespace UIClient.ViewModel
             set
             {
                 generatorsContainer = value;
-
             }
         }
 
-        public Dictionary<long, ObservableCollection<MeasurementUI>> EnergyConsumersContainer
+        public ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> EnergyConsumersContainer
         {
             get
             {
@@ -66,7 +66,7 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Publisher Service! \n ");
                 Thread.Sleep(1000);
-                if(attemptsCount++ < NUMBER_OF_ALLOWED_ATTEMPTS)
+                if (attemptsCount++ < NUMBER_OF_ALLOWED_ATTEMPTS)
                 {
                     SubsrcibeToCE();
                 }
@@ -86,11 +86,12 @@ namespace UIClient.ViewModel
                 throw new Exception("CallbackAction receive wrong param");
             }
 
-            if((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUI.Gid) == EMSType.ENERGYCONSUMER)
+            if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUI.Gid) == EMSType.ENERGYCONSUMER)
             {
                 AddMeasurmentToEnergyConsumers(measUI);
 
-            }else
+            }
+            else
             {
                 AddMeasurmentToGenerators(measUI);
             }
@@ -98,26 +99,25 @@ namespace UIClient.ViewModel
 
         private void AddMeasurmentToGenerators(MeasurementUI measUI)
         {
-            ObservableCollection<MeasurementUI> tempQueue;
+            var keyPair = GeneratorsContainer.FirstOrDefault(x => x.Key == measUI.Gid);
 
-            if (GeneratorsContainer.TryGetValue(measUI.Gid, out tempQueue))
+            if (keyPair.Value == null)
             {
-               // measUI.TimeStamp = ++generatorsCount[measUI.Gid]; //temp 
+                var tempQueue = new ObservableCollection<MeasurementUI>();
+                //measUI.TimeStamp = 0;
                 tempQueue.Add(measUI);
-                if (tempQueue.Count > MAX_DISPLAY_NUMBER)
-                {
-                    tempQueue.RemoveAt(0);
-                }
+                GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
+                generatorsCount.Add(measUI.Gid, 0);//temp
+
             }
             else
             {
-                tempQueue = new ObservableCollection<MeasurementUI>();
-                //measUI.TimeStamp = 0;
-                tempQueue.Add(measUI);
-                GeneratorsContainer.Add(measUI.Gid, tempQueue);
-                generatorsCount.Add(measUI.Gid, 0);//temp
+                keyPair.Value.Add(measUI);
+                if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                {
+                    keyPair.Value.RemoveAt(0);
+                }
             }
-            OnPropertyChanged(nameof(GeneratorsContainer));
         }
 
         /// <summary>
@@ -126,24 +126,25 @@ namespace UIClient.ViewModel
         /// <param name="measUI"></param>
         private void AddMeasurmentToEnergyConsumers(MeasurementUI measUI)
         {
-            ObservableCollection<MeasurementUI> tempQueue;
+            var keyPair = EnergyConsumersContainer.FirstOrDefault(x => x.Key == measUI.Gid);
 
-            if (EnergyConsumersContainer.TryGetValue(measUI.Gid, out tempQueue))
+            if (keyPair.Value == null)
             {
+                var tempQueue = new ObservableCollection<MeasurementUI>();
+                //measUI.TimeStamp = 0;
                 tempQueue.Add(measUI);
-                if (tempQueue.Count > MAX_DISPLAY_NUMBER)
-                {
-                    tempQueue.RemoveAt(0);
-                }
+                EnergyConsumersContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
+                generatorsCount.Add(measUI.Gid, 0);//temp
+
             }
             else
             {
-                tempQueue = new ObservableCollection<MeasurementUI>();
-                tempQueue.Add(measUI);
-                EnergyConsumersContainer.Add(measUI.Gid, tempQueue);
-                generatorsCount.Add(measUI.Gid, 0);//temp
+                keyPair.Value.Add(measUI);
+                if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                {
+                    keyPair.Value.RemoveAt(0);
+                }
             }
-            OnPropertyChanged(nameof(EnergyConsumersContainer));
         }
 
         protected override void OnDispose()

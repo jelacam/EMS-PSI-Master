@@ -32,10 +32,7 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Foreground="White" IsEnabled="True"
-													   LegendStyle="{StaticResource LegendStyle}"
-													   TitleStyle="{StaticResource TitleStyle}"
+								<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
 													   Style="{StaticResource DashboardChartStyle}"
 													   Width="400" Height="250">
 
@@ -44,20 +41,22 @@
 																DependentValueBinding="{Binding Path=CurrentValue}" 
 																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
 																IsSelectionEnabled="False"
-																Style="{StaticResource LineSeriesStyle}"
-                                    >
+																Style="{StaticResource LineSeriesStyle}">
 										<chartingToolkit:LineSeries.DataPointStyle>
 											<Style TargetType="chartingToolkit:LineDataPoint">
 												<Setter Property="Background" Value="DarkGreen"/>
 												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
+
 										<chartingToolkit:LineSeries.IndependentAxis>
 											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)"  />
 										</chartingToolkit:LineSeries.IndependentAxis>
+
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
 										</chartingToolkit:LineSeries.DependentRangeAxis>
+
 									</chartingToolkit:LineSeries>
 								</chartingToolkit:Chart>
 							</DataTemplate>
@@ -79,15 +78,13 @@
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Foreground="White" IsEnabled="True"
-													   LegendStyle="{StaticResource LegendStyle}"
 													   Style="{StaticResource DashboardChartStyle}"
 													   Width="400" Height="250">
 
 									<chartingToolkit:LineSeries Title="Value"  
 																ItemsSource="{Binding Path=Value}" 
 																DependentValueBinding="{Binding Path=CurrentValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
+																IndependentValueBinding="{Binding Path=TimeStamp, Converter={StaticResource TestConvetrer}}"
 																IsSelectionEnabled="False"
 																Style="{StaticResource LineSeriesStyle}"
                                     >
@@ -98,7 +95,7 @@
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)" />
+											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
 										</chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>

@@ -13,7 +13,7 @@ namespace UISimulator.ViewModel
     {
         private IList<KeyValuePair<long, float>> simulationData1;
         private IList<KeyValuePair<long, float>> simulationData2;
-        private long timer = 0;
+        private IList<KeyValuePair<long, float>> simulationData3;
         private readonly long DURATION = 100;
         private ModbusClient modbusClient;
         private ConvertorHelper convertorHelper;
@@ -32,6 +32,7 @@ namespace UISimulator.ViewModel
             convertorHelper = new ConvertorHelper();
             PopulateSimulationData();
             SimulationData2 = SimulationData1;
+            SimulationData3 = SimulationData1;
 
             Task task = new Task(StartSimulation);
             task.Start();
@@ -43,7 +44,8 @@ namespace UISimulator.ViewModel
             {
                 modbusClient.WriteSingleRegister(0, simulationData1[i].Value);
                 modbusClient.WriteSingleRegister(2, simulationData2[i].Value);
-                Thread.Sleep(2500);
+                modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
+                Thread.Sleep(1);
             }
 
             StartSimulation();
@@ -75,6 +77,19 @@ namespace UISimulator.ViewModel
             }
         }
 
+        public IList<KeyValuePair<long, float>> SimulationData3
+        {
+            get
+            {
+                return simulationData3;
+            }
+
+            set
+            {
+                simulationData3 = value;
+            }
+        }
+
         private void PopulateSimulationData()
         {
             SimulationData1 = new List<KeyValuePair<long, float>>();
@@ -87,7 +102,12 @@ namespace UISimulator.ViewModel
 
         private double SimulationFunction(int x)
         {
-            return Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2 + 5;
+            double v = Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2 ;
+            if(v < 0.5)
+            {
+                v = 0.5;
+            }
+            return v;
         }
     }
 }
