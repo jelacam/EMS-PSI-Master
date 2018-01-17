@@ -34,7 +34,7 @@
 	</Style>
 
 	<!--  charting:Title  -->
-	<Style x:Key="TitleStyle" TargetType="datavis:Title">
+	<Style TargetType="datavis:Title">
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
 		<Setter Property="Margin" Value="10,0,0,0"/>
 		<Setter Property="VerticalContentAlignment" Value="Top" />
@@ -140,6 +140,7 @@
 	<!-- charting:DashboardChartStyle -->
 	<Style x:Key="DashboardChartStyle" TargetType="charting:Chart">
 		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="Foreground" Value="White"/>
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Padding" Value="10" />
@@ -218,7 +219,7 @@
 	</Style>
 
 	<!--  charting:DisplayAxis  -->
-	<Style TargetType="charting:DisplayAxis">
+	<Style x:Key="DisplayAxisStyle" TargetType="charting:DisplayAxis">
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="TitleStyle">
 			<Setter.Value>
@@ -307,9 +308,8 @@
 	</Style>
 	<Style TargetType="charting:DateTimeAxis" BasedOn="{StaticResource RangeAxisStyle}">
 	</Style>
-	<!--<Style TargetType="charting:CategoryAxis" BasedOn="{StaticResource DisplayAxisStyle}">
-		<Setter Property="AxisLabelStyle" Value="{StaticResource AxisLabelStyle}"/>
-	</Style>-->
+	<Style TargetType="charting:CategoryAxis" BasedOn="{StaticResource DisplayAxisStyle}">
+	</Style>
 
 	<ControlTemplate x:Key="LineDataPointTemplate" TargetType="charting:LineDataPoint">
 		<Grid x:Name="Root">

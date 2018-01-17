@@ -8,9 +8,6 @@
              xmlns:converers="clr-namespace:UIClient.Converters"
 			 mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="500">
-	<UserControl.Resources>
-		<converers:TestConverter x:Key="Test"/>
-	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
@@ -50,7 +47,7 @@
 						ScrollViewer.VerticalScrollBarVisibility="Auto"
 					  Margin="10">
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="Measurement Time" Width="120" Binding="{Binding Converter={StaticResource Test}}"/>
+					<DataGridTextColumn Header="Measurement Time" Width="120" Binding="{Binding Item1}"/>
 					<DataGridTextColumn Header="Measurement Value" Width="120" Binding="{Binding Item2}"/>
 				</DataGrid.Columns>
 			</DataGrid>
