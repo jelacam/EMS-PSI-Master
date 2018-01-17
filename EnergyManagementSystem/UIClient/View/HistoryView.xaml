@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UIClient.View"
 			 xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-             mc:Ignorable="d" 
+             xmlns:converers="clr-namespace:UIClient.Converters"
+			 mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="500">
+	<UserControl.Resources>
+		<converers:TestConverter x:Key="Test"/>
+	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
@@ -40,14 +44,14 @@
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 
-			<DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source=MeasurementsList}"
+			<DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeasurementsList}"
 					  AutoGenerateColumns="False" 
 					  ScrollViewer.CanContentScroll="True" 
 						ScrollViewer.VerticalScrollBarVisibility="Auto"
 					  Margin="10">
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="Measurement Time" Width="120"/>
-					<DataGridTextColumn Header="Measurement Value" Width="120"/>
+					<DataGridTextColumn Header="Measurement Time" Width="120" Binding="{Binding Converter={StaticResource Test}}"/>
+					<DataGridTextColumn Header="Measurement Value" Width="120" Binding="{Binding Item2}"/>
 				</DataGrid.Columns>
 			</DataGrid>
 		</Grid>

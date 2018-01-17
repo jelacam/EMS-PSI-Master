@@ -41,8 +41,8 @@
 
 									<chartingToolkit:LineSeries Title="Value"  
 																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=MeasurementValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp}"
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
 																IsSelectionEnabled="False"
 																Style="{StaticResource LineSeriesStyle}"
                                     >
@@ -53,7 +53,7 @@
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)"  />
 										</chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
@@ -86,8 +86,8 @@
 
 									<chartingToolkit:LineSeries Title="Value"  
 																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=MeasurementValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp}"
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
 																IsSelectionEnabled="False"
 																Style="{StaticResource LineSeriesStyle}"
                                     >
@@ -98,7 +98,7 @@
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)" />
 										</chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>

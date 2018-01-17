@@ -10,10 +10,10 @@ namespace EMS.ServiceContracts
     {
         public long Gid { get; set; }
 
-        public float MeasurementValue { get; set; }
+        public float CurrentValue { get; set; }
 
         public string AlarmType { get; set; }
 
-        public float TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

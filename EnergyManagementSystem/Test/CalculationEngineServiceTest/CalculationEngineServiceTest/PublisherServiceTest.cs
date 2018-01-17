@@ -2,6 +2,7 @@
 using EMS.Services.CalculationEngineService.PubSub;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.ServiceModel;
 
 namespace CalculationEngineServiceTest
@@ -26,8 +27,8 @@ namespace CalculationEngineServiceTest
             {
                 AlarmType = "Optimized alarm",
                 Gid = 10120310403204,
-                MeasurementValue = 15f,
-                TimeStamp = 10f
+                CurrentValue = 15f,
+                TimeStamp = DateTime.Now
             };
         }
 

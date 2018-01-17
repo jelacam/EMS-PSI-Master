@@ -97,10 +97,10 @@ namespace EMS.Services.CalculationEngineService
 
 
             // proba
-            HelpFunction();
-            List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(helpMU);
-            List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(helpMU);
-            helpMU.Clear();
+            //HelpFunction();
+            //List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(helpMU);
+            //List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(helpMU);
+            //helpMU.Clear();
 
             GAOptimization gao = new GAOptimization(16);
             gao.StartAlgorithm();
@@ -110,8 +110,8 @@ namespace EMS.Services.CalculationEngineService
 
 
             // linearna optimizacija
-            // List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(measurements);
-            // List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(measurements);
+            List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(measurements);
+            List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(measurements);
 
             powerOfConsumers = CalculateConsumption(measurementFromConsumers);
             List<MeasurementUnit> measurementsOptimizedLinear = null;
@@ -121,7 +121,8 @@ namespace EMS.Services.CalculationEngineService
                 measurementsOptimizedLinear = LinearOptimization(measurementFromGenerators);
             }
 
-            // bool alarmOptimized = true;           
+
+            PublisToUI(measurementFromConsumers);
 
             if (measurementsOptimizedLinear != null)
             {
@@ -134,49 +135,8 @@ namespace EMS.Services.CalculationEngineService
 
                     Console.WriteLine("CE: Optimize");
 
-                    #region ovo treba izbaciti?
-                    /*
-					for (int i = 0; i < measurementsOptimized.Count; i++)
-					{
-                        //measurementsOptimized[i].CurrentValue = measurements[i].CurrentValue * 2;
-
-                        alarmOptimized = CheckForOptimizedAlarms(measurementsOptimized[i].OptimizedLinear, measurementsOptimized[i].MinValue, measurementsOptimized[i].MaxValue, measurementsOptimized[i].Gid);
-						if (alarmOptimized == false)
-						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1}", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-							Console.WriteLine("gid: {0} value: {1}", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-						}
-						else
-						{
-							CommonTrace.WriteTrace(CommonTrace.TraceInfo, "gid: {0} value: {1} ALARM!", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-							Console.WriteLine("gid: {0} value: {1} ALARM!", measurementsOptimized[i].Gid, measurementsOptimized[i].OptimizedLinear);
-						}
-
-						MeasurementUI measUI = new MeasurementUI()
-						{
-							Gid = measurementsOptimized[i].Gid,
-							AlarmType = alarmOptimized ? "Alarm while optimizing" : string.Empty,
-							MeasurementValue = measurementsOptimized[i].OptimizedLinear
-						};
-
-						try
-						{
-							publisher.PublishOptimizationResults(measUI);
-						}
-						catch (Exception ex)
-						{
-							throw ex;
-						}
-					}
-
-					if (alarmOptimized == false)
-					{
-						result = true;
-					}
-                    */
-                    #endregion
-
                     // izabrati bolji rezultat optimizacije
+                    PublisToUI(measurementsOptimizedLinear);
 
                     try
                     {
@@ -202,6 +162,19 @@ namespace EMS.Services.CalculationEngineService
             totalCostGeneric = 0;
 
             return result;
+        }
+
+        private void PublisToUI(List<MeasurementUnit> measurementFromConsumers)
+        {
+            foreach (var meas in measurementFromConsumers)
+            {
+                MeasurementUI measUI = new MeasurementUI();
+                measUI.Gid = meas.Gid;
+                measUI.CurrentValue = meas.CurrentValue;
+                measUI.TimeStamp = DateTime.Now;
+
+                publisher.PublishOptimizationResults(measUI);
+            }
         }
 
         #region Database methods
@@ -576,7 +549,7 @@ namespace EMS.Services.CalculationEngineService
 
                                 production += help.ToString() + "+";
 
-                                goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
+                                goal += help.ToString() + "*" +  loms[i].Price.ToString() + "+";
                             }
 
                             production = production.Substring(0, production.Length - 1);

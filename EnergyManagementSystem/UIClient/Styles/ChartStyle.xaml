@@ -305,10 +305,9 @@
 
 	<Style TargetType="charting:LinearAxis" BasedOn="{StaticResource RangeAxisStyle}">
 	</Style>
-	<!--<Style TargetType="charting:DateTimeAxis" BasedOn="{StaticResource DisplayAxisStyle}">
-		<Setter Property="AxisLabelStyle" Value="{StaticResource AxisLabelStyle}"/>
+	<Style TargetType="charting:DateTimeAxis" BasedOn="{StaticResource RangeAxisStyle}">
 	</Style>
-	<Style TargetType="charting:CategoryAxis" BasedOn="{StaticResource DisplayAxisStyle}">
+	<!--<Style TargetType="charting:CategoryAxis" BasedOn="{StaticResource DisplayAxisStyle}">
 		<Setter Property="AxisLabelStyle" Value="{StaticResource AxisLabelStyle}"/>
 	</Style>-->
 
