@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="UIClient.View.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIClient.View"
+			 xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="500">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+
+			<TextBox Grid.Row="0" Grid.Column="0" Text="{Binding GeneratorGid}"
+					 Margin="10" Width="200"></TextBox>
+
+			<toolkit:DateTimePicker Grid.Row="1" Grid.Column="0" Margin="10"></toolkit:DateTimePicker>
+
+			<toolkit:DateTimePicker Grid.Row="2" Grid.Column="0" Margin="10"></toolkit:DateTimePicker>
+
+			<Button Grid.Row="2" Grid.Column="2" Content="Show" Margin="10" 
+					Command="{Binding ShowDataCommand}"></Button>
+
+		</Grid>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+
+			<DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source=MeasurementsList}"
+					  AutoGenerateColumns="False" 
+					  ScrollViewer.CanContentScroll="True" 
+						ScrollViewer.VerticalScrollBarVisibility="Auto"
+					  Margin="10">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Measurement Time" Width="120"/>
+					<DataGridTextColumn Header="Measurement Value" Width="120"/>
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
+	</Grid>
+</UserControl>

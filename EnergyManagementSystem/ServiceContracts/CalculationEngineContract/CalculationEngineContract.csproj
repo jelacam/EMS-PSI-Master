@@ -62,7 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalculationEngineProxy.cs" />
+    <Compile Include="CalculationEngineUIProxy.cs" />
     <Compile Include="ICalculationEngineContract.cs" />
+    <Compile Include="ICalculationEngineUIContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

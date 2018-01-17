@@ -3,10 +3,12 @@
     public class MainWindowViewModel : ViewModelBase
     {
         private DashboardViewModel dashboardViewModel;
+        private AlarmSummaryViewMode alarmSummaryViewModel;
 
         public MainWindowViewModel()
         {
             DashboardViewModel = new DashboardViewModel();
+            AlarmSummaryViewModel = new AlarmSummaryViewMode();
         }
 
         public DashboardViewModel DashboardViewModel
@@ -22,5 +24,20 @@
                 OnPropertyChanged();
             }
         }
+
+        public AlarmSummaryViewMode AlarmSummaryViewModel
+        {
+            get
+            {
+                return alarmSummaryViewModel;
+            }
+
+            set
+            {
+                alarmSummaryViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
     }
 }
