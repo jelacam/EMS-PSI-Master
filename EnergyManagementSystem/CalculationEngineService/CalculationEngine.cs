@@ -89,18 +89,12 @@ namespace EMS.Services.CalculationEngineService
         /// <summary>
         /// Optimization algorithm
         /// </summary>
-        /// <param name="measurements">list of measurements which should be optimized</param>
+        /// <param name="measEnergyConsumers">list of measurements for Energy Consumers</param>
+        /// <param name="measGenerators">list of measurements for Generators</param>
         /// <returns>returns true if optimization was successful</returns>
-        public bool Optimize(List<MeasurementUnit> measurements)
+        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
         {
             bool result = false;
-
-
-            // proba
-            //HelpFunction();
-            //List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(helpMU);
-            //List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(helpMU);
-            //helpMU.Clear();
 
             GAOptimization gao = new GAOptimization(16);
             gao.StartAlgorithm();
@@ -108,21 +102,15 @@ namespace EMS.Services.CalculationEngineService
             // this.HelpFunction();
             // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
 
-
             // linearna optimizacija
-            List<MeasurementUnit> measurementFromConsumers = SeparateEnergyConsumers(measurements);
-            List<MeasurementUnit> measurementFromGenerators = SeparateSynchronousMachines(measurements);
-
-            powerOfConsumers = CalculateConsumption(measurementFromConsumers);
             List<MeasurementUnit> measurementsOptimizedLinear = null;
 
             if (0 <= powerOfConsumers && powerOfConsumers <= maxProduction)
             {
-                measurementsOptimizedLinear = LinearOptimization(measurementFromGenerators);
+                measurementsOptimizedLinear = LinearOptimization(measGenerators);
             }
 
-
-            PublisToUI(measurementFromConsumers);
+            PublisToUI(measEnergyConsumers);
 
             if (measurementsOptimizedLinear != null)
             {
@@ -145,10 +133,9 @@ namespace EMS.Services.CalculationEngineService
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
                             Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
 
-                            result = true; // da li treba ovde?
+                            result = true; 
                         }
 
-                        result = true; // ili ovde?
                     }
                     catch (Exception ex)
                     {
@@ -264,30 +251,6 @@ namespace EMS.Services.CalculationEngineService
         }
 
         #endregion Database methods
-
-        #region Separate measurements
-
-        /// <summary>
-        /// Separate synchronous machines from list of measurement units
-        /// </summary>
-        /// <param name="measurements">list of measurement units</param>
-        /// <returns>list of measurement units for synchrononous machines</returns>
-        private List<MeasurementUnit> SeparateSynchronousMachines(List<MeasurementUnit> measurements)
-        {
-            return measurements.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-        }
-
-        /// <summary>
-        /// Separate energy consumers from list of measurement units
-        /// </summary>
-        /// <param name="measurements">list of measurement units</param>
-        /// <returns>list of measurement units for energy consumers</returns>
-        private List<MeasurementUnit> SeparateEnergyConsumers(List<MeasurementUnit> measurements)
-        {
-            return measurements.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-        }
-
-        #endregion Separate measurements
 
         #region Checking alarms
 

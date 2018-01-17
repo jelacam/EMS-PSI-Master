@@ -77,12 +77,12 @@ namespace EMS.ServiceContracts
         /// <summary>
         /// Optimization algorithm
         /// </summary>
-        /// <param name="measurements">list of measurements which should be optimized</param>
+        /// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
+        /// <param name="measGenerators">list of measurements for generators</param>
         /// <returns>returns true if optimization was successful</returns>
-        public bool OptimisationAlgorithm(List<MeasurementUnit> measurements)
+        public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
         {
-            // throw new NotImplementedException();
-            return proxy.OptimisationAlgorithm(measurements);
+            return proxy.OptimisationAlgorithm(measEnergyConsumers,measGenerators);
         }
     }
 }
