@@ -9,11 +9,20 @@
 		xmlns:view="clr-namespace:UIClient.View"
         xmlns:converters="clr-namespace:UIClient.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000"
+        Title="MainWindow" Height="700" Width="1250"
         Name="mainWin"
 		Style="{StaticResource BasicWindowStyle}">
 	<Grid>
 		<TabControl Style="{StaticResource TabControlStyle}">
+
+			<TabItem Header="Dashboard" Style="{StaticResource TabItemStyle}">
+				<TabItem.ContentTemplate>
+					<DataTemplate>
+						<view:DashboardView DataContext="{Binding Path=DataContext.DashboardViewModel,RelativeSource={RelativeSource AncestorType=Window}}"/>
+					</DataTemplate>
+				</TabItem.ContentTemplate>
+			</TabItem>
+
 			<TabItem Header="NMS" Style="{StaticResource TabItemStyle}">
 				<TabItem.ContentTemplate>
 					<DataTemplate>
@@ -25,13 +34,6 @@
 				<TabItem.ContentTemplate>
 					<DataTemplate>
 						<view:ImporterView></view:ImporterView>
-					</DataTemplate>
-				</TabItem.ContentTemplate>
-			</TabItem>
-			<TabItem Header="Dashboard" Style="{StaticResource TabItemStyle}">
-				<TabItem.ContentTemplate>
-					<DataTemplate>
-						<view:DashboardView DataContext="{Binding Path=DataContext.DashboardViewModel,RelativeSource={RelativeSource AncestorType=Window}}"/>
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>

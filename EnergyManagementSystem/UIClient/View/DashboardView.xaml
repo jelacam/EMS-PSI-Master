@@ -14,43 +14,103 @@
 		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
 	</UserControl.Resources>
 	<Grid>
-		<ItemsControl ItemsSource="{Binding GeneratorsContainer}" >
+		<ScrollViewer>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<DockPanel Grid.Row="0">
+					<TextBlock DockPanel.Dock="Top" Style="{StaticResource Title}" Foreground="DarkGreen" Text="Generators" Margin="20,20,10,0"/>
+					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" >
 
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<chartingToolkit:Chart Grid.Row="1" Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-                             Foreground="White" IsEnabled="True"
-							 LegendStyle="{StaticResource LegendStyle}"
-							 Style="{StaticResource DashboardChartStyle}"
-							 Width="400" Height="250">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
 
-						<chartingToolkit:LineSeries Title="Value"  
-                                    ItemsSource="{Binding Path=Value}" 
-                                    DependentValueBinding="{Binding Path=MeasurementValue}" 
-                                    IndependentValueBinding="{Binding Path=TimeStamp}"
-                                    IsSelectionEnabled="False"
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+													   Foreground="White" IsEnabled="True"
+													   LegendStyle="{StaticResource LegendStyle}"
+													   TitleStyle="{StaticResource TitleStyle}"
+													   Style="{StaticResource DashboardChartStyle}"
+													   Width="400" Height="250">
+
+									<chartingToolkit:LineSeries Title="Value"  
+																ItemsSource="{Binding Path=Value}" 
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
+																IsSelectionEnabled="False"
+																Style="{StaticResource LineSeriesStyle}"
                                     >
-							<chartingToolkit:LineSeries.DataPointStyle>
-								<Style TargetType="chartingToolkit:LineDataPoint">
-									<Setter Property="Background" Value="DarkGreen"/>
-								</Style>
-							</chartingToolkit:LineSeries.DataPointStyle>
-							<chartingToolkit:LineSeries.IndependentAxis>
-								<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
-							</chartingToolkit:LineSeries.IndependentAxis>
-							<chartingToolkit:LineSeries.DependentRangeAxis>
-								<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-							</chartingToolkit:LineSeries.DependentRangeAxis>
-						</chartingToolkit:LineSeries>
-					</chartingToolkit:Chart>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
+										<chartingToolkit:LineSeries.DataPointStyle>
+											<Style TargetType="chartingToolkit:LineDataPoint">
+												<Setter Property="Background" Value="DarkGreen"/>
+												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+											</Style>
+										</chartingToolkit:LineSeries.DataPointStyle>
+										<chartingToolkit:LineSeries.IndependentAxis>
+											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)"  />
+										</chartingToolkit:LineSeries.IndependentAxis>
+										<chartingToolkit:LineSeries.DependentRangeAxis>
+											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+										</chartingToolkit:LineSeries.DependentRangeAxis>
+									</chartingToolkit:LineSeries>
+								</chartingToolkit:Chart>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DockPanel>
+
+				<DockPanel Grid.Row="1">
+					<TextBlock DockPanel.Dock="Top" Style="{StaticResource Title}" Foreground="Orange" Text="Energy Consumers" Margin="20,20,10,0"/>
+
+					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" >
+
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+													   Foreground="White" IsEnabled="True"
+													   LegendStyle="{StaticResource LegendStyle}"
+													   Style="{StaticResource DashboardChartStyle}"
+													   Width="400" Height="250">
+
+									<chartingToolkit:LineSeries Title="Value"  
+																ItemsSource="{Binding Path=Value}" 
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp, StringFormat=t}"
+																IsSelectionEnabled="False"
+																Style="{StaticResource LineSeriesStyle}"
+                                    >
+										<chartingToolkit:LineSeries.DataPointStyle>
+											<Style TargetType="chartingToolkit:LineDataPoint">
+												<Setter Property="Background" Value="Orange"/>
+												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+											</Style>
+										</chartingToolkit:LineSeries.DataPointStyle>
+										<chartingToolkit:LineSeries.IndependentAxis>
+											<chartingToolkit:DateTimeAxis Orientation="X" Title="Time (s)" />
+										</chartingToolkit:LineSeries.IndependentAxis>
+										<chartingToolkit:LineSeries.DependentRangeAxis>
+											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+										</chartingToolkit:LineSeries.DependentRangeAxis>
+									</chartingToolkit:LineSeries>
+								</chartingToolkit:Chart>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DockPanel>
+			</Grid>
+
+		</ScrollViewer>
 	</Grid>
 </UserControl>

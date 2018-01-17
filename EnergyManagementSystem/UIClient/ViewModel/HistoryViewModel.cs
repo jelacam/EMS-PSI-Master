@@ -11,10 +11,14 @@ namespace UIClient.ViewModel
 	{
 		private ICommand showDataCommand;
 		private string generatorGid;
+        private List<Tuple<double, DateTime>> measurementsList;
 
-		public HistoryViewModel(HistoryView mainWindow)
+        public HistoryViewModel(HistoryView mainWindow)
 		{
-		}
+            measurementsList = new List<Tuple<double, DateTime>>();
+            measurementsList.Add(new Tuple<double, DateTime>(4.3, DateTime.Now));
+            OnPropertyChanged(nameof(MeasurementsList));
+        }
 
 		#region Commands
 
@@ -30,11 +34,24 @@ namespace UIClient.ViewModel
 			set { this.generatorGid = value; }
 		}
 
-		#endregion
+        public List<Tuple<double, DateTime>> MeasurementsList
+        {
+            get
+            {
+                return measurementsList;
+            }
 
-		#region Command Executions
+            set
+            {
+                measurementsList = value;
+            }
+        }
 
-		private void ShowDataCommandExecute(object obj)
+        #endregion
+
+        #region Command Executions
+
+        private void ShowDataCommandExecute(object obj)
 		{
 			if (generatorGid != string.Empty)
 			{
@@ -45,7 +62,7 @@ namespace UIClient.ViewModel
 						long gid = Convert.ToInt64(generatorGid);
 						try
 						{
-							List<Tuple<double, DateTime>> measurementsList = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid);
+							MeasurementsList = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid);
 						}
 						catch (Exception ex)
 						{
