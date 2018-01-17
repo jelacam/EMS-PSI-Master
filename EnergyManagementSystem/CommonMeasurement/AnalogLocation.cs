@@ -31,9 +31,14 @@ namespace EMS.CommonMeasurement
         public int StartAddress { get; set; }
 
         /// <summary>
-        /// Gets or sets Length of the entity
+        /// Gets or sets Length of the entity 
         /// </summary>
         public int Length { get; set; }
+
+        /// <summary>
+        /// Gets or sets Length of the entity in bytes
+        /// </summary>
+        public int LengthInBytes { get; set; }
 
         public object Clone()
         {
@@ -41,6 +46,7 @@ namespace EMS.CommonMeasurement
             alocation.Analog = Analog;
             alocation.StartAddress = StartAddress;
             alocation.Length = Length;
+            alocation.LengthInBytes = LengthInBytes;
 
             return alocation;
         }

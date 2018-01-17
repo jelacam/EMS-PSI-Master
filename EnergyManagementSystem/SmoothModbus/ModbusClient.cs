@@ -11,7 +11,7 @@ namespace SmoothModbus
     public class ModbusClient
     {
         private TcpClient client;
-        private byte[] receiveData = new byte[100];
+        private byte[] receiveData = new byte[500];
         private byte[] sendData = new byte[5];
 
         private byte[] header = new byte[7]

@@ -22,14 +22,24 @@ namespace EMS.Services.SCADACrunchingService
     public class SCADACrunching : IScadaCRContract, ITransactionContract
     {
         /// <summary>
-        /// list for storing AnalogLocation values
+        /// list for storing AnalogLocation values for generators
         /// </summary>
-        private static List<AnalogLocation> listOfAnalog;
+        private static List<AnalogLocation> generatorAnalogs;
+
+        /// <summary>
+        /// list for storing AnalogLocation values for energyConsumers
+        /// </summary>
+        private static List<AnalogLocation> energyConsumersAnalogs;
 
         /// <summary>
         /// list for storing copy of AnalogLocation values
         /// </summary>
-        private static List<AnalogLocation> listOfAnalogCopy;
+        private static List<AnalogLocation> generatorAnalogsCopy;
+
+        /// <summary>
+        /// list for storing copy of AnalogLocation values
+        /// </summary>
+        private static List<AnalogLocation> energyConsumersAnalogsCopy;
 
         private UpdateResult updateResult;
 
@@ -44,6 +54,7 @@ namespace EMS.Services.SCADACrunchingService
 
         /// <summary>
         private string message = string.Empty;
+        private readonly int START_ADDRESS_GENERATOR = 50;
 
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
         /// </summary>
@@ -51,23 +62,12 @@ namespace EMS.Services.SCADACrunchingService
         {
             this.convertorHelper = new ConvertorHelper();
 
-            // TODO treba izmeniti kad se napravi transakcija sa NMS-om
-            listOfAnalog = new List<AnalogLocation>();
-            listOfAnalogCopy = new List<AnalogLocation>();
+            generatorAnalogs = new List<AnalogLocation>();
+            generatorAnalogsCopy = new List<AnalogLocation>();
 
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    Analog analog = new Analog(10000 + i);
-            //    analog.MinValue = 0;
-            //    analog.MaxValue = 5;
-            //    analog.PowerSystemResource = 20000 + i;
-            //    this.listOfAnalog.Add(new AnalogLocation()
-            //    {
-            //        Analog = analog,
-            //        StartAddress = i * 2, // flaot value 4bytes
-            //        Length = 2
-            //    });
-            //}
+            energyConsumersAnalogs = new List<AnalogLocation>();
+            energyConsumersAnalogsCopy = new List<AnalogLocation>();
+
 
             modelResourcesDesc = new ModelResourcesDesc();
         }
@@ -78,15 +78,24 @@ namespace EMS.Services.SCADACrunchingService
         {
             try
             {
-                listOfAnalog.Clear();
-                foreach (AnalogLocation alocation in listOfAnalogCopy)
+                generatorAnalogs.Clear();
+                energyConsumersAnalogs.Clear();
+
+                foreach (AnalogLocation alocation in generatorAnalogsCopy)
                 {
-                    listOfAnalog.Add(alocation.Clone() as AnalogLocation);
+                    generatorAnalogs.Add(alocation.Clone() as AnalogLocation);
                 }
 
-                listOfAnalogCopy.Clear();
+                foreach (AnalogLocation alocation in energyConsumersAnalogsCopy)
+                {
+                    energyConsumersAnalogs.Add(alocation.Clone() as AnalogLocation);
+                }
+
+                generatorAnalogsCopy.Clear();
+                energyConsumersAnalogsCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction: Commit phase successfully finished.");
-                Console.WriteLine("Number of Analog values: {0}", listOfAnalog.Count);
+                Console.WriteLine("Number of generator Analog values: {0}", generatorAnalogs.Count);
+                Console.WriteLine("Number of energy consumer Analog values: {0}", energyConsumersAnalogs.Count);
                 return true;
             }
             catch (Exception e)
@@ -102,30 +111,46 @@ namespace EMS.Services.SCADACrunchingService
             {
                 transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
                 updateResult = new UpdateResult();
-                listOfAnalogCopy = new List<AnalogLocation>();
+
+                generatorAnalogsCopy.Clear();
+                energyConsumersAnalogsCopy.Clear();
 
                 // napravi kopiju od originala 
-                foreach (AnalogLocation alocation in listOfAnalog)
+                foreach (AnalogLocation alocation in generatorAnalogs)
                 {
-                    listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
+                    generatorAnalogsCopy.Add(alocation.Clone() as AnalogLocation);
+                }
+
+                foreach (AnalogLocation alocation in energyConsumersAnalogs)
+                {
+                    energyConsumersAnalogsCopy.Add(alocation.Clone() as AnalogLocation);
                 }
 
                 Analog analog = null;
-                //int i = 0; // analog counter for address
-                int i = listOfAnalogCopy.Count;
 
                 foreach (ResourceDescription analogRd in delta.InsertOperations)
                 {
-                    analog = ResourcesDescriptionConverter.ConvertToAnalog(analogRd);
+                    analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
 
-                    listOfAnalogCopy.Add(new AnalogLocation()
+                    if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
                     {
-                        Analog = analog,
-                        StartAddress = i * 2, // float value 4 bytes
-                        Length = 2
-                    });
-
-                    i++;
+                        energyConsumersAnalogsCopy.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = energyConsumersAnalogsCopy.Count * 2, // float value 4 bytes
+                            Length = 2,
+                            LengthInBytes = 4
+                        });
+                    }else
+                    {
+                        generatorAnalogsCopy.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = START_ADDRESS_GENERATOR + generatorAnalogsCopy.Count * 2, // float value 4 bytes
+                            Length = 2,
+                            LengthInBytes = 4
+                        });
+                    }
                 }
 
                 updateResult.Message = "SCADA CR Transaction Prepare finished.";
@@ -148,7 +173,8 @@ namespace EMS.Services.SCADACrunchingService
         {
             try
             {
-                listOfAnalogCopy.Clear();
+                generatorAnalogsCopy.Clear();
+                energyConsumersAnalogsCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Transaction rollback successfully finished!");
                 return true;
             }
@@ -168,38 +194,23 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns>returns true if success</returns>
         public bool SendValues(byte[] value)
         {
-            float eguVal;
-            bool alarmRaw;
-            bool alarmEGU;
-
             string function = Enum.GetName(typeof(FunctionCode), value[0]);
             Console.WriteLine("Function executed: {0}", function);
 
             int arrayLength = value[1];
+            byte[] data = new byte[arrayLength];
+
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-            List<MeasurementUnit> listOfMeasUnit = new List<MeasurementUnit>();
-            foreach (AnalogLocation analogLoc in listOfAnalog)
-            {
-                // startIndex = 2 because first two bytes a metadata
-                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.Length * 2, 2 + analogLoc.StartAddress * 2);
+            Array.Copy(value, 2, data, 0, arrayLength );
 
-                alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
-                eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-                alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
-
-                MeasurementUnit measUnit = new MeasurementUnit();
-                measUnit.Gid = analogLoc.Analog.PowerSystemResource;
-                measUnit.MinValue = analogLoc.Analog.MinValue;
-                measUnit.MaxValue = analogLoc.Analog.MaxValue;
-                measUnit.CurrentValue = eguVal;
-                listOfMeasUnit.Add(measUnit);
-            }
+            List <MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
+            List <MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, START_ADDRESS_GENERATOR);
 
             bool isSuccess = false;
             try
             {
-                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(listOfMeasUnit);
+                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits,generatorMeasUnits);
             }
             catch (Exception ex)
             {
@@ -209,11 +220,33 @@ namespace EMS.Services.SCADACrunchingService
 
             if (isSuccess)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Successfuly sent list with {0} items to CE.", listOfMeasUnit.Count);
-                Console.WriteLine("Successfuly sent list with {0} items to CE.", listOfMeasUnit.Count);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Successfuly sent items to CE.");
+                Console.WriteLine("Successfuly sent items to CE.");
             }
 
             return isSuccess;
+        }
+
+        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> generatorAnalogs, byte[] value, int startAddress)
+        {
+            List<MeasurementUnit> retList = new List<MeasurementUnit>();
+            foreach (AnalogLocation analogLoc in generatorAnalogs)
+            {
+                float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.LengthInBytes, startAddress + analogLoc.StartAddress * 2); // 2 jer su registri od 2 byte-a
+
+                bool alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
+                float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+
+                MeasurementUnit measUnit = new MeasurementUnit();
+                measUnit.Gid = analogLoc.Analog.PowerSystemResource;
+                measUnit.MinValue = analogLoc.Analog.MinValue;
+                measUnit.MaxValue = analogLoc.Analog.MaxValue;
+                measUnit.CurrentValue = eguVal;
+                retList.Add(measUnit);
+            }
+
+            return retList;
         }
 
         /// <summary>
@@ -260,19 +293,31 @@ namespace EMS.Services.SCADACrunchingService
                 return false;
             }
 
-            listOfAnalog.Clear();
             try
             {
-                int i = 0;
                 foreach (ResourceDescription rd in retList)
                 {
-                    Analog analog = ResourcesDescriptionConverter.ConvertToAnalog(rd);
-                    listOfAnalog.Add(new AnalogLocation()
+                    Analog analog = ResourcesDescriptionConverter.ConvertTo<Analog>(rd);
+
+                    if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
                     {
-                        Analog = analog,
-                        StartAddress = i++ * 2,
-                        Length = 2
-                    });
+                        energyConsumersAnalogs.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = energyConsumersAnalogs.Count * 2,
+                            Length = 2,
+                            LengthInBytes = 4
+                        });
+                    }else
+                    {
+                        generatorAnalogs.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = START_ADDRESS_GENERATOR + generatorAnalogs.Count * 2,
+                            Length = 2,
+                            LengthInBytes = 4
+                        });
+                    }
 
                 }
             }
@@ -284,9 +329,9 @@ namespace EMS.Services.SCADACrunchingService
                 return false;
             }
 
-            message = string.Format("Integrity update: Number of {0} values: {1}", modelCode.ToString(), listOfAnalog.Count.ToString());
+            message = string.Format("Integrity update: Number of {0} values: {1}", modelCode.ToString(), retList.Count.ToString());
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-            Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCode.ToString(), listOfAnalog.Count.ToString());
+            Console.WriteLine("Integrity update: Number of {0} values: {1}", modelCode.ToString(), retList.Count.ToString());
             return true;
         }
 
