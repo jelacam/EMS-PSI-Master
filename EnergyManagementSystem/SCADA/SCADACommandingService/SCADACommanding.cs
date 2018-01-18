@@ -120,7 +120,7 @@ namespace EMS.Services.SCADACommandingService
 
                 foreach (ResourceDescription analogRd in delta.InsertOperations)
                 {
-                    analog = ResourcesDescriptionConverter.ConvertToAnalog(analogRd);
+                    analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
 
                     listOfAnalogCopy.Add(new AnalogLocation()
                     {
@@ -236,7 +236,7 @@ namespace EMS.Services.SCADACommandingService
                 int i = 0;
                 foreach (ResourceDescription rd in retList)
                 {
-                    Analog analog = ResourcesDescriptionConverter.ConvertToAnalog(rd);
+                    Analog analog = ResourcesDescriptionConverter.ConvertTo<Analog>(rd);
                     listOfAnalog.Add(new AnalogLocation()
                     {
                         Analog = analog,
