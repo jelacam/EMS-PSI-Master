@@ -10,6 +10,7 @@ namespace EMS.Services.CalculationEngineService
 	using CommonMeasurement;
 	using NetworkModelService.DataModel.Wires;
 	using NetworkModelService.DataModel.Production;
+	using Common;
 
 	/// <summary>
 	/// class for OptimisationModel
@@ -189,14 +190,14 @@ namespace EMS.Services.CalculationEngineService
         /// </summary>
         public OptimisationModel()
         {
-            this.GlobalId = 0;
-            this.Price = 0;
-            this.MeasuredValue = 0;
-            this.linearOptimizedValue = 0;
-            this.GenericOptimizedValue = 0;
-            this.MinPower = 0;
-            this.MaxPower = 0;
-            this.Managable = 0;
+            globalId = 0;
+            price = 0;
+            measuredValue = 0;
+            linearOptimizedValue = 0;
+            genericOptimizedValue = 0;
+            minPower = 0;
+            maxPower = 0;
+            managable = 0;
         }
 
         /// <summary>
@@ -204,21 +205,91 @@ namespace EMS.Services.CalculationEngineService
         /// </summary>
         public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu)
         {
-            this.GlobalId = sm.GlobalId;
-            this.Price = emsf.UnitPrice; //izracunati
-            this.MeasuredValue = mu.CurrentValue;
-            this.linearOptimizedValue = 0; //izracunati
-            this.GenericOptimizedValue = 0; //izracunati
-            this.MinPower = sm.MinQ;
-            this.MaxPower = sm.MaxQ;
+			globalId = sm.GlobalId;
+			if (emsf.FuelType.Equals(EmsFuelType.wind))
+			{
+				price = CalculateWindPrice();
+			}
+			else
+			{
+				price = CalculatePrice(emsf, mu.CurrentValue, sm.MinQ, sm.MaxQ);
+			}
+			measuredValue = mu.CurrentValue;
+            linearOptimizedValue = 0; //izracunati
+            genericOptimizedValue = 0; //izracunati
+            minPower = sm.MinQ;
+            maxPower = sm.MaxQ;
             if (sm.Active)
             {
-                this.Managable = 1;
+                managable = 1;
             }
             else
             {
-                this.Managable = 0;
+                managable = 0;
             }
         }
-    }
+
+		public float CalculatePrice(EMSFuel emsf, float measuredValue, float minValue, float maxValue)
+		{
+			float price = 0;
+			float pct = 0;
+
+			pct = ((measuredValue - minValue) / (maxValue - minValue)) * 100;
+
+			if (pct < 10)
+			{
+				price = 1;
+			}
+			else if (10 <= pct && pct < 20)
+			{
+				price = 2;
+			}
+			else if (20 <= pct && pct < 30)
+			{
+				price = 2;
+			}
+			else if (30 <= pct && pct < 40)
+			{
+				price = 3;
+			}
+			else if (40 <= pct && pct < 50)
+			{
+				price = 4;
+			}
+			else if (50 <= pct && pct < 60)
+			{
+				price = 5;
+			}
+			else if (60 <= pct && pct < 70)
+			{
+				price = 7;
+			}
+			else if (70 <= pct && pct < 80)
+			{
+				price = 7;
+			}
+			else if (80 <= pct && pct < 90)
+			{
+				price = 8;
+			}
+			else if (90 <= pct && pct < 100)
+			{
+				price = 9;
+			}
+			else
+			{
+				price = 10;
+			}
+
+			price *= emsf.UnitPrice;
+			return price;
+		}
+
+		public float CalculateWindPrice()
+		{
+			float price = 1;
+
+			return price;
+		}
+	}
 }

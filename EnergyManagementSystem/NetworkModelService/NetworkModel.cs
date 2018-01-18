@@ -42,8 +42,8 @@ namespace EMS.Services.NetworkModelService
 
         private int deltaCount = 0;
 
-        private readonly string MODE = "DATABASE";
-       //  private readonly string MODE = "FILE";
+        // private readonly string MODE = "DATABASE";
+		private readonly string MODE = "FILE";
 
         /// <summary>
         /// Initializes a new instance of the Model class.
