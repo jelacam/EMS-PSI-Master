@@ -24,6 +24,6 @@ namespace EMS.ServiceContracts
 		/// <param name="gid">Object gid</param>
 		/// <returns>return list of measurements value and measurement time</returns>
 		[OperationContract]
-		List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid);
+		List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime);
 	}
 }
