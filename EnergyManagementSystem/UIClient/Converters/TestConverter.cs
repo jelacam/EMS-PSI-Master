@@ -14,7 +14,7 @@ namespace UIClient.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((DateTime)value).Second.ToString();
+            return value;
             //Dictionary<long, ObservableCollection<MeasurementUI>> dictionary = value as Dictionary<long, ObservableCollection<MeasurementUI>>;
             //if(dictionary == null || dictionary.Count == 0)
             //{
