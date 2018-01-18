@@ -124,7 +124,7 @@ namespace EMS.Services.CalculationEngineService
                     Console.WriteLine("CE: Optimize");
 
                     // izabrati bolji rezultat optimizacije
-                    PublisToUI(measurementsOptimizedLinear);
+                    PublisToUI(ref measurementsOptimizedLinear);
 
                     try
                     {
@@ -151,7 +151,7 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private void PublisToUI(List<MeasurementUnit> measurementsFromGenerators)
+        private void PublisToUI(ref List<MeasurementUnit> measurementsFromGenerators)
         {
             foreach (var meas in measurementsFromGenerators)
             {
@@ -159,6 +159,9 @@ namespace EMS.Services.CalculationEngineService
                 measUI.Gid = meas.Gid;
                 measUI.CurrentValue = meas.OptimizedLinear;
                 measUI.TimeStamp = DateTime.Now;
+
+                // setovanje current vrednosti na vrednost optimizovanu linearnim algoritmom
+                meas.CurrentValue = meas.OptimizedLinear;
 
                 publisher.PublishOptimizationResults(measUI);
             }
