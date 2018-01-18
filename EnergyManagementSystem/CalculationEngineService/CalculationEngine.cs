@@ -23,6 +23,7 @@ namespace EMS.Services.CalculationEngineService
     /// <summary>
     /// Class for CalculationEngine
     /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -799,6 +800,8 @@ namespace EMS.Services.CalculationEngineService
                 Console.WriteLine("Number of EMSFuels values: {0}", internalEmsFuels.Count);
                 Console.WriteLine("Number of SynchronousMachines values: {0}", internalSynchMachines.Count);
                 Console.WriteLine("Number of Energy Consumers values: {0}", internalSynchMachines.Count);
+
+                FillData();
                 return true;
             }
             catch (Exception e)
