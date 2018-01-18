@@ -95,7 +95,7 @@ namespace EMS.Services.CalculationEngineService
 			totalCostLinear = 0;
 			totalCostGeneric = 0;
 			powerOfConsumers = CalculateConsumption(measEnergyConsumers);
-			PublisToUI(measEnergyConsumers);
+			PublishConsumersToUI(measEnergyConsumers);
 			List<MeasurementUnit> measurementsOptimizedLinear = null;
 
 			//GAOptimization gao = new GAOptimization(16);
@@ -111,14 +111,7 @@ namespace EMS.Services.CalculationEngineService
 
 			Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
 			measurementsOptimizedLinear = LinearOptimization(measGenerators,powerOfConsumers);
-
-            if (0 <= powerOfConsumers && powerOfConsumers <= maxProduction)
-            {
-                measurementsOptimizedLinear = LinearOptimization(measGenerators);
-            }
-
-            PublisToUI(measEnergyConsumers);
-
+          
 			if (measurementsOptimizedLinear != null)
             {
                 if (measurementsOptimizedLinear.Count > 0)
@@ -128,7 +121,7 @@ namespace EMS.Services.CalculationEngineService
                         Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimizedLinear.Count);
                     }
 
-                    PublisToUI(measurementsOptimizedLinear);
+                    PublishGeneratorsToUI(ref measurementsOptimizedLinear);
 
                     try
                     {
@@ -152,7 +145,7 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private void PublisToUI(ref List<MeasurementUnit> measurementsFromGenerators)
+        private void PublishGeneratorsToUI(ref List<MeasurementUnit> measurementsFromGenerators)
         {
             foreach (var meas in measurementsFromGenerators)
             {
@@ -168,7 +161,7 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
-        private void PublisConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
+        private void PublishConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
         {
             foreach (var meas in measurementsFromConsumers)
             {
