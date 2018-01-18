@@ -110,7 +110,7 @@ namespace EMS.Services.CalculationEngineService
                 measurementsOptimizedLinear = LinearOptimization(measGenerators);
             }
 
-            PublisToUI(measEnergyConsumers);
+            PublisConsumersToUI(measEnergyConsumers);
 
             if (measurementsOptimizedLinear != null)
             {
@@ -151,9 +151,22 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private void PublisToUI(List<MeasurementUnit> measurementFromConsumers)
+        private void PublisToUI(List<MeasurementUnit> measurementsFromGenerators)
         {
-            foreach (var meas in measurementFromConsumers)
+            foreach (var meas in measurementsFromGenerators)
+            {
+                MeasurementUI measUI = new MeasurementUI();
+                measUI.Gid = meas.Gid;
+                measUI.CurrentValue = meas.OptimizedLinear;
+                measUI.TimeStamp = DateTime.Now;
+
+                publisher.PublishOptimizationResults(measUI);
+            }
+        }
+
+        private void PublisConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
+        {
+            foreach (var meas in measurementsFromConsumers)
             {
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
