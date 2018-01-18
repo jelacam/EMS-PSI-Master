@@ -98,7 +98,7 @@ namespace EMS.Services.SCADACommandingService
         /// Prepare method
         /// </summary>
         /// <param name="delta"></param>
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {

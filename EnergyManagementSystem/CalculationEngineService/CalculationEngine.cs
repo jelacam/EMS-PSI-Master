@@ -702,7 +702,7 @@ namespace EMS.Services.CalculationEngineService
 
         #region Transaction
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {

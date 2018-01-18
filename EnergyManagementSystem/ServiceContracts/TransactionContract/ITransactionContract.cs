@@ -12,7 +12,7 @@ namespace EMS.ServiceContracts
     public interface ITransactionContract
     {
         [OperationContract(IsOneWay = false)]
-        UpdateResult Prepare(Delta delta);
+        UpdateResult Prepare(ref Delta delta);
 
         [OperationContract(IsOneWay = false)]
         bool Commit(Delta delta);

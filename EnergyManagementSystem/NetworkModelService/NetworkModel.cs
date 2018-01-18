@@ -985,7 +985,7 @@ namespace EMS.Services.NetworkModelService
 
         #region Transaction
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
 

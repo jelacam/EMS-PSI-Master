@@ -122,19 +122,28 @@ namespace EMS.Services.TransactionManagerService
             }
 
             // first transaction - send delta to NMS
-            updateResult = TransactionNMSProxy.Instance.Prepare(delta);
+            updateResult = TransactionNMSProxy.Instance.Prepare(ref delta);
+
+            // create new delta object from delta with gids
+            analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
+            emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
+            synchMachsDelta = delta.SeparateDeltaForEMSType(EMSType.SYNCHRONOUSMACHINE);
+            energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
+
+            ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
+
 
             // second transaction - send ceDelta to CE
             if (toRespond == 2)
             {
-                TransactionCEProxy.Instance.Prepare(ceDelta);
+                TransactionCEProxy.Instance.Prepare(ref ceDelta);
             }
             else if (toRespond == 3)
             {
                 // second transaction - send ceDelta to CE, analogDelta to SCADA
-                TransactionCEProxy.Instance.Prepare(ceDelta);
-                TransactionCRProxy.Instance.Prepare(analogsDelta);
-                TransactionCMDProxy.Instance.Prepare(analogsDelta);
+                TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                TransactionCRProxy.Instance.Prepare(ref analogsDelta);
+                TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
             }
 
             return updateResult;
