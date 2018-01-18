@@ -1,8 +1,6 @@
 ﻿using EMS.CommonMeasurement;
 using EMS.Services.CalculationEngineService;
-using GAF;
-using GAF.Extensions;
-using GAF.Operators;
+using EMS.Services.CalculationEngineService.GeneticAlgorithm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,84 +13,113 @@ namespace EMS.Services.CalculationEngineService
     {
         private readonly int ELITIMS_PERCENTAGE = 5;
         private readonly int CHROMOSOME_NUMBER = 100;
-        private readonly long MAX_EVALUATIONS = 10;
-        private double necessaryEnergy;
 
-        public GAOptimization(double necessaryEnergy)
+        private readonly float mutationRate = 0.01f;
+        private readonly int MIN_VALUE = 0;
+        private readonly int MAX_VALUE = 100;
+
+        private float[] setOfValues;
+        private float necessaryEnergy;
+        private Random random;
+        private GeneticAlgorithm<float> ga;
+        private Dictionary<long, OptimisationModel> optModelMap;
+        private Dictionary<int, long> indexToGid;
+
+        public GAOptimization(float necessaryEnergy, Dictionary<long, OptimisationModel> optModelMap)
         {
+            InitValues();
+            indexToGid = new Dictionary<int, long>();
+
+            int i = 0;
+            foreach(var valPair in optModelMap)
+            {
+                indexToGid.Add(i++, valPair.Key);
+            }
+
             this.necessaryEnergy = necessaryEnergy;
+            this.optModelMap = optModelMap;
         }
 
+        private void InitValues()
+        {
+            float currentVal = MIN_VALUE;
+            List<float> retList = new List<float>();
+
+            while (currentVal < MAX_VALUE)
+            {
+                retList.Add(currentVal);
+                currentVal += mutationRate;
+            }
+            setOfValues = retList.ToArray();
+        }
 
         public void StartAlgorithm()
         {
-            Population population = new Population();
-            Random rnd = new Random();
-            for (int i = 0; i < CHROMOSOME_NUMBER; i++)
-            {
-                var chromosome = new Chromosome();
-
-                double firstGenerator = rnd.NextDouble() * necessaryEnergy;
-
-                chromosome.Genes.Add(new Gene(firstGenerator));
-                chromosome.Genes.Add(new Gene(necessaryEnergy - firstGenerator));
-                population.Solutions.Add(chromosome);
-            }
-
-            //create the elite operator
-            var elite = new Elite(ELITIMS_PERCENTAGE);
-
-            //create the crossover operator
-            var crossover = new Crossover(0.8)
-            {
-                CrossoverType = CrossoverType.DoublePoint
-            };
-
-            //create the mutation operator
-            var mutate = new SwapMutate(0.02);
-
-            //create the GA
-            var ga = new GeneticAlgorithm(population, CalculateFitness);
-
-            //hook up to some useful events
-            ga.OnGenerationComplete += ga_OnGenerationComplete;
-            ga.OnRunComplete += ga_OnRunComplete;
-
-            //add the operators
-            ga.Operators.Add(elite);
-            ga.Operators.Add(crossover);
-            ga.Operators.Add(mutate);
-
-            //run the GA
-            //ga.Run(TerminateFun);
+            random = new Random();
+            ga = new GeneticAlgorithm<float>(1000, 2, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
+            ga.StartAndReturnBest(100);
         }
 
-        private bool TerminateFun(Population population, int currentGeneration, long currentEvaluation)
+        public List<MeasurementUnit> StartAlgorithmWithReturn()
         {
-            return false;
+            random = new Random();
+            ga = new GeneticAlgorithm<float>(1000, 2, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
+
+            float[] bestGenes = ga.StartAndReturnBest(100);
+            List<MeasurementUnit> retList = new List<MeasurementUnit>();
+
+            for(int i = 0; i < bestGenes.Length; i++)
+            {
+                retList.Add(new MeasurementUnit()
+                {
+                    CurrentValue = bestGenes[i],
+                    Gid = indexToGid[i],
+                    OptimizedGeneric = 1
+                });
+            }
+            return null;
         }
 
-        private void ga_OnGenerationComplete(object sender, GaEventArgs e)
+
+        private void Callback(float[] bestGenes)
         {
             throw new NotImplementedException();
         }
 
-        public double GetNextDoubleInRange(Random random, double minimum, double maximum)
+        private float fitnessFunction(DNA<float> dna)
         {
-            return random.NextDouble() * (maximum - minimum) + minimum;
+            float penalty = 10 * (necessaryEnergy - CalculateEnergy(dna));
+
+            if (penalty < 0)
+            {
+                penalty = 0;
+            }
+            return 1000 - (CalculateCost(dna) + penalty); // we need the smallest cost
         }
 
-        private double CalculateFitness(Chromosome chromosome)
+        private float CalculateEnergy(DNA<float> dna)
         {
-            double cost = CalculateCost(chromosome);
-            return 1 - cost / 1000;
+            float energySum = 0;
+
+            foreach (var gene in dna.Genes)
+            {
+                energySum += gene;
+            }
+
+            return energySum;
         }
 
-        private double CalculateCost(IList<Tuple<double, double>> generators)
+        private float GetRandomGene(int index)
         {
-            double cost = 0;
+            int i = random.Next(setOfValues.Length);
+            return setOfValues[i];
+        }
 
-            foreach (Tuple<double, double> generator in generators)
+        private float CalculateCost(IList<Tuple<float, float>> generators)
+        {
+            float cost = 0;
+
+            foreach (Tuple<float, float> generator in generators)
             {
                 cost += generator.Item1 * generator.Item2; //Item1 COST, Item2 Energy
             }
@@ -100,20 +127,13 @@ namespace EMS.Services.CalculationEngineService
             return cost;
         }
 
-        private double CalculateCost(Chromosome chromosome)
+        private float CalculateCost(DNA<float> dna)
         {
-            List<Tuple<double, double>> generators = new List<Tuple<double, double>>();
-            generators.Add(new Tuple<double, double>(6, chromosome.Genes[0].RealValue)); //Item1 COST, Item2 Energy
-            generators.Add(new Tuple<double, double>(5, chromosome.Genes[1].RealValue));
+            List<Tuple<float, float>> generators = new List<Tuple<float, float>>();
+            generators.Add(new Tuple<float, float>(6f, dna.Genes[0])); //Item1 COST, Item2 Energy
+            generators.Add(new Tuple<float, float>(5f, dna.Genes[1]));
 
             return CalculateCost(generators);
-        }
-
-        private void ga_OnRunComplete(object sender, GaEventArgs e)
-        {
-            var fittest = e.Population.GetTop(1)[0];
-            var cost = CalculateCost(fittest);
-            Console.WriteLine("Generation: {0}, Fitness: {1}, Cost: {2}", e.Generation, fittest.Fitness, cost);
         }
 
     }

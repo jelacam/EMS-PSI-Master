@@ -96,8 +96,8 @@ namespace EMS.Services.CalculationEngineService
         {
             bool result = false;
 
-            GAOptimization gao = new GAOptimization(16);
-            gao.StartAlgorithm();
+            DoGeneticAlgorithm(measEnergyConsumers, measGenerators);
+
 
             // this.HelpFunction();
             // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
@@ -133,7 +133,7 @@ namespace EMS.Services.CalculationEngineService
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
                             Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
 
-                            result = true; 
+                            result = true;
                         }
 
                     }
@@ -150,6 +150,37 @@ namespace EMS.Services.CalculationEngineService
 
             return result;
         }
+
+        private void DoGeneticAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
+        {
+            try
+            {
+                Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
+
+                foreach (var measUnit in measGenerators)
+                {
+                    if (synchronousMachines.ContainsKey(measUnit.Gid))
+                    {
+                        SynchronousMachine sm = synchronousMachines[measUnit.Gid];
+                        EMSFuel emsf = fuels[sm.Fuel];
+                        OptimisationModel om = new OptimisationModel(sm, emsf, measUnit);
+                        optModelMap.Add(om.GlobalId, om);
+                    }
+                }
+                float necessaryEnergy = measEnergyConsumers.Sum(x => x.CurrentValue);
+
+                GAOptimization gao = new GAOptimization(necessaryEnergy,optModelMap);
+
+                List<MeasurementUnit> optimized = gao.StartAlgorithmWithReturn();
+
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
 
         private void PublisToUI(List<MeasurementUnit> measurementFromConsumers)
         {
@@ -512,7 +543,7 @@ namespace EMS.Services.CalculationEngineService
 
                                 production += help.ToString() + "+";
 
-                                goal += help.ToString() + "*" +  loms[i].Price.ToString() + "+";
+                                goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
                             }
 
                             production = production.Substring(0, production.Length - 1);
