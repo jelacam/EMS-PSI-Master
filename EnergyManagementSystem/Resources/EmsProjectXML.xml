@@ -27,7 +27,7 @@
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
 		<cim:SynchronousMachine.maxQ>350</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.minQ>50</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
 		<cim:IdentifiedObject.mRID>SyncMachine_1</cim:IdentifiedObject.mRID>
@@ -41,7 +41,7 @@
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
 		<cim:SynchronousMachine.maxQ>350</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>10</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.minQ>25</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
 		<cim:IdentifiedObject.mRID>SyncMachine_2</cim:IdentifiedObject.mRID>
@@ -55,7 +55,7 @@
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
 		<cim:SynchronousMachine.maxQ>400</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>150</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
 		<cim:IdentifiedObject.mRID>SyncMachine_3</cim:IdentifiedObject.mRID>
@@ -66,26 +66,26 @@
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_1">
 		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
 		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
-		<cim:EnergyConsumer.qfixed>7</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
 		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_1</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
 	
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_2">
-		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
-		<cim:EnergyConsumer.pfixedPct>0.3</cim:EnergyConsumer.pfixedPct>
-		<cim:EnergyConsumer.qfixed>5</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
 		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_2</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
 	
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_3">
-		<cim:EnergyConsumer.pfixed>50</cim:EnergyConsumer.pfixed>
-		<cim:EnergyConsumer.pfixedPct>0.5</cim:EnergyConsumer.pfixedPct>
-		<cim:EnergyConsumer.qfixed>11</cim:EnergyConsumer.qfixed>
-		<cim:EnergyConsumer.qfixedPct>0.5</cim:EnergyConsumer.qfixedPct>
+		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_3</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
@@ -127,8 +127,8 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_4">
-		<cim:Analog.maxValue>100</cim:Analog.maxValue>
-		<cim:Analog.minValue>0</cim:Analog.minValue>
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
 		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
@@ -140,8 +140,8 @@
 	
 	<cim:Analog rdf:ID="Analog_5">
 		<cim:Analog.maxValue>200</cim:Analog.maxValue>
-		<cim:Analog.minValue>0</cim:Analog.minValue>
-		<cim:Analog.normalValue>75</cim:Analog.normalValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_2"/>
@@ -151,9 +151,9 @@
 	</cim:Analog>
 
 	<cim:Analog rdf:ID="Analog_6">
-		<cim:Analog.maxValue>50</cim:Analog.maxValue>
-		<cim:Analog.minValue>2</cim:Analog.minValue>
-		<cim:Analog.normalValue>20</cim:Analog.normalValue>
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_3"/>

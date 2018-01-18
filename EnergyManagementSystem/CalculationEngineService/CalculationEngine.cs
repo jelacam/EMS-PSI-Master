@@ -23,6 +23,7 @@ namespace EMS.Services.CalculationEngineService
     /// <summary>
     /// Class for CalculationEngine
     /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -111,8 +112,12 @@ namespace EMS.Services.CalculationEngineService
 			Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
 			measurementsOptimizedLinear = LinearOptimization(measGenerators,powerOfConsumers);
 
-            
-			// izabrati bolji rezultat optimizacije
+            if (0 <= powerOfConsumers && powerOfConsumers <= maxProduction)
+            {
+                measurementsOptimizedLinear = LinearOptimization(measGenerators);
+            }
+
+            PublisToUI(measEnergyConsumers);
 
 			if (measurementsOptimizedLinear != null)
             {
@@ -147,9 +152,25 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private void PublisToUI(List<MeasurementUnit> measurementFromConsumers)
+        private void PublisToUI(ref List<MeasurementUnit> measurementsFromGenerators)
         {
-            foreach (var meas in measurementFromConsumers)
+            foreach (var meas in measurementsFromGenerators)
+            {
+                MeasurementUI measUI = new MeasurementUI();
+                measUI.Gid = meas.Gid;
+                measUI.CurrentValue = meas.OptimizedLinear;
+                measUI.TimeStamp = DateTime.Now;
+
+                // setovanje current vrednosti na vrednost optimizovanu linearnim algoritmom
+                meas.CurrentValue = meas.OptimizedLinear;
+
+                publisher.PublishOptimizationResults(measUI);
+            }
+        }
+
+        private void PublisConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
+        {
+            foreach (var meas in measurementsFromConsumers)
             {
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
@@ -670,7 +691,7 @@ namespace EMS.Services.CalculationEngineService
 
         #region Transaction
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {
@@ -764,6 +785,8 @@ namespace EMS.Services.CalculationEngineService
                 Console.WriteLine("Number of EMSFuels values: {0}", internalEmsFuels.Count);
                 Console.WriteLine("Number of SynchronousMachines values: {0}", internalSynchMachines.Count);
                 Console.WriteLine("Number of Energy Consumers values: {0}", internalSynchMachines.Count);
+
+                FillData();
                 return true;
             }
             catch (Exception e)

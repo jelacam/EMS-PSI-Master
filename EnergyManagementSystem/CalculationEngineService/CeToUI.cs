@@ -33,12 +33,12 @@ namespace EMS.Services.CalculationEngineService
 			}
 		}
 
-		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid)
+		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
 		{
 			List<Tuple<double, DateTime>> retList = new List<Tuple<double, DateTime>>();
 			try
 			{
-				retList = ce.ReadMeasurementsFromDb(gid, DateTime.Now.AddHours(-1), DateTime.Now);
+				retList = ce.ReadMeasurementsFromDb(gid, startTime, endTime);
 			}
 			catch(Exception ex)
 			{

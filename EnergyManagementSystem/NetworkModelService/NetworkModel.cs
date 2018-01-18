@@ -42,7 +42,7 @@ namespace EMS.Services.NetworkModelService
 
         private int deltaCount = 0;
 
-        // private readonly string MODE = "DATABASE";
+		//private readonly string MODE = "DATABASE";
 		private readonly string MODE = "FILE";
 
         /// <summary>
@@ -985,7 +985,7 @@ namespace EMS.Services.NetworkModelService
 
         #region Transaction
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             transactionCallback = OperationContext.Current.GetCallbackChannel<ITransactionCallback>();
 

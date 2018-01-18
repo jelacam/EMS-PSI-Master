@@ -41,9 +41,9 @@ namespace EMS.Services.TransactionManagerService
             return proxy.Commit(delta);
         }
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
-            return proxy.Prepare(delta);
+            return proxy.Prepare(ref delta);
         }
 
         public bool Rollback()

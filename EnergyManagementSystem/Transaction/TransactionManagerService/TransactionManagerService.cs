@@ -99,20 +99,20 @@ namespace EMS.Services.TransactionManagerService
             Console.WriteLine("\n\n{0}", message);
         }
 
-        public void ScadaCRPrepare(Delta analogDelta)
-        {
-            TransactionCRProxy.Instance.Prepare(analogDelta);
-        }
+        //public void ScadaCRPrepare(ref Delta analogDelta)
+        //{
+        //    TransactionCRProxy.Instance.Prepare(ref analogDelta);
+        //}
 
-        public void ScadaCMDPrepare(Delta analogDelta)
-        {
-            TransactionCMDProxy.Instance.Prepare(analogDelta);
-        }
+        //public void ScadaCMDPrepare(Delta analogDelta)
+        //{
+        //    TransactionCMDProxy.Instance.Prepare(ref analogDelta);
+        //}
 
-        public void NMSPrepare(Delta delta)
-        {
-            TransactionNMSProxy.Instance.Prepare(delta);
-        }
+        //public void NMSPrepare(Delta delta)
+        //{
+        //    TransactionNMSProxy.Instance.Prepare(delta);
+        //}
 
     }
 }
