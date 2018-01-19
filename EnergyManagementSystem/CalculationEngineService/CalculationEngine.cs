@@ -153,6 +153,11 @@ namespace EMS.Services.CalculationEngineService
 
         private void DoGeneticAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
         {
+            if (measGenerators.Count == 0)
+            {
+                return;
+            }
+
             try
             {
                 Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
@@ -164,12 +169,17 @@ namespace EMS.Services.CalculationEngineService
                         SynchronousMachine sm = synchronousMachines[measUnit.Gid];
                         EMSFuel emsf = fuels[sm.Fuel];
                         OptimisationModel om = new OptimisationModel(sm, emsf, measUnit);
+
+                        if (emsf.FuelType == EmsFuelType.wind || emsf.FuelType == EmsFuelType.solar)
+                        {
+                            continue;
+                        }
                         optModelMap.Add(om.GlobalId, om);
                     }
                 }
                 float necessaryEnergy = measEnergyConsumers.Sum(x => x.CurrentValue);
 
-                GAOptimization gao = new GAOptimization(necessaryEnergy,optModelMap);
+                GAOptimization gao = new GAOptimization(necessaryEnergy, optModelMap);
 
                 List<MeasurementUnit> optimized = gao.StartAlgorithmWithReturn();
 
@@ -177,7 +187,7 @@ namespace EMS.Services.CalculationEngineService
             catch (Exception e)
             {
 
-                throw e;
+                var v = e;
             }
         }
 

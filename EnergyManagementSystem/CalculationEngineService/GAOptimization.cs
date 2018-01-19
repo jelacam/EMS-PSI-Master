@@ -27,11 +27,11 @@ namespace EMS.Services.CalculationEngineService
 
         public GAOptimization(float necessaryEnergy, Dictionary<long, OptimisationModel> optModelMap)
         {
-            InitValues();
+            //InitValues();
             indexToGid = new Dictionary<int, long>();
 
             int i = 0;
-            foreach(var valPair in optModelMap)
+            foreach (var valPair in optModelMap)
             {
                 indexToGid.Add(i++, valPair.Key);
             }
@@ -40,35 +40,35 @@ namespace EMS.Services.CalculationEngineService
             this.optModelMap = optModelMap;
         }
 
-        private void InitValues()
-        {
-            float currentVal = MIN_VALUE;
-            List<float> retList = new List<float>();
+        //private void InitValues()
+        //{
+        //    float currentVal = MIN_VALUE;
+        //    List<float> retList = new List<float>();
 
-            while (currentVal < MAX_VALUE)
-            {
-                retList.Add(currentVal);
-                currentVal += mutationRate;
-            }
-            setOfValues = retList.ToArray();
-        }
+        //    while (currentVal < MAX_VALUE)
+        //    {
+        //        retList.Add(currentVal);
+        //        currentVal += mutationRate;
+        //    }
+        //    setOfValues = retList.ToArray();
+        //}
 
         public void StartAlgorithm()
         {
             random = new Random();
-            ga = new GeneticAlgorithm<float>(1000, 2, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
-            ga.StartAndReturnBest(100);
+            ga = new GeneticAlgorithm<float>(1000, optModelMap.Count, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
+            
         }
 
         public List<MeasurementUnit> StartAlgorithmWithReturn()
         {
             random = new Random();
-            ga = new GeneticAlgorithm<float>(1000, 2, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
+            ga = new GeneticAlgorithm<float>(1000, optModelMap.Count, random, GetRandomGene, fitnessFunction, ELITIMS_PERCENTAGE, mutationRate);
 
             float[] bestGenes = ga.StartAndReturnBest(100);
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
 
-            for(int i = 0; i < bestGenes.Length; i++)
+            for (int i = 0; i < bestGenes.Length; i++)
             {
                 retList.Add(new MeasurementUnit()
                 {
@@ -77,7 +77,7 @@ namespace EMS.Services.CalculationEngineService
                     OptimizedGeneric = 1
                 });
             }
-            return null;
+            return retList;
         }
 
 
@@ -111,8 +111,17 @@ namespace EMS.Services.CalculationEngineService
 
         private float GetRandomGene(int index)
         {
-            int i = random.Next(setOfValues.Length);
-            return setOfValues[i];
+
+            var minPower = optModelMap[indexToGid[index]].MinPower;
+            var maxPower = optModelMap[indexToGid[index]].MaxPower;
+
+            return (float)GetRandomNumber(minPower, maxPower);
+        }
+
+        private double GetRandomNumber(float minPower, float maxPower)
+        {
+            Random random = new Random();
+            return random.NextDouble() * (maxPower - minPower) + minPower;
         }
 
         private float CalculateCost(IList<Tuple<float, float>> generators)
@@ -130,8 +139,12 @@ namespace EMS.Services.CalculationEngineService
         private float CalculateCost(DNA<float> dna)
         {
             List<Tuple<float, float>> generators = new List<Tuple<float, float>>();
-            generators.Add(new Tuple<float, float>(6f, dna.Genes[0])); //Item1 COST, Item2 Energy
-            generators.Add(new Tuple<float, float>(5f, dna.Genes[1]));
+            foreach (var keyPair in indexToGid)
+            {
+                float price = optModelMap[keyPair.Value].Price;
+                float energy = dna.Genes[keyPair.Key];
+                generators.Add(new Tuple<float, float>(price, energy)); //Item1 COST, Item2 Energy
+            }
 
             return CalculateCost(generators);
         }

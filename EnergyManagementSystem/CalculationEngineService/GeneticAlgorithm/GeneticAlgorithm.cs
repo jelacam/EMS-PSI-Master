@@ -89,8 +89,15 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 {
                     DNA<T> parent1 = ChooseParent();
                     DNA<T> parent2 = ChooseParent();
+                    DNA<T> child = null;
 
-                    DNA<T> child = parent1.Crossover(parent2);
+                    if (parent1 == null || parent2 == null)
+                    {
+                        child = new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, shouldInitGenes: true);
+                    }else
+                    {
+                        child = parent1.Crossover(parent2);
+                    }
 
                     child.Mutate(MutationRate);
 
