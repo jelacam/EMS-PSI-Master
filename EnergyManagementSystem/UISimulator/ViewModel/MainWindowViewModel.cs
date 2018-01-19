@@ -102,10 +102,11 @@ namespace UISimulator.ViewModel
 
         private double SimulationFunction(int x)
         {
-            double v = 3000 * (Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2)  ;
-            if(v < 100)
+
+            double v = 1500 * ( Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2) ;
+            if(v < 1000)
             {
-                v = 100;
+                v = 1000;
             }
             return v;
         }

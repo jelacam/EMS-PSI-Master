@@ -67,9 +67,9 @@ namespace EMS.ServiceContracts
 			}
 		}
 
-		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid)
+		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
 		{
-			return proxy.GetHistoryMeasurements(gid);
+			return proxy.GetHistoryMeasurements(gid, startTime, endTime);
 		}
 	}
 }

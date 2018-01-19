@@ -105,7 +105,7 @@ namespace EMS.Services.SCADACrunchingService
             }
         }
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {
@@ -227,10 +227,10 @@ namespace EMS.Services.SCADACrunchingService
             return isSuccess;
         }
 
-        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> generatorAnalogs, byte[] value, int startAddress)
+        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
         {
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
-            foreach (AnalogLocation analogLoc in generatorAnalogs)
+            foreach (AnalogLocation analogLoc in analogList)
             {
                 float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.LengthInBytes, startAddress + analogLoc.StartAddress * 2); // 2 jer su registri od 2 byte-a
 

@@ -40,19 +40,6 @@ namespace EMS.Services.CalculationEngineService
             this.optModelMap = optModelMap;
         }
 
-        //private void InitValues()
-        //{
-        //    float currentVal = MIN_VALUE;
-        //    List<float> retList = new List<float>();
-
-        //    while (currentVal < MAX_VALUE)
-        //    {
-        //        retList.Add(currentVal);
-        //        currentVal += mutationRate;
-        //    }
-        //    setOfValues = retList.ToArray();
-        //}
-
         public void StartAlgorithm()
         {
             random = new Random();
@@ -114,13 +101,13 @@ namespace EMS.Services.CalculationEngineService
 
             var minPower = optModelMap[indexToGid[index]].MinPower;
             var maxPower = optModelMap[indexToGid[index]].MaxPower;
+            float randNumb = (float)GetRandomNumber(minPower, maxPower);
 
-            return (float)GetRandomNumber(minPower, maxPower);
+            return randNumb;
         }
 
         private double GetRandomNumber(float minPower, float maxPower)
         {
-            Random random = new Random();
             return random.NextDouble() * (maxPower - minPower) + minPower;
         }
 

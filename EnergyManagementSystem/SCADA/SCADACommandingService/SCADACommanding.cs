@@ -39,6 +39,7 @@ namespace EMS.Services.SCADACommandingService
         private ModelResourcesDesc modelResourcesDesc;
 
         private string message = string.Empty;
+        private readonly int START_ADDRESS_GENERATOR = 50;
 
         /// <summary>
         /// TransactionCallback
@@ -98,7 +99,7 @@ namespace EMS.Services.SCADACommandingService
         /// Prepare method
         /// </summary>
         /// <param name="delta"></param>
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {
@@ -106,30 +107,62 @@ namespace EMS.Services.SCADACommandingService
                 updateResult = new UpdateResult();
 
                 listOfAnalogCopy = new List<AnalogLocation>();
-
+                int iConsumer = 0;
+                int iSynchMach = 0;
+                  
                 // napravi kopiju od originala 
                 foreach (AnalogLocation alocation in listOfAnalog)
                 {
                     listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
+                    if (alocation.StartAddress < 50)
+                    {
+                        iConsumer++;
+                    }
+                    else
+                    {
+                        iSynchMach++;
+                    }
                 }
 
+                
 
                 Analog analog = null;
                 //int i = 0; // analog counter for address
-                int i = listOfAnalogCopy.Count;
-
+                //int i = listOfAnalogCopy.Count;
+                
                 foreach (ResourceDescription analogRd in delta.InsertOperations)
                 {
                     analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
 
-                    listOfAnalogCopy.Add(new AnalogLocation()
-                    {
-                        Analog = analog,
-                        StartAddress = i * 2, // float value 4 bytes
-                        Length = 2
-                    });
+                    //listOfAnalogCopy.Add(new AnalogLocation()
+                    //{
+                    //    Analog = analog,
+                    //    StartAddress = i * 2, // float value 4 bytes
+                    //    Length = 2
+                    //});
 
-                    i++;
+                    //i++;
+
+                    if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
+                    {
+
+                        listOfAnalogCopy.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = iConsumer++ * 2,
+                            Length = 2
+                        });
+                    }
+                    else
+                    {
+
+                        listOfAnalogCopy.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = START_ADDRESS_GENERATOR + iSynchMach++ * 2,
+                            Length = 2
+                        });
+                    }
                 }
 
                 updateResult.Message = "SCADA CMD Transaction Prepare finished.";
@@ -233,17 +266,32 @@ namespace EMS.Services.SCADACommandingService
 
             try
             {
-                int i = 0;
+                int iConsumer = 0;
+                int iSynchMach = 0;
                 foreach (ResourceDescription rd in retList)
                 {
                     Analog analog = ResourcesDescriptionConverter.ConvertTo<Analog>(rd);
-                    listOfAnalog.Add(new AnalogLocation()
-                    {
-                        Analog = analog,
-                        StartAddress = i++ * 2,
-                        Length = 2
-                    });
 
+                    if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
+                    {
+                        
+                        listOfAnalog.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = iConsumer++ * 2,
+                            Length = 2
+                        });
+                    }
+                    else
+                    {
+                       
+                        listOfAnalog.Add(new AnalogLocation()
+                        {
+                            Analog = analog,
+                            StartAddress = START_ADDRESS_GENERATOR + iSynchMach++ * 2,
+                            Length = 2
+                        });
+                    }
                 }
             }
             catch (Exception e)

@@ -11,14 +11,15 @@ namespace UIClient.ViewModel
 	{
 		private ICommand showDataCommand;
 		private string generatorGid;
-        private List<Tuple<double, DateTime>> measurementsList;
+		private List<Tuple<double, DateTime>> measurements;
+		private DateTime startTime;
+		private DateTime endTime;
 
-        public HistoryViewModel(HistoryView mainWindow)
+		public HistoryViewModel(HistoryView mainWindow)
 		{
-            measurementsList = new List<Tuple<double, DateTime>>();
-            measurementsList.Add(new Tuple<double, DateTime>(4.3, DateTime.Now));
-            OnPropertyChanged(nameof(MeasurementsList));
-        }
+			startTime = DateTime.Now;
+			endTime = DateTime.Now;
+		}
 
 		#region Commands
 
@@ -34,26 +35,31 @@ namespace UIClient.ViewModel
 			set { this.generatorGid = value; }
 		}
 
-        public List<Tuple<double, DateTime>> MeasurementsList
-        {
-            get
-            {
-                return measurementsList;
-            }
-
-            set
-            {
-                measurementsList = value;
-            }
-        }
-
-        #endregion
-
-        #region Command Executions
-
-        private void ShowDataCommandExecute(object obj)
+		public List<Tuple<double, DateTime>> Measurements
 		{
-			if (generatorGid != string.Empty)
+			get { return measurements; }
+			set { measurements = value; }
+		}
+
+		public DateTime StartTime
+		{
+			get { return startTime; }
+			set { startTime = value; }
+		}
+
+		public DateTime EndTime
+		{
+			get { return endTime; }
+			set { endTime = value; }
+		}
+
+		#endregion
+
+		#region Command Executions
+
+		private void ShowDataCommandExecute(object obj)
+		{
+			if (generatorGid != null && generatorGid != string.Empty)
 			{
 				if (generatorGid.Trim() != string.Empty)
 				{
@@ -62,7 +68,9 @@ namespace UIClient.ViewModel
 						long gid = Convert.ToInt64(generatorGid);
 						try
 						{
-							MeasurementsList = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid);
+							Measurements = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid, startTime, endTime);
+							OnPropertyChanged(nameof(Measurements));
+
 						}
 						catch (Exception ex)
 						{

@@ -25,11 +25,11 @@
 			</Grid.ColumnDefinitions>
 
 			<TextBox Grid.Row="0" Grid.Column="0" Text="{Binding GeneratorGid}"
-					 Margin="10" Width="200"></TextBox>
+					 Margin="10" Width="300"></TextBox>
 
-			<toolkit:DateTimePicker Grid.Row="1" Grid.Column="0" Margin="10"></toolkit:DateTimePicker>
+			<toolkit:DateTimePicker Grid.Row="1" Grid.Column="0" Margin="10" Value="{Binding StartTime}" Width="300"></toolkit:DateTimePicker>
 
-			<toolkit:DateTimePicker Grid.Row="2" Grid.Column="0" Margin="10"></toolkit:DateTimePicker>
+			<toolkit:DateTimePicker Grid.Row="2" Grid.Column="0" Margin="10" Value="{Binding EndTime}" Width="300"></toolkit:DateTimePicker>
 
 			<Button Grid.Row="2" Grid.Column="2" Content="Show" Margin="10" 
 					Command="{Binding ShowDataCommand}"></Button>
@@ -41,14 +41,15 @@
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
 
-			<DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MeasurementsList}"
-					  AutoGenerateColumns="False" 
-					  ScrollViewer.CanContentScroll="True" 
+			<DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Measurements}"
+						AutoGenerateColumns="False" 
+						ScrollViewer.CanContentScroll="True" 
 						ScrollViewer.VerticalScrollBarVisibility="Auto"
-					  Margin="10">
+						Margin="10"
+						Width="300">
 				<DataGrid.Columns>
-					<DataGridTextColumn Header="Measurement Time" Width="120" Binding="{Binding Item1}"/>
-					<DataGridTextColumn Header="Measurement Value" Width="120" Binding="{Binding Item2}"/>
+					<DataGridTextColumn IsReadOnly="True" Header="Measurement Time" Width="120" Binding="{Binding Item2}"/>
+					<DataGridTextColumn IsReadOnly="True" Header="Measurement Value" Width="120" Binding="{Binding Item1}"/>
 				</DataGrid.Columns>
 			</DataGrid>
 		</Grid>

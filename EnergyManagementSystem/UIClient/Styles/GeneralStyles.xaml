@@ -27,7 +27,7 @@
 		<Setter Property="BorderThickness" Value="0" ></Setter>
 	</Style>
 
-	<Style TargetType="DataGridRow">
+	<Style TargetType="DataGridRow" x:Key="AlarmDataGridRowStyle">
 		<Setter Property="Background" Value="Red"></Setter>
 	</Style>
 

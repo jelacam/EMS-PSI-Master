@@ -23,6 +23,7 @@ namespace EMS.Services.CalculationEngineService
     /// <summary>
     /// Class for CalculationEngine
     /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -34,8 +35,6 @@ namespace EMS.Services.CalculationEngineService
 
         private List<OptimisationModel> loms;
         private List<MeasurementUnit> helpMU = new List<MeasurementUnit>();
-        private float minProduction = 0;
-        private float maxProduction = 0;
         private float powerOfConsumers = 0;
 
         private static List<ResourceDescription> internalSynchMachines;
@@ -70,8 +69,6 @@ namespace EMS.Services.CalculationEngineService
             lockObj = new object();
             context = SolverContext.GetContext();
             loms = new List<OptimisationModel>();
-            minProduction = 0;
-            maxProduction = 0;
             powerOfConsumers = 0;
 
             synchronousMachines = new Dictionary<long, SynchronousMachine>();
@@ -96,23 +93,31 @@ namespace EMS.Services.CalculationEngineService
         {
             bool result = false;
 
-            DoGeneticAlgorithm(measEnergyConsumers, measGenerators);
 
 
-            // this.HelpFunction();
-            // List<MeasurementUnit> l = this.LinearOptimization(helpMU);
+			totalCostGeneric = 0;
+			powerOfConsumers = CalculateConsumption(measEnergyConsumers);
 
-            // linearna optimizacija
-            List<MeasurementUnit> measurementsOptimizedLinear = null;
+            DoGeneticAlgorithm(measGenerators,powerOfConsumers);
 
-            if (0 <= powerOfConsumers && powerOfConsumers <= maxProduction)
-            {
-                measurementsOptimizedLinear = LinearOptimization(measGenerators);
-            }
+			PublishConsumersToUI(measEnergyConsumers);
+			List<MeasurementUnit> measurementsOptimizedLinear = null;
 
-            PublisToUI(measEnergyConsumers);
+			//GAOptimization gao = new GAOptimization(16);
+			//gao.StartAlgorithm();
 
-            if (measurementsOptimizedLinear != null)
+			//test podaci
+			//HelpFunction();
+			//List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+			//powerOfConsumers = CalculateConsumption(lec);
+			//List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+			//measurementsOptimizedLinear = LinearOptimization(lsm, powerOfConsumers);
+			//helpMU.Clear();
+
+			Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
+			measurementsOptimizedLinear = LinearOptimization(measGenerators,powerOfConsumers);
+          
+			if (measurementsOptimizedLinear != null)
             {
                 if (measurementsOptimizedLinear.Count > 0)
                 {
@@ -121,10 +126,7 @@ namespace EMS.Services.CalculationEngineService
                         Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimizedLinear.Count);
                     }
 
-                    Console.WriteLine("CE: Optimize");
-
-                    // izabrati bolji rezultat optimizacije
-                    PublisToUI(measurementsOptimizedLinear);
+                    PublishGeneratorsToUI(ref measurementsOptimizedLinear);
 
                     try
                     {
@@ -145,13 +147,10 @@ namespace EMS.Services.CalculationEngineService
                 }
             }
 
-            totalCostLinear = 0;
-            totalCostGeneric = 0;
-
             return result;
         }
 
-        private void DoGeneticAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
+        private void DoGeneticAlgorithm(List<MeasurementUnit> measGenerators,float necessaryEnergy)
         {
             if (measGenerators.Count == 0)
             {
@@ -177,7 +176,7 @@ namespace EMS.Services.CalculationEngineService
                         optModelMap.Add(om.GlobalId, om);
                     }
                 }
-                float necessaryEnergy = measEnergyConsumers.Sum(x => x.CurrentValue);
+             
 
                 GAOptimization gao = new GAOptimization(necessaryEnergy, optModelMap);
 
@@ -192,9 +191,25 @@ namespace EMS.Services.CalculationEngineService
         }
 
 
-        private void PublisToUI(List<MeasurementUnit> measurementFromConsumers)
+        private void PublishGeneratorsToUI(ref List<MeasurementUnit> measurementsFromGenerators)
         {
-            foreach (var meas in measurementFromConsumers)
+            foreach (var meas in measurementsFromGenerators)
+            {
+                MeasurementUI measUI = new MeasurementUI();
+                measUI.Gid = meas.Gid;
+                measUI.CurrentValue = meas.OptimizedLinear;
+                measUI.TimeStamp = DateTime.Now;
+
+                // setovanje current vrednosti na vrednost optimizovanu linearnim algoritmom
+                meas.CurrentValue = meas.OptimizedLinear;
+
+                publisher.PublishOptimizationResults(measUI);
+            }
+        }
+
+        private void PublishConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
+        {
+            foreach (var meas in measurementsFromConsumers)
             {
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
@@ -338,15 +353,10 @@ namespace EMS.Services.CalculationEngineService
                 fuels.Clear();
                 energyConsumers.Clear();
 
-                minProduction = 0;
-                maxProduction = 0;
-
                 foreach (ResourceDescription rd in internalSynchMachines)
                 {
                     SynchronousMachine sm = ResourcesDescriptionConverter.ConvertTo<SynchronousMachine>(rd);
                     synchronousMachines.Add(sm.GlobalId, sm);
-                    minProduction += sm.MinQ;
-                    maxProduction += sm.MaxQ;
                 }
 
                 foreach (ResourceDescription rd in internalEmsFuels)
@@ -377,9 +387,7 @@ namespace EMS.Services.CalculationEngineService
                 helpMU.Clear();
 
                 loms.Clear();
-
-                minProduction = 0;
-                maxProduction = 0;
+				
                 powerOfConsumers = 0;
             }
         }
@@ -390,8 +398,6 @@ namespace EMS.Services.CalculationEngineService
         {
             lock (lockObj)
             {
-                minProduction = 0;
-                maxProduction = 0;
                 synchronousMachines.Clear();
                 fuels.Clear();
                 energyConsumers.Clear();
@@ -412,8 +418,6 @@ namespace EMS.Services.CalculationEngineService
                 sm1.MinQ = 10;
                 sm1.RatedS = 50;
                 synchronousMachines.Add(sm1.GlobalId, sm1);
-                minProduction += sm1.MinQ;
-                maxProduction += sm1.MaxQ;
                 SynchronousMachine sm2 = new SynchronousMachine(20);
                 sm2.Active = true;
                 sm2.Fuel = f2.GlobalId;
@@ -421,8 +425,6 @@ namespace EMS.Services.CalculationEngineService
                 sm2.MinQ = 50;
                 sm2.RatedS = 100;
                 synchronousMachines.Add(sm2.GlobalId, sm2);
-                minProduction += sm2.MinQ;
-                maxProduction += sm2.MaxQ;
                 SynchronousMachine sm3 = new SynchronousMachine(30);
                 sm3.Active = false;
                 sm3.Fuel = f2.GlobalId;
@@ -430,8 +432,6 @@ namespace EMS.Services.CalculationEngineService
                 sm3.MinQ = 70;
                 sm3.RatedS = 100;
                 synchronousMachines.Add(sm3.GlobalId, sm3);
-                minProduction += sm3.MinQ;
-                maxProduction += sm3.MaxQ;
 
                 EnergyConsumer ec1 = new EnergyConsumer(100);
                 ec1.PFixed = 100;
@@ -493,7 +493,7 @@ namespace EMS.Services.CalculationEngineService
             return retVal;
         }
 
-        private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements)
+        private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements, float consumption)
         {
             lock (lockObj)
             {
@@ -503,8 +503,8 @@ namespace EMS.Services.CalculationEngineService
 
                     Dictionary<long, Decision> decisions = new Dictionary<long, Decision>();
                     loms.Clear();
-                    float newMaxProduction = maxProduction;
-                    float newMinProduction = minProduction;
+					float maxProduction = 0;
+					float minProduction = 0;
 
                     for (int i = 0; i < measurements.Count(); i++)
                     {
@@ -519,22 +519,22 @@ namespace EMS.Services.CalculationEngineService
                             model.AddDecision(d);
                             decisions.Add(om.GlobalId, d);
 
-                            if (om.Managable == 0)
+                            if (om.Managable != 0)
                             {
-                                newMaxProduction -= om.MaxPower;
-                                newMinProduction -= om.MinPower;
+                                maxProduction += om.MaxPower;
+                                minProduction += om.MinPower;
                             }
                         }
                     }
 
                     if (loms.Count() > 0)
                     {
-                        if (0 <= powerOfConsumers && powerOfConsumers <= newMaxProduction)
+                        if (0 <= consumption && consumption <= maxProduction)
                         {
                             Decision help;
                             string goal = "";
                             string limit = "limit";
-                            string production = powerOfConsumers.ToString() + "<=";
+                            string production = consumption.ToString() + "<=";
 
                             for (int i = 0; i < loms.Count; i++)
                             {
@@ -557,7 +557,7 @@ namespace EMS.Services.CalculationEngineService
                             }
 
                             production = production.Substring(0, production.Length - 1);
-                            production += "<=" + newMaxProduction.ToString();
+                            production += "<=" + maxProduction.ToString();
                             model.AddConstraint("production", production);
 
                             goal = goal.Substring(0, goal.Length - 1);
@@ -566,8 +566,8 @@ namespace EMS.Services.CalculationEngineService
                             Solution solution = context.Solve(new SimplexDirective());
                             Report report = solution.GetReport();
                             Console.Write("{0}", report);
-
-                            totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToString());
+							
+							totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());							
 
                             string name = "";
                             foreach (var item in model.Decisions)
@@ -577,7 +577,7 @@ namespace EMS.Services.CalculationEngineService
                                     name = item.Name.Substring(1);
                                     if (Int64.Parse(name) == measurements[i].Gid)
                                     {
-                                        measurements[i].OptimizedLinear = float.Parse(item.ToString());
+                                        measurements[i].OptimizedLinear = float.Parse(item.ToDouble().ToString());
                                         break;
                                     }
                                 }
@@ -730,7 +730,7 @@ namespace EMS.Services.CalculationEngineService
 
         #region Transaction
 
-        public UpdateResult Prepare(Delta delta)
+        public UpdateResult Prepare(ref Delta delta)
         {
             try
             {
@@ -824,6 +824,8 @@ namespace EMS.Services.CalculationEngineService
                 Console.WriteLine("Number of EMSFuels values: {0}", internalEmsFuels.Count);
                 Console.WriteLine("Number of SynchronousMachines values: {0}", internalSynchMachines.Count);
                 Console.WriteLine("Number of Energy Consumers values: {0}", internalSynchMachines.Count);
+
+                FillData();
                 return true;
             }
             catch (Exception e)
