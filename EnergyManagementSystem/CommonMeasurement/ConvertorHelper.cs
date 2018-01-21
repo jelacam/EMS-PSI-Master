@@ -73,11 +73,11 @@ namespace EMS.CommonMeasurement
                 value = this.maxRaw;
             }
 
-            if (value != 0)
-            {
-                minEGU = minEGU * (float)0.9;
-                maxEGU = maxEGU * (float)1.1;
-            }
+            //if (value != 0)
+            //{
+            //    minEGU = minEGU * (float)0.9;
+            //    maxEGU = maxEGU * (float)1.1;
+            //}
 
             float retVal = ((value - this.minRaw) / (this.maxRaw - this.minRaw)) * (maxEGU - minEGU) + minEGU;
             return retVal;

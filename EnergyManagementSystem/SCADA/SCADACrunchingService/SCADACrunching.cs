@@ -54,6 +54,7 @@ namespace EMS.Services.SCADACrunchingService
 
         /// <summary>
         private string message = string.Empty;
+
         private readonly int START_ADDRESS_GENERATOR = 50;
 
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
@@ -67,7 +68,6 @@ namespace EMS.Services.SCADACrunchingService
 
             energyConsumersAnalogs = new List<AnalogLocation>();
             energyConsumersAnalogsCopy = new List<AnalogLocation>();
-
 
             modelResourcesDesc = new ModelResourcesDesc();
         }
@@ -115,7 +115,7 @@ namespace EMS.Services.SCADACrunchingService
                 generatorAnalogsCopy.Clear();
                 energyConsumersAnalogsCopy.Clear();
 
-                // napravi kopiju od originala 
+                // napravi kopiju od originala
                 foreach (AnalogLocation alocation in generatorAnalogs)
                 {
                     generatorAnalogsCopy.Add(alocation.Clone() as AnalogLocation);
@@ -141,7 +141,8 @@ namespace EMS.Services.SCADACrunchingService
                             Length = 2,
                             LengthInBytes = 4
                         });
-                    }else
+                    }
+                    else
                     {
                         generatorAnalogsCopy.Add(new AnalogLocation()
                         {
@@ -202,15 +203,15 @@ namespace EMS.Services.SCADACrunchingService
 
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-            Array.Copy(value, 2, data, 0, arrayLength );
+            Array.Copy(value, 2, data, 0, arrayLength);
 
-            List <MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
-            List <MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, START_ADDRESS_GENERATOR);
+            List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
+            List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, START_ADDRESS_GENERATOR);
 
             bool isSuccess = false;
             try
             {
-                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits,generatorMeasUnits);
+                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits);
             }
             catch (Exception ex)
             {
@@ -309,7 +310,8 @@ namespace EMS.Services.SCADACrunchingService
                             Length = 2,
                             LengthInBytes = 4
                         });
-                    }else
+                    }
+                    else
                     {
                         generatorAnalogs.Add(new AnalogLocation()
                         {
@@ -319,7 +321,6 @@ namespace EMS.Services.SCADACrunchingService
                             LengthInBytes = 4
                         });
                     }
-
                 }
             }
             catch (Exception e)
@@ -347,6 +348,8 @@ namespace EMS.Services.SCADACrunchingService
         private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
         {
             bool retVal = false;
+            //float alarmMin = minRaw + (float)Math.Round((20f / 100f) * minRaw);
+            //float alarmMax = minRaw - (float)Math.Round((20f / 100f) * minRaw);
             AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
             if (value < minRaw)
             {
@@ -380,8 +383,10 @@ namespace EMS.Services.SCADACrunchingService
         private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
         {
             bool retVal = false;
-            AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
-            if (value < minEGU)
+            float alarmMin = minEGU + (float)Math.Round((20f / 100f) * minEGU);
+            float alarmMax = maxEGU - (float)Math.Round((20f / 100f) * maxEGU);
+            AlarmHelper ah = new AlarmHelper(gid, value, alarmMin, alarmMax, DateTime.Now);
+            if (value < alarmMin)
             {
                 ah.Type = AlarmType.eguMin;
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
@@ -390,7 +395,7 @@ namespace EMS.Services.SCADACrunchingService
                 Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
             }
 
-            if (value > maxEGU)
+            if (value > alarmMax)
             {
                 ah.Type = AlarmType.eguMax;
                 AlarmsEventsProxy.Instance.AddAlarm(ah);

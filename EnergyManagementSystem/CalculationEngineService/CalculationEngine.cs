@@ -30,7 +30,7 @@ namespace EMS.Services.CalculationEngineService
     {
         #region Fields
 
-        SolverContext context;
+        private SolverContext context;
 
         private float totalCostLinear;
         private float totalCostGeneric;
@@ -128,7 +128,6 @@ namespace EMS.Services.CalculationEngineService
 
                         result = true;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -157,7 +156,6 @@ namespace EMS.Services.CalculationEngineService
 
         private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators)
         {
-
             Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
 
             foreach (var measUnit in measGenerators)
@@ -235,7 +233,7 @@ namespace EMS.Services.CalculationEngineService
                         {
                             cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
                             cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = mu.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                            cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
+                            cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.OptimizedLinear;
                             cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
@@ -287,7 +285,6 @@ namespace EMS.Services.CalculationEngineService
                 }
                 catch (Exception e)
                 {
-
                     string message = string.Format("Failed read Measurements from database. {0}", e.Message);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                     Console.WriteLine(message);
@@ -467,8 +464,6 @@ namespace EMS.Services.CalculationEngineService
                 helpMU.Add(mu5);
             }
         }
-
-
 
         private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements, float consumption)
         {
@@ -747,7 +742,6 @@ namespace EMS.Services.CalculationEngineService
                             internalSynchMachinesCopy.Add(rd);
                             break;
                         }
-
                         else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.ENERGYCONSUMER))
                         {
                             internalEnergyConsumersCopy.Add(rd);
