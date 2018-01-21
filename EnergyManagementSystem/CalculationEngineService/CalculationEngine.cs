@@ -54,6 +54,9 @@ namespace EMS.Services.CalculationEngineService
         private ITransactionCallback transactionCallback;
         private UpdateResult updateResult;
 
+        //private readonly string MODE = "GAOPTIMIZATION";
+        private readonly string MODE = "LOPTIMIZATION";
+
         #endregion Fields
 
         /// <summary>
@@ -92,30 +95,45 @@ namespace EMS.Services.CalculationEngineService
         public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
         {
             bool result = false;
-			totalCostLinear = 0;
-			totalCostGeneric = 0;
-			powerOfConsumers = CalculateConsumption(measEnergyConsumers);
-			PublishConsumersToUI(measEnergyConsumers);
-			List<MeasurementUnit> measurementsOptimizedLinear = null;
+            totalCostLinear = 0;
+            totalCostGeneric = 0;
+            powerOfConsumers = CalculateConsumption(measEnergyConsumers);
+            PublishConsumersToUI(measEnergyConsumers);
+            List<MeasurementUnit> measurementsOptimizedLinear = null;
 
-			//GAOptimization gao = new GAOptimization(16);
-			//gao.StartAlgorithm();
+            //GAOptimization gao = new GAOptimization(16);
+            //gao.StartAlgorithm();
 
-			//test podaci
-			//HelpFunction();
-			//List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-			//powerOfConsumers = CalculateConsumption(lec);
-			//List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-			//measurementsOptimizedLinear = LinearOptimization(lsm, powerOfConsumers);
-			//helpMU.Clear();
+            //test podaci
+            //HelpFunction();
+            //List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+            //powerOfConsumers = CalculateConsumption(lec);
+            //List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+            //measurementsOptimizedLinear = LinearOptimization(lsm, powerOfConsumers);
+            //helpMU.Clear();
 
-			Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
-			measurementsOptimizedLinear = LinearOptimization(measGenerators,powerOfConsumers);
-          
-			if (measurementsOptimizedLinear != null)
+            Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
+            measurementsOptimizedLinear = LinearOptimization(measGenerators, powerOfConsumers);
+
+            if (measurementsOptimizedLinear != null)
             {
                 if (measurementsOptimizedLinear.Count > 0)
                 {
+                    if (MODE == "LOPTIMIZATION")
+                    {
+                        foreach (MeasurementUnit mu in measurementsOptimizedLinear)
+                        {
+                            mu.CurrentValue = mu.OptimizedLinear;
+                        }
+                    }
+                    else if (MODE == "GAOPTIMIZATION")
+                    {
+                        foreach (MeasurementUnit mu in measurementsOptimizedLinear)
+                        {
+                            mu.CurrentValue = mu.OptimizedGeneric;
+                        }
+                    }
+
                     if (InsertMeasurementsIntoDb(measurementsOptimizedLinear))
                     {
                         Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimizedLinear.Count);
@@ -130,7 +148,7 @@ namespace EMS.Services.CalculationEngineService
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
                             Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimizedLinear.Count);
 
-                            result = true; 
+                            result = true;
                         }
 
                     }
@@ -341,7 +359,7 @@ namespace EMS.Services.CalculationEngineService
                 helpMU.Clear();
 
                 loms.Clear();
-				
+
                 powerOfConsumers = 0;
             }
         }
@@ -457,8 +475,8 @@ namespace EMS.Services.CalculationEngineService
 
                     Dictionary<long, Decision> decisions = new Dictionary<long, Decision>();
                     loms.Clear();
-					float maxProduction = 0;
-					float minProduction = 0;
+                    float maxProduction = 0;
+                    float minProduction = 0;
 
                     for (int i = 0; i < measurements.Count(); i++)
                     {
@@ -507,7 +525,7 @@ namespace EMS.Services.CalculationEngineService
 
                                 production += help.ToString() + "+";
 
-                                goal += help.ToString() + "*" +  loms[i].Price.ToString() + "+";
+                                goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
                             }
 
                             production = production.Substring(0, production.Length - 1);
@@ -520,8 +538,8 @@ namespace EMS.Services.CalculationEngineService
                             Solution solution = context.Solve(new SimplexDirective());
                             Report report = solution.GetReport();
                             Console.Write("{0}", report);
-							
-							totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());							
+
+                            totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
 
                             string name = "";
                             foreach (var item in model.Decisions)
