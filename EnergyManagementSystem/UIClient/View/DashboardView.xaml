@@ -21,7 +21,13 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<DockPanel Grid.Row="0">
-					<TextBlock DockPanel.Dock="Top" Style="{StaticResource Title}" Foreground="DarkGreen" Text="Generators" Margin="20,20,10,0"/>
+
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+						<TextBlock  Style="{StaticResource Title}" Foreground="LightGreen" Text="Generators -" />
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="LightGreen" Text="Current production:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="LightGreen" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
+					</StackPanel>
+					
 					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" >
 
 						<ItemsControl.ItemsPanel>
@@ -44,13 +50,13 @@
 																Style="{StaticResource LineSeriesStyle}">
 										<chartingToolkit:LineSeries.DataPointStyle>
 											<Style TargetType="chartingToolkit:LineDataPoint">
-												<Setter Property="Background" Value="DarkGreen"/>
+												<Setter Property="Background" Value="LightGreen"/>
 												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
 										</chartingToolkit:LineSeries.IndependentAxis>
 
 										<chartingToolkit:LineSeries.DependentRangeAxis>
@@ -65,8 +71,13 @@
 				</DockPanel>
 
 				<DockPanel Grid.Row="1">
-					<TextBlock DockPanel.Dock="Top" Style="{StaticResource Title}" Foreground="Orange" Text="Energy Consumers" Margin="20,20,10,0"/>
-
+					
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+						<TextBlock  Style="{StaticResource Title}" Foreground="Orange" Text="Energy Consumers -"  />
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Orange" Text="Current consumptions:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Orange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
+					</StackPanel>
+					
 					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" >
 
 						<ItemsControl.ItemsPanel>
@@ -94,7 +105,7 @@
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)" />
+											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
 										</chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>

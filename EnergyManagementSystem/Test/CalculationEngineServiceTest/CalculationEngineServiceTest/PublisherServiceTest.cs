@@ -3,6 +3,7 @@ using EMS.Services.CalculationEngineService.PubSub;
 using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 
 namespace CalculationEngineServiceTest
@@ -13,7 +14,7 @@ namespace CalculationEngineServiceTest
         #region Declarations
 
         private PublisherService publisherUnderTest;
-        private MeasurementUI resultUnderTest;
+        private List<MeasurementUI> resultUnderTest;
 
         #endregion Declarations
 
@@ -23,13 +24,14 @@ namespace CalculationEngineServiceTest
         public void SetupTest()
         {
             publisherUnderTest = new PublisherService();
-            resultUnderTest = new MeasurementUI()
+            resultUnderTest = new List<MeasurementUI>();
+            resultUnderTest.Add(new MeasurementUI()
             {
                 AlarmType = "Optimized alarm",
                 Gid = 10120310403204,
                 CurrentValue = 15f,
                 TimeStamp = DateTime.Now
-            };
+            });
         }
 
         #endregion TestSetup

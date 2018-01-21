@@ -15,6 +15,12 @@ namespace EMS.Services.SCADACommandingService
     using System.Collections.Generic;
     using System.Linq;
     using System.ServiceModel;
+    using System.Net.Sockets;
+    using System.Windows;
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Runtime.InteropServices;
+    using System.IO;
 
     /// <summary>
     /// SCADACommanding class for accept data from CE and put data to simulator
@@ -56,8 +62,7 @@ namespace EMS.Services.SCADACommandingService
         /// </summary>
         public SCADACommanding()
         {
-            this.modbusClient = new ModbusClient("localhost", 502);
-            this.modbusClient.Connect();
+            ConnectToSimulator();
 
             listOfAnalog = new List<AnalogLocation>();
             listOfAnalogCopy = new List<AnalogLocation>();
@@ -65,6 +70,28 @@ namespace EMS.Services.SCADACommandingService
             this.convertorHelper = new ConvertorHelper();
             modelResourcesDesc = new ModelResourcesDesc();
             //CreateCMDAnalogLocation();
+        }
+
+        private void ConnectToSimulator()
+        {
+            try
+            {
+                modbusClient = new ModbusClient("localhost", 502);
+                modbusClient.Connect();
+            }
+            catch (SocketException)
+            {
+                //Start simulator EasyModbusServerSimulator.exe
+                string appPath = Path.GetFullPath("..\\..\\..\\..\\..\\");
+                Process.Start(appPath + "EasyModbusServerSimulator.exe");
+
+                Thread.Sleep(2000);
+                ConnectToSimulator();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         #region Transaction
@@ -109,7 +136,7 @@ namespace EMS.Services.SCADACommandingService
                 listOfAnalogCopy = new List<AnalogLocation>();
                 int iConsumer = 0;
                 int iSynchMach = 0;
-                  
+
                 // napravi kopiju od originala 
                 foreach (AnalogLocation alocation in listOfAnalog)
                 {
@@ -124,12 +151,12 @@ namespace EMS.Services.SCADACommandingService
                     }
                 }
 
-                
+
 
                 Analog analog = null;
                 //int i = 0; // analog counter for address
                 //int i = listOfAnalogCopy.Count;
-                
+
                 foreach (ResourceDescription analogRd in delta.InsertOperations)
                 {
                     analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
@@ -274,7 +301,7 @@ namespace EMS.Services.SCADACommandingService
 
                     if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
                     {
-                        
+
                         listOfAnalog.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -284,7 +311,7 @@ namespace EMS.Services.SCADACommandingService
                     }
                     else
                     {
-                       
+
                         listOfAnalog.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -359,6 +386,6 @@ namespace EMS.Services.SCADACommandingService
         public void Test()
         {
             Console.WriteLine("Test method");
-        }      
+        }
     }
 }

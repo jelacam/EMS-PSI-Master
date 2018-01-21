@@ -51,7 +51,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         /// A optimization result event is raised. The optimization result event handlers for each subscriber will execute.
         /// </summary>
         /// <param name="result"></param>
-        public void PublishOptimizationResults(MeasurementUI result)
+        public void PublishOptimizationResults(List<MeasurementUI> result)
         {
             OptimizationEventArgs e = new OptimizationEventArgs
             {
