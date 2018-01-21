@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EMS.Services.CalculationEngineService
+namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 {
     public class GAOptimization
     {
@@ -75,7 +75,7 @@ namespace EMS.Services.CalculationEngineService
 
         private float fitnessFunction(DNA<float> dna)
         {
-            float penalty = 10 * (necessaryEnergy - CalculateEnergy(dna));
+            float penalty = 1000 * (necessaryEnergy - CalculateEnergy(dna));
 
             if (penalty < 0)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 
 namespace EMS.ServiceContracts
@@ -31,6 +32,6 @@ namespace EMS.ServiceContracts
     public interface ICePubSubCallbackContract
     {
         [OperationContract(IsOneWay = false)]
-        void OptimizationResults(MeasurementUI result);
+        void OptimizationResults(List<MeasurementUI> result);
     }
 }

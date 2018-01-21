@@ -31,7 +31,7 @@ namespace UIClient.PubSub
         /// This method will receive optimization result form CalculationEngine service.
         /// </summary>
         /// <param name="result"></param>
-        public void OptimizationResults(MeasurementUI result)
+        public void OptimizationResults(List<MeasurementUI> result)
         {
             Console.WriteLine("OperationContext id: {0}", OperationContext.Current.SessionId);
             Console.WriteLine(string.Format("OPTIMIZATION RESULT: {0}", result.ToString()));

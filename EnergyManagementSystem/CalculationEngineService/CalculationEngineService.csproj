@@ -89,9 +89,10 @@
     <Compile Include="CeToUI.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CrToCe.cs" />
-    <Compile Include="GAOptimization.cs" />
+    <Compile Include="GeneticAlgorithm\GAOptimization.cs" />
     <Compile Include="GeneticAlgorithm\DNA.cs" />
     <Compile Include="GeneticAlgorithm\GeneticAlgorithm.cs" />
+    <Compile Include="Helpers\CalculationHelper.cs" />
     <Compile Include="OptimisationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PubSub\OptimizationEventArgs.cs" />

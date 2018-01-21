@@ -79,43 +79,49 @@ namespace UIClient.ViewModel
 
         private void CallbackAction(object obj)
         {
-            MeasurementUI measUI = obj as MeasurementUI;
+            List<MeasurementUI> measUIs = obj as List<MeasurementUI>;
 
             if (obj == null)
             {
                 throw new Exception("CallbackAction receive wrong param");
             }
-
-            if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUI.Gid) == EMSType.ENERGYCONSUMER)
+            if(measUIs.Count == 0)
             {
-                AddMeasurmentToEnergyConsumers(measUI);
+                return;
+            }
+            if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUIs[0].Gid) == EMSType.ENERGYCONSUMER)
+            {
+                AddMeasurmentToEnergyConsumers(measUIs);
 
             }
             else
             {
-                AddMeasurmentToGenerators(measUI);
+                AddMeasurmentToGenerators(measUIs);
             }
         }
 
-        private void AddMeasurmentToGenerators(MeasurementUI measUI)
+        private void AddMeasurmentToGenerators(List<MeasurementUI> measUIs)
         {
-            var keyPair = GeneratorsContainer.FirstOrDefault(x => x.Key == measUI.Gid);
-
-            if (keyPair.Value == null)
+            foreach (var measUI in measUIs)
             {
-                var tempQueue = new ObservableCollection<MeasurementUI>();
-                //measUI.TimeStamp = 0;
-                tempQueue.Add(measUI);
-                GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
-                generatorsCount.Add(measUI.Gid, 0);//temp
+                var keyPair = GeneratorsContainer.FirstOrDefault(x => x.Key == measUI.Gid);
 
-            }
-            else
-            {
-                keyPair.Value.Add(measUI);
-                if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                if (keyPair.Value == null)
                 {
-                    keyPair.Value.RemoveAt(0);
+                    var tempQueue = new ObservableCollection<MeasurementUI>();
+                    //measUI.TimeStamp = 0;
+                    tempQueue.Add(measUI);
+                    GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
+                    generatorsCount.Add(measUI.Gid, 0);//temp
+
+                }
+                else
+                {
+                    keyPair.Value.Add(measUI);
+                    if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                    {
+                        keyPair.Value.RemoveAt(0);
+                    }
                 }
             }
         }
@@ -124,25 +130,28 @@ namespace UIClient.ViewModel
         /// Add measurent in propertly queue
         /// </summary>
         /// <param name="measUI"></param>
-        private void AddMeasurmentToEnergyConsumers(MeasurementUI measUI)
+        private void AddMeasurmentToEnergyConsumers(List<MeasurementUI> measUIs)
         {
-            var keyPair = EnergyConsumersContainer.FirstOrDefault(x => x.Key == measUI.Gid);
-
-            if (keyPair.Value == null)
+            foreach (var measUI in measUIs)
             {
-                var tempQueue = new ObservableCollection<MeasurementUI>();
-                //measUI.TimeStamp = 0;
-                tempQueue.Add(measUI);
-                EnergyConsumersContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
-                generatorsCount.Add(measUI.Gid, 0);//temp
+                var keyPair = EnergyConsumersContainer.FirstOrDefault(x => x.Key == measUI.Gid);
 
-            }
-            else
-            {
-                keyPair.Value.Add(measUI);
-                if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                if (keyPair.Value == null)
                 {
-                    keyPair.Value.RemoveAt(0);
+                    var tempQueue = new ObservableCollection<MeasurementUI>();
+                    //measUI.TimeStamp = 0;
+                    tempQueue.Add(measUI);
+                    EnergyConsumersContainer.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
+                    generatorsCount.Add(measUI.Gid, 0);//temp
+
+                }
+                else
+                {
+                    keyPair.Value.Add(measUI);
+                    if (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                    {
+                        keyPair.Value.RemoveAt(0);
+                    }
                 }
             }
         }
