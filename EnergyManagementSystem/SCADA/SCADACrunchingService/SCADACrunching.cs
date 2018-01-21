@@ -243,6 +243,7 @@ namespace EMS.Services.SCADACrunchingService
                 measUnit.MinValue = analogLoc.Analog.MinValue;
                 measUnit.MaxValue = analogLoc.Analog.MaxValue;
                 measUnit.CurrentValue = eguVal;
+                measUnit.TimeStamp = DateTime.Now;
                 retList.Add(measUnit);
             }
 

@@ -170,7 +170,7 @@ namespace EMS.Services.CalculationEngineService
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
                 measUI.CurrentValue = meas.OptimizedLinear;
-                measUI.TimeStamp = DateTime.Now;
+                measUI.TimeStamp = meas.TimeStamp;
 
                 // setovanje current vrednosti na vrednost optimizovanu linearnim algoritmom
                 meas.CurrentValue = meas.OptimizedLinear;
@@ -186,7 +186,7 @@ namespace EMS.Services.CalculationEngineService
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
                 measUI.CurrentValue = meas.CurrentValue;
-                measUI.TimeStamp = DateTime.Now;
+                measUI.TimeStamp = meas.TimeStamp;
 
                 publisher.PublishOptimizationResults(measUI);
             }
@@ -215,7 +215,7 @@ namespace EMS.Services.CalculationEngineService
                         foreach (MeasurementUnit mu in measurements)
                         {
                             cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
-                            cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = mu.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
                             cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
                             cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();

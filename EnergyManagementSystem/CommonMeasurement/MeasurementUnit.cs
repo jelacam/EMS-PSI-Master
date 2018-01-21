@@ -44,6 +44,11 @@ namespace EMS.CommonMeasurement
         private float maxValue;
 
         /// <summary>
+        /// mesaurement time
+        /// </summary>
+        private DateTime timestamp;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MeasurementUnit" /> class
         /// </summary>
         public MeasurementUnit()
@@ -54,6 +59,7 @@ namespace EMS.CommonMeasurement
 			maxValue = 0;
 			optimizedLinear = 0;
 			optimizedGeneric = 0;
+            timestamp = DateTime.Now;
         }
 
         /// <summary>
@@ -149,6 +155,21 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.optimizedGeneric = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets TimeStamp of the entity
+        /// </summary>
+        public DateTime TimeStamp
+        {
+            get
+            {
+                return timestamp;
+            }
+            set
+            {
+                timestamp = value;
             }
         }
     }
