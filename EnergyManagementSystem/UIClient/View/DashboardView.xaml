@@ -50,7 +50,7 @@
 										</chartingToolkit:LineSeries.DataPointStyle>
 
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
+											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
 										</chartingToolkit:LineSeries.IndependentAxis>
 
 										<chartingToolkit:LineSeries.DependentRangeAxis>
@@ -94,7 +94,7 @@
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)" />
+											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
 										</chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:LineSeries.DependentRangeAxis>
 											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>

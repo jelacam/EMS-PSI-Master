@@ -1,14 +1,15 @@
 ﻿using EMS.ServiceContracts;
 using System;
+using System.Collections.Generic;
 
 namespace EMS.Services.CalculationEngineService.PubSub
 {
     public class OptimizationEventArgs : EventArgs
     {
-        private MeasurementUI optimizationResult;
+        private List<MeasurementUI> optimizationResult;
         private string message;
 
-        public MeasurementUI OptimizationResult
+        public List<MeasurementUI> OptimizationResult
         {
             get { return optimizationResult; }
             set { optimizationResult = value; }
