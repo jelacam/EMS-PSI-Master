@@ -9,8 +9,12 @@ namespace EMS.Services.SCADACollectingService
     using Common;
     using ServiceContracts;
     using SmoothModbus;
+    using System;
+    using System.Diagnostics;
+    using System.Net.Sockets;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows;
 
     /// <summary>
     /// SCADACollecting component logic
@@ -35,12 +39,25 @@ namespace EMS.Services.SCADACollectingService
         /// </summary>
         public SCADACollecting()
         {
-            modbusClient = new ModbusClient("localhost", 502);
-            modbusClient.Connect();
+            ConnectToSimulator();
+        }
 
-            //modbusClient.WriteSingleRegister(0, 10f);
-            //modbusClient.WriteSingleRegister(2, 7f);
-            //modbusClient.WriteSingleRegister(4, 7f);
+        private void ConnectToSimulator()
+        {
+            try
+            {
+                modbusClient = new ModbusClient("localhost", 502);
+                modbusClient.Connect();
+            }
+            catch (SocketException)
+            {
+                Thread.Sleep(2000);
+                ConnectToSimulator();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void StartCollectingData()

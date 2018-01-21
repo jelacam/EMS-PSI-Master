@@ -2,10 +2,13 @@
 using SmoothModbus;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace UISimulator.ViewModel
 {
@@ -20,15 +23,7 @@ namespace UISimulator.ViewModel
 
         public MainWindowViewModel()
         {
-            try
-            {
-                modbusClient = new ModbusClient("localhost", 502);
-                modbusClient.Connect();
-            }
-            catch (Exception ex )
-            {
-                throw ex;
-            }
+            ConnectToSimulator();
             convertorHelper = new ConvertorHelper();
             PopulateSimulationData();
             SimulationData2 = SimulationData1;
@@ -36,6 +31,24 @@ namespace UISimulator.ViewModel
 
             Task task = new Task(StartSimulation);
             task.Start();
+        }
+
+        private void ConnectToSimulator()
+        {
+            try
+            {
+                modbusClient = new ModbusClient("localhost", 502);
+                modbusClient.Connect();
+            }
+            catch (SocketException)
+            {
+                Thread.Sleep(2000);
+                ConnectToSimulator();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void StartSimulation()
