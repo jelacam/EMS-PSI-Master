@@ -239,7 +239,7 @@ namespace EMS.Services.CalculationEngineService
                         {
                             cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
                             cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = mu.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                            cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.OptimizedLinear;
+                            cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
                             cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
