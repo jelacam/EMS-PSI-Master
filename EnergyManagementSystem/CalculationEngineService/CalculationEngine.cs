@@ -112,6 +112,12 @@ namespace EMS.Services.CalculationEngineService
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
+                //TODO ispraviti da se kasnije dodeli prava vrednost
+                foreach (var meas in measurementsOptimized)
+                {
+                    meas.CurrentValue = meas.OptimizedLinear;
+                }
+
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
                     Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
