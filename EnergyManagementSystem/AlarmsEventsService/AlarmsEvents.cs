@@ -79,7 +79,9 @@ namespace EMS.Services.AlarmsEventsService
             {
                 this.Alarms.Add(alarm);
                 this.Publisher.PublishAlarmsEvents(alarm);
-                Console.WriteLine("AlarmsEvents: AddAlarm method");
+                //Console.WriteLine("AlarmsEvents: AddAlarm method");
+                string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             }
             catch (Exception ex)
             {
