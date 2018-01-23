@@ -107,14 +107,14 @@ namespace EMS.Services.CalculationEngineService
 
             PublishConsumersToUI(measEnergyConsumers);
 
-			#region test podaci
-			HelpFunction();
-			List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-			powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
-			List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-			List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
-			helpMU.Clear();
-			#endregion
+			//#region test podaci
+			//HelpFunction();
+			//List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+			//powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
+			//List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+			//List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
+			//helpMU.Clear();
+			//#endregion
 
 			Dictionary <long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
             powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
