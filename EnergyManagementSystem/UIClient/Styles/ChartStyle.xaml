@@ -312,11 +312,27 @@
 	</Style>
 
 	<ControlTemplate x:Key="LineDataPointTemplate" TargetType="charting:LineDataPoint">
-		<Grid x:Name="Root">
-			<Ellipse Name="Marker" Fill="{TemplateBinding BorderBrush}" Width="8" Height="8" 
-					 Opacity="0"
-					 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		<Grid x:Name="Root" Background="Transparent">
+			<ToolTipService.ToolTip>
+				<Grid Margin="-5" Background="{TemplateBinding Background}">
+					<StackPanel Margin="5">
+						<ContentControl Content="{TemplateBinding IndependentValue}" Foreground="{TemplateBinding Foreground}" ContentStringFormat="Time : {0}"/>
+						<ContentControl Content="{TemplateBinding DependentValue}" Foreground="{TemplateBinding Foreground}" ContentStringFormat="Value : {0:###}"/>
+					</StackPanel>
+				</Grid>
+			</ToolTipService.ToolTip>
+			<ToolTipService.BetweenShowDelay>0</ToolTipService.BetweenShowDelay>
+			<Ellipse Name="Marker" Fill="{TemplateBinding BorderBrush}" Width="6" Height="6" 
+					 Opacity="1"
+					 VerticalAlignment="Center" HorizontalAlignment="Center">
+				<!--<Style.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Background" Value="Red" />
+					</Trigger>
+				</Style.Triggers>-->
+			</Ellipse>
 		</Grid>
+		
 	</ControlTemplate>
 
 </ResourceDictionary>

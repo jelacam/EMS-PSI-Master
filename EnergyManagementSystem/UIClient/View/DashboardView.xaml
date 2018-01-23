@@ -23,9 +23,9 @@
 				<DockPanel Grid.Row="0">
 
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="LightGreen" Text="Generators -" />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="LightGreen" Text="Current production:" Margin="5,0,0,0"/>
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="LightGreen" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource Title}" Foreground="DarkGreen" Text="Generators -" />
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="Current production:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
 					</StackPanel>
 					
 					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" >
@@ -50,8 +50,9 @@
 																Style="{StaticResource LineSeriesStyle}">
 										<chartingToolkit:LineSeries.DataPointStyle>
 											<Style TargetType="chartingToolkit:LineDataPoint">
-												<Setter Property="Background" Value="LightGreen"/>
+												<Setter Property="Background" Value="DarkGreen"/>
 												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+												
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 
@@ -73,9 +74,9 @@
 				<DockPanel Grid.Row="1">
 					
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="Orange" Text="Energy Consumers -"  />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Orange" Text="Current consumptions:" Margin="5,0,0,0"/>
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Orange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Energy Consumers -"  />
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
 					</StackPanel>
 					
 					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" >
@@ -100,7 +101,7 @@
 																Style="{StaticResource LineSeriesStyle}">
 										<chartingToolkit:LineSeries.DataPointStyle>
 											<Style TargetType="chartingToolkit:LineDataPoint">
-												<Setter Property="Background" Value="Orange"/>
+												<Setter Property="Background" Value="DarkOrange"/>
 												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
