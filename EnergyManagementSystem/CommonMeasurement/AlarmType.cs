@@ -11,11 +11,11 @@ namespace EMS.CommonMeasurement
     /// </summary>
     public enum AlarmType
     {
-        rawMin = 0,
-        rawMax = 1,
-        eguMin = 2,
-        eguMax = 3,
-        optimizedMin = 4,
-        optimizedMax = 5
+        RAW_MIN = 0,
+        RAW_MAX = 1,
+        EGU_MIN = 2,
+        EGU_MAX = 3,
+        OPTIMIZED_MIN = 4,
+        OPTIMIZED_MAX = 5
     }
 }

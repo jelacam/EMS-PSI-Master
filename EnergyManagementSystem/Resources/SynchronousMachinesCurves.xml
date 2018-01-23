@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SynchronousMachineCurveModels xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Curves>
+    <SynchronousMachineCurveModel>
+      <MRId>SyncMachine_1</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+    <SynchronousMachineCurveModel>
+      <MRId>SyncMachine_2</MRId>
+      <A>1</A>
+      <B>0.5</B>
+      <C>10</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_3</MRId>
+      <A>0.2</A>
+      <B>0.5</B>
+      <C>10</C>
+    </SynchronousMachineCurveModel>
+  </Curves>
+</SynchronousMachineCurveModels>

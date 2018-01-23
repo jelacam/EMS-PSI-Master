@@ -53,6 +53,14 @@ namespace EMS.Services.CalculationEngineService
         private float minProduction;
         private float maxProduction;
 
+        private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
+
+        private SynchronousMachineCurveModels GeneratorCharacteristics
+        {
+            get { return generatorCharacteristics; }
+            set { generatorCharacteristics = value; }
+        }
+
         #endregion Fields
 
         /// <summary>
@@ -74,6 +82,8 @@ namespace EMS.Services.CalculationEngineService
             internalEmsFuelsCopy = new List<ResourceDescription>(5);
             internalEnergyConsumers = new List<ResourceDescription>(5);
             internalEnergyConsumersCopy = new List<ResourceDescription>(5);
+
+            GeneratorCharacteristics = LoadCharacteristics.Load();
         }
 
         /// <summary>
@@ -88,20 +98,19 @@ namespace EMS.Services.CalculationEngineService
 
             PublishConsumersToUI(measEnergyConsumers);
 
-            #region test podaci
-            /*HelpFunction();
-			List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-			powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
-			List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-			List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
-			helpMU.Clear();*/
-            #endregion
+			#region test podaci
+			//HelpFunction();
+			//List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+			//powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
+			//List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+			//List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
+			//helpMU.Clear();
+			#endregion
 
             Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
             float powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
 
             List<MeasurementUnit> measurementsOptimized = DoOptimization(optModelMap, powerOfConsumers, windSpeed);
-            //= CalculationHelper.ChooseBetterOptimization(optModelMap);
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
