@@ -91,13 +91,22 @@ namespace EMS.Services.CalculationEngineService
         /// <param name="measEnergyConsumers">list of measurements for Energy Consumers</param>
         /// <param name="measGenerators">list of measurements for Generators</param>
         /// <returns>returns true if optimization was successful</returns>
-        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
+        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
         {
             bool result = false;
 
             PublishConsumersToUI(measEnergyConsumers);
 
-            Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators);
+			#region test podaci
+			HelpFunction();
+			List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+			powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
+			List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+			List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
+			helpMU.Clear();
+			#endregion
+
+			Dictionary <long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
             powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
 
             List<MeasurementUnit> measurementsOptimizedGA = null;
@@ -106,7 +115,7 @@ namespace EMS.Services.CalculationEngineService
             Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
             // measurementsOptimizedGA = DoGeneticAlgorithm(optModelMap, powerOfConsumers);
 
-            measurementsOptimizedLinear = LinearOptimization(measGenerators, powerOfConsumers);
+            measurementsOptimizedLinear = LinearOptimization(measGenerators, powerOfConsumers, windSpeed);
 
             List<MeasurementUnit> measurementsOptimized = CalculationHelper.ChooseBetterOptimization(measurementsOptimizedGA, measurementsOptimizedLinear, optModelMap);
 
@@ -145,7 +154,7 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private List<MeasurementUnit> DoGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float necessaryEnergy)
+        private List<MeasurementUnit> DoGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float necessaryEnergy, float windSpeed)
         {
             try
             {
@@ -160,7 +169,7 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
-        private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators)
+        private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed)
         {
             Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
 
@@ -170,7 +179,7 @@ namespace EMS.Services.CalculationEngineService
                 {
                     SynchronousMachine sm = synchronousMachines[measUnit.Gid];
                     EMSFuel emsf = fuels[sm.Fuel];
-                    OptimisationModel om = new OptimisationModel(sm, emsf, measUnit);
+                    OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed);
 
                     if (emsf.FuelType == EmsFuelType.wind || emsf.FuelType == EmsFuelType.solar)
                     {
@@ -397,7 +406,7 @@ namespace EMS.Services.CalculationEngineService
                 energyConsumers.Clear();
 
                 EMSFuel f1 = new EMSFuel(1);
-                f1.FuelType = EmsFuelType.oli;
+                f1.FuelType = EmsFuelType.wind;
                 f1.UnitPrice = 20;
                 fuels.Add(f1.GlobalId, f1);
                 EMSFuel f2 = new EMSFuel(2);
@@ -408,7 +417,7 @@ namespace EMS.Services.CalculationEngineService
                 SynchronousMachine sm1 = new SynchronousMachine(10);
                 sm1.Active = true;
                 sm1.Fuel = f1.GlobalId;
-                sm1.MaxQ = 100;
+                sm1.MaxQ = 130;
                 sm1.MinQ = 10;
                 sm1.RatedS = 50;
                 synchronousMachines.Add(sm1.GlobalId, sm1);
@@ -420,7 +429,7 @@ namespace EMS.Services.CalculationEngineService
                 sm2.RatedS = 100;
                 synchronousMachines.Add(sm2.GlobalId, sm2);
                 SynchronousMachine sm3 = new SynchronousMachine(30);
-                sm3.Active = false;
+                sm3.Active = true;
                 sm3.Fuel = f2.GlobalId;
                 sm3.MaxQ = 150;
                 sm3.MinQ = 70;
@@ -471,7 +480,7 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
-        private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements, float consumption)
+        private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements, float consumption, float windSpeed)
         {
             lock (lockObj)
             {
@@ -490,7 +499,7 @@ namespace EMS.Services.CalculationEngineService
                         {
                             SynchronousMachine sm = synchronousMachines[measurements[i].Gid];
                             EMSFuel emsf = fuels[sm.Fuel];
-                            OptimisationModel om = new OptimisationModel(sm, emsf, measurements[i]);
+                            OptimisationModel om = new OptimisationModel(sm, emsf, measurements[i], windSpeed);
                             loms.Add(om);
 
                             Decision d = new Decision(Domain.RealNonnegative, "d" + om.GlobalId.ToString());
@@ -517,21 +526,25 @@ namespace EMS.Services.CalculationEngineService
                             for (int i = 0; i < loms.Count; i++)
                             {
                                 help = decisions[loms[i].GlobalId];
+								Term tLimit;
 
-                                if (loms[i].Managable == 0)
-                                {
-                                    Term tLimit = 0 <= help <= 0;
-                                    model.AddConstraint(limit + loms[i].GlobalId, tLimit);
-                                }
-                                else
-                                {
-                                    Term tLimit = loms[i].MinPower <= help <= loms[i].MaxPower;
-                                    model.AddConstraint(limit + loms[i].GlobalId, tLimit);
-                                }
+								if (loms[i].Managable == 0)
+								{
+									tLimit = 0 <= help <= 0;
+								}
+								else if (loms[i].WindPct < 100)
+								{
+									tLimit = loms[i].MinPower <= help <= (loms[i].MaxPower - loms[i].MinPower) / 100 * loms[i].WindPct + loms[i].MinPower;
+								}
+								else
+								{
+									tLimit = loms[i].MinPower <= help <= loms[i].MaxPower;
+								}
+								goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
 
-                                production += help.ToString() + "+";
+								model.AddConstraint(limit + loms[i].GlobalId, tLimit);
 
-                                goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
+								production += help.ToString() + "+";                              
                             }
 
                             production = production.Substring(0, production.Length - 1);

@@ -80,9 +80,9 @@ namespace EMS.ServiceContracts
         /// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
         /// <param name="measGenerators">list of measurements for generators</param>
         /// <returns>returns true if optimization was successful</returns>
-        public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators)
+        public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
         {
-            return proxy.OptimisationAlgorithm(measEnergyConsumers,measGenerators);
+            return proxy.OptimisationAlgorithm(measEnergyConsumers,measGenerators, windSpeed);
         }
     }
 }

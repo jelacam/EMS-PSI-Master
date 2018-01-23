@@ -43,11 +43,18 @@ namespace CalculationEngineServiceTest
 		private bool resultF;
 
 		/// <summary>
+		/// Container for wind speed
+		/// </summary>
+		private float windSpeed;
+
+		/// <summary>
 		/// SetUp method
 		/// </summary>
 		[OneTimeSetUp]
 		public void SetupTest()
 		{
+			this.windSpeed = 15;
+
 			this.ce = new CalculationEngine();
 			var mu1 = new MeasurementUnit();
 			mu1.Gid = 1;
@@ -100,11 +107,11 @@ namespace CalculationEngineServiceTest
         [Ignore("izmenjeno za publish")]
         public void OptimizeMethod()
 		{
-			this.resultT = this.ce.Optimize(this.measurementsEnergyCons,this.measurementGenerators);
+			this.resultT = this.ce.Optimize(this.measurementsEnergyCons,this.measurementGenerators, this.windSpeed);
 			Assert.IsTrue(this.resultT);
-			this.resultF = this.ce.Optimize(new List<MeasurementUnit>(),new List<MeasurementUnit>());
+			this.resultF = this.ce.Optimize(new List<MeasurementUnit>(),new List<MeasurementUnit>(), this.windSpeed);
 			Assert.IsFalse(this.resultF);
-			this.resultF = this.ce.Optimize(null,null);
+			this.resultF = this.ce.Optimize(null,null, this.windSpeed);
 			Assert.IsFalse(this.resultF);
 		}
 	}
