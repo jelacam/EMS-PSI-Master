@@ -21,6 +21,7 @@ namespace EMS.Services.CalculationEngineService
     using NetworkModelService.DataModel.Production;
     using GeneticAlgorithm;
     using Helpers;
+    using LinearAlgorithm;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -30,14 +31,8 @@ namespace EMS.Services.CalculationEngineService
     {
         #region Fields
 
-        private SolverContext context;
 
-        private float totalCostLinear;
-        private float totalCostGeneric;
-
-        private List<OptimisationModel> loms;
         private List<MeasurementUnit> helpMU = new List<MeasurementUnit>();
-        private float powerOfConsumers = 0;
 
         private static List<ResourceDescription> internalSynchMachines;
         private static List<ResourceDescription> internalSynchMachinesCopy;
@@ -55,6 +50,8 @@ namespace EMS.Services.CalculationEngineService
         private PublisherService publisher = null;
         private ITransactionCallback transactionCallback;
         private UpdateResult updateResult;
+        private float minProduction;
+        private float maxProduction;
 
         #endregion Fields
 
@@ -65,13 +62,7 @@ namespace EMS.Services.CalculationEngineService
         {
             publisher = new PublisherService();
 
-            totalCostLinear = 0;
-            totalCostGeneric = 0;
-
             lockObj = new object();
-            context = SolverContext.GetContext();
-            loms = new List<OptimisationModel>();
-            powerOfConsumers = 0;
 
             synchronousMachines = new Dictionary<long, SynchronousMachine>();
             fuels = new Dictionary<long, EMSFuel>();
@@ -97,42 +88,30 @@ namespace EMS.Services.CalculationEngineService
 
             PublishConsumersToUI(measEnergyConsumers);
 
-			#region test podaci
-			HelpFunction();
+            #region test podaci
+            /*HelpFunction();
 			List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
 			powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
 			List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
 			List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
-			helpMU.Clear();
-			#endregion
+			helpMU.Clear();*/
+            #endregion
 
-			Dictionary <long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
-            powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
+            Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
+            float powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
 
-            List<MeasurementUnit> measurementsOptimizedGA = null;
-            List<MeasurementUnit> measurementsOptimizedLinear = null;
-
-            Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
-            // measurementsOptimizedGA = DoGeneticAlgorithm(optModelMap, powerOfConsumers);
-
-            measurementsOptimizedLinear = LinearOptimization(measGenerators, powerOfConsumers, windSpeed);
-
-            List<MeasurementUnit> measurementsOptimized = CalculationHelper.ChooseBetterOptimization(measurementsOptimizedGA, measurementsOptimizedLinear, optModelMap);
+            List<MeasurementUnit> measurementsOptimized = DoOptimization(optModelMap, powerOfConsumers, windSpeed);
+            //= CalculationHelper.ChooseBetterOptimization(optModelMap);
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
-                //TODO ispraviti da se kasnije dodeli prava vrednost
-                foreach (var meas in measurementsOptimized)
-                {
-                    meas.CurrentValue = meas.OptimizedLinear;
-                }
 
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
                     Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
                 }
 
-                PublishGeneratorsToUI(ref measurementsOptimized);
+                PublishGeneratorsToUI(measurementsOptimized);
 
                 try
                 {
@@ -154,14 +133,22 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private List<MeasurementUnit> DoGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float necessaryEnergy, float windSpeed)
+        private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed)
         {
             try
             {
-                GAOptimization gao = new GAOptimization(necessaryEnergy, optModelMap);
+                GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
+                //List<MeasurementUnit> optimizedGA = gao.StartAlgorithmWithReturn();
+                float totalCostGenetic = float.MaxValue;
 
-                List<MeasurementUnit> optimized = gao.StartAlgorithmWithReturn();
-                return optimized;
+                LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
+                var optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers, windSpeed);
+                var totalCostLinear = linearAlgorithm.TotalCost;
+
+                Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
+
+                OptimizationType optType = totalCostLinear > totalCostGenetic ? OptimizationType.Genetic : OptimizationType.Linear;
+                return OptModelMapToListMeasUI(optModelMapOptimizied, optType);
             }
             catch (Exception e)
             {
@@ -169,9 +156,40 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
+        private List<MeasurementUnit> OptModelMapToListMeasUI(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optType)
+        {
+            List<MeasurementUnit> retList = new List<MeasurementUnit>();
+            foreach (var optModel in optModelMap)
+            {
+                float currValue = 0;
+
+                if (optType == OptimizationType.Linear)
+                {
+                    currValue = optModel.Value.LinearOptimizedValue;
+                }
+                else if (optType == OptimizationType.Genetic)
+                {
+                    currValue = optModel.Value.GenericOptimizedValue;
+                }
+
+                retList.Add(new MeasurementUnit()
+                {
+                    Gid = optModel.Value.GlobalId,
+                    MaxValue = optModel.Value.MaxPower,
+                    MinValue = optModel.Value.MinPower,
+                    OptimizationType = optType,
+                    CurrentValue = currValue
+                });
+            }
+
+            return retList;
+        }
+
         private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed)
         {
             Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
+            minProduction = 0;
+            maxProduction = 0;
 
             foreach (var measUnit in measGenerators)
             {
@@ -181,10 +199,16 @@ namespace EMS.Services.CalculationEngineService
                     EMSFuel emsf = fuels[sm.Fuel];
                     OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed);
 
-                    if (emsf.FuelType == EmsFuelType.wind || emsf.FuelType == EmsFuelType.solar)
+                    if (om.Managable != 0)
                     {
-                        continue;
+                        maxProduction += om.MaxPower;
+                        minProduction += om.MinPower;
                     }
+
+                    //if (emsf.FuelType == EmsFuelType.wind || emsf.FuelType == EmsFuelType.solar)
+                    //{
+                    //    continue;
+                    //}
                     optModelMap.Add(om.GlobalId, om);
                 }
             }
@@ -192,19 +216,16 @@ namespace EMS.Services.CalculationEngineService
             return optModelMap;
         }
 
-        private void PublishGeneratorsToUI(ref List<MeasurementUnit> measurementsFromGenerators)
+        private void PublishGeneratorsToUI(List<MeasurementUnit> measurementsFromGenerators)
         {
             List<MeasurementUI> measListUI = new List<MeasurementUI>();
             foreach (var meas in measurementsFromGenerators)
             {
                 MeasurementUI measUI = new MeasurementUI();
                 measUI.Gid = meas.Gid;
-                measUI.CurrentValue = meas.OptimizedLinear;
+                measUI.CurrentValue = meas.CurrentValue;
                 measUI.TimeStamp = meas.TimeStamp;
-
-                // setovanje current vrednosti na vrednost optimizovanu linearnim algoritmom
-                meas.CurrentValue = meas.OptimizedLinear;
-
+                measUI.OptimizationType = (int)meas.OptimizationType;
                 measListUI.Add(measUI);
             }
             publisher.PublishOptimizationResults(measListUI);
@@ -388,10 +409,6 @@ namespace EMS.Services.CalculationEngineService
                 energyConsumers.Clear();
 
                 helpMU.Clear();
-
-                loms.Clear();
-
-                powerOfConsumers = 0;
             }
         }
 
@@ -450,24 +467,18 @@ namespace EMS.Services.CalculationEngineService
                 mu1.Gid = sm1.GlobalId;
                 mu1.MaxValue = sm1.MaxQ;
                 mu1.MinValue = sm1.MinQ;
-                mu1.OptimizedLinear = 0;
-                mu1.OptimizedGeneric = 0;
                 helpMU.Add(mu1);
                 MeasurementUnit mu2 = new MeasurementUnit();
                 mu2.CurrentValue = 130;
                 mu2.Gid = sm2.GlobalId;
                 mu2.MaxValue = sm2.MaxQ;
                 mu2.MinValue = sm2.MinQ;
-                mu2.OptimizedLinear = 0;
-                mu2.OptimizedGeneric = 0;
                 helpMU.Add(mu2);
                 MeasurementUnit mu3 = new MeasurementUnit();
                 mu3.CurrentValue = 100;
                 mu3.Gid = sm3.GlobalId;
                 mu3.MaxValue = sm3.MaxQ;
                 mu3.MinValue = sm3.MinQ;
-                mu3.OptimizedLinear = 0;
-                mu3.OptimizedGeneric = 0;
                 helpMU.Add(mu3);
                 MeasurementUnit mu4 = new MeasurementUnit();
                 mu4.CurrentValue = 160;
@@ -480,108 +491,7 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
-        private List<MeasurementUnit> LinearOptimization(List<MeasurementUnit> measurements, float consumption, float windSpeed)
-        {
-            lock (lockObj)
-            {
-                if (measurements.Count() > 0)
-                {
-                    Model model = context.CreateModel();
 
-                    Dictionary<long, Decision> decisions = new Dictionary<long, Decision>();
-                    loms.Clear();
-                    float maxProduction = 0;
-                    float minProduction = 0;
-
-                    for (int i = 0; i < measurements.Count(); i++)
-                    {
-                        if (synchronousMachines.ContainsKey(measurements[i].Gid))
-                        {
-                            SynchronousMachine sm = synchronousMachines[measurements[i].Gid];
-                            EMSFuel emsf = fuels[sm.Fuel];
-                            OptimisationModel om = new OptimisationModel(sm, emsf, measurements[i], windSpeed);
-                            loms.Add(om);
-
-                            Decision d = new Decision(Domain.RealNonnegative, "d" + om.GlobalId.ToString());
-                            model.AddDecision(d);
-                            decisions.Add(om.GlobalId, d);
-
-                            if (om.Managable != 0)
-                            {
-                                maxProduction += om.MaxPower;
-                                minProduction += om.MinPower;
-                            }
-                        }
-                    }
-
-                    if (loms.Count() > 0)
-                    {
-                        if (0 <= consumption && consumption <= maxProduction)
-                        {
-                            Decision help;
-                            string goal = "";
-                            string limit = "limit";
-                            string production = consumption.ToString() + "<=";
-
-                            for (int i = 0; i < loms.Count; i++)
-                            {
-                                help = decisions[loms[i].GlobalId];
-								Term tLimit;
-
-								if (loms[i].Managable == 0)
-								{
-									tLimit = 0 <= help <= 0;
-								}
-								else if (loms[i].WindPct < 100)
-								{
-									tLimit = loms[i].MinPower <= help <= (loms[i].MaxPower - loms[i].MinPower) / 100 * loms[i].WindPct + loms[i].MinPower;
-								}
-								else
-								{
-									tLimit = loms[i].MinPower <= help <= loms[i].MaxPower;
-								}
-								goal += help.ToString() + "*" + loms[i].Price.ToString() + "+";
-
-								model.AddConstraint(limit + loms[i].GlobalId, tLimit);
-
-								production += help.ToString() + "+";                              
-                            }
-
-                            production = production.Substring(0, production.Length - 1);
-                            production += "<=" + maxProduction.ToString();
-                            model.AddConstraint("production", production);
-
-                            goal = goal.Substring(0, goal.Length - 1);
-                            model.AddGoal("cost", GoalKind.Minimize, goal);
-
-                            Solution solution = context.Solve(new SimplexDirective());
-                            Report report = solution.GetReport();
-                            Console.Write("{0}", report);
-
-                            totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
-
-                            string name = "";
-                            foreach (var item in model.Decisions)
-                            {
-                                for (int i = 0; i < measurements.Count(); i++)
-                                {
-                                    name = item.Name.Substring(1);
-                                    if (Int64.Parse(name) == measurements[i].Gid)
-                                    {
-                                        measurements[i].OptimizedLinear = float.Parse(item.ToDouble().ToString());
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    context.ClearModel();
-                }
-            }
-
-            return measurements;
-        }
 
         #region IntegrityUpdate
 

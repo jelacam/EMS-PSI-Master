@@ -17,6 +17,7 @@ namespace UISimulator.ViewModel
         private IList<KeyValuePair<long, float>> simulationData1;
         private IList<KeyValuePair<long, float>> simulationData2;
         private IList<KeyValuePair<long, float>> simulationData3;
+        private IList<KeyValuePair<long, float>> simulationWindData;
         private readonly long DURATION = 100;
         private ModbusClient modbusClient;
         private ConvertorHelper convertorHelper;
@@ -53,11 +54,13 @@ namespace UISimulator.ViewModel
 
         private void StartSimulation()
         {
-            for(int i = 0; i < DURATION; i++)
+            for (int i = 0; i < DURATION; i++)
             {
                 modbusClient.WriteSingleRegister(0, simulationData1[i].Value);
                 modbusClient.WriteSingleRegister(2, simulationData2[i].Value);
                 modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
+
+                modbusClient.WriteSingleRegister(100, simulationWindData[i].Value);
                 Thread.Sleep(1);
             }
 
@@ -103,25 +106,47 @@ namespace UISimulator.ViewModel
             }
         }
 
+        public IList<KeyValuePair<long, float>> SimulationWindData
+        {
+            get
+            {
+                return simulationWindData;
+            }
+
+            set
+            {
+                simulationWindData = value;
+            }
+        }
+
         private void PopulateSimulationData()
         {
             SimulationData1 = new List<KeyValuePair<long, float>>();
+            SimulationWindData = new List<KeyValuePair<long, float>>();
             for (int i = 0; i < DURATION; i++)
             {
                 float value = (float)SimulationFunction(i);
                 SimulationData1.Add(new KeyValuePair<long, float>(i, value));
+
+                float windValue = (float)SimulateWind(i);
+                SimulationWindData.Add(new KeyValuePair<long, float>(i, windValue));
             }
         }
 
         private double SimulationFunction(int x)
         {
 
-            double v = 1500 * ( Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2) ;
-            if(v < 1000)
+            double v = 1500 * (Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2);
+            if (v < 1000)
             {
                 v = 1000;
             }
             return v;
+        }
+
+        private double SimulateWind(int x)
+        {
+            return Math.Sin((float)x / 10f) * 13.5 + 13.5;
         }
     }
 }

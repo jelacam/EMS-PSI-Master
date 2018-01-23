@@ -44,6 +44,7 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
 		<Grid>
@@ -56,6 +57,10 @@
 
 		<Grid Grid.Column="2">
 			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData3}" />
+		</Grid>
+
+		<Grid Grid.Column="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationWindData}" />
 		</Grid>
 
 	</Grid>

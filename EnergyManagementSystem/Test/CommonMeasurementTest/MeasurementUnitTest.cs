@@ -16,16 +16,6 @@ namespace CommonMeasurementTest
 	public class MeasurementUnitTest
 	{
 		/// <summary>
-		/// Container for gid
-		/// </summary>
-		private long gid;
-
-		/// <summary>
-		/// Container for currentValue
-		/// </summary>
-		private float currentValue;
-
-		/// <summary>
 		/// Unit test for constructor without parameters
 		/// </summary>
 		[Test]
@@ -84,28 +74,5 @@ namespace CommonMeasurementTest
             Assert.AreEqual(mu.MaxValue, maxValue);
         }
 
-		/// <summary>
-		/// Unit test for MeasurementUnit OptimizedLinear setter
-		/// </summary>
-		[Test]
-		[TestCase(1623, TestName = "MeasurementUnitOptimizedLinearProperty")]
-		public void OptimizedLinearProperty(float optimizedLinear)
-		{
-			MeasurementUnit mu = new MeasurementUnit();
-			mu.OptimizedLinear = optimizedLinear;
-			Assert.AreEqual(mu.OptimizedLinear, optimizedLinear);
-		}
-
-		/// <summary>
-		/// Unit test for MeasurementUnit OptimizedGeneric setter
-		/// </summary>
-		[Test]
-		[TestCase(1623, TestName = "MeasurementUnitOptimizedGenericProperty")]
-		public void OptimizedGenericProperty(float optimizedGeneric)
-		{
-			MeasurementUnit mu = new MeasurementUnit();
-			mu.OptimizedGeneric = optimizedGeneric;
-			Assert.AreEqual(mu.OptimizedGeneric, optimizedGeneric);
-		}
 	}
 }

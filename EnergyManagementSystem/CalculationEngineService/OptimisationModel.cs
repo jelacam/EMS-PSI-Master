@@ -20,7 +20,7 @@ namespace EMS.Services.CalculationEngineService
 		/// <summary>
 		/// globalId for OptimisationModel
 		/// </summary>
-		private long globalId;
+	    public long GlobalId { get; set; }
 
 		/// <summary>
 		/// price for OptimisationModel
@@ -66,22 +66,6 @@ namespace EMS.Services.CalculationEngineService
 		/// windPct for OptimisationModel
 		/// </summary>
 		private float windPct;
-
-		/// <summary>
-		/// Gets or sets GlobalId of the entity
-		/// </summary>
-		public long GlobalId
-		{
-			get
-			{
-				return this.globalId;
-			}
-
-			set
-			{
-				this.globalId = value;
-			}
-		}
 
 		/// <summary>
 		/// Gets or sets Price of the entity
@@ -227,12 +211,14 @@ namespace EMS.Services.CalculationEngineService
 			}
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="OptimisationModel" /> class
-		/// </summary>
-		public OptimisationModel()
+        public EMSFuel EmsFuel { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OptimisationModel" /> class
+        /// </summary>
+        public OptimisationModel()
 		{
-			globalId = 0;
+			GlobalId = 0;
 			price = 0;
 			measuredValue = 0;
 			linearOptimizedValue = 0;
@@ -249,12 +235,13 @@ namespace EMS.Services.CalculationEngineService
 		/// </summary>
 		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed)
 		{
-			globalId = sm.GlobalId;
+			GlobalId = sm.GlobalId;
 			measuredValue = mu.CurrentValue;
 			linearOptimizedValue = 0; //izracunati
 			genericOptimizedValue = 0; //izracunati
 			minPower = sm.MinQ;
 			maxPower = sm.MaxQ;
+            EmsFuel = emsf;
 
 			if (sm.Active)
 			{
@@ -274,17 +261,17 @@ namespace EMS.Services.CalculationEngineService
 			else
 			{
 				renewable = false;
-				price = CalculatePrice(emsf, mu.CurrentValue, sm.MinQ, sm.MaxQ);
+				price = CalculatePrice(mu.CurrentValue);
 				windPct = 100;
 			}
         }
 
-		public float CalculatePrice(EMSFuel emsf, float measuredValue, float minValue, float maxValue)
+		public float CalculatePrice(float measuredValue)
 		{
 			float price = 0;
 			float pct = 0;
 
-			pct = ((measuredValue - minValue) / (maxValue - minValue)) * 100;
+			pct = ((measuredValue - minPower) / (maxPower - minPower)) * 100;
 
 			if (pct < 10)
 			{
@@ -331,7 +318,7 @@ namespace EMS.Services.CalculationEngineService
 				price = 10;
 			}
 
-			price *= emsf.UnitPrice;
+			price *= EmsFuel.UnitPrice;
 			return price;
 		}
 

@@ -61,7 +61,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 {
                     CurrentValue = bestGenes[i],
                     Gid = indexToGid[i],
-                    OptimizedGeneric = 1
+                    OptimizationType = OptimizationType.Genetic
                 });
             }
             return retList;

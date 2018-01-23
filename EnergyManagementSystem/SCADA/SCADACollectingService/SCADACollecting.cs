@@ -32,7 +32,7 @@ namespace EMS.Services.SCADACollectingService
         private const int SAMPLE_TIME = 1000; //miliseconds
 
         //TODO ovo ce trebati da se cita iz konfiguracionog fajla
-        private ushort numberOfHoldingRegisters = 100; //how much register will read
+        private ushort numberOfHoldingRegisters = 102; //how much register will read
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SCADACollecting" /> class

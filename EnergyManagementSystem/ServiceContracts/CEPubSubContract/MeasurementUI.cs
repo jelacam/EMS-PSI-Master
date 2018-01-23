@@ -15,5 +15,8 @@ namespace EMS.ServiceContracts
         public string AlarmType { get; set; }
 
         public DateTime TimeStamp { get; set; }
+
+        public int OptimizationType { get; set; }
+
     }
 }

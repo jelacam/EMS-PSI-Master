@@ -199,15 +199,19 @@ namespace EMS.Services.SCADACrunchingService
             Console.WriteLine("Function executed: {0}", function);
 
             int arrayLength = value[1];
-            byte[] data = new byte[arrayLength];
+            int windByteLength = 4;
+            byte[] windData = new byte[windByteLength];
+            byte[] data = new byte[arrayLength - windByteLength];
 
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-            Array.Copy(value, 2, data, 0, arrayLength);
+            Array.Copy(value, 2, data, 0, arrayLength - windByteLength);
+            Array.Copy(value, 2 + arrayLength - windByteLength, windData, 0, windByteLength);
 
             List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
             List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, START_ADDRESS_GENERATOR);
-			float windSpeed = 0;
+
+            float windSpeed = GetWindSpeed(windData,windByteLength);
 
             bool isSuccess = false;
             try
@@ -227,6 +231,12 @@ namespace EMS.Services.SCADACrunchingService
             }
 
             return isSuccess;
+        }
+
+        private float GetWindSpeed(byte[] windData, int byteLength)
+        {
+            float[] values = ModbusHelper.GetValueFromByteArray<float>(windData, byteLength);
+            return values[0];
         }
 
         private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)

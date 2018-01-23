@@ -23,15 +23,6 @@ namespace EMS.CommonMeasurement
         /// </summary>
         private float currentValue;
 
-        /// <summary>
-        /// optimizedLinear  for MeasurementUnit
-        /// </summary>
-        private float optimizedLinear;
-
-        /// <summary>
-        /// optimizedGeneric  for MeasurementUnit
-        /// </summary>
-        private float optimizedGeneric;
 
         /// <summary>
         /// minValue for MeasurementUnit
@@ -57,10 +48,11 @@ namespace EMS.CommonMeasurement
 			currentValue = 0;
 			minValue = 0;
 			maxValue = 0;
-			optimizedLinear = 0;
-			optimizedGeneric = 0;
+            OptimizationType = OptimizationType.None;
             timestamp = DateTime.Now;
         }
+
+        public OptimizationType OptimizationType { get; set; }
 
         /// <summary>
         /// Gets or sets Gid of the entity
@@ -126,37 +118,6 @@ namespace EMS.CommonMeasurement
             }
         }
 
-        /// <summary>
-        /// Gets or sets OptimizedLinear of the entity
-        /// </summary>
-        public float OptimizedLinear
-        {
-            get
-            {
-                return this.optimizedLinear;
-            }
-
-            set
-            {
-                this.optimizedLinear = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets OptimizedGeneric of the entity
-        /// </summary>
-        public float OptimizedGeneric
-        {
-            get
-            {
-                return this.optimizedGeneric;
-            }
-
-            set
-            {
-                this.optimizedGeneric = value;
-            }
-        }
 
         /// <summary>
         /// Gets or sets TimeStamp of the entity
