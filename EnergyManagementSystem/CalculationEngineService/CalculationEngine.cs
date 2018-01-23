@@ -41,9 +41,9 @@ namespace EMS.Services.CalculationEngineService
         private static List<ResourceDescription> internalEnergyConsumers;
         private static List<ResourceDescription> internalEnergyConsumersCopy;
 
-        private IDictionary<long, SynchronousMachine> synchronousMachines;
-        private IDictionary<long, EMSFuel> fuels;
-        private IDictionary<long, EnergyConsumer> energyConsumers;
+        private static IDictionary<long, SynchronousMachine> synchronousMachines;
+        private static IDictionary<long, EMSFuel> fuels;
+        private static IDictionary<long, EnergyConsumer> energyConsumers;
 
         private object lockObj;
 
