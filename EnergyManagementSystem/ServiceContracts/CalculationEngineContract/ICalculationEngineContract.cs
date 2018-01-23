@@ -17,13 +17,13 @@ namespace EMS.ServiceContracts
     [ServiceContract]
     public interface ICalculationEngineContract
     {
-        /// <summary>
-        /// Optimization algorithm
-        /// </summary>
-        /// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
-        /// <param name="measGenerators">list of measurements for generators</param>
-        /// <returns>returns true if optimization was successful</returns>
-        [OperationContract]
-        bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators);
+		/// <summary>
+		/// Optimization algorithm
+		/// </summary>
+		/// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
+		/// <param name="measGenerators">list of measurements for generators</param>
+		/// <returns>returns true if optimization was successful</returns>
+		[OperationContract]
+		bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed);
     }
 }
