@@ -97,7 +97,7 @@
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_1"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW </cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_1</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_1</cim:IdentifiedObject.name>
 	</cim:Analog>
@@ -109,7 +109,7 @@
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_2"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW </cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_2</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_2</cim:IdentifiedObject.name>
 	</cim:Analog>
@@ -121,7 +121,7 @@
 		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_3"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW </cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_3</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_3</cim:IdentifiedObject.name>
 	</cim:Analog>
@@ -133,7 +133,7 @@
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_1"/>
-		<cim:Measurement.unitSymbol>W </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW</cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_4</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_4</cim:IdentifiedObject.name>
 	</cim:Analog>
@@ -145,7 +145,7 @@
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_2"/>
-		<cim:Measurement.unitSymbol>W </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW</cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_5</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_5</cim:IdentifiedObject.name>
 	</cim:Analog>
@@ -157,7 +157,7 @@
 		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_3"/>
-		<cim:Measurement.unitSymbol>W </cim:Measurement.unitSymbol>
+		<cim:Measurement.unitSymbol>MW </cim:Measurement.unitSymbol>
 		<cim:IdentifiedObject.mRID>Analog_6</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Analog_6</cim:IdentifiedObject.name>
 	</cim:Analog>

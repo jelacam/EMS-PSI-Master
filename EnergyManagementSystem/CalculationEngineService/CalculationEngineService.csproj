@@ -93,10 +93,12 @@
     <Compile Include="GeneticAlgorithm\DNA.cs" />
     <Compile Include="GeneticAlgorithm\GeneticAlgorithm.cs" />
     <Compile Include="Helpers\CalculationHelper.cs" />
+    <Compile Include="LoadCharacteristics.cs" />
     <Compile Include="OptimisationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PubSub\OptimizationEventArgs.cs" />
     <Compile Include="PubSub\PublisherService.cs" />
+    <Compile Include="SynchronousMachineCurveModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">

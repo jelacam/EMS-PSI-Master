@@ -56,6 +56,14 @@ namespace EMS.Services.CalculationEngineService
         private ITransactionCallback transactionCallback;
         private UpdateResult updateResult;
 
+        private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
+
+        private SynchronousMachineCurveModels GeneratorCharacteristics
+        {
+            get { return generatorCharacteristics; }
+            set { generatorCharacteristics = value; }
+        }
+
         #endregion Fields
 
         /// <summary>
@@ -83,6 +91,8 @@ namespace EMS.Services.CalculationEngineService
             internalEmsFuelsCopy = new List<ResourceDescription>(5);
             internalEnergyConsumers = new List<ResourceDescription>(5);
             internalEnergyConsumersCopy = new List<ResourceDescription>(5);
+
+            GeneratorCharacteristics = LoadCharacteristics.Load();
         }
 
         /// <summary>
