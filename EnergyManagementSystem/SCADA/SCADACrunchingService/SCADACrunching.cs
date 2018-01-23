@@ -354,7 +354,8 @@ namespace EMS.Services.SCADACrunchingService
             AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
             if (value < minRaw)
             {
-                ah.Type = AlarmType.rawMin;
+                ah.Type = AlarmType.RAW_MIN;
+                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0}", gid);
@@ -363,7 +364,8 @@ namespace EMS.Services.SCADACrunchingService
 
             if (value > maxRaw)
             {
-                ah.Type = AlarmType.rawMax;
+                ah.Type = AlarmType.RAW_MAX;
+                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0}", gid);
@@ -389,7 +391,8 @@ namespace EMS.Services.SCADACrunchingService
             AlarmHelper ah = new AlarmHelper(gid, value, alarmMin, alarmMax, DateTime.Now);
             if (value < alarmMin)
             {
-                ah.Type = AlarmType.eguMin;
+                ah.Type = AlarmType.EGU_MIN;
+                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
@@ -398,7 +401,8 @@ namespace EMS.Services.SCADACrunchingService
 
             if (value > alarmMax)
             {
-                ah.Type = AlarmType.eguMax;
+                ah.Type = AlarmType.EGU_MAX;
+                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);

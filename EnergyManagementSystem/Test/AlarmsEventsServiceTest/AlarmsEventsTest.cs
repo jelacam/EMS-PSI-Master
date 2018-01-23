@@ -36,7 +36,7 @@ namespace AlarmsEventsServiceTest
 			this.ae = new AlarmsEvents();
 			this.ah = new AlarmHelper(1623, 50, 0, 100, DateTime.Now);
 			this.ah.Message = "message";
-			this.ah.Type = AlarmType.eguMax;
+			this.ah.Type = AlarmType.EGU_MAX;
 		}
 
 		/// <summary>

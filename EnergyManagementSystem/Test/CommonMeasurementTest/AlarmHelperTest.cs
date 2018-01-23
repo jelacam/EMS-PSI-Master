@@ -112,7 +112,7 @@ namespace CommonMeasurementTest
 		/// Unit test for AlarmHelper Type property
 		/// </summary>
 		[Test]
-		[TestCase(AlarmType.eguMax, TestName = "AlarmHelperTypeProperty")]
+		[TestCase(AlarmType.EGU_MAX, TestName = "AlarmHelperTypeProperty")]
 		public void TypeProperty(AlarmType type)
 		{
 			this.ah.Type = type;
