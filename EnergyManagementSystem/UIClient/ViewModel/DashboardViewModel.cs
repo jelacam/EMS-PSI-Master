@@ -8,6 +8,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using UIClient.PubSub;
 
 namespace UIClient.ViewModel
@@ -22,9 +23,11 @@ namespace UIClient.ViewModel
         private int attemptsCount = 0;
         private float currentConsumption;
         private float currentProduction;
+        private bool isOptionsExpanded = false;
 
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> energyConsumersContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
+        private ICommand expandCommand;
         #endregion
 
         #region Properties
@@ -82,11 +85,44 @@ namespace UIClient.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public bool IsOptionsExpanded
+        {
+            get
+            {
+                return isOptionsExpanded;
+            }
+
+            set
+            {
+                isOptionsExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
+
+
 
         public DashboardViewModel()
         {
             SubsrcibeToCE();
+        }
+
+        #region Commands
+        public ICommand ExpandCommand => expandCommand ?? (expandCommand = new RelayCommand(ExpandCommandExecute));
+
+        #endregion
+        private void ExpandCommandExecute(object obj)
+        {
+            if (IsOptionsExpanded)
+            {
+                IsOptionsExpanded = false;
+            }
+            else
+            {
+                IsOptionsExpanded = true;
+            }
         }
 
         private void SubsrcibeToCE()

@@ -5,6 +5,7 @@
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
 	<SolidColorBrush x:Key="LigthBrush" Color="#FF6E6E6E"/>
+	<SolidColorBrush x:Key="BlueMouseOver" Color="#1C97EA"/>
 
 	<Style TargetType="Window" x:Key="BasicWindowStyle">
 		<Setter Property="Background" Value="{StaticResource AppBackground}" ></Setter>
@@ -62,6 +63,31 @@
 						</Trigger> 
 						<Trigger Property="IsSelected" Value="False">
 							<Setter TargetName="Panel" Property="Background" Value="{StaticResource AppBackground}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="Button" x:Key="ExpButtonStyle">
+		<Setter Property="Background" Value="Gray"/>
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="FontSize" Value="10"/>
+		<!--<Setter Property="Margin" Value="0,0,-5,0"/>-->
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid >
+						<Rectangle Fill="{TemplateBinding Background}"></Rectangle>
+						<ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Margin="1"/>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource BlueMouseOver}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

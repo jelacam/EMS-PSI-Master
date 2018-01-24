@@ -12,9 +12,46 @@
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConvetrer"/>
 		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
+		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 	</UserControl.Resources>
 	<Grid>
-		<ScrollViewer>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<Border Grid.Column="0" BorderThickness="0" Background="Gray">
+			<Grid>
+
+				<StackPanel Margin="5" Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}">
+					<Button Margin="5">Bla bla</Button>
+					<Button Margin="5">Bla bla</Button>
+					<Button Margin="5">Bla bla</Button>
+				</StackPanel>
+
+				<Button Height="50" Margin="-1,0,-5,0"
+						Command="{Binding ExpandCommand}"
+						VerticalAlignment="Center" HorizontalAlignment="Right">
+					<Button.Style>
+						<Style BasedOn="{StaticResource ExpButtonStyle}" TargetType="Button">
+							<Setter Property="Content" Value="&gt;"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsOptionsExpanded}" Value="True">
+									<Setter Property="Content" Value="&lt;"/>					 <!--&lt; - <   -->
+								</DataTrigger>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Background" Value="{StaticResource BlueMouseOver}" />
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</Button.Style>
+				</Button>
+
+			</Grid>
+		</Border>
+
+		<ScrollViewer Grid.Column="1">
+
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -27,7 +64,7 @@
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="Current production:" Margin="5,0,0,0"/>
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
 					</StackPanel>
-					
+
 					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" >
 
 						<ItemsControl.ItemsPanel>
@@ -52,7 +89,7 @@
 											<Style TargetType="chartingToolkit:LineDataPoint">
 												<Setter Property="Background" Value="DarkGreen"/>
 												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-												
+
 											</Style>
 										</chartingToolkit:LineSeries.DataPointStyle>
 
@@ -72,13 +109,13 @@
 				</DockPanel>
 
 				<DockPanel Grid.Row="1">
-					
+
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
 						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Energy Consumers -"  />
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
 					</StackPanel>
-					
+
 					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" >
 
 						<ItemsControl.ItemsPanel>
