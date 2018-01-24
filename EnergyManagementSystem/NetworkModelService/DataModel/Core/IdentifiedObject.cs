@@ -51,6 +51,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             this.globalId = globalId;
         }
 
+        public IdentifiedObject()
+        {
+
+        }
+
         /// <summary>
         /// Gets global id of the entity (identified object).
         /// </summary>

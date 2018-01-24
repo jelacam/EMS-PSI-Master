@@ -60,13 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlarmHelper.cs" />
-    <Compile Include="AlarmType.cs" />
+    <Compile Include="AlarmEnums.cs" />
     <Compile Include="AnalogLocation.cs" />
     <Compile Include="ConvertorHelper.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="MeasurementUnit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesDescriptionConverter.cs" />
+    <Compile Include="ScadaConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

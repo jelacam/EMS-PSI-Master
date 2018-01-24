@@ -41,6 +41,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
         {
         }
 
+        public Analog():base()
+        {
+
+        }
+
         /// <summary>
         /// Gets or sets MaxValue of the entity
         /// </summary>

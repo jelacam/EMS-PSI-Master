@@ -21,6 +21,7 @@ namespace EMS.Services.SCADACommandingService
     using System.Threading;
     using System.Runtime.InteropServices;
     using System.IO;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// SCADACommanding class for accept data from CE and put data to simulator
@@ -113,6 +114,13 @@ namespace EMS.Services.SCADACommandingService
                 listOfAnalogCopy.Clear();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CMD Transaction: Commit phase successfully finished.");
                 Console.WriteLine("Number of Analog values: {0}", listOfAnalog.Count);
+
+                ScadaConfiguration sc = new ScadaConfiguration();
+                sc.AnalogsList = listOfAnalog;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer = new StreamWriter("ScadaConfig.xml");
+                serializer.Serialize(writer, sc);
+
                 return true;
             }
             catch (Exception e)
@@ -320,6 +328,13 @@ namespace EMS.Services.SCADACommandingService
                         });
                     }
                 }
+
+                ScadaConfiguration sc = new ScadaConfiguration();
+                sc.AnalogsList = listOfAnalog;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer = new StreamWriter("ScadaConfig.xml");
+                serializer.Serialize(writer, sc);
+
             }
             catch (Exception e)
             {

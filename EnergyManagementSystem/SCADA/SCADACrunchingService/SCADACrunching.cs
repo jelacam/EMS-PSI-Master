@@ -14,6 +14,8 @@ namespace EMS.Services.SCADACrunchingService
     using NetworkModelService.DataModel.Meas;
     using ServiceContracts;
     using SmoothModbus;
+    using System.Xml.Serialization;
+    using System.IO;
 
     /// <summary>
     /// SCADACrunching component logic
@@ -96,6 +98,20 @@ namespace EMS.Services.SCADACrunchingService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction: Commit phase successfully finished.");
                 Console.WriteLine("Number of generator Analog values: {0}", generatorAnalogs.Count);
                 Console.WriteLine("Number of energy consumer Analog values: {0}", energyConsumersAnalogs.Count);
+
+                ScadaConfiguration scECA = new ScadaConfiguration();
+                scECA.AnalogsList = energyConsumersAnalogs;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
+                serializer.Serialize(writer, scECA);
+
+
+                ScadaConfiguration scGA = new ScadaConfiguration();
+                scGA.AnalogsList = generatorAnalogs;
+                XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
+                serializer2.Serialize(writer2, scGA);
+
                 return true;
             }
             catch (Exception e)
@@ -333,6 +349,19 @@ namespace EMS.Services.SCADACrunchingService
                         });
                     }
                 }
+
+                ScadaConfiguration scECA = new ScadaConfiguration();
+                scECA.AnalogsList = energyConsumersAnalogs;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
+                serializer.Serialize(writer, scECA);
+
+
+                ScadaConfiguration scGA = new ScadaConfiguration();
+                scGA.AnalogsList = generatorAnalogs;
+                XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
+                StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
+                serializer2.Serialize(writer2, scGA);
             }
             catch (Exception e)
             {
@@ -365,6 +394,7 @@ namespace EMS.Services.SCADACrunchingService
             if (value < minRaw)
             {
                 ah.Type = AlarmType.RAW_MIN;
+                ah.Severity = SeverityLevel.CRITICAL;
                 ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
@@ -375,6 +405,7 @@ namespace EMS.Services.SCADACrunchingService
             if (value > maxRaw)
             {
                 ah.Type = AlarmType.RAW_MAX;
+                ah.Severity = SeverityLevel.CRITICAL;
                 ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
@@ -398,10 +429,26 @@ namespace EMS.Services.SCADACrunchingService
             bool retVal = false;
             float alarmMin = minEGU + (float)Math.Round((20f / 100f) * minEGU);
             float alarmMax = maxEGU - (float)Math.Round((20f / 100f) * maxEGU);
+
+            float highMin = minEGU + (float)Math.Round((5f / 100f) * minEGU);
+            float highMax = maxEGU - (float)Math.Round((5f / 100f) * maxEGU);
             AlarmHelper ah = new AlarmHelper(gid, value, alarmMin, alarmMax, DateTime.Now);
-            if (value < alarmMin)
+
+            if (value < highMin)
             {
                 ah.Type = AlarmType.EGU_MIN;
+                ah.Severity = SeverityLevel.HIGH;
+                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
+            }
+            else if (value < alarmMin)
+            {
+
+                ah.Type = AlarmType.EGU_MIN;
+                ah.Severity = SeverityLevel.MAJOR;
                 ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
@@ -409,15 +456,27 @@ namespace EMS.Services.SCADACrunchingService
                 Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
             }
 
-            if (value > alarmMax)
+            if (value > highMax)
             {
                 ah.Type = AlarmType.EGU_MAX;
+                ah.Severity = SeverityLevel.HIGH;
                 ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
             }
+            else if (value > alarmMax)
+            {
+                ah.Type = AlarmType.EGU_MAX;
+                ah.Severity = SeverityLevel.MAJOR;
+                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
+                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                retVal = true;
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
+                Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
+            }
+            
 
             return retVal;
         }
