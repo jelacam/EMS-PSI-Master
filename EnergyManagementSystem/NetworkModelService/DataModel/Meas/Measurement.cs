@@ -38,6 +38,11 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
         {
         }
 
+        public Measurement():base()
+        {
+
+        }
+
         /// <summary>
         /// Gets or sets MeasurementType of the entity
         /// </summary>

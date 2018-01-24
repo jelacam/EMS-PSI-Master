@@ -99,13 +99,18 @@ namespace EMS.Services.SCADACrunchingService
                 Console.WriteLine("Number of generator Analog values: {0}", generatorAnalogs.Count);
                 Console.WriteLine("Number of energy consumer Analog values: {0}", energyConsumersAnalogs.Count);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                ScadaConfiguration scECA = new ScadaConfiguration();
+                scECA.AnalogsList = energyConsumersAnalogs;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
-                serializer.Serialize(writer, energyConsumersAnalogs);
+                serializer.Serialize(writer, scECA);
 
-                XmlSerializer serializer2 = new XmlSerializer(typeof(List<AnalogLocation>));
+
+                ScadaConfiguration scGA = new ScadaConfiguration();
+                scGA.AnalogsList = generatorAnalogs;
+                XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
-                serializer.Serialize(writer, generatorAnalogs);
+                serializer2.Serialize(writer2, scGA);
 
                 return true;
             }
@@ -345,13 +350,18 @@ namespace EMS.Services.SCADACrunchingService
                     }
                 }
 
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                ScadaConfiguration scECA = new ScadaConfiguration();
+                scECA.AnalogsList = energyConsumersAnalogs;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
-                serializer.Serialize(writer, energyConsumersAnalogs);
+                serializer.Serialize(writer, scECA);
 
-                XmlSerializer serializer2 = new XmlSerializer(typeof(List<AnalogLocation>));
+
+                ScadaConfiguration scGA = new ScadaConfiguration();
+                scGA.AnalogsList = generatorAnalogs;
+                XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
-                serializer.Serialize(writer, generatorAnalogs);
+                serializer2.Serialize(writer2, scGA);
             }
             catch (Exception e)
             {

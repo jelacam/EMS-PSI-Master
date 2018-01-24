@@ -115,9 +115,11 @@ namespace EMS.Services.SCADACommandingService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CMD Transaction: Commit phase successfully finished.");
                 Console.WriteLine("Number of Analog values: {0}", listOfAnalog.Count);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                ScadaConfiguration sc = new ScadaConfiguration();
+                sc.AnalogsList = listOfAnalog;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfig.xml");
-                serializer.Serialize(writer, listOfAnalog);
+                serializer.Serialize(writer, sc);
 
                 return true;
             }
@@ -327,9 +329,12 @@ namespace EMS.Services.SCADACommandingService
                     }
                 }
 
-                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                ScadaConfiguration sc = new ScadaConfiguration();
+                sc.AnalogsList = listOfAnalog;
+                XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfig.xml");
-                serializer.Serialize(writer, listOfAnalog);
+                serializer.Serialize(writer, sc);
+
             }
             catch (Exception e)
             {
