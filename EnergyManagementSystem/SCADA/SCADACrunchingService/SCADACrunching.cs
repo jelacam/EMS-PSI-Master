@@ -14,6 +14,8 @@ namespace EMS.Services.SCADACrunchingService
     using NetworkModelService.DataModel.Meas;
     using ServiceContracts;
     using SmoothModbus;
+    using System.Xml.Serialization;
+    using System.IO;
 
     /// <summary>
     /// SCADACrunching component logic
@@ -96,6 +98,15 @@ namespace EMS.Services.SCADACrunchingService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction: Commit phase successfully finished.");
                 Console.WriteLine("Number of generator Analog values: {0}", generatorAnalogs.Count);
                 Console.WriteLine("Number of energy consumer Analog values: {0}", energyConsumersAnalogs.Count);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
+                serializer.Serialize(writer, energyConsumersAnalogs);
+
+                XmlSerializer serializer2 = new XmlSerializer(typeof(List<AnalogLocation>));
+                StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
+                serializer.Serialize(writer, generatorAnalogs);
+
                 return true;
             }
             catch (Exception e)
@@ -333,6 +344,14 @@ namespace EMS.Services.SCADACrunchingService
                         });
                     }
                 }
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<AnalogLocation>));
+                StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
+                serializer.Serialize(writer, energyConsumersAnalogs);
+
+                XmlSerializer serializer2 = new XmlSerializer(typeof(List<AnalogLocation>));
+                StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
+                serializer.Serialize(writer, generatorAnalogs);
             }
             catch (Exception e)
             {
