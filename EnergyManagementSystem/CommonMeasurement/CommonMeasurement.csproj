@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlarmHelper.cs" />
-    <Compile Include="AlarmType.cs" />
+    <Compile Include="AlarmEnums.cs" />
     <Compile Include="AnalogLocation.cs" />
     <Compile Include="ConvertorHelper.cs" />
     <Compile Include="Enums.cs" />
