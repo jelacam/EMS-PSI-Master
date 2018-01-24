@@ -7,14 +7,162 @@
 			 xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 			 xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:converters="clr-namespace:UIClient.Converters"
+			 xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
 			 mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConvetrer"/>
 		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
+		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
+
+		<DataTemplate x:Key="VisibilityCheckbox">
+			<CheckBox Foreground="White" Margin="1,0,0,2" IsChecked="True" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Checked">
+						<i:InvokeCommandAction Command="{Binding DataContext.VisibilityCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}"/>
+					</i:EventTrigger>
+					<i:EventTrigger EventName="Unchecked">
+						<i:InvokeCommandAction Command="{Binding DataContext.VisibilityUncheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}"/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</CheckBox>
+		</DataTemplate>
+
+		<DataTemplate x:Key="GraphGeneratorTemplate">
+			<Grid>
+				<Grid.Visibility>
+					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
+						<Binding Path="DataContext.GidToVisibilityMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+						<Binding Path="Key"></Binding>
+					</MultiBinding>
+				</Grid.Visibility>
+				<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+													   Style="{StaticResource DashboardChartStyle}"
+													   Width="400" Height="250">
+
+					<chartingToolkit:LineSeries Title="Value"  
+																ItemsSource="{Binding Path=Value}" 
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
+																IsSelectionEnabled="False"
+																Style="{StaticResource LineSeriesStyle}">
+						<chartingToolkit:LineSeries.DataPointStyle>
+							<Style TargetType="chartingToolkit:LineDataPoint">
+								<Setter Property="Background" Value="DarkGreen"/>
+								<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+
+							</Style>
+						</chartingToolkit:LineSeries.DataPointStyle>
+
+						<chartingToolkit:LineSeries.IndependentAxis>
+							<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
+						</chartingToolkit:LineSeries.IndependentAxis>
+
+						<chartingToolkit:LineSeries.DependentRangeAxis>
+							<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+						</chartingToolkit:LineSeries.DependentRangeAxis>
+
+					</chartingToolkit:LineSeries>
+				</chartingToolkit:Chart>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="GraphConsumerTemplate">
+			<Grid>
+				<Grid.Visibility>
+					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
+						<Binding Path="DataContext.GidToVisibilityMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+						<Binding Path="Key"></Binding>
+					</MultiBinding>
+				</Grid.Visibility>
+				<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+													   Style="{StaticResource DashboardChartStyle}"
+													   Width="400" Height="250">
+
+					<chartingToolkit:LineSeries Title="Value"  
+																ItemsSource="{Binding Path=Value}" 
+																DependentValueBinding="{Binding Path=CurrentValue}" 
+																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
+																IsSelectionEnabled="False"
+																Style="{StaticResource LineSeriesStyle}">
+						<chartingToolkit:LineSeries.DataPointStyle>
+							<Style TargetType="chartingToolkit:LineDataPoint">
+								<Setter Property="Background" Value="DarkOrange"/>
+								<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+							</Style>
+						</chartingToolkit:LineSeries.DataPointStyle>
+						<chartingToolkit:LineSeries.IndependentAxis>
+							<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
+						</chartingToolkit:LineSeries.IndependentAxis>
+						<chartingToolkit:LineSeries.DependentRangeAxis>
+							<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+						</chartingToolkit:LineSeries.DependentRangeAxis>
+					</chartingToolkit:LineSeries>
+				</chartingToolkit:Chart>
+			</Grid>
+		</DataTemplate>
 	</UserControl.Resources>
 	<Grid>
-		<ScrollViewer>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="2"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0" SizeChanged="Grid_SizeChanged" Background="Gray"  
+			  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}">
+
+			<StackPanel Margin="5" MinWidth="150" >
+				<TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
+
+				<GroupBox FontSize="14" Header="Visibility" Foreground="White">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<GroupBox Header="Generators" Foreground="White">
+							<ItemsControl ItemsSource="{Binding GeneratorsContainer}"
+										  ItemTemplate="{StaticResource VisibilityCheckbox}"/>
+						</GroupBox>
+
+						<GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
+							<ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
+										  ItemTemplate="{StaticResource VisibilityCheckbox}">
+							</ItemsControl>
+						</GroupBox>
+					</Grid>
+				</GroupBox>
+			</StackPanel>
+
+		</Grid>
+
+		<!--<GridSplitter x:Name="Splitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2" 
+					  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}" />-->
+
+		<Button Height="50" Margin="-1,0,-5,0" 
+						Command="{Binding ExpandCommand}"
+						VerticalAlignment="Center" HorizontalAlignment="Right">
+			<Button.Style>
+				<Style BasedOn="{StaticResource ExpButtonStyle}" TargetType="Button">
+					<Setter Property="Content" Value="&gt;"/>
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding IsOptionsExpanded}" Value="True">
+							<Setter Property="Content" Value="&lt;"/>
+							<!--&lt; - <   -->
+						</DataTrigger>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource BlueMouseOver}" />
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Button.Style>
+		</Button>
+
+		<ScrollViewer Grid.Column="2">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -27,94 +175,32 @@
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="Current production:" Margin="5,0,0,0"/>
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
 					</StackPanel>
-					
-					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" >
 
+					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" 
+								   ItemTemplate="{StaticResource GraphGeneratorTemplate}" >
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Style="{StaticResource DashboardChartStyle}"
-													   Width="400" Height="250">
-
-									<chartingToolkit:LineSeries Title="Value"  
-																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=CurrentValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
-																IsSelectionEnabled="False"
-																Style="{StaticResource LineSeriesStyle}">
-										<chartingToolkit:LineSeries.DataPointStyle>
-											<Style TargetType="chartingToolkit:LineDataPoint">
-												<Setter Property="Background" Value="DarkGreen"/>
-												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-												
-											</Style>
-										</chartingToolkit:LineSeries.DataPointStyle>
-
-										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
-										</chartingToolkit:LineSeries.IndependentAxis>
-
-										<chartingToolkit:LineSeries.DependentRangeAxis>
-											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-										</chartingToolkit:LineSeries.DependentRangeAxis>
-
-									</chartingToolkit:LineSeries>
-								</chartingToolkit:Chart>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</DockPanel>
 
 				<DockPanel Grid.Row="1">
-					
+
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
 						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Energy Consumers -"  />
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
 					</StackPanel>
-					
-					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" >
 
+					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" 
+								   ItemTemplate="{StaticResource GraphConsumerTemplate}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Style="{StaticResource DashboardChartStyle}"
-													   Width="400" Height="250">
-
-									<chartingToolkit:LineSeries Title="Value"  
-																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=CurrentValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
-																IsSelectionEnabled="False"
-																Style="{StaticResource LineSeriesStyle}">
-										<chartingToolkit:LineSeries.DataPointStyle>
-											<Style TargetType="chartingToolkit:LineDataPoint">
-												<Setter Property="Background" Value="DarkOrange"/>
-												<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-											</Style>
-										</chartingToolkit:LineSeries.DataPointStyle>
-										<chartingToolkit:LineSeries.IndependentAxis>
-											<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
-										</chartingToolkit:LineSeries.IndependentAxis>
-										<chartingToolkit:LineSeries.DependentRangeAxis>
-											<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-										</chartingToolkit:LineSeries.DependentRangeAxis>
-									</chartingToolkit:LineSeries>
-								</chartingToolkit:Chart>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</DockPanel>
 			</Grid>

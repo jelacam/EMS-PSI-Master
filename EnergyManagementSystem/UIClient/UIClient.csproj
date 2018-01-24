@@ -100,7 +100,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EMSTypeToStringConverter.cs" />
+    <Compile Include="Converters\GidMapToVisibilityConverter.cs" />
     <Compile Include="Converters\GlobalIdToEMSTypeStringConverter.cs" />
     <Compile Include="Converters\HexadecimalConverter.cs" />
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />

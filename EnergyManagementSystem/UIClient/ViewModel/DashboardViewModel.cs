@@ -8,6 +8,8 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using UIClient.PubSub;
 
 namespace UIClient.ViewModel
@@ -22,9 +24,14 @@ namespace UIClient.ViewModel
         private int attemptsCount = 0;
         private float currentConsumption;
         private float currentProduction;
+        private bool isOptionsExpanded = false;
 
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> energyConsumersContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
+        private Dictionary<long, Visibility> gidToVisibilityMap = new Dictionary<long, Visibility>();
+        private ICommand expandCommand;
+        private ICommand visibilityCheckedCommand;
+        private ICommand visibilityUncheckedCommand;
         #endregion
 
         #region Properties
@@ -82,12 +89,76 @@ namespace UIClient.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public bool IsOptionsExpanded
+        {
+            get
+            {
+                return isOptionsExpanded;
+            }
+
+            set
+            {
+                isOptionsExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Dictionary<long, Visibility> GidToVisibilityMap
+        {
+            get
+            {
+                return gidToVisibilityMap;
+            }
+
+            set
+            {
+                gidToVisibilityMap = value;
+            }
+        }
+
         #endregion
 
         public DashboardViewModel()
         {
             SubsrcibeToCE();
         }
+
+        #region Commands
+        public ICommand ExpandCommand => expandCommand ?? (expandCommand = new RelayCommand(ExpandCommandExecute));
+
+        public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
+
+        public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
+
+        #endregion
+
+        #region CommandsExecutions
+
+        private void ExpandCommandExecute(object obj)
+        {
+            if (IsOptionsExpanded)
+            {
+                IsOptionsExpanded = false;
+            }
+            else
+            {
+                IsOptionsExpanded = true;
+            }
+        }
+
+        private void VisibilityCheckedCommandExecute(long gid)
+        {
+            GidToVisibilityMap[gid] = Visibility.Visible;
+            OnPropertyChanged(nameof(GidToVisibilityMap));
+        }
+
+        private void VisibilityUncheckedCommandExecute(long gid)
+        {
+            GidToVisibilityMap[gid] = Visibility.Collapsed;
+            OnPropertyChanged(nameof(GidToVisibilityMap));
+        }
+        #endregion
 
         private void SubsrcibeToCE()
         {
@@ -147,7 +218,7 @@ namespace UIClient.ViewModel
                     var tempQueue = new ObservableCollection<MeasurementUI>();
                     tempQueue.Add(measUI);
                     container.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
-
+                    GidToVisibilityMap.Add(measUI.Gid, Visibility.Visible);
                 }
                 else
                 {

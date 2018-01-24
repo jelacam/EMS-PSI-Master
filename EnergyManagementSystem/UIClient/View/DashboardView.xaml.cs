@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UIClient.ViewModel;
 
 namespace UIClient.View
 {
@@ -23,6 +24,27 @@ namespace UIClient.View
         public DashboardView()
         {
             InitializeComponent();
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //DashboardViewModel viewModel = DataContext as DashboardViewModel;
+            //if(viewModel == null)
+            //{
+            //    return;
+            //}
+            //if (e.WidthChanged)
+            //{
+            //    if (e.NewSize.Width < 20 && viewModel.IsOptionsExpanded)
+            //    {
+            //        viewModel.IsOptionsExpanded = false;
+            //    }
+            //    else if (e.NewSize.Width > 20 && !viewModel.IsOptionsExpanded)
+            //    {
+            //        viewModel.IsOptionsExpanded = true;
+            //    }
+
+            //}
         }
     }
 }

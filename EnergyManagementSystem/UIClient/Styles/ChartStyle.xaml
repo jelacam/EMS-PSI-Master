@@ -316,8 +316,12 @@
 			<ToolTipService.ToolTip>
 				<Grid Margin="-5" Background="{TemplateBinding Background}">
 					<StackPanel Margin="5">
-						<ContentControl Content="{TemplateBinding IndependentValue}" Foreground="{TemplateBinding Foreground}" ContentStringFormat="Time : {0}"/>
-						<ContentControl Content="{TemplateBinding DependentValue}" Foreground="{TemplateBinding Foreground}" ContentStringFormat="Value : {0:###}"/>
+						<ContentControl Content="{TemplateBinding IndependentValue}" 
+										Foreground="{TemplateBinding Foreground}" 
+										ContentStringFormat="Time : {0}"/>
+						<ContentControl Content="{TemplateBinding DependentValue}" 
+										Foreground="{TemplateBinding Foreground}" 
+										ContentStringFormat="Value1 : {0:###}"/>
 					</StackPanel>
 				</Grid>
 			</ToolTipService.ToolTip>
