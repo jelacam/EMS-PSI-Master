@@ -3,12 +3,12 @@
     public class MainWindowViewModel : ViewModelBase
     {
         private DashboardViewModel dashboardViewModel;
-        private AlarmSummaryViewMode alarmSummaryViewModel;
+        private AlarmSummaryViewModel alarmSummaryViewModel;
 
         public MainWindowViewModel()
         {
             DashboardViewModel = new DashboardViewModel();
-            AlarmSummaryViewModel = new AlarmSummaryViewMode();
+            AlarmSummaryViewModel = new AlarmSummaryViewModel();
         }
 
         public DashboardViewModel DashboardViewModel
@@ -25,7 +25,7 @@
             }
         }
 
-        public AlarmSummaryViewMode AlarmSummaryViewModel
+        public AlarmSummaryViewModel AlarmSummaryViewModel
         {
             get
             {

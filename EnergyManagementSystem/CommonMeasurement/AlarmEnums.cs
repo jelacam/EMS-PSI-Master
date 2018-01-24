@@ -18,4 +18,14 @@ namespace EMS.CommonMeasurement
         OPTIMIZED_MIN = 4,
         OPTIMIZED_MAX = 5
     }
+
+    public enum SeverityLevel
+    {
+        CRITICAL = 0,       // magenta
+        HIGH = 1,           // red
+        MAJOR = 2,          // orange
+        MEDIUM = 3,         // yellow
+        LOW = 4,            // green
+        MINOR = 5           // cyan
+    }
 }

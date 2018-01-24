@@ -20,6 +20,11 @@ namespace EMS.CommonMeasurement
         private long gid;
 
         /// <summary>
+        ///  represents alarm severity level - coloring 
+        /// </summary>
+        private SeverityLevel severity;
+
+        /// <summary>
         /// stores value of the entity
         /// </summary>
         private float value;
@@ -94,6 +99,18 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.gid = value;
+            }
+        }
+
+        public SeverityLevel Severity
+        {
+            get
+            {
+                return severity;
+            }
+            set
+            {
+                severity = value;
             }
         }
 

@@ -10,7 +10,7 @@ using UIClient.PubSub;
 
 namespace UIClient.ViewModel
 {
-    public class AlarmSummaryViewMode : ViewModelBase
+    public class AlarmSummaryViewModel : ViewModelBase
     {
         private AlarmsEventsSubscribeProxy aeSubscribeProxy;
 
@@ -29,7 +29,7 @@ namespace UIClient.ViewModel
             }
         }
 
-        public AlarmSummaryViewMode()
+        public AlarmSummaryViewModel()
         {
             try
             {
