@@ -28,7 +28,7 @@ namespace UIClient.ViewModel
 
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> energyConsumersContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
-        private Dictionary<long, Visibility> gidToVisibilityMap = new Dictionary<long, Visibility>();
+        private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
         private ICommand expandCommand;
         private ICommand visibilityCheckedCommand;
         private ICommand visibilityUncheckedCommand;
@@ -104,16 +104,16 @@ namespace UIClient.ViewModel
             }
         }
 
-        public Dictionary<long, Visibility> GidToVisibilityMap
+        public Dictionary<long, bool> GidToBoolMap
         {
             get
             {
-                return gidToVisibilityMap;
+                return gidToBoolMap;
             }
 
             set
             {
-                gidToVisibilityMap = value;
+                gidToBoolMap = value;
             }
         }
 
@@ -149,14 +149,14 @@ namespace UIClient.ViewModel
 
         private void VisibilityCheckedCommandExecute(long gid)
         {
-            GidToVisibilityMap[gid] = Visibility.Visible;
-            OnPropertyChanged(nameof(GidToVisibilityMap));
+            GidToBoolMap[gid] = true;
+            OnPropertyChanged(nameof(GidToBoolMap));
         }
 
         private void VisibilityUncheckedCommandExecute(long gid)
         {
-            GidToVisibilityMap[gid] = Visibility.Collapsed;
-            OnPropertyChanged(nameof(GidToVisibilityMap));
+            GidToBoolMap[gid] = false;
+            OnPropertyChanged(nameof(GidToBoolMap));
         }
         #endregion
 
@@ -218,7 +218,7 @@ namespace UIClient.ViewModel
                     var tempQueue = new ObservableCollection<MeasurementUI>();
                     tempQueue.Add(measUI);
                     container.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
-                    GidToVisibilityMap.Add(measUI.Gid, Visibility.Visible);
+                    GidToBoolMap.Add(measUI.Gid, true);
                 }
                 else
                 {
