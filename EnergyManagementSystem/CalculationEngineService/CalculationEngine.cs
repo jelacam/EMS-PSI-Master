@@ -54,8 +54,9 @@ namespace EMS.Services.CalculationEngineService
         private float maxProduction;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
+        private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
 
-        private SynchronousMachineCurveModels GeneratorCharacteristics
+        public SynchronousMachineCurveModels GeneratorCharacteristics
         {
             get { return generatorCharacteristics; }
             set { generatorCharacteristics = value; }
@@ -69,7 +70,7 @@ namespace EMS.Services.CalculationEngineService
         public CalculationEngine()
         {
             publisher = new PublisherService();
-
+            generatorCurves = new Dictionary<string, SynchronousMachineCurveModel>();
             lockObj = new object();
 
             synchronousMachines = new Dictionary<long, SynchronousMachine>();
@@ -241,33 +242,61 @@ namespace EMS.Services.CalculationEngineService
 
         private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed)
         {
-            Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
-            minProduction = 0;
-            maxProduction = 0;
-
-            foreach (var measUnit in measGenerators)
+            lock (lockObj)
             {
-                if (synchronousMachines.ContainsKey(measUnit.Gid))
-                {
-                    SynchronousMachine sm = synchronousMachines[measUnit.Gid];
-                    EMSFuel emsf = fuels[sm.Fuel];
-                    OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed);
+                Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
+                minProduction = 0;
+                maxProduction = 0;
+                FillGeneratorCurves();
 
-                    if (om.Managable != 0)
+                foreach (var measUnit in measGenerators)
+                {
+                    if (synchronousMachines.ContainsKey(measUnit.Gid))
                     {
-                        maxProduction += om.MaxPower;
-                        minProduction += om.MinPower;
+                        SynchronousMachine sm = synchronousMachines[measUnit.Gid];
+                        EMSFuel emsf = fuels[sm.Fuel];
+                        if (generatorCurves[sm.Mrid] != null)
+                        {
+                            OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, generatorCurves[sm.Mrid]);
+                            if (om.Managable != 0)
+                            {
+                                maxProduction += om.MaxPower;
+                                minProduction += om.MinPower;
+                            }
+
+                            optModelMap.Add(om.GlobalId, om);
+                        }
+                    }
+                }
+
+                return optModelMap;
+            }
+        }
+
+        private void FillGeneratorCurves()
+        {
+            lock (lockObj)
+            {
+                if (synchronousMachines.Count != 0)
+                {
+                    generatorCurves.Clear();
+
+                    foreach (SynchronousMachine item in synchronousMachines.Values)
+                    {
+                        generatorCurves.Add(item.Mrid, null);
                     }
 
-                    //if (emsf.FuelType == EmsFuelType.wind || emsf.FuelType == EmsFuelType.solar)
-                    //{
-                    //    continue;
-                    //}
-                    optModelMap.Add(om.GlobalId, om);
+                    if (generatorCurves.Count == GeneratorCharacteristics.Curves.Count)
+                    {
+                        for (int i = 0; i < generatorCurves.Count; i++)
+                        {
+                            string mrid = GeneratorCharacteristics.Curves[i].MRId;
+                            SynchronousMachineCurveModel smcm = GeneratorCharacteristics.Curves[i];
+                            generatorCurves[mrid] = smcm;
+                        }
+                    }
                 }
             }
-
-            return optModelMap;
         }
 
         private void PublishGeneratorsToUI(List<MeasurementUnit> measurementsFromGenerators)
@@ -808,4 +837,5 @@ namespace EMS.Services.CalculationEngineService
 
         #endregion Transaction
     }
+
 }

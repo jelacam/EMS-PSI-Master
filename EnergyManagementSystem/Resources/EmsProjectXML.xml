@@ -7,158 +7,717 @@
 	
 	<cim:EMSFuel rdf:ID="Fuel_1">
 		<cim:EMSFuel.fuelType>coal</cim:EMSFuel.fuelType>
-		<cim:EMSFuel.unitPrice>100</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.unitPrice>10</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_1</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Fuel_Coal_1</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>Fuel_1_coal</cim:IdentifiedObject.name>
 	</cim:EMSFuel>
 	
 	<cim:EMSFuel rdf:ID="Fuel_2">
-		<cim:EMSFuel.fuelType>coal</cim:EMSFuel.fuelType>
-		<cim:EMSFuel.unitPrice>200</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.fuelType>hydro</cim:EMSFuel.fuelType>
+		<cim:EMSFuel.unitPrice>15</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_2</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Fuel_Coal_2</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>Fuel_2_hydro</cim:IdentifiedObject.name>
 	</cim:EMSFuel>
-
-
-	<cim:SynchronousMachine rdf:ID="SyncMachine_1">
-		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
-		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_1"/>
-		<cim:SynchronousMachine.loadPct>80</cim:SynchronousMachine.loadPct>
-		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>350</cim:SynchronousMachine.maxQ>
-		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>50</cim:SynchronousMachine.minQ>
-		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
-		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>SyncMachine_1</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>SynchronousMachine_Coal</cim:IdentifiedObject.name>
-	</cim:SynchronousMachine>
-
-	<cim:SynchronousMachine rdf:ID="SyncMachine_2">
-		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
-		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_2"/>
-		<cim:SynchronousMachine.loadPct>80</cim:SynchronousMachine.loadPct>
-		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>350</cim:SynchronousMachine.maxQ>
-		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>25</cim:SynchronousMachine.minQ>
-		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
-		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>SyncMachine_2</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>SynchronousMachine_Coal</cim:IdentifiedObject.name>
-	</cim:SynchronousMachine>
 	
-	<cim:SynchronousMachine rdf:ID="SyncMachine_3">
-		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
-		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_1"/>
-		<cim:SynchronousMachine.loadPct>80</cim:SynchronousMachine.loadPct>
-		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>400</cim:SynchronousMachine.maxQ>
-		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
-		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
-		<cim:SynchronousMachine.operatingMode>generator </cim:SynchronousMachine.operatingMode>
-		<cim:RotatingMachine.ratedS>300</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>SyncMachine_3</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>SynchronousMachine_Coal</cim:IdentifiedObject.name>
-	</cim:SynchronousMachine>
+	<cim:EMSFuel rdf:ID="Fuel_3">
+		<cim:EMSFuel.fuelType>wind</cim:EMSFuel.fuelType>
+		<cim:EMSFuel.unitPrice>1</cim:EMSFuel.unitPrice>
+		<cim:IdentifiedObject.mRID>Fuel_3</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Fuel_3_wind</cim:IdentifiedObject.name>
+	</cim:EMSFuel>
+	
+	<cim:EMSFuel rdf:ID="Fuel_4">
+		<cim:EMSFuel.fuelType>solar</cim:EMSFuel.fuelType>
+		<cim:EMSFuel.unitPrice>1</cim:EMSFuel.unitPrice>
+		<cim:IdentifiedObject.mRID>Fuel_4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Fuel_4_solar</cim:IdentifiedObject.name>
+	</cim:EMSFuel>
+	
+	<cim:EMSFuel rdf:ID="Fuel_5">
+		<cim:EMSFuel.fuelType>oil</cim:EMSFuel.fuelType>
+		<cim:EMSFuel.unitPrice>20</cim:EMSFuel.unitPrice>
+		<cim:IdentifiedObject.mRID>Fuel_5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Fuel_5_oil</cim:IdentifiedObject.name>
+	</cim:EMSFuel>	
 	
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_1">
-		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixed>1</cim:EnergyConsumer.pfixed>
 		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
 		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
 		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_1</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>EnergyConsumer_1</cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
 	
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_2">
-		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixed>1</cim:EnergyConsumer.pfixed>
 		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
 		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
 		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_2</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>EnergyConsumer_2</cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
 	
 	<cim:EnergyConsumer rdf:ID="EnergyConsumer_3">
-		<cim:EnergyConsumer.pfixed>30</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixed>1</cim:EnergyConsumer.pfixed>
 		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
 		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
 		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
 		<cim:IdentifiedObject.mRID>EnergyConsumer_3</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name></cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>EnergyConsumer_3</cim:IdentifiedObject.name>
 	</cim:EnergyConsumer>
 	
-	<cim:Analog rdf:ID="Analog_1">
-		<cim:Analog.maxValue>400</cim:Analog.maxValue>
-		<cim:Analog.minValue>0</cim:Analog.minValue>
-		<cim:Analog.normalValue>200</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
-		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
-		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_1"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_1</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_1</cim:IdentifiedObject.name>
-	</cim:Analog>
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_4">
+		<cim:EnergyConsumer.pfixed>1</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_4</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
 	
-	<cim:Analog rdf:ID="Analog_2">
-		<cim:Analog.maxValue>70</cim:Analog.maxValue>
-		<cim:Analog.minValue>30</cim:Analog.minValue>
-		<cim:Analog.normalValue>50</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
-		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
-		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_2"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_2</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_2</cim:IdentifiedObject.name>
-	</cim:Analog>
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_5">
+		<cim:EnergyConsumer.pfixed>1</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_5</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
 	
-	<cim:Analog rdf:ID="Analog_3">
-		<cim:Analog.maxValue>70</cim:Analog.maxValue>
-		<cim:Analog.minValue>30</cim:Analog.minValue>
-		<cim:Analog.normalValue>100</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>ReadWrite </cim:Analog.signalDirection>
-		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
-		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_3"/>
-		<cim:Measurement.unitSymbol>Wh </cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_3</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_3</cim:IdentifiedObject.name>
-	</cim:Analog>
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_6">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>20</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_6</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_6</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
 	
-	<cim:Analog rdf:ID="Analog_4">
-		<cim:Analog.maxValue>200</cim:Analog.maxValue>
-		<cim:Analog.minValue>10</cim:Analog.minValue>
-		<cim:Analog.normalValue>55</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_7">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>20</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_7</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_7</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_8">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>20</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_8</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_8</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_9">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>20</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_9</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_9</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_10">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>20</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_10</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_10</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_11">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>1</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_11</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_11</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_12">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>1</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_12</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_12</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_13">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>1</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_13</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_13</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_14">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>1</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_14</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_14</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_15">
+		<cim:EnergyConsumer.pfixed>10</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>1</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_15</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_15</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_16">
+		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_16</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_16</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_17">
+		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_17</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_17</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_18">
+		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_18</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_18</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_19">
+		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_19</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_19</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+	
+	<cim:EnergyConsumer rdf:ID="EnergyConsumer_20">
+		<cim:EnergyConsumer.pfixed>20</cim:EnergyConsumer.pfixed>
+		<cim:EnergyConsumer.pfixedPct>0.2</cim:EnergyConsumer.pfixedPct>
+		<cim:EnergyConsumer.qfixed>10</cim:EnergyConsumer.qfixed>
+		<cim:EnergyConsumer.qfixedPct>0.2</cim:EnergyConsumer.qfixedPct>
+		<cim:IdentifiedObject.mRID>EnergyConsumer_20</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>EnergyConsumer_20</cim:IdentifiedObject.name>
+	</cim:EnergyConsumer>
+		
+	<cim:Analog rdf:ID="Analog_ec_1">
+		<cim:Analog.maxValue>1</cim:Analog.maxValue>
+		<cim:Analog.minValue>1</cim:Analog.minValue>
+		<cim:Analog.normalValue>5</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_1"/>
 		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_4</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_4</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.mRID>Analog_ec_1</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_1</cim:IdentifiedObject.name>
 	</cim:Analog>
 	
-	<cim:Analog rdf:ID="Analog_5">
-		<cim:Analog.maxValue>200</cim:Analog.maxValue>
-		<cim:Analog.minValue>10</cim:Analog.minValue>
-		<cim:Analog.normalValue>55</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
+	<cim:Analog rdf:ID="Analog_ec_2">
+		<cim:Analog.maxValue>12</cim:Analog.maxValue>
+		<cim:Analog.minValue>1</cim:Analog.minValue>
+		<cim:Analog.normalValue>10</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_2"/>
 		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_5</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_5</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.mRID>Analog_ec_2</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_2</cim:IdentifiedObject.name>
 	</cim:Analog>
-
-	<cim:Analog rdf:ID="Analog_6">
-		<cim:Analog.maxValue>200</cim:Analog.maxValue>
-		<cim:Analog.minValue>10</cim:Analog.minValue>
-		<cim:Analog.normalValue>55</cim:Analog.normalValue>
-		<cim:Analog.signalDirection>Read </cim:Analog.signalDirection>
+	
+	<cim:Analog rdf:ID="Analog_ec_3">
+		<cim:Analog.maxValue>13</cim:Analog.maxValue>
+		<cim:Analog.minValue>1</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
 		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
 		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_3"/>
 		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
-		<cim:IdentifiedObject.mRID>Analog_6</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Analog_6</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.mRID>Analog_ec_3</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_3</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_4">
+		<cim:Analog.maxValue>14</cim:Analog.maxValue>
+		<cim:Analog.minValue>1</cim:Analog.minValue>
+		<cim:Analog.normalValue>20</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_4"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_4</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_5">
+		<cim:Analog.maxValue>15</cim:Analog.maxValue>
+		<cim:Analog.minValue>1</cim:Analog.minValue>
+		<cim:Analog.normalValue>25</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_5"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_5</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_6">
+		<cim:Analog.maxValue>15</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_6"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_6</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_6</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_7">
+		<cim:Analog.maxValue>20</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_7"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_7</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_7</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_8">
+		<cim:Analog.maxValue>30</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_8"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_8</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_8</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_9">
+		<cim:Analog.maxValue>40</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_9"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_9</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_9</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_10">
+		<cim:Analog.maxValue>50</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>15</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_10"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_10</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_10</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_11">
+		<cim:Analog.maxValue>110</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_11"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_11</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_1</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_12">
+		<cim:Analog.maxValue>120</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_12"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_12</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_12</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_13">
+		<cim:Analog.maxValue>130</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_13"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_13</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_13</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_14">
+		<cim:Analog.maxValue>140</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_14"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_14</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_14</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_15">
+		<cim:Analog.maxValue>150</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>50</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_15"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_15</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_15</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_16">
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_16"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_16</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_16</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_17">
+		<cim:Analog.maxValue>400</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_17"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_17</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_17</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_18">
+		<cim:Analog.maxValue>600</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>300</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_18"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_18</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_18</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_19">
+		<cim:Analog.maxValue>800</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>400</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_19"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_19</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_19</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_ec_20">
+		<cim:Analog.maxValue>1000</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>500</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>Read</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>Power</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#EnergyConsumer_20"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_ec_20</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_ec_20</cim:IdentifiedObject.name>
+	</cim:Analog>
+		
+	<cim:SynchronousMachine rdf:ID="SyncMachine_1">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_1"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>1000</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>10</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_1</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_1_coal</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+
+	<cim:SynchronousMachine rdf:ID="SyncMachine_2">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_1"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>2000</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>15</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_2</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_2_coal</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_3">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_2"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>1000</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>15</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_3</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_3_hydro</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_4">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_2"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>1500</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>50</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_4_hydro</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_5">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_3"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>100</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>10</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_5_wind</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_6">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_3"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>100</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>15</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_6</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_6_wind</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_7">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_4"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>150</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>5</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_7</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_7_solar</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_8">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_4"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>150</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>10</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_8</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_8_solar</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_9">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_5"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>500</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>30</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_9</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_9_oli</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:SynchronousMachine rdf:ID="SyncMachine_10">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_5"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>1000</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>50</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>SyncMachine_10</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>SynchronousMachine_10_oli</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+	
+	<cim:Analog rdf:ID="Analog_sm_1">
+		<cim:Analog.maxValue>1000</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_1"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_1</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_1</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_2">
+		<cim:Analog.maxValue>2000</cim:Analog.maxValue>
+		<cim:Analog.minValue>15</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_2"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_2</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_2</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_3">
+		<cim:Analog.maxValue>1000</cim:Analog.maxValue>
+		<cim:Analog.minValue>15</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_3"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_3</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_3</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_4">
+		<cim:Analog.maxValue>1500</cim:Analog.maxValue>
+		<cim:Analog.minValue>50</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_4"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_4</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_5">
+		<cim:Analog.maxValue>100</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>20</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_5"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_5</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_6">
+		<cim:Analog.maxValue>100</cim:Analog.maxValue>
+		<cim:Analog.minValue>15</cim:Analog.minValue>
+		<cim:Analog.normalValue>20</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_6"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_6</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_6</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_7">
+		<cim:Analog.maxValue>150</cim:Analog.maxValue>
+		<cim:Analog.minValue>5</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_7"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_7</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_7</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_8">
+		<cim:Analog.maxValue>150</cim:Analog.maxValue>
+		<cim:Analog.minValue>10</cim:Analog.minValue>
+		<cim:Analog.normalValue>100</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_8"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_8</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_8</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:Analog rdf:ID="Analog_sm_9">
+		<cim:Analog.maxValue>500</cim:Analog.maxValue>
+		<cim:Analog.minValue>30</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_9"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_9</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_9</cim:IdentifiedObject.name>
+	</cim:Analog>
+		
+	<cim:Analog rdf:ID="Analog_sm_10">
+		<cim:Analog.maxValue>1000</cim:Analog.maxValue>
+		<cim:Analog.minValue>50</cim:Analog.minValue>
+		<cim:Analog.normalValue>200</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_10"/>
+		<cim:Measurement.unitSymbol>Wh</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_10</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_10</cim:IdentifiedObject.name>
 	</cim:Analog>
 	
 </rdf:RDF>

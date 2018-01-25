@@ -137,12 +137,17 @@ namespace UISimulator.ViewModel
         {
 
             double v = 1500 * (Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2);
-            if (v < 1000)
-            {
-                v = 1000;
-            }
-            return v;
-        }
+			if (v < 10)
+			{
+				v = 10;
+			}
+			else if (v > 4095)
+			{
+				v = 4095;
+			}
+
+			return v;
+		}
 
         private double SimulateWind(int x)
         {

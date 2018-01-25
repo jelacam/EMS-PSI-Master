@@ -225,7 +225,7 @@ namespace EMS.Services.SCADACrunchingService
             Array.Copy(value, 2 + arrayLength - windByteLength, windData, 0, windByteLength);
 
             List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
-            List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, START_ADDRESS_GENERATOR);
+            List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0);
 
             float windSpeed = GetWindSpeed(windData,windByteLength);
 
@@ -265,6 +265,14 @@ namespace EMS.Services.SCADACrunchingService
                 bool alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
+
+                if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
+                {
+                    using (var txtWriter = new StreamWriter("PointsReport.txt", true))
+                    {
+                        txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " before the conversion was: " + values[0] + ", and after:" + eguVal);
+                    }
+                }
 
                 MeasurementUnit measUnit = new MeasurementUnit();
                 measUnit.Gid = analogLoc.Analog.PowerSystemResource;

@@ -108,17 +108,25 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private Tuple<long, float> MutateFunction(Tuple<long, float> gene, float mutateRate)
         {
+            long gid = gene.Item1;
+            //if (optModelMap[gid].Renewable) // no mutation for renewable generator
+            //{
+            //    return gene;
+            //}
+
             double rndNumber = random.NextDouble();
             float mutatedGeneValue = rndNumber < 0.5 ? gene.Item2 + mutateRate : gene.Item2 - mutateRate;
-            if (mutatedGeneValue < optModelMap[gene.Item1].MinPower)
+
+
+            if (mutatedGeneValue < optModelMap[gid].MinPower)
             {
-                mutatedGeneValue = optModelMap[gene.Item1].MinPower;
+                mutatedGeneValue = optModelMap[gid].MinPower;
             }
-            else if (mutatedGeneValue > optModelMap[gene.Item1].MaxPower)
+            else if (mutatedGeneValue > optModelMap[gid].MaxPower)
             {
-                mutatedGeneValue = optModelMap[gene.Item1].MaxPower;
+                mutatedGeneValue = optModelMap[gid].MaxPower;
             }
-            return new Tuple<long, float>(gene.Item1, mutatedGeneValue);
+            return new Tuple<long, float>(gid, mutatedGeneValue);
         }
 
         private double GetRandomNumber(float minPower, float maxPower)
