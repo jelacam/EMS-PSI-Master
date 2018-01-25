@@ -71,7 +71,6 @@ namespace EMS.Services.CalculationEngineService
         {
             publisher = new PublisherService();
 
-            PublisherService.ChangeOptimizationTypeAction = ChangeOptimizationType;
             lockObj = new object();
 
             synchronousMachines = new Dictionary<long, SynchronousMachine>();
@@ -88,11 +87,6 @@ namespace EMS.Services.CalculationEngineService
             GeneratorCharacteristics = LoadCharacteristics.Load();
         }
 
-        private void ChangeOptimizationType(OptimizationType optType)
-        {
-            optimizationType = optType;
-        }
-
         /// <summary>
         /// Optimization algorithm
         /// </summary>
@@ -105,16 +99,15 @@ namespace EMS.Services.CalculationEngineService
 
             PublishConsumersToUI(measEnergyConsumers);
 
-          //  var optM = PublisherService.OptimizationType;
 
-			#region test podaci
-			//HelpFunction();
-			//List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-			//powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
-			//List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-			//List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
-			//helpMU.Clear();
-			#endregion
+            #region test podaci
+            //HelpFunction();
+            //List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
+            //powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
+            //List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
+            //List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
+            //helpMU.Clear();
+            #endregion
 
             Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
             float powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
@@ -155,23 +148,68 @@ namespace EMS.Services.CalculationEngineService
         {
             try
             {
-                GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
-                //List<MeasurementUnit> optimizedGA = gao.StartAlgorithmWithReturn();
-                float totalCostGenetic = float.MaxValue;
-
-                LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
-                var optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers, windSpeed);
-                var totalCostLinear = linearAlgorithm.TotalCost;
-
+                Dictionary<long, OptimisationModel> optModelMapOptimizied = null;
+                float totalCost = -1;
+                if (PublisherService.OptimizationType == OptimizationType.Genetic)
+                {
+                    GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
+                    //List<MeasurementUnit> optimizedGA = gao.StartAlgorithmWithReturn();
+                    totalCost = float.MaxValue;
+                    return DoNotOptimized(optModelMap, powerOfConsumers); //TODO skloniti kad se namesti GA
+                }
+                else if (PublisherService.OptimizationType == OptimizationType.Linear)
+                {
+                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
+                    optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers, windSpeed);
+                    totalCost = linearAlgorithm.TotalCost;
+                }else
+                {
+                    return DoNotOptimized(optModelMap, powerOfConsumers);
+                }
                 Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
-
-                OptimizationType optType = totalCostLinear > totalCostGenetic ? OptimizationType.Genetic : OptimizationType.Linear;
-                return OptModelMapToListMeasUI(optModelMapOptimizied, optType);
+                Console.WriteLine("CE: TotalCost {0}\n", totalCost);
+                return OptModelMapToListMeasUI(optModelMapOptimizied, optimizationType);
             }
             catch (Exception e)
             {
                 throw new Exception("[Mehtod = DoGeneticAlgorithm] Exception = " + e.Message);
             }
+        }
+
+        private List<MeasurementUnit> DoNotOptimized(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
+        {
+            List<MeasurementUnit> retList = new List<MeasurementUnit>();
+            foreach (OptimisationModel optModel in optModelMap.Values)
+            {
+
+                float power = 0;
+                if(powerOfConsumers >= optModel.MaxPower)
+                {
+                    power = optModel.MaxPower;
+                    powerOfConsumers -= power;
+                }else
+                {
+                    power = powerOfConsumers;
+                    powerOfConsumers = 0;
+                }
+
+                retList.Add(new MeasurementUnit()
+                {
+                    CurrentValue = power,
+                    Gid = optModel.GlobalId,
+                    MaxValue = optModel.MaxPower,
+                    MinValue = optModel.MinPower,
+                    OptimizationType = OptimizationType.None,
+
+                });
+            }
+
+            if(powerOfConsumers > 0)
+            {
+                Console.WriteLine("[Method = DoNotOptimized] Nesto ne valja ovde");
+            }
+
+            return retList;
         }
 
         private List<MeasurementUnit> OptModelMapToListMeasUI(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optType)

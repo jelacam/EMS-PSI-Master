@@ -20,8 +20,8 @@ namespace EMS.Services.CalculationEngineService.PubSub
         private ICePubSubCallbackContract callback = null;
         private OptimizationResultEventHandler optimizationResultHandler = null;
 
-       // public static OptimizationType OptimizationType = OptimizationType.None;
-        public static Action<OptimizationType> ChangeOptimizationTypeAction;
+        public static OptimizationType OptimizationType = OptimizationType.None;
+       // public static Action<OptimizationType> ChangeOptimizationTypeAction;
 
         /// <summary>
         /// This sevent handler runs when a OptimizationChange event is raised.
@@ -81,8 +81,8 @@ namespace EMS.Services.CalculationEngineService.PubSub
 
         public bool ChooseOptimization(OptimizationType optimizationType)
         {
-            //OptimizationType = optimizationType;
-            ChangeOptimizationTypeAction?.Invoke(optimizationType);
+            OptimizationType = optimizationType;
+           // ChangeOptimizationTypeAction?.Invoke(optimizationType);
             return true;
         }
     }

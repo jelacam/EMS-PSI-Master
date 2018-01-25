@@ -140,6 +140,7 @@ namespace UIClient.ViewModel
         public DashboardViewModel()
         {
             SubsrcibeToCE();
+            ceSubscribeProxy.ChooseOptimization(selectedOptimizationType);
         }
 
         #region Commands
