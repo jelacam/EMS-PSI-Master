@@ -83,11 +83,11 @@
 													   Width="400" Height="250">
 
 					<chartingToolkit:LineSeries Title="Value"  
-																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=CurrentValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
-																IsSelectionEnabled="False"
-																Style="{StaticResource LineSeriesStyle}">
+												ItemsSource="{Binding Path=Value}" 
+												DependentValueBinding="{Binding Path=CurrentValue}" 
+												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
 						<chartingToolkit:LineSeries.DataPointStyle>
 							<Style TargetType="chartingToolkit:LineDataPoint">
 								<Setter Property="Background" Value="DarkOrange"/>

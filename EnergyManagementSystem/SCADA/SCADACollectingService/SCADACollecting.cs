@@ -91,6 +91,7 @@ namespace EMS.Services.SCADACollectingService
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, ex.StackTrace);
+                Console.WriteLine("[Method = GetDataFromSimulator] Error: " + ex.Message);
             }
 
             return isSuccess;
