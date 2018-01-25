@@ -266,7 +266,7 @@ namespace EMS.Services.SCADACrunchingService
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                if (analogLoc.Analog.Mrid.Equals("Analog_4"))
+                if (analogLoc.Analog.Mrid.Equals("Analog_3"))
                 {
                     using (var txtWriter = new StreamWriter("PointsReport.txt", true))
                     {
