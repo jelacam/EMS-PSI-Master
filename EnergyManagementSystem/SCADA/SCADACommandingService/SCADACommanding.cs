@@ -362,17 +362,22 @@ namespace EMS.Services.SCADACommandingService
                 try
                 {
                     float rawVal = convertorHelper.ConvertFromEGUToRawValue(measurements[i].CurrentValue, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+                    //float rawVal1 = convertorHelper.ConvertFromEGUToRawValue(89, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
+
                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
 
-                    if (analogLoc.Analog.Mrid.Equals("Analog_3"))
+
+                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
                     {
+                        //modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal1);
                         using (var txtWriter = new StreamWriter("SentData.txt", true))
                         {
-                            txtWriter.WriteLine("The value for " + analogLoc.Analog.Mrid + " that was sent: " + rawVal);
+
+                            // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
+                            txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + " EGU = " + measurements[i].CurrentValue);
 
                         }
                     }
-                    // modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, measurements[i].CurrentValue);
                 }
                 catch (System.Exception ex)
                 {
