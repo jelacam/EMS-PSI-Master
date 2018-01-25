@@ -12,18 +12,17 @@ namespace EMS.Services.NetworkModelService
             get { return connectionString; }
         }
 
-        private Config()
-        {
-            // connection string to nms sql server db
-            connectionString = ConfigurationManager.ConnectionStrings["SqlServer_NM_DB"].ConnectionString;
+		private Config()
+		{
+			// connection string to nms sql server db
+			connectionString = ConfigurationManager.ConnectionStrings["SqlServer_NM_DB"].ConnectionString;
 
-            // connection string to nms db file
-            // connectionString = ConfigurationManager.ConnectionStrings["networkModelDbConnectionString"].ConnectionString;
+			// connection string to nms db file
+			// connectionString = ConfigurationManager.ConnectionStrings["networkModelDbConnectionString"].ConnectionString;
 
-            // connection string to file
-            //connectionString = ConfigurationManager.ConnectionStrings["networkModelconnectionString"].ConnectionString;
-
-        }
+			// connection string to file
+			// connectionString = ConfigurationManager.ConnectionStrings["networkModelconnectionString"].ConnectionString;
+		}
 
         #region Static members
 

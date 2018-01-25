@@ -19,5 +19,47 @@
       <B>0.5</B>
       <C>10</C>
     </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_4</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_5</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_6</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_7</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_8</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_9</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>SyncMachine_10</MRId>
+      <A>2</A>
+      <B>3</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
   </Curves>
 </SynchronousMachineCurveModels>

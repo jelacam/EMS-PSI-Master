@@ -7,10 +7,10 @@
 namespace EMS.Services.CalculationEngineService
 {
 	using System;
+	using Common;
 	using CommonMeasurement;
 	using NetworkModelService.DataModel.Wires;
 	using NetworkModelService.DataModel.Production;
-	using Common;
 
 	/// <summary>
 	/// class for OptimisationModel
@@ -20,311 +20,184 @@ namespace EMS.Services.CalculationEngineService
 		/// <summary>
 		/// globalId for OptimisationModel
 		/// </summary>
-	    public long GlobalId { get; set; }
+		public long GlobalId { get; set; }
 
 		/// <summary>
 		/// price for OptimisationModel
 		/// </summary>
-		private float price;
+		public float Price { get; set; }
 
 		/// <summary>
 		/// measuredValue for OptimisationModel
 		/// </summary>
-		private float measuredValue;
+		public float MeasuredValue { get; set; }
 
 		/// <summary>
 		/// linearOptimizedValue for OptimisationModel
 		/// </summary>
-		private float linearOptimizedValue;
+		public float LinearOptimizedValue { get; set; }
 
 		/// <summary>
 		/// genericOptimizedValue for OptimisationModel
 		/// </summary>
-		private float genericOptimizedValue;
+		public float GenericOptimizedValue { get; set; }
 
 		/// <summary>
 		/// minPower for OptimisationModel
 		/// </summary>
-		private float minPower;
+		public float MinPower { get; set; }
 
 		/// <summary>
 		/// maxPower for OptimisationModel
 		/// </summary>
-		private float maxPower;
+		public float MaxPower { get; set; }
 
 		/// <summary>
 		/// managable for OptimisationModel
 		/// </summary>
-		private int managable;
+		public int Managable { get; set; }
 
 		/// <summary>
 		/// renewable for OptimisationModel
 		/// </summary>
-		private bool renewable;
+		public bool Renewable { get; set; }
 
 		/// <summary>
 		/// windPct for OptimisationModel
 		/// </summary>
-		private float windPct;
+		public float WindPct { get; set; }
 
 		/// <summary>
-		/// Gets or sets Price of the entity
+		/// emsFuel for OptimisationModel
 		/// </summary>
-		public float Price
-		{
-			get
-			{
-				return this.price;
-			}
+		public EMSFuel EmsFuel { get; private set; }
 
-			set
-			{
-				this.price = value;
-			}
-		}
+		public SynchronousMachineCurveModel Curve { get; set; }
 
 		/// <summary>
-		/// Gets or sets MeasuredValue of the entity
+		/// Initializes a new instance of the <see cref="OptimisationModel" /> class
 		/// </summary>
-		public float MeasuredValue
-		{
-			get
-			{
-				return this.measuredValue;
-			}
-
-			set
-			{
-				this.measuredValue = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets MinPower of the entity
-		/// </summary>
-		public float MinPower
-		{
-			get
-			{
-				return this.minPower;
-			}
-
-			set
-			{
-				this.minPower = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets MaxPower of the entity
-		/// </summary>
-		public float MaxPower
-		{
-			get
-			{
-				return this.maxPower;
-			}
-
-			set
-			{
-				this.maxPower = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets Managable of the entity
-		/// </summary>
-		public int Managable
-		{
-			get
-			{
-				return this.managable;
-			}
-
-			set
-			{
-				this.managable = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets Renewable of the entity
-		/// </summary>
-		public bool Renewable
-		{
-			get
-			{
-				return this.renewable;
-			}
-
-			set
-			{
-				this.renewable = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets WindPct of the entity
-		/// </summary>
-		public float WindPct
-		{
-			get
-			{
-				return this.windPct;
-			}
-
-			set
-			{
-				this.windPct = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets LinearOptimizedValue of the entity
-		/// </summary>
-		public float LinearOptimizedValue
-		{
-			get
-			{
-				return this.linearOptimizedValue;
-			}
-
-			set
-			{
-				this.linearOptimizedValue = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets GenericOptimizedValue of the entity
-		/// </summary>
-		public float GenericOptimizedValue
-		{
-			get
-			{
-				return this.genericOptimizedValue;
-			}
-
-			set
-			{
-				this.genericOptimizedValue = value;
-			}
-		}
-
-        public EMSFuel EmsFuel { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OptimisationModel" /> class
-        /// </summary>
-        public OptimisationModel()
+		public OptimisationModel()
 		{
 			GlobalId = 0;
-			price = 0;
-			measuredValue = 0;
-			linearOptimizedValue = 0;
-			genericOptimizedValue = 0;
-			minPower = 0;
-			maxPower = 0;
-			managable = 0;
-			renewable = false;
-			windPct = 1;
+			Price = 0;
+			MeasuredValue = 0;
+			LinearOptimizedValue = 0;
+			GenericOptimizedValue = 0;
+			MinPower = 0;
+			MaxPower = 0;
+			Managable = 1;
+			Renewable = false;
+			WindPct = 1;
+			Curve = new SynchronousMachineCurveModel();
+			EmsFuel = null;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OptimisationModel" /> class
 		/// </summary>
-		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed)
+		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed, SynchronousMachineCurveModel smcm)
 		{
 			GlobalId = sm.GlobalId;
-			measuredValue = mu.CurrentValue;
-			linearOptimizedValue = 0; //izracunati
-			genericOptimizedValue = 0; //izracunati
-			minPower = sm.MinQ;
-			maxPower = sm.MaxQ;
-            EmsFuel = emsf;
+			MeasuredValue = mu.CurrentValue;
+			LinearOptimizedValue = 0; //izracunati
+			GenericOptimizedValue = 0; //izracunati			
+			EmsFuel = emsf;
+			Curve = smcm;		
 
-			if (sm.Active)
+			Managable = sm.Active ? 1 : 0;
+			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
+			Price = Renewable ? 1 : CalculatePrice(MeasuredValue);
+			WindPct = emsf.FuelType.Equals(EmsFuelType.wind) ? CalculateWindPct(windSpeed) : 100;
+
+			MinPower = ((Managable == 0) || (Renewable && WindPct == 0)) ? 0 : sm.MinQ;
+
+			if((Managable == 0) || (Renewable && WindPct == 0))
 			{
-				managable = 1;
+				MaxPower = 0;
+			}
+			else if(Renewable && WindPct>0)
+			{
+				MaxPower = ((((sm.MaxQ - sm.MinQ) / 100) * WindPct) + sm.MinQ);
 			}
 			else
 			{
-				managable = 0;
-			}
-
-			if (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar))
-			{
-				renewable = true;
-				price = 1;
-				windPct = CalculateWindPct(windSpeed);
-			}
-			else
-			{
-				renewable = false;
-				price = CalculatePrice(mu.CurrentValue);
-				windPct = 100;
-			}
-        }
+				MaxPower = sm.MaxQ;
+			}	
+		}
 
 		public float CalculatePrice(float measuredValue)
 		{
 			float price = 0;
-			float pct = 0;
-
-			pct = ((measuredValue - minPower) / (maxPower - minPower)) * 100;
-
-			if (pct < 10)
-			{
-				price = 1;
-			}
-			else if (10 <= pct && pct < 20)
-			{
-				price = 2;
-			}
-			else if (20 <= pct && pct < 30)
-			{
-				price = 2;
-			}
-			else if (30 <= pct && pct < 40)
-			{
-				price = 3;
-			}
-			else if (40 <= pct && pct < 50)
-			{
-				price = 4;
-			}
-			else if (50 <= pct && pct < 60)
-			{
-				price = 5;
-			}
-			else if (60 <= pct && pct < 70)
-			{
-				price = 7;
-			}
-			else if (70 <= pct && pct < 80)
-			{
-				price = 7;
-			}
-			else if (80 <= pct && pct < 90)
-			{
-				price = 8;
-			}
-			else if (90 <= pct && pct < 100)
-			{
-				price = 9;
-			}
-			else
-			{
-				price = 10;
-			}
-
-			price *= EmsFuel.UnitPrice;
-			return price;
+			float amount = (float)Curve.A * measuredValue * measuredValue + (float)Curve.B * measuredValue + (float)Curve.C;
+			price = amount * EmsFuel.UnitPrice;
+			return EmsFuel.UnitPrice; // izmeniti
 		}
 
 		public float CalculateWindPct(float windSpeed)
 		{
-			float pct = 80;
+			float pct = 0;
+
+			if (windSpeed < 4.5)
+			{
+				pct = 0;
+			}
+			else if (4.5 <= windSpeed && windSpeed < 5)
+			{
+				pct = 5;
+			}
+			else if (5 <= windSpeed && windSpeed < 6)
+			{
+				pct = 15;
+			}
+			else if (6 <= windSpeed && windSpeed < 6.5)
+			{
+				pct = 20;
+			}
+			else if (6.5 <= windSpeed && windSpeed < 7)
+			{
+				pct = 30;
+			}
+			else if (7 <= windSpeed && windSpeed < 7.5)
+			{
+				pct = 40;
+			}
+			else if (7.5 <= windSpeed && windSpeed < 8)
+			{
+				pct = 50;
+			}
+			else if (8 <= windSpeed && windSpeed < 8.5)
+			{
+				pct = 60;
+			}
+			else if (8.5 <= windSpeed && windSpeed < 9)
+			{
+				pct = 70;
+			}
+			else if (9 <= windSpeed && windSpeed < 9.5)
+			{
+				pct = 80;
+			}
+			else if (9.5 <= windSpeed && windSpeed < 10.5)
+			{
+				pct = 90;
+			}
+			else if (10.5 <= windSpeed && windSpeed < 25.5)
+			{
+				pct = 100;
+			}
+			else if (25.5 <= windSpeed && windSpeed < 26)
+			{
+				pct = 50;
+			}
+			else if (26 <= windSpeed && windSpeed < 26.5)
+			{
+				pct = 20;
+			}
+			else
+			{
+				pct = 0;
+			}
 
 			return pct;
 		}
