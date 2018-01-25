@@ -11,13 +11,20 @@
 			 mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
-		<converters:TestConverter x:Key="TestConvetrer"/>
+		<converters:TestConverter x:Key="TestConverter"/>
 		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
 		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
+		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
 
 		<DataTemplate x:Key="VisibilityCheckbox">
-			<CheckBox Foreground="White" Margin="1,0,0,2" IsChecked="True" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
+			<CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
+				<CheckBox.IsChecked>
+					<MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
+						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+						<Binding Path="Key" Mode="OneWay"></Binding>
+					</MultiBinding>
+				</CheckBox.IsChecked>
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="Checked">
 						<i:InvokeCommandAction Command="{Binding DataContext.VisibilityCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -35,7 +42,7 @@
 			<Grid>
 				<Grid.Visibility>
 					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
-						<Binding Path="DataContext.GidToVisibilityMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
 						<Binding Path="Key"></Binding>
 					</MultiBinding>
 				</Grid.Visibility>
@@ -74,7 +81,7 @@
 			<Grid>
 				<Grid.Visibility>
 					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
-						<Binding Path="DataContext.GidToVisibilityMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
 						<Binding Path="Key"></Binding>
 					</MultiBinding>
 				</Grid.Visibility>
