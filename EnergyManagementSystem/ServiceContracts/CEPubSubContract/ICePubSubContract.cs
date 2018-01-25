@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.CommonMeasurement;
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 
@@ -13,6 +14,9 @@ namespace EMS.ServiceContracts
     {
         [OperationContract(IsOneWay = false, IsInitiating = true)]
         void Subscribe();
+
+        [OperationContract(IsOneWay = false, IsInitiating = true)]
+        bool ChooseOptimization(OptimizationType optimizationType);
 
         [OperationContract(IsOneWay = false, IsTerminating = true)]
         void Unsubscribe();

@@ -131,7 +131,7 @@ namespace EMS.Services.CalculationEngineService
 			float price = 0;
 			float amount = (float)Curve.A * measuredValue * measuredValue + (float)Curve.B * measuredValue + (float)Curve.C;
 			price = amount * EmsFuel.UnitPrice;
-			return EmsFuel.UnitPrice; // izmeniti
+			return price; 
 		}
 
 		public float CalculateWindPct(float windSpeed)
@@ -201,5 +201,6 @@ namespace EMS.Services.CalculationEngineService
 
 			return pct;
 		}
+
 	}
 }

@@ -23,9 +23,10 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         private int dnaSize;
         private Func<int, T> getRandomGene;
         private Func<DNA<T>, float> fitnessFunction;
+        private Func<T,float,T> mutateFunction;
 
         public GeneticAlgorithm(int populationSize, int dnaSize, Random random, Func<int, T> getRandomGene, Func<DNA<T>, float> fitnessFunction,
-            int elitism, float mutationRate = 0.01f)
+            Func<T, float, T> mutateFunction, int elitism, float mutationRate = 0.01f)
         {
             Generation = 1;
             Elitism = elitism;
@@ -36,12 +37,13 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             this.dnaSize = dnaSize;
             this.getRandomGene = getRandomGene;
             this.fitnessFunction = fitnessFunction;
+            this.mutateFunction = mutateFunction;
 
             BestGenes = new T[dnaSize];
 
             for (int i = 0; i < populationSize; i++)
             {
-                Population.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, shouldInitGenes: true));
+                Population.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true));
             }
         }
 
@@ -56,7 +58,6 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             for (int i = 0; i < numOfIterations; i++)
             {
                 NewGeneration();
-                Thread.Sleep(50); //cooldown
             }
 
             return BestGenes;
@@ -93,7 +94,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
                     if (parent1 == null || parent2 == null)
                     {
-                        child = new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, shouldInitGenes: true);
+                        child = new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true);
                     }else
                     {
                         child = parent1.Crossover(parent2);
@@ -105,7 +106,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 }
                 else
                 {
-                    newPopulation.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, shouldInitGenes: true));
+                    newPopulation.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true));
                 }
             }
 

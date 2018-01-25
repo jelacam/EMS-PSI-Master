@@ -42,11 +42,18 @@ namespace EMS.ServiceContracts
                     {
                         Thread.Sleep(3000);
                         factory = new ChannelFactory<INetworkModelGDAContract>("*");
+                        if (factory.State == CommunicationState.Faulted)
+                        {
+                            Thread.Sleep(1000);
+                        }
                         proxy = factory.CreateChannel();
                         Thread.Sleep(2000);
                         IContextChannel cc = proxy as IContextChannel;
                     }
-
+                    if(factory.State == CommunicationState.Faulted)
+                    {
+                        Thread.Sleep(1000);
+                    }
                     return proxy;
                 }
             }

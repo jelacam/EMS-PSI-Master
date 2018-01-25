@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using EMS.ServiceContracts;
 using EMS.Common;
+using EMS.CommonMeasurement;
 
 namespace UIClient.PubSub
 {
@@ -78,6 +79,11 @@ namespace UIClient.PubSub
         public void Unsubscribe()
         {
             Proxy.Unsubscribe();
+        }
+
+        public bool ChooseOptimization(OptimizationType optimizationType)
+        {
+            return Proxy.ChooseOptimization(optimizationType);
         }
     }
 }
