@@ -9,6 +9,7 @@ namespace EMS.ServiceContracts
     using System.Collections.Generic;
     using System.ServiceModel;
     using EMS.Common;
+    using System.Threading;
 
     /// <summary>
     /// Represent proxy class for communication with NetworkModelService
@@ -39,9 +40,10 @@ namespace EMS.ServiceContracts
                 {
                     if (proxy == null)
                     {
+                        Thread.Sleep(3000);
                         factory = new ChannelFactory<INetworkModelGDAContract>("*");
                         proxy = factory.CreateChannel();
-
+                        Thread.Sleep(2000);
                         IContextChannel cc = proxy as IContextChannel;
                     }
 
