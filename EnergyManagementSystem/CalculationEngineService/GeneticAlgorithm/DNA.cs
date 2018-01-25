@@ -14,13 +14,15 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         private Random random;
         private Func<int, T> getRandomGene;
         private Func<DNA<T>, float> fitnessFunction;
+        private Func<T,float, T> mutateFunction;
 
-        public DNA(int size, Random random, Func<int, T> getRandomGene, Func<DNA<T>, float> fitnessFunction, bool shouldInitGenes = true)
+        public DNA(int size, Random random, Func<int, T> getRandomGene, Func<DNA<T>, float> fitnessFunction, Func<T, float,T> mutateFunction, bool shouldInitGenes = true)
         {
             Genes = new T[size];
             this.random = random;
             this.getRandomGene = getRandomGene;
             this.fitnessFunction = fitnessFunction;
+            this.mutateFunction = mutateFunction;
 
             if (shouldInitGenes)
             {
@@ -39,7 +41,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         public DNA<T> Crossover(DNA<T> otherParent)
         {
-            DNA<T> child = new DNA<T>(Genes.Length, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
+            DNA<T> child = new DNA<T>(Genes.Length, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: false);
 
             for (int i = 0; i < Genes.Length; i++)
             {
@@ -53,10 +55,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         {
             for (int i = 0; i < Genes.Length; i++)
             {
-                if (random.NextDouble() < mutationRate)
-                {
-                    Genes[i] = getRandomGene(i);
-                }
+                Genes[i] = mutateFunction(Genes[i], mutationRate);
             }
         }
     }

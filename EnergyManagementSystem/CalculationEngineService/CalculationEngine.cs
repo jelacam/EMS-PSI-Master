@@ -52,7 +52,6 @@ namespace EMS.Services.CalculationEngineService
         private UpdateResult updateResult;
         private float minProduction;
         private float maxProduction;
-        private OptimizationType optimizationType = OptimizationType.None;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
 
@@ -153,9 +152,8 @@ namespace EMS.Services.CalculationEngineService
                 if (PublisherService.OptimizationType == OptimizationType.Genetic)
                 {
                     GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
-                    //List<MeasurementUnit> optimizedGA = gao.StartAlgorithmWithReturn();
-                    totalCost = float.MaxValue;
-                    return DoNotOptimized(optModelMap, powerOfConsumers); //TODO skloniti kad se namesti GA
+                    optModelMapOptimizied = gao.StartAlgorithmWithReturn();
+                    totalCost = gao.TotalCost;
                 }
                 else if (PublisherService.OptimizationType == OptimizationType.Linear)
                 {
@@ -168,7 +166,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost {0}\n", totalCost);
-                return OptModelMapToListMeasUI(optModelMapOptimizied, optimizationType);
+                return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
             catch (Exception e)
             {

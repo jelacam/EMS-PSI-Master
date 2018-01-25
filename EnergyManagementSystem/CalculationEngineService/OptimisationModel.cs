@@ -268,12 +268,19 @@ namespace EMS.Services.CalculationEngineService
 
 		public float CalculatePrice(float measuredValue)
 		{
+            if (renewable)
+            {
+                return 0;
+            }
+
 			float price = 0;
 			float pct = 0;
 
 			pct = ((measuredValue - minPower) / (maxPower - minPower)) * 100;
 
-			if (pct < 10)
+            //TODO Ovo sve ispod se moze napisati kao pct = (int)pct % 10
+
+            if (pct < 10)
 			{
 				price = 1;
 			}
@@ -328,5 +335,6 @@ namespace EMS.Services.CalculationEngineService
 
 			return pct;
 		}
+
 	}
 }
