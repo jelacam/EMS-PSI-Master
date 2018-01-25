@@ -266,6 +266,15 @@ namespace EMS.Services.SCADACrunchingService
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
+                if (analogLoc.Analog.Mrid.Equals("Analog_4"))
+                {
+                    using (var txtWriter = new StreamWriter("PointsReport.txt", true))
+                    {
+                        txtWriter.WriteLine("The value for " + analogLoc.Analog.Mrid + " before the conversion was: " + values[0] + ", and after:" + eguVal);
+
+                    }
+                }
+
                 MeasurementUnit measUnit = new MeasurementUnit();
                 measUnit.Gid = analogLoc.Analog.PowerSystemResource;
                 measUnit.MinValue = analogLoc.Analog.MinValue;
