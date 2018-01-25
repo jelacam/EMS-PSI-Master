@@ -24,6 +24,8 @@ namespace EMS.ServiceContracts
         /// </summary>
         private static ChannelFactory<IScadaCRContract> factory;
 
+        private static object lockObj = new object();
+
         /// <summary>
         /// Gets or sets instance of IScadaCRContract
         /// </summary>
@@ -31,20 +33,26 @@ namespace EMS.ServiceContracts
         {
             get
             {
-                if (proxy == null)
+                lock (lockObj)
                 {
-                    factory = new ChannelFactory<IScadaCRContract>("*");
-                    proxy = factory.CreateChannel();
-                }
+                    if (proxy == null)
+                    {
+                        factory = new ChannelFactory<IScadaCRContract>("*");
+                        proxy = factory.CreateChannel();
+                    }
 
-                return proxy;
+                    return proxy;
+                }
             }
 
             set
             {
-                if (proxy == null)
+                lock (lockObj)
                 {
-                    proxy = value;
+                    if (proxy == null)
+                    {
+                        proxy = value;
+                    }
                 }
             }
         }
@@ -75,7 +83,10 @@ namespace EMS.ServiceContracts
         /// <returns>returns true if success</returns>
         public bool SendValues(byte[] value)
         {
-            return proxy.SendValues(value);
+            lock (lockObj)
+            {
+                return proxy.SendValues(value);
+            }
         }
     }
 }
