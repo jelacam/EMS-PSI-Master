@@ -52,6 +52,7 @@ namespace EMS.Services.CalculationEngineService
         private UpdateResult updateResult;
         private float minProduction;
         private float maxProduction;
+        private OptimizationType optimizationType = OptimizationType.None;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
 
@@ -70,6 +71,7 @@ namespace EMS.Services.CalculationEngineService
         {
             publisher = new PublisherService();
 
+            PublisherService.ChangeOptimizationTypeAction = ChangeOptimizationType;
             lockObj = new object();
 
             synchronousMachines = new Dictionary<long, SynchronousMachine>();
@@ -86,6 +88,11 @@ namespace EMS.Services.CalculationEngineService
             GeneratorCharacteristics = LoadCharacteristics.Load();
         }
 
+        private void ChangeOptimizationType(OptimizationType optType)
+        {
+            optimizationType = optType;
+        }
+
         /// <summary>
         /// Optimization algorithm
         /// </summary>
@@ -97,6 +104,8 @@ namespace EMS.Services.CalculationEngineService
             bool result = false;
 
             PublishConsumersToUI(measEnergyConsumers);
+
+          //  var optM = PublisherService.OptimizationType;
 
 			#region test podaci
 			//HelpFunction();

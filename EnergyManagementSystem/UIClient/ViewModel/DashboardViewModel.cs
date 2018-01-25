@@ -1,4 +1,5 @@
 ﻿using EMS.Common;
+using EMS.CommonMeasurement;
 using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,10 @@ namespace UIClient.ViewModel
         private ICommand expandCommand;
         private ICommand visibilityCheckedCommand;
         private ICommand visibilityUncheckedCommand;
+        private ICommand changeAlgorithmCommand;
+        private OptimizationType selectedOptimizationType = OptimizationType.Linear;
+
+
         #endregion
 
         #region Properties
@@ -117,6 +122,19 @@ namespace UIClient.ViewModel
             }
         }
 
+        public OptimizationType SelectedOptimizationType
+        {
+            get
+            {
+                return selectedOptimizationType;
+            }
+
+            set
+            {
+                selectedOptimizationType = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         public DashboardViewModel()
@@ -130,6 +148,8 @@ namespace UIClient.ViewModel
         public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
 
         public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
+
+        public ICommand ChangeAlgorithmCommand => changeAlgorithmCommand ?? (changeAlgorithmCommand = new RelayCommand(ChangeAlgorithmCommandExecute));
 
         #endregion
 
@@ -157,6 +177,11 @@ namespace UIClient.ViewModel
         {
             GidToBoolMap[gid] = false;
             OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void ChangeAlgorithmCommandExecute(object obj)
+        {
+            ceSubscribeProxy.ChooseOptimization(SelectedOptimizationType);
         }
         #endregion
 

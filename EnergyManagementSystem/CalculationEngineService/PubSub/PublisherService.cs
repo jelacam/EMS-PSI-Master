@@ -6,6 +6,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using EMS.CommonMeasurement;
 
 namespace EMS.Services.CalculationEngineService.PubSub
 {
@@ -18,6 +19,9 @@ namespace EMS.Services.CalculationEngineService.PubSub
 
         private ICePubSubCallbackContract callback = null;
         private OptimizationResultEventHandler optimizationResultHandler = null;
+
+       // public static OptimizationType OptimizationType = OptimizationType.None;
+        public static Action<OptimizationType> ChangeOptimizationTypeAction;
 
         /// <summary>
         /// This sevent handler runs when a OptimizationChange event is raised.
@@ -46,6 +50,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
             OptimizationResultEvent -= optimizationResultHandler;
         }
 
+
         /// <summary>
         /// Information source, in our case it is Calculation Engine, call this service operation to report a optimization result.
         /// A optimization result event is raised. The optimization result event handlers for each subscriber will execute.
@@ -72,6 +77,13 @@ namespace EMS.Services.CalculationEngineService.PubSub
                 CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
                 Console.WriteLine(message);
             }
+        }
+
+        public bool ChooseOptimization(OptimizationType optimizationType)
+        {
+            //OptimizationType = optimizationType;
+            ChangeOptimizationTypeAction?.Invoke(optimizationType);
+            return true;
         }
     }
 }

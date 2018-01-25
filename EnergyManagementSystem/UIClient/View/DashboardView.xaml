@@ -8,6 +8,8 @@
 			 xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:converters="clr-namespace:UIClient.Converters"
 			 xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+			 xmlns:commonMeas ="clr-namespace:EMS.CommonMeasurement;assembly=CommonMeasurement"
 			 mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
@@ -16,6 +18,12 @@
 		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
 		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
+		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="commonMeas:OptimizationType"/>
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
 
 		<DataTemplate x:Key="VisibilityCheckbox">
 			<CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
@@ -124,13 +132,22 @@
 
 			<StackPanel Margin="5" MinWidth="150" >
 				<TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
-
+				<GroupBox FontSize="14" Header="Algorithm type"  Foreground="White">
+					<ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedValue="{Binding SelectedOptimizationType}">
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="SelectionChanged">
+								<i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</ComboBox>
+				</GroupBox>
 				<GroupBox FontSize="14" Header="Visibility" Foreground="White">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="*"/>
 							<RowDefinition Height="*"/>
 						</Grid.RowDefinitions>
+
 						<GroupBox Header="Generators" Foreground="White">
 							<ItemsControl ItemsSource="{Binding GeneratorsContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}"/>

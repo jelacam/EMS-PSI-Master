@@ -67,5 +67,11 @@
   <ItemGroup>
     <None Include="Settings.StyleCop" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842C81-93DE-4490-A3D0-BC420C97B850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
