@@ -24,9 +24,9 @@ namespace EMS.Services.NetworkModelService
 			// connectionString = ConfigurationManager.ConnectionStrings["networkModelconnectionString"].ConnectionString;
 		}
 
-        #region Static members
+		#region Static members
 
-        private static Config instance = null;
+		private static Config instance = null;
 
         public static Config Instance
         {
