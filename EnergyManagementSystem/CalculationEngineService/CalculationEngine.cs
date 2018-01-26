@@ -22,6 +22,7 @@ namespace EMS.Services.CalculationEngineService
     using GeneticAlgorithm;
     using Helpers;
     using LinearAlgorithm;
+    using System.Threading;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -625,6 +626,12 @@ namespace EMS.Services.CalculationEngineService
                     message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
                     Console.WriteLine(message);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+
+                    Console.WriteLine("Trying again...");
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
+                    NetworkModelGDAProxy.Instance = null;
+                    Thread.Sleep(1000);
+                    InitiateIntegrityUpdate();
                     return false;
                 }
 

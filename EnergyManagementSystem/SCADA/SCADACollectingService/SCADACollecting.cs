@@ -63,6 +63,7 @@ namespace EMS.Services.SCADACollectingService
         public void StartCollectingData()
         {
             //modbusClient.WriteSingleRegister(0, 6f);
+            Thread.Sleep(5000); // wait some time before start
             Task task = new Task(() =>
             {
                 while (true)
