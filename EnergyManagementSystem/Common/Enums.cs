@@ -43,9 +43,9 @@ namespace EMS.Common
         hydro = 1,
 
         /// <summary>
-        /// wind fuel type
+        /// oil fuel type
         /// </summary>
-        wind = 2,
+        oil = 2,
 
         /// <summary>
         /// solar fuel type
@@ -53,9 +53,9 @@ namespace EMS.Common
         solar = 3,
 
         /// <summary>
-        /// oil fuel type
+        /// wind fuel type
         /// </summary>
-        oli = 4
+        wind = 4
     }
 
     /// <summary>

@@ -266,7 +266,7 @@ namespace CIMAdapterTest.ImporterTest
         {
             Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.coal), EmsFuelType.coal);
             Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.hydro), EmsFuelType.hydro);
-            Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.oil), EmsFuelType.oli);
+            Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.oil), EmsFuelType.oil);
             Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.solar), EmsFuelType.solar);
             Assert.AreEqual(EMSConverter.GetEMSFuelType(EMS.EmsFuelType.wind), EmsFuelType.wind);
         }

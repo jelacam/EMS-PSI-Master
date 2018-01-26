@@ -317,7 +317,7 @@
                 case EMS.EmsFuelType.hydro:
                     return EmsFuelType.hydro;
                 case EMS.EmsFuelType.oil:
-                    return EmsFuelType.oli;
+                    return EmsFuelType.oil;
                 case EMS.EmsFuelType.solar:
                     return EmsFuelType.solar;
                 case EMS.EmsFuelType.wind:

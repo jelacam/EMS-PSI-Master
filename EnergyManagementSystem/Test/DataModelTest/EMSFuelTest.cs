@@ -93,7 +93,7 @@ namespace DataModelTest
 			this.globalId1 = 1623;
 			this.globalId2 = 10;
 			this.fuelType1 = EmsFuelType.hydro;
-			this.fuelType2 = EmsFuelType.oli;
+			this.fuelType2 = EmsFuelType.oil;
 			this.unitPrice1 = 100;
 			this.unitPrice2 = 1000;
 			this.emsf1 = new EMSFuel(this.globalId1);

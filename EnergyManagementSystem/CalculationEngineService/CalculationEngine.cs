@@ -10,7 +10,6 @@ namespace EMS.Services.CalculationEngineService
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
-    using System.Linq;
     using System.ServiceModel;
     using CommonMeasurement;
     using EMS.Common;
@@ -31,9 +30,6 @@ namespace EMS.Services.CalculationEngineService
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
-
-
-        private List<MeasurementUnit> helpMU = new List<MeasurementUnit>();
 
         private static List<ResourceDescription> internalSynchMachines;
         private static List<ResourceDescription> internalSynchMachinesCopy;
@@ -99,16 +95,6 @@ namespace EMS.Services.CalculationEngineService
             bool result = false;
 
             PublishConsumersToUI(measEnergyConsumers);
-
-
-            #region test podaci
-            //HelpFunction();
-            //List<MeasurementUnit> lec = helpMU.Where(x => energyConsumers.ContainsKey(x.Gid)).ToList();
-            //powerOfConsumers = CalculationHelper.CalculateConsumption(lec);
-            //List<MeasurementUnit> lsm = helpMU.Where(x => synchronousMachines.ContainsKey(x.Gid)).ToList();
-            //List<MeasurementUnit> helpL = LinearOptimization(lsm, powerOfConsumers, windSpeed);
-            //helpMU.Clear();
-            #endregion
 
             Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
             float powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
@@ -278,7 +264,7 @@ namespace EMS.Services.CalculationEngineService
         {
             lock (lockObj)
             {
-                if (synchronousMachines.Count != 0)
+                if (synchronousMachines.Count > 0)
                 {
                     generatorCurves.Clear();
 
@@ -416,38 +402,6 @@ namespace EMS.Services.CalculationEngineService
 
         #endregion Database methods
 
-        #region Checking alarms
-
-        /// <summary>
-        /// Checking for alarms on optimized value
-        /// </summary>
-        /// <param name="value">value to check</param>
-        /// <param name="minOptimized">low limit</param>
-        /// <param name="maxOptimized">high limit</param>
-        /// <param name="gid">gid of measurement</param>
-        /// <returns>True if alarm occures</returns>
-        private bool CheckForOptimizedAlarms(float value, float minOptimized, float maxOptimized, long gid)
-        {
-            bool retVal = false;
-            if (value < minOptimized)
-            {
-                retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low optimized limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low optimized limit on gid: {0}", gid);
-            }
-
-            if (value > maxOptimized)
-            {
-                retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high optimized limit on gid: {0} - Sinal value: {1}", gid, value);
-                Console.WriteLine("Alarm on high optimized limit on gid: {0}  - Sinal value: {1}", gid, value);
-            }
-
-            return retVal;
-        }
-
-        #endregion Checking alarms
-
         #region Fill and Clear data
 
         /// <summary>
@@ -466,6 +420,8 @@ namespace EMS.Services.CalculationEngineService
                     SynchronousMachine sm = ResourcesDescriptionConverter.ConvertTo<SynchronousMachine>(rd);
                     synchronousMachines.Add(sm.GlobalId, sm);
                 }
+
+				FillGeneratorCurves();
 
                 foreach (ResourceDescription rd in internalEmsFuels)
                 {
@@ -491,91 +447,11 @@ namespace EMS.Services.CalculationEngineService
                 synchronousMachines.Clear();
                 fuels.Clear();
                 energyConsumers.Clear();
-
-                helpMU.Clear();
+				generatorCurves.Clear();
             }
         }
 
         #endregion Fill and Clear data
-
-        private void HelpFunction()
-        {
-            lock (lockObj)
-            {
-                synchronousMachines.Clear();
-                fuels.Clear();
-                energyConsumers.Clear();
-
-                EMSFuel f1 = new EMSFuel(1);
-                f1.FuelType = EmsFuelType.wind;
-                f1.UnitPrice = 20;
-                fuels.Add(f1.GlobalId, f1);
-                EMSFuel f2 = new EMSFuel(2);
-                f2.FuelType = EmsFuelType.hydro;
-                f2.UnitPrice = 15;
-                fuels.Add(f2.GlobalId, f2);
-
-                SynchronousMachine sm1 = new SynchronousMachine(10);
-                sm1.Active = true;
-                sm1.Fuel = f1.GlobalId;
-                sm1.MaxQ = 130;
-                sm1.MinQ = 10;
-                sm1.RatedS = 50;
-                synchronousMachines.Add(sm1.GlobalId, sm1);
-                SynchronousMachine sm2 = new SynchronousMachine(20);
-                sm2.Active = true;
-                sm2.Fuel = f2.GlobalId;
-                sm2.MaxQ = 200;
-                sm2.MinQ = 50;
-                sm2.RatedS = 100;
-                synchronousMachines.Add(sm2.GlobalId, sm2);
-                SynchronousMachine sm3 = new SynchronousMachine(30);
-                sm3.Active = true;
-                sm3.Fuel = f2.GlobalId;
-                sm3.MaxQ = 150;
-                sm3.MinQ = 70;
-                sm3.RatedS = 100;
-                synchronousMachines.Add(sm3.GlobalId, sm3);
-
-                EnergyConsumer ec1 = new EnergyConsumer(100);
-                ec1.PFixed = 100;
-                ec1.QFixed = 100;
-                energyConsumers.Add(ec1.GlobalId, ec1);
-                EnergyConsumer ec2 = new EnergyConsumer(200);
-                ec2.PFixed = 200;
-                ec2.QFixed = 20;
-                energyConsumers.Add(ec2.GlobalId, ec2);
-
-                MeasurementUnit mu1 = new MeasurementUnit();
-                mu1.CurrentValue = 30;
-                mu1.Gid = sm1.GlobalId;
-                mu1.MaxValue = sm1.MaxQ;
-                mu1.MinValue = sm1.MinQ;
-                helpMU.Add(mu1);
-                MeasurementUnit mu2 = new MeasurementUnit();
-                mu2.CurrentValue = 130;
-                mu2.Gid = sm2.GlobalId;
-                mu2.MaxValue = sm2.MaxQ;
-                mu2.MinValue = sm2.MinQ;
-                helpMU.Add(mu2);
-                MeasurementUnit mu3 = new MeasurementUnit();
-                mu3.CurrentValue = 100;
-                mu3.Gid = sm3.GlobalId;
-                mu3.MaxValue = sm3.MaxQ;
-                mu3.MinValue = sm3.MinQ;
-                helpMU.Add(mu3);
-                MeasurementUnit mu4 = new MeasurementUnit();
-                mu4.CurrentValue = 160;
-                mu4.Gid = ec1.GlobalId;
-                helpMU.Add(mu4);
-                MeasurementUnit mu5 = new MeasurementUnit();
-                mu5.CurrentValue = 105;
-                mu5.Gid = ec2.GlobalId;
-                helpMU.Add(mu5);
-            }
-        }
-
-
 
         #region IntegrityUpdate
 
