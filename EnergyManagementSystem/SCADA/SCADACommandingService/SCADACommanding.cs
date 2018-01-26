@@ -365,16 +365,49 @@ namespace EMS.Services.SCADACommandingService
                     //float rawVal1 = convertorHelper.ConvertFromEGUToRawValue(89, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
 
                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
-
+                    
 
                     if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
                     {
+
+                        float[] values = new float[100];
+
+                        values = FirstReadAfterSending((ushort)analogLoc.StartAddress, 2, analogLoc);
                         //modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal1);
+                        if (values.Length >= 1)
+                        {
+                            if (values[0] == rawVal)
+                            {
+                                //using (var txtWriter = new StreamWriter("FirstReadAfterSending.txt", true))
+                                //{
+                                //    // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
+                                //    txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: " + rawVal + " and then first read after sending: RAW = " + values[0]);
+
+                                //}
+                                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su iste!");
+                            }
+                            else
+                            {
+                                CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
+                            }
+
+                        }
+                        else
+                        {
+                            if(rawVal != 0)
+                            {
+                                CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
+                            }
+                            else
+                            {
+                                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su iste!");
+                            }
+                        }
                         using (var txtWriter = new StreamWriter("SentData.txt", true))
                         {
 
                             // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
-                            txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + " EGU = " + measurements[i].CurrentValue);
+                            txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + ", EGU = " + measurements[i].CurrentValue);
 
                         }
                     }
@@ -388,6 +421,15 @@ namespace EMS.Services.SCADACommandingService
             }
 
             return true;
+        }
+
+        public float[] FirstReadAfterSending(ushort startingAddress, ushort quantity, AnalogLocation analogLoc)
+        {
+            float[] values = new float[100];
+            byte[] response = modbusClient.ReadHoldingRegisters(startingAddress, quantity);
+            values = ModbusHelper.GetValueFromByteArray<float>(response, analogLoc.LengthInBytes, 0 + analogLoc.StartAddress * 2);
+            return values;
+
         }
 
         /// <summary>
