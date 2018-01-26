@@ -49,6 +49,10 @@ namespace EMS.Services.CalculationEngineService
         private float minProduction;
         private float maxProduction;
 
+		private float profit = 0;
+		private float windProductionPct = 0;
+		private float windProductionkW = 0;
+
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
 
@@ -145,13 +149,17 @@ namespace EMS.Services.CalculationEngineService
                 else if (PublisherService.OptimizationType == OptimizationType.Linear)
                 {
                     LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
-                    optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers, windSpeed);
-                    totalCost = linearAlgorithm.TotalCost;
-                }else
+                    optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
+                    totalCost = linearAlgorithm.TotalCost; // ukupna cena linearne optimizacije
+					profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
+					windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
+					windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
+                }
+				else
                 {
                     return DoNotOptimized(optModelMap, powerOfConsumers);
                 }
-                Console.WriteLine("CE: Optimize {0}\n", powerOfConsumers);
+                Console.WriteLine("CE: Optimize {0}", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost {0}\n", totalCost);
                 return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
