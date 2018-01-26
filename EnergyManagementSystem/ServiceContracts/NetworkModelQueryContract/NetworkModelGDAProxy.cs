@@ -36,33 +36,21 @@ namespace EMS.ServiceContracts
         {
             get
             {
-                lock (lockObj)
+
+                if (proxy == null)
                 {
-                    if (proxy == null)
-                    {
-                        Thread.Sleep(3000);
-                        factory = new ChannelFactory<INetworkModelGDAContract>("*");
-                        if (factory.State == CommunicationState.Faulted)
-                        {
-                            Thread.Sleep(1000);
-                        }
-                        proxy = factory.CreateChannel();
-                        Thread.Sleep(2000);
-                        IContextChannel cc = proxy as IContextChannel;
-                    }
-                    if(factory.State == CommunicationState.Faulted)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    return proxy;
+                    factory = new ChannelFactory<INetworkModelGDAContract>("*");
+                    proxy = factory.CreateChannel();
+                    IContextChannel cc = proxy as IContextChannel;
                 }
+
+                return proxy;
             }
 
             set
             {
-                lock (lockObj)
                 {
-                    if (proxy == null)
+                    if (proxy != value)
                     {
                         proxy = value;
                     }

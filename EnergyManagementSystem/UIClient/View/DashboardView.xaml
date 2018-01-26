@@ -18,6 +18,7 @@
 		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
 		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
+		<converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter"/>
 		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
 			<ObjectDataProvider.MethodParameters>
@@ -55,15 +56,16 @@
 					</MultiBinding>
 				</Grid.Visibility>
 				<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Style="{StaticResource DashboardChartStyle}"
-													   Width="400" Height="250">
+									   Style="{StaticResource DashboardChartStyle}"
+									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
+									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
 					<chartingToolkit:LineSeries Title="Value"  
-																ItemsSource="{Binding Path=Value}" 
-																DependentValueBinding="{Binding Path=CurrentValue}" 
-																IndependentValueBinding="{Binding Path=TimeStamp.Second}"
-																IsSelectionEnabled="False"
-																Style="{StaticResource LineSeriesStyle}">
+												ItemsSource="{Binding Path=Value}" 
+												DependentValueBinding="{Binding Path=CurrentValue}" 
+												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
 						<chartingToolkit:LineSeries.DataPointStyle>
 							<Style TargetType="chartingToolkit:LineDataPoint">
 								<Setter Property="Background" Value="DarkGreen"/>
@@ -94,8 +96,9 @@
 					</MultiBinding>
 				</Grid.Visibility>
 				<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-													   Style="{StaticResource DashboardChartStyle}"
-													   Width="400" Height="250">
+									   Style="{StaticResource DashboardChartStyle}"
+									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
+									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
 					<chartingToolkit:LineSeries Title="Value"  
 												ItemsSource="{Binding Path=Value}" 
@@ -127,40 +130,60 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Column="0" SizeChanged="Grid_SizeChanged" Background="Gray"  
+		<Grid Grid.Column="0" Background="Gray" Width="200"
 			  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}">
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
 
-			<StackPanel Margin="5" MinWidth="150" >
-				<TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
-				<GroupBox FontSize="14" Header="Algorithm type"  Foreground="White">
-					<ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedValue="{Binding SelectedOptimizationType}">
-						<i:Interaction.Triggers>
-							<i:EventTrigger EventName="SelectionChanged">
-								<i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}"/>
-							</i:EventTrigger>
-						</i:Interaction.Triggers>
-					</ComboBox>
-				</GroupBox>
-				<GroupBox FontSize="14" Header="Visibility" Foreground="White">
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
+				<StackPanel Margin="5" MinWidth="175" >
+					<TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
+					<GroupBox FontSize="14" Header="Algorithm type"  Foreground="White">
+						<ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedValue="{Binding SelectedOptimizationType}">
+							<i:Interaction.Triggers>
+								<i:EventTrigger EventName="SelectionChanged">
+									<i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}"/>
+								</i:EventTrigger>
+							</i:Interaction.Triggers>
+						</ComboBox>
+					</GroupBox>
+					<GroupBox FontSize="14" Header="Visibility" Foreground="White">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
 
-						<GroupBox Header="Generators" Foreground="White">
-							<ItemsControl ItemsSource="{Binding GeneratorsContainer}"
+							<GroupBox Header="Generators" Foreground="White">
+								<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+									<ItemsControl ItemsSource="{Binding GeneratorsContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}"/>
-						</GroupBox>
+								</ScrollViewer>
+							</GroupBox>
 
-						<GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
-							<ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
+							<GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
+								<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+									<ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}">
-							</ItemsControl>
-						</GroupBox>
-					</Grid>
-				</GroupBox>
-			</StackPanel>
+									</ItemsControl>
+								</ScrollViewer>
+							</GroupBox>
+						</Grid>
+					</GroupBox>
+					<GroupBox Header="Size: " Foreground="White">
+						<GroupBox.HeaderTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding}"/>
+									<TextBlock FontWeight="Bold" Text="{Binding ElementName=SizeSlider,Path=Value,Converter={StaticResource NumberToSizeNameConverter}}"/>
+								</StackPanel>
+							</DataTemplate>
+						</GroupBox.HeaderTemplate>
+						<Slider Maximum="3" x:Name="SizeSlider" Interval="1" TickPlacement="BottomRight" 
+								TickFrequency="1" IsSnapToTickEnabled="True" Foreground="White" 
+								Value="{Binding SizeValue}">
+						</Slider>
+					</GroupBox>
+				</StackPanel>
+			</ScrollViewer>
 
 		</Grid>
 
@@ -228,7 +251,6 @@
 					</ItemsControl>
 				</DockPanel>
 			</Grid>
-
 		</ScrollViewer>
 	</Grid>
 </UserControl>
