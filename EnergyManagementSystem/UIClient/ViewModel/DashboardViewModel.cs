@@ -23,6 +23,9 @@ namespace UIClient.ViewModel
         private const int MAX_DISPLAY_NUMBER = 10;
         private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
         private int attemptsCount = 0;
+
+        private readonly double graphSizeOffset = 15;
+
         private float currentConsumption;
         private float currentProduction;
         private bool isOptionsExpanded = false;
@@ -35,6 +38,10 @@ namespace UIClient.ViewModel
         private ICommand visibilityUncheckedCommand;
         private ICommand changeAlgorithmCommand;
         private OptimizationType selectedOptimizationType = OptimizationType.Linear;
+
+        private double sizeValue;
+        private double graphWidth;
+        private double graphHeight;
 
 
         #endregion
@@ -135,12 +142,63 @@ namespace UIClient.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public double SizeValue
+        {
+            get
+            {
+                return sizeValue;
+            }
+
+            set
+            {
+                sizeValue = value;
+                OnPropertyChanged();
+                UpdateSizeWidget(value);
+            }
+        }
+
+        public double GraphWidth
+        {
+            get
+            {
+                return graphWidth;
+            }
+
+            set
+            {
+                graphWidth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double GraphHeight
+        {
+            get
+            {
+                return graphHeight;
+            }
+
+            set
+            {
+                graphHeight = value;
+                OnPropertyChanged();
+
+            }
+        }
+
+
         #endregion
 
         public DashboardViewModel()
         {
             SubsrcibeToCE();
             ceSubscribeProxy.ChooseOptimization(selectedOptimizationType);
+
+            SizeValue = 0;
+
+            GraphWidth = 16 * graphSizeOffset;
+            GraphHeight = 9 * graphSizeOffset;
         }
 
         #region Commands
@@ -152,6 +210,7 @@ namespace UIClient.ViewModel
 
         public ICommand ChangeAlgorithmCommand => changeAlgorithmCommand ?? (changeAlgorithmCommand = new RelayCommand(ChangeAlgorithmCommandExecute));
 
+       
         #endregion
 
         #region CommandsExecutions
@@ -183,6 +242,14 @@ namespace UIClient.ViewModel
         private void ChangeAlgorithmCommandExecute(object obj)
         {
             ceSubscribeProxy.ChooseOptimization(SelectedOptimizationType);
+        }
+
+        private void UpdateSizeWidget(double sliderValue)
+        {
+
+            GraphWidth = (sliderValue + 1) * 16 * graphSizeOffset;
+            GraphHeight = (sliderValue + 1) * 9 * graphSizeOffset;
+
         }
         #endregion
 

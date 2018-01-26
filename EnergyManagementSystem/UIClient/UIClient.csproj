@@ -107,6 +107,7 @@
     <Compile Include="Converters\GlobalIdToEMSTypeStringConverter.cs" />
     <Compile Include="Converters\HexadecimalConverter.cs" />
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
+    <Compile Include="Converters\NumberToSizeNameConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
     <Compile Include="Converters\TestConverter.cs" />

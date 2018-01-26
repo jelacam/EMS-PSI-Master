@@ -16,6 +16,7 @@ namespace EMS.Services.SCADACrunchingService
     using SmoothModbus;
     using System.Xml.Serialization;
     using System.IO;
+    using System.Threading;
 
     /// <summary>
     /// SCADACrunching component logic
@@ -327,6 +328,13 @@ namespace EMS.Services.SCADACrunchingService
                 message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);
                 Console.WriteLine(message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+
+                Console.WriteLine("Trying again...");
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
+                NetworkModelGDAProxy.Instance = null;
+                Thread.Sleep(1000);
+                InitiateIntegrityUpdate();
+
                 return false;
             }
 
