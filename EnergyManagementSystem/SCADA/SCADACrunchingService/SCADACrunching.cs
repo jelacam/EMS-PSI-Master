@@ -106,7 +106,6 @@ namespace EMS.Services.SCADACrunchingService
                 StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
                 serializer.Serialize(writer, scECA);
 
-
                 ScadaConfiguration scGA = new ScadaConfiguration();
                 scGA.AnalogsList = generatorAnalogs;
                 XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
@@ -228,7 +227,7 @@ namespace EMS.Services.SCADACrunchingService
             List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
             List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0);
 
-            float windSpeed = GetWindSpeed(windData,windByteLength);
+            float windSpeed = GetWindSpeed(windData, windByteLength);
 
             bool isSuccess = false;
             try
@@ -267,7 +266,19 @@ namespace EMS.Services.SCADACrunchingService
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                if (analogLoc.Analog.Mrid.Equals("Analog_sm_8"))
+                // nema alarma - generisi event za promenu vrednosti
+                //if (!alarmRaw && !alarmEGU)
+                //{
+                //    AlarmsEventsProxy.Instance.AddAlarm(new AlarmHelper(
+                //        gid: analogLoc.Analog.GlobalId,
+                //        value: eguVal,
+                //        minValue: analogLoc.Analog.MinValue,
+                //        maxValue: analogLoc.Analog.MaxValue,
+                //        timeStamp: DateTime.Now
+                //    ));
+                //}
+
+                if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
                 {
                     using (var txtWriter = new StreamWriter("PointsReport.txt", true))
                     {
@@ -372,7 +383,6 @@ namespace EMS.Services.SCADACrunchingService
                 StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
                 serializer.Serialize(writer, scECA);
 
-
                 ScadaConfiguration scGA = new ScadaConfiguration();
                 scGA.AnalogsList = generatorAnalogs;
                 XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
@@ -411,22 +421,22 @@ namespace EMS.Services.SCADACrunchingService
             {
                 ah.Type = AlarmType.RAW_MIN;
                 ah.Severity = SeverityLevel.CRITICAL;
-                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
+                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low raw limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on low raw limit on gid: {0:X}", gid);
             }
 
             if (value > maxRaw)
             {
                 ah.Type = AlarmType.RAW_MAX;
                 ah.Severity = SeverityLevel.CRITICAL;
-                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
+                ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on high raw limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on high raw limit on gid: {0:X}", gid);
             }
 
             return retVal;
@@ -448,51 +458,49 @@ namespace EMS.Services.SCADACrunchingService
 
             float highMin = minEGU + (float)Math.Round((5f / 100f) * minEGU);
             float highMax = maxEGU - (float)Math.Round((5f / 100f) * maxEGU);
-            AlarmHelper ah = new AlarmHelper(gid, value, alarmMin, alarmMax, DateTime.Now);
+            AlarmHelper ah = new AlarmHelper(gid, value, minEGU, maxEGU, DateTime.Now);
 
             if (value < highMin)
             {
                 ah.Type = AlarmType.EGU_MIN;
-                ah.Severity = SeverityLevel.HIGH;
-                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
+                ah.Severity = SeverityLevel.MEDIUM;
+                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
             }
             else if (value < alarmMin)
             {
-
                 ah.Type = AlarmType.EGU_MIN;
-                ah.Severity = SeverityLevel.MAJOR;
-                ah.Message = string.Format("Value on input signal: {0} lower than minimum expected value", gid);
+                ah.Severity = SeverityLevel.MINOR;
+                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on low egu limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
             }
 
             if (value > highMax)
             {
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.HIGH;
-                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
+                ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);
             }
             else if (value > alarmMax)
             {
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.MAJOR;
-                ah.Message = string.Format("Value on input signal: {0} higher than maximum expected value", gid);
+                ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0}", gid);
-                Console.WriteLine("Alarm on high egu limit on gid: {0}", gid);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
+                Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);
             }
-            
 
             return retVal;
         }
