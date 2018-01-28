@@ -274,7 +274,15 @@ namespace EMS.Services.SCADACrunchingService
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                bool flatlineAlamr = CheckForFlatlineAlarm(analogLoc, eguVal);
+                bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
+
+                if (flatlineAlarm)
+                {
+                    AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
+                    alarmH.Type = AlarmType.FLATLINE;
+                    alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
+                    AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+                }
 
                 // nema alarma - generisi event za promenu vrednosti
                 //if (!alarmRaw && !alarmEGU)

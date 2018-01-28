@@ -18,6 +18,7 @@ namespace EMS.CommonMeasurement
         EGU_MAX = 4,
         OPTIMIZED_MIN = 5,
         OPTIMIZED_MAX = 6,
+        FLATLINE = 7
     }
 
     public enum SeverityLevel
