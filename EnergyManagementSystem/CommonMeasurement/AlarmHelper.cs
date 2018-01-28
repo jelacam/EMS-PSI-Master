@@ -20,7 +20,7 @@ namespace EMS.CommonMeasurement
         private long gid;
 
         /// <summary>
-        ///  represents alarm severity level - coloring 
+        ///  represents alarm severity level - coloring
         /// </summary>
         private SeverityLevel severity;
 
@@ -111,6 +111,7 @@ namespace EMS.CommonMeasurement
             set
             {
                 severity = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -178,8 +179,6 @@ namespace EMS.CommonMeasurement
             {
                 this.lastChange = value;
                 NotifyPropertyChanged();
-
-
             }
         }
 
@@ -193,6 +192,7 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.type = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -206,6 +206,7 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.message = value;
+                NotifyPropertyChanged();
             }
         }
     }

@@ -14,7 +14,7 @@ namespace UIClient.ViewModel
     {
         private AlarmsEventsSubscribeProxy aeSubscribeProxy;
 
-        private ObservableCollection<AlarmHelper> alarmSummaryQueue = new ObservableCollection<AlarmHelper>(); 
+        private ObservableCollection<AlarmHelper> alarmSummaryQueue = new ObservableCollection<AlarmHelper>();
 
         public ObservableCollection<AlarmHelper> AlarmSummaryQueue
         {
@@ -64,8 +64,10 @@ namespace UIClient.ViewModel
                     update = true;
                     aHelper.Value = alarm.Value;
                     aHelper.LastChange = alarm.TimeStamp;
+                    aHelper.Severity = alarm.Severity;
+                    aHelper.Type = alarm.Type;
+                    aHelper.Message = alarm.Message;
                     OnPropertyChanged(nameof(AlarmSummaryQueue));
-                    
                 }
             }
             if (!update)
@@ -74,6 +76,5 @@ namespace UIClient.ViewModel
             }
             OnPropertyChanged(nameof(AlarmSummaryQueue));
         }
-
     }
 }

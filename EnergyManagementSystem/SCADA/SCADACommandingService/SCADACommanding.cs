@@ -145,7 +145,7 @@ namespace EMS.Services.SCADACommandingService
                 int iConsumer = 0;
                 int iSynchMach = 0;
 
-                // napravi kopiju od originala 
+                // napravi kopiju od originala
                 foreach (AnalogLocation alocation in listOfAnalog)
                 {
                     listOfAnalogCopy.Add(alocation.Clone() as AnalogLocation);
@@ -158,8 +158,6 @@ namespace EMS.Services.SCADACommandingService
                         iSynchMach++;
                     }
                 }
-
-
 
                 Analog analog = null;
                 //int i = 0; // analog counter for address
@@ -180,7 +178,6 @@ namespace EMS.Services.SCADACommandingService
 
                     if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
                     {
-
                         listOfAnalogCopy.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -190,7 +187,6 @@ namespace EMS.Services.SCADACommandingService
                     }
                     else
                     {
-
                         listOfAnalogCopy.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -301,7 +297,6 @@ namespace EMS.Services.SCADACommandingService
                 return false;
             }
 
-
             listOfAnalog.Clear();
 
             try
@@ -314,7 +309,6 @@ namespace EMS.Services.SCADACommandingService
 
                     if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
                     {
-
                         listOfAnalog.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -324,7 +318,6 @@ namespace EMS.Services.SCADACommandingService
                     }
                     else
                     {
-
                         listOfAnalog.Add(new AnalogLocation()
                         {
                             Analog = analog,
@@ -339,7 +332,6 @@ namespace EMS.Services.SCADACommandingService
                 XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfig.xml");
                 serializer.Serialize(writer, sc);
-
             }
             catch (Exception e)
             {
@@ -370,11 +362,9 @@ namespace EMS.Services.SCADACommandingService
                     //float rawVal1 = convertorHelper.ConvertFromEGUToRawValue(89, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
 
                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
-                    
 
-                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
+                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_3"))
                     {
-
                         float[] values = new float[100];
 
                         values = FirstReadAfterSending((ushort)analogLoc.StartAddress, 2, analogLoc);
@@ -395,11 +385,10 @@ namespace EMS.Services.SCADACommandingService
                             {
                                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
                             }
-
                         }
                         else
                         {
-                            if(rawVal != 0)
+                            if (rawVal != 0)
                             {
                                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
                             }
@@ -410,10 +399,8 @@ namespace EMS.Services.SCADACommandingService
                         }
                         using (var txtWriter = new StreamWriter("SentData.txt", true))
                         {
-
                             // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
                             txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + ", EGU = " + measurements[i].CurrentValue);
-
                         }
                     }
                 }
@@ -434,10 +421,9 @@ namespace EMS.Services.SCADACommandingService
             byte[] response = modbusClient.ReadHoldingRegisters(startingAddress, quantity);
             values = ModbusHelper.GetValueFromByteArray<float>(response, analogLoc.LengthInBytes, 0 + analogLoc.StartAddress * 2);
             return values;
-
         }
 
-        /// <summary>
+        ///// <summary>
         /// Method for initial write in simulator
         /// </summary>
         public void TestWrite()

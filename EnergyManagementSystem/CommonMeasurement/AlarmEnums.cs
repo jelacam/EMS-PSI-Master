@@ -11,21 +11,23 @@ namespace EMS.CommonMeasurement
     /// </summary>
     public enum AlarmType
     {
-        RAW_MIN = 0,
-        RAW_MAX = 1,
-        EGU_MIN = 2,
-        EGU_MAX = 3,
-        OPTIMIZED_MIN = 4,
-        OPTIMIZED_MAX = 5
+        NONE = 0,
+        RAW_MIN = 1,
+        RAW_MAX = 2,
+        EGU_MIN = 3,
+        EGU_MAX = 4,
+        OPTIMIZED_MIN = 5,
+        OPTIMIZED_MAX = 6,
     }
 
     public enum SeverityLevel
     {
-        CRITICAL = 0,       // magenta
-        HIGH = 1,           // red
-        MAJOR = 2,          // orange
-        MEDIUM = 3,         // yellow
-        LOW = 4,            // green
-        MINOR = 5           // cyan
+        NONE = 0,
+        MINOR = 1,       // cyan
+        LOW = 2,           // green
+        MEDIUM = 3,          // yellow
+        MAJOR = 4,         // orange
+        HIGH = 5,            // red
+        CRITICAL = 6           // magenta
     }
 }

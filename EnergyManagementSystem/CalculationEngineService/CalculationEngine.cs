@@ -50,9 +50,9 @@ namespace EMS.Services.CalculationEngineService
         private float minProduction;
         private float maxProduction;
 
-		private float profit = 0;
-		private float windProductionPct = 0;
-		private float windProductionkW = 0;
+        private float profit = 0;
+        private float windProductionPct = 0;
+        private float windProductionkW = 0;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
@@ -107,7 +107,6 @@ namespace EMS.Services.CalculationEngineService
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
-
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
                     Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
@@ -152,11 +151,11 @@ namespace EMS.Services.CalculationEngineService
                     LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
                     totalCost = linearAlgorithm.TotalCost; // ukupna cena linearne optimizacije
-					profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
-					windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
-					windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
+                    profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
+                    windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
+                    windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
                 }
-				else
+                else
                 {
                     return DoNotOptimized(optModelMap, powerOfConsumers);
                 }
@@ -175,13 +174,13 @@ namespace EMS.Services.CalculationEngineService
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (OptimisationModel optModel in optModelMap.Values)
             {
-
                 float power = 0;
-                if(powerOfConsumers >= optModel.MaxPower)
+                if (powerOfConsumers >= optModel.MaxPower)
                 {
                     power = optModel.MaxPower;
                     powerOfConsumers -= power;
-                }else
+                }
+                else
                 {
                     power = powerOfConsumers;
                     powerOfConsumers = 0;
@@ -194,11 +193,10 @@ namespace EMS.Services.CalculationEngineService
                     MaxValue = optModel.MaxPower,
                     MinValue = optModel.MinPower,
                     OptimizationType = OptimizationType.None,
-
                 });
             }
 
-            if(powerOfConsumers > 0)
+            if (powerOfConsumers > 0)
             {
                 Console.WriteLine("[Method = DoNotOptimized] Nesto ne valja ovde");
             }
@@ -281,7 +279,7 @@ namespace EMS.Services.CalculationEngineService
                         generatorCurves.Add(item.Mrid, null);
                     }
 
-                    if (generatorCurves.Count == GeneratorCharacteristics.Curves.Count)
+                    //if (generatorCurves.Count == GeneratorCharacteristics.Curves.Count)
                     {
                         for (int i = 0; i < generatorCurves.Count; i++)
                         {
@@ -429,7 +427,7 @@ namespace EMS.Services.CalculationEngineService
                     synchronousMachines.Add(sm.GlobalId, sm);
                 }
 
-				FillGeneratorCurves();
+                FillGeneratorCurves();
 
                 foreach (ResourceDescription rd in internalEmsFuels)
                 {
@@ -455,7 +453,7 @@ namespace EMS.Services.CalculationEngineService
                 synchronousMachines.Clear();
                 fuels.Clear();
                 energyConsumers.Clear();
-				generatorCurves.Clear();
+                generatorCurves.Clear();
             }
         }
 
@@ -728,5 +726,4 @@ namespace EMS.Services.CalculationEngineService
 
         #endregion Transaction
     }
-
 }
