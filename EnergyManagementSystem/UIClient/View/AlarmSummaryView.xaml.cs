@@ -24,5 +24,14 @@ namespace UIClient.View
         {
             InitializeComponent();
         }
+
+        //private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        //{
+        //    if(e.Column.Header.ToString() == "Message")
+        //    {
+        //        e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+        //    }
+
+        //}
     }
 }
