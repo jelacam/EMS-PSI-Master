@@ -94,4 +94,33 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style x:Key="AlarmSummaryDataGridRowStyle" TargetType="DataGridRow">
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding Severity}" Value="CRITICAL">
+				<Setter Property="Background" Value="Magenta"></Setter>
+			</DataTrigger>
+
+			<DataTrigger Binding="{Binding Severity}" Value="HIGH">
+				<Setter Property="Background" Value="Red"></Setter>
+			</DataTrigger>
+
+			<DataTrigger Binding="{Binding Severity}" Value="MAJOR">
+				<Setter Property="Background" Value="Orange"></Setter>
+			</DataTrigger>
+
+			<DataTrigger Binding="{Binding Severity}" Value="MEDIUM">
+				<Setter Property="Background" Value="Yellow"></Setter>
+			</DataTrigger>
+
+			<DataTrigger Binding="{Binding Severity}" Value="LOW">
+				<Setter Property="Background" Value="Green"></Setter>
+			</DataTrigger>
+
+			<DataTrigger Binding="{Binding Severity}" Value="MINOR">
+				<Setter Property="Background" Value="Cyan"></Setter>
+			</DataTrigger>
+
+		</Style.Triggers>
+	</Style>
 </ResourceDictionary>
