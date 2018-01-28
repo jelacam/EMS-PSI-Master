@@ -6,39 +6,23 @@
              xmlns:local="clr-namespace:UIClient.View"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-		<DataGrid ItemsSource="{Binding Path = AlarmSummaryQueue }">
-			<DataGrid.RowStyle>
-				<Style TargetType="DataGridRow">
-					<Style.Triggers>
-						
-						<DataTrigger Binding="{Binding Severity}" Value="CRITICAL">
-							<Setter Property="Background" Value="Magenta"></Setter>
-						</DataTrigger>
-						
-						<DataTrigger Binding="{Binding Severity}" Value="HIGH">
-							<Setter Property="Background" Value="Red"></Setter>
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding Severity}" Value="MAJOR">
-							<Setter Property="Background" Value="Orange"></Setter>
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding Severity}" Value="MEDIUM">
-							<Setter Property="Background" Value="Yellow"></Setter>
-						</DataTrigger>
-
-						<DataTrigger Binding="{Binding Severity}" Value="LOW">
-							<Setter Property="Background" Value="Green"></Setter>
-						</DataTrigger>
-						
-						<DataTrigger Binding="{Binding Severity}" Value="MINOR">
-							<Setter Property="Background" Value="Cyan"></Setter>
-						</DataTrigger>
-
-					</Style.Triggers>
-				</Style>
-			</DataGrid.RowStyle>
-		</DataGrid>     
-    </Grid>
+	<Grid>
+		<DataGrid ItemsSource="{Binding Path = AlarmSummaryQueue }"
+				  IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" ClipToBounds="True"
+				  RowHeaderWidth="0" RowStyle="{StaticResource AlarmSummaryDataGridRowStyle}"
+				  AutoGenerateColumns="False" SelectionUnit="FullRow"
+				  GridLinesVisibility="Vertical">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Gid" Binding="{Binding Gid,StringFormat={}0x{0:X8}}" />
+				<DataGridTextColumn Header="Severity" Binding="{Binding Severity}" />
+				<DataGridTextColumn Header="Value" Binding="{Binding Value}" />
+				<DataGridTextColumn Header="MinValue" Binding="{Binding MinValue}" />
+				<DataGridTextColumn Header="MaxValue" Binding="{Binding MaxValue}" />
+				<DataGridTextColumn Header="TimeStamp" Binding="{Binding TimeStamp}" />
+				<DataGridTextColumn Header="LastChange" Binding="{Binding LastChange}" />
+				<DataGridTextColumn Header="Type" Binding="{Binding Type}" />
+				<DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </UserControl>

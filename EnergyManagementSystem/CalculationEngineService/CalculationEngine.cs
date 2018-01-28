@@ -508,7 +508,6 @@ namespace EMS.Services.CalculationEngineService
                     NetworkModelGDAProxy.Instance = null;
                     Thread.Sleep(1000);
                     InitiateIntegrityUpdate();
-                    return false;
                 }
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeSynchronousMachine.ToString(), internalSynchMachines.Count.ToString());

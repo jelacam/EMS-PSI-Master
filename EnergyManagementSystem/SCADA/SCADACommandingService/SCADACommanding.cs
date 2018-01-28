@@ -319,7 +319,8 @@ namespace EMS.Services.SCADACommandingService
                         {
                             Analog = analog,
                             StartAddress = iConsumer++ * 2,
-                            Length = 2
+                            Length = 2,
+                            LengthInBytes = 4
                         });
                     }
                     else
@@ -329,7 +330,8 @@ namespace EMS.Services.SCADACommandingService
                         {
                             Analog = analog,
                             StartAddress = START_ADDRESS_GENERATOR + iSynchMach++ * 2,
-                            Length = 2
+                            Length = 2,
+                            LengthInBytes = 4
                         });
                     }
                 }
@@ -372,7 +374,7 @@ namespace EMS.Services.SCADACommandingService
                     modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
                     
 
-                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
+                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_8"))
                     {
 
                         float[] values = new float[100];
@@ -389,6 +391,7 @@ namespace EMS.Services.SCADACommandingService
                                 //    txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: " + rawVal + " and then first read after sending: RAW = " + values[0]);
 
                                 //}
+                                //CR-1 jel uospte nuzno da se svaki put ovo loguje? Bice nam glavni log fajl pretrpan, vec imamo fajl za to
                                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su iste!");
                             }
                             else
@@ -399,6 +402,7 @@ namespace EMS.Services.SCADACommandingService
                         }
                         else
                         {
+                            //CR-1 zasto ovaj deo ovako? nesto nije dobro procitano ukoliko je values.Length == 0
                             if(rawVal != 0)
                             {
                                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
@@ -432,7 +436,7 @@ namespace EMS.Services.SCADACommandingService
         {
             float[] values = new float[100];
             byte[] response = modbusClient.ReadHoldingRegisters(startingAddress, quantity);
-            values = ModbusHelper.GetValueFromByteArray<float>(response, analogLoc.LengthInBytes, 0 + analogLoc.StartAddress * 2);
+            values = ModbusHelper.GetValueFromByteArray<float>(response, analogLoc.LengthInBytes, 2); //skip header
             return values;
 
         }
