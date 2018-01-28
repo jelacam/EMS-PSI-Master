@@ -29,6 +29,9 @@ namespace EMS.Services.SCADACrunchingService
         /// </summary>
         private static List<AnalogLocation> generatorAnalogs;
 
+        private static Dictionary<long, float> previousGeneratorAnalogs;
+        private static Dictionary<long, int> flatLineAlarmCounter;
+
         /// <summary>
         /// list for storing AnalogLocation values for energyConsumers
         /// </summary>
@@ -60,6 +63,8 @@ namespace EMS.Services.SCADACrunchingService
 
         private readonly int START_ADDRESS_GENERATOR = 50;
 
+        private readonly int FLAT_LINE_ALARM_TIMEOUT = 5;
+
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
         /// </summary>
         public SCADACrunching()
@@ -73,6 +78,9 @@ namespace EMS.Services.SCADACrunchingService
             energyConsumersAnalogsCopy = new List<AnalogLocation>();
 
             modelResourcesDesc = new ModelResourcesDesc();
+
+            previousGeneratorAnalogs = new Dictionary<long, float>(10);
+            flatLineAlarmCounter = new Dictionary<long, int>(10);
         }
 
         #region Transaction
@@ -266,6 +274,8 @@ namespace EMS.Services.SCADACrunchingService
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
                 bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
+                bool flatlineAlamr = CheckForFlatlineAlarm(analogLoc, eguVal);
+
                 // nema alarma - generisi event za promenu vrednosti
                 //if (!alarmRaw && !alarmEGU)
                 //{
@@ -293,6 +303,9 @@ namespace EMS.Services.SCADACrunchingService
                 measUnit.CurrentValue = eguVal;
                 measUnit.TimeStamp = DateTime.Now;
                 retList.Add(measUnit);
+
+                // kreiraj kolekciju prethodnih vrednosti
+                previousGeneratorAnalogs[analogLoc.Analog.GlobalId] = eguVal;
             }
 
             return retList;
@@ -503,6 +516,34 @@ namespace EMS.Services.SCADACrunchingService
             }
 
             return retVal;
+        }
+
+        private bool CheckForFlatlineAlarm(AnalogLocation analogLoc, float value)
+        {
+            float previousValue;
+            if (previousGeneratorAnalogs.TryGetValue(analogLoc.Analog.GlobalId, out previousValue))
+            {
+                if (value == previousValue)
+                {
+                    int counter;
+                    if (flatLineAlarmCounter.TryGetValue(analogLoc.Analog.GlobalId, out counter))
+                    {
+                        flatLineAlarmCounter[analogLoc.Analog.GlobalId]++;
+                    }
+                    else
+                    {
+                        flatLineAlarmCounter[analogLoc.Analog.GlobalId] = 0;
+                    }
+
+                    if (flatLineAlarmCounter[analogLoc.Analog.GlobalId] == FLAT_LINE_ALARM_TIMEOUT)
+                    {
+                        flatLineAlarmCounter[analogLoc.Analog.GlobalId] = 0;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
