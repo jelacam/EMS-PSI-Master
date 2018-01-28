@@ -284,6 +284,13 @@ namespace EMS.Services.SCADACrunchingService
                     AlarmsEventsProxy.Instance.AddAlarm(alarmH);
                 }
 
+                // na signalu vise nema alarma - update state
+                // sa Active na Cleared
+                if (!alarmRaw && !alarmEGU)
+                {
+                    AlarmsEventsProxy.Instance.UpdateStatus(analogLoc.Analog.PowerSystemResource, State.Cleared);
+                }
+
                 // nema alarma - generisi event za promenu vrednosti
                 //if (!alarmRaw && !alarmEGU)
                 //{

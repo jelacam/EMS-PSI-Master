@@ -16,13 +16,19 @@ namespace EMS.ServiceContracts
     [ServiceContract]
     public interface IAlarmsEventsContract
     {
-
-
         /// <summary>
         /// Adds new alarm
         /// </summary>
         /// <param name="alarm">alarm to add</param>
         [OperationContract]
         void AddAlarm(AlarmHelper alarm);
+
+        /// <summary>
+        /// Send measured value to AlarmsEvents Service
+        /// </summary>
+        /// <param name="gid"></param>
+        /// <param name="value"></param>
+        [OperationContract]
+        void UpdateStatus(long gid, State state);
     }
 }

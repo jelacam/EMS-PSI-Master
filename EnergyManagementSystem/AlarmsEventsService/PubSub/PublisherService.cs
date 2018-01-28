@@ -15,10 +15,15 @@
     {
         public delegate void AlarmEventHandler(object sender, AlarmsEventsEventArgs e);
 
+        public delegate void AlarmStatusHandler(object sender, AlarmStateEventArgs e);
+
         public static event AlarmEventHandler AlarmEvent;
+
+        public static event AlarmStatusHandler AlarmStatus;
 
         private IAesPubSubCallbackContract callback = null;
         private AlarmEventHandler alarmEventHandler = null;
+        private AlarmStatusHandler alarmStatusHandler = null;
 
         /// <summary>
         /// This event handler runs when a AlarmsEvents event is raised.
@@ -31,6 +36,11 @@
             callback.AlarmsEvents(e.Alarm);
         }
 
+        public void AlarmStateEventsHandler(object sender, AlarmStateEventArgs e)
+        {
+            callback.ChangeAlarmStatus(e.Gid, e.CurrentState);
+        }
+
         /// <summary>
         /// Clients call this service opeartion to subscribe.
         /// A alarms events event handler is registered for this client instance.
@@ -38,8 +48,12 @@
         public void Subscribe()
         {
             callback = OperationContext.Current.GetCallbackChannel<IAesPubSubCallbackContract>();
+
             alarmEventHandler = new AlarmEventHandler(AlarmsEventsHandler);
             AlarmEvent += alarmEventHandler;
+
+            alarmStatusHandler = new AlarmStatusHandler(AlarmStateEventsHandler);
+            AlarmStatus += alarmStatusHandler;
         }
 
         /// <summary>
@@ -48,6 +62,7 @@
         public void Unsubscribe()
         {
             AlarmEvent -= alarmEventHandler;
+            AlarmStatus -= alarmStatusHandler;
         }
 
         /// <summary>
@@ -72,6 +87,26 @@
             catch (Exception ex)
             {
                 string message = string.Format("AES does not have any subscribed client for publishing new alarms. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
+                Console.WriteLine(message);
+            }
+        }
+
+        public void PublishStateChange(long gid, string currentState)
+        {
+            AlarmStateEventArgs e = new AlarmStateEventArgs()
+            {
+                Gid = gid,
+                CurrentState = currentState
+            };
+
+            try
+            {
+                AlarmStatus(this, e);
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("AES does not have any subscribed client for publishing alarm status change. {0}", ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
                 Console.WriteLine(message);
             }

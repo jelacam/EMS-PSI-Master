@@ -46,6 +46,12 @@ namespace EMS.CommonMeasurement
 
         private DateTime lastChange;
 
+        private string currentState;
+
+        private AckState ackState;
+
+        private bool statusChange = false;
+
         /// <summary>
         /// stores type of the entity
         /// </summary>
@@ -206,6 +212,44 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.message = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string CurrentState
+        {
+            get
+            {
+                return this.currentState;
+            }
+            set
+            {
+                this.currentState = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public AckState AckState
+        {
+            get
+            {
+                return ackState;
+            }
+            set
+            {
+                ackState = value;
+            }
+        }
+
+        public bool StatusChange
+        {
+            get
+            {
+                return statusChange;
+            }
+            set
+            {
+                statusChange = value;
                 NotifyPropertyChanged();
             }
         }

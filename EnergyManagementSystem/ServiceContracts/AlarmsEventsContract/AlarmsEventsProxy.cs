@@ -73,8 +73,6 @@ namespace EMS.ServiceContracts
             }
         }
 
-
-
         /// <summary>
         /// Adds new alarm
         /// </summary>
@@ -82,6 +80,11 @@ namespace EMS.ServiceContracts
         public void AddAlarm(AlarmHelper alarm)
         {
             proxy.AddAlarm(alarm);
+        }
+
+        public void UpdateStatus(long gid, State state)
+        {
+            proxy.UpdateStatus(gid, state);
         }
     }
 }

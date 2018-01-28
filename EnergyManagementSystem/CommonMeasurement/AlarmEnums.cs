@@ -31,4 +31,16 @@ namespace EMS.CommonMeasurement
         HIGH = 5,            // red
         CRITICAL = 6           // magenta
     }
+
+    public enum State
+    {
+        Active = 0,
+        Cleared = 1,
+    }
+
+    public enum AckState
+    {
+        Acknowledged = 0,
+        Unacknowledged = 1
+    }
 }

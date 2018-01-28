@@ -27,7 +27,6 @@ namespace EMS.ServiceContracts
         /// <param name="alarm"></param>
         //[OperationContract(IsOneWay = false)]
         //void PublishAlarmsEvents(string alarm);
-
     }
 
     /// <summary>
@@ -38,5 +37,8 @@ namespace EMS.ServiceContracts
     {
         [OperationContract(IsOneWay = false)]
         void AlarmsEvents(AlarmHelper alarm);
+
+        [OperationContract(IsOneWay = false)]
+        void ChangeAlarmStatus(long gid, string currentState);
     }
 }

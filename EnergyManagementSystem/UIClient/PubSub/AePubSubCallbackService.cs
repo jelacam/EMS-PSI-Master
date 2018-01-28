@@ -12,7 +12,6 @@ namespace UIClient.PubSub
 {
     public class AePubSubCallbackService : IAesPubSubCallbackContract
     {
-
         private Action<object> callbackAction;
 
         public Action<object> CallbackAction
@@ -31,12 +30,31 @@ namespace UIClient.PubSub
         public void AlarmsEvents(AlarmHelper alarm)
         {
             Console.WriteLine("SessionID id: {0}", OperationContext.Current.SessionId);
-            Console.WriteLine(string.Format("ALARM: {0} on Signal GID: {1} | SessionID id: {2}", 
+            Console.WriteLine(string.Format("ALARM: {0} on Signal GID: {1} | SessionID id: {2}",
                                             alarm.Value.ToString(), alarm.Gid.ToString(), OperationContext.Current.SessionId));
 
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, string.Format("ALARM: {0} on Signal GID: {1} | SessionID id: {2}",
                                                                         alarm.Value.ToString(), alarm.Gid.ToString(), OperationContext.Current.SessionId));
             CallbackAction(alarm);
+        }
+
+        public void ChangeAlarmStatus(long gid, string currentState)
+        {
+            Console.WriteLine("SessionID id: {0}", OperationContext.Current.SessionId);
+            Console.WriteLine(string.Format("Alarm status: {0} on Signal GID: {1} | SessionID id: {2}",
+                                            currentState, gid.ToString(), OperationContext.Current.SessionId));
+
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, string.Format("Alarm status: {0} on Signal GID: {1} | SessionID id: {2}",
+                                                                         currentState, gid.ToString(), OperationContext.Current.SessionId));
+
+            AlarmHelper ah = new AlarmHelper()
+            {
+                Gid = gid,
+                CurrentState = currentState,
+                StatusChange = true
+            };
+
+            CallbackAction(ah);
         }
     }
 }
