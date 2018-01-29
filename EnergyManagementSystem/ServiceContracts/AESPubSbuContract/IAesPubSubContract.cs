@@ -39,6 +39,6 @@ namespace EMS.ServiceContracts
         void AlarmsEvents(AlarmHelper alarm);
 
         [OperationContract(IsOneWay = false)]
-        void ChangeAlarmStatus(long gid, string currentState);
+        void UpdateAlarmsEvents(AlarmHelper alarm);
     }
 }

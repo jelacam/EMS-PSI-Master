@@ -23,12 +23,11 @@ namespace UIClient.View
         public AlarmSummaryView()
         {
             InitializeComponent();
+            AlarmSummaryDataGrid.Items.SortDescriptions.Add(
+                                new System.ComponentModel.SortDescription("TimeStamp", System.ComponentModel.ListSortDirection.Descending));
         }
 
-        private void DataGrid_Sorting()
-        {
-
-        }
+        
 
         //private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         //{

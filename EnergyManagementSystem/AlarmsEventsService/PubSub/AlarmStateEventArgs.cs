@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.CommonMeasurement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace EMS.Services.AlarmsEventsService.PubSub
 {
-    public class AlarmStateEventArgs : EventArgs
+    public class AlarmUpdateEventArgs : EventArgs
     {
-        private long gid;
-        private string currentState;
+        private AlarmHelper alarm;
 
-        public long Gid
+        public AlarmHelper Alarm
         {
-            get { return gid; }
-            set { gid = value; }
+            get
+            {
+                return alarm;
+            }
+            set
+            {
+                alarm = value;
+            }
         }
 
-        public string CurrentState
-        {
-            get { return currentState; }
-            set { currentState = value; }
-        }
     }
 }

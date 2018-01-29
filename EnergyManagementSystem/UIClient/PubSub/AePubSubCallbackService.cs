@@ -38,23 +38,14 @@ namespace UIClient.PubSub
             CallbackAction(alarm);
         }
 
-        public void ChangeAlarmStatus(long gid, string currentState)
+        public void UpdateAlarmsEvents(AlarmHelper alarm)
         {
-            Console.WriteLine("SessionID id: {0}", OperationContext.Current.SessionId);
-            Console.WriteLine(string.Format("Alarm status: {0} on Signal GID: {1} | SessionID id: {2}",
-                                            currentState, gid.ToString(), OperationContext.Current.SessionId));
 
-            CommonTrace.WriteTrace(CommonTrace.TraceInfo, string.Format("Alarm status: {0} on Signal GID: {1} | SessionID id: {2}",
-                                                                         currentState, gid.ToString(), OperationContext.Current.SessionId));
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, string.Format("UPDATE ALARM: {0} on Signal GID: {1} | SessionID id: {2}",
+                                                                        alarm.Value.ToString(), alarm.Gid.ToString(), OperationContext.Current.SessionId));
 
-            AlarmHelper ah = new AlarmHelper()
-            {
-                Gid = gid,
-                CurrentState = currentState,
-                StatusChange = true
-            };
 
-            CallbackAction(ah);
+            CallbackAction(alarm);
         }
     }
 }

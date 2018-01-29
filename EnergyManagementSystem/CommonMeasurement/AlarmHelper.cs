@@ -30,6 +30,11 @@ namespace EMS.CommonMeasurement
         private float value;
 
         /// <summary>
+        /// value that triggers the alarm
+        /// </summary>
+        private float initiatingValue;
+
+        /// <summary>
         /// stores minValue of the entity
         /// </summary>
         private float minValue;
@@ -50,12 +55,22 @@ namespace EMS.CommonMeasurement
 
         private AckState ackState;
 
-        private bool statusChange = false;
+        private PublishingStatus pubStatus;
 
         /// <summary>
         /// stores type of the entity
         /// </summary>
         private AlarmType type;
+
+        /// <summary>
+        /// type of alarm - persistent or not
+        /// </summary>
+        private PersistentState persistent;
+
+        /// <summary>
+        /// type of alarm - inhibit or not
+        /// </summary>
+        private InhibitState inhibit;
 
         /// <summary>
         /// stores the message
@@ -90,6 +105,8 @@ namespace EMS.CommonMeasurement
             this.maxValue = maxValue;
             this.timeStamp = timeStamp;
             this.message = "";
+            this.persistent = PersistentState.Persistent;
+            this.inhibit = InhibitState.Noninhibit;
         }
 
         /// <summary>
@@ -241,16 +258,53 @@ namespace EMS.CommonMeasurement
             }
         }
 
-        public bool StatusChange
+        public PublishingStatus PubStatus
         {
             get
             {
-                return statusChange;
+                return pubStatus;
             }
             set
             {
-                statusChange = value;
+                pubStatus = value;
                 NotifyPropertyChanged();
+            }
+        }
+
+        public float InitiatingValue
+        {
+            get
+            {
+                return initiatingValue;
+            }
+            set
+            {
+                initiatingValue = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public PersistentState Persistent
+        {
+            get
+            {
+                return persistent;
+            }
+            set
+            {
+                persistent = value;
+            }
+        }
+
+        public InhibitState Inhibit
+        {
+            get
+            {
+                return inhibit;
+            }
+            set
+            {
+                inhibit = value;
             }
         }
     }
