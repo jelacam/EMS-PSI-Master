@@ -53,6 +53,7 @@ namespace EMS.Services.CalculationEngineService
         private float profit = 0;
         private float windProductionPct = 0;
         private float windProductionkW = 0;
+		private float emissionCO2 = 0;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
@@ -154,6 +155,7 @@ namespace EMS.Services.CalculationEngineService
                     profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
                     windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
                     windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
+					emissionCO2 = linearAlgorithm.CO2Emission; // smanjenje CO2 emisije izrazeno u tonama
                 }
                 else
                 {

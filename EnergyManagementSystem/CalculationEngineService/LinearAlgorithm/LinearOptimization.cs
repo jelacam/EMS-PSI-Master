@@ -9,16 +9,16 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Microsoft.SolverFoundation.Services;
 	using Common;
-
+	using Microsoft.SolverFoundation.Services;
+	
 	/// <summary>
 	/// Class for linear optimization
 	/// </summary>
 	public class LinearOptimization
 	{
 		#region Fields
-
+	
 		/// <summary>
 		/// context for solver
 		/// </summary>
@@ -44,12 +44,35 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// </summary>
 		private float maxProduction = 0;
 
+		/// <summary>
+		/// total cost of production without renewable generators
+		/// </summary>
 		private float totalCostNonRenewable;
 
-		public float OptimizedLinear;
-		public float WindOptimizedLinear;
-		public float WindOptimizedPctLinear;
-		public float Profit;
+		/// <summary>
+		/// Gets or sets total production
+		/// </summary>
+		public float OptimizedLinear { get; set; }
+
+		/// <summary>
+		/// Gets or sets total production of wind generators
+		/// </summary>
+		public float WindOptimizedLinear { get; set; }
+
+		/// <summary>
+		/// Gets or sets percentage of wind production
+		/// </summary>
+		public float WindOptimizedPctLinear { get; set; }
+
+		/// <summary>
+		/// Gets or sets profit ($) of using wind generators
+		/// </summary>
+		public float Profit { get; set; }
+
+		/// <summary>
+		/// Gets or sets emission of CO2
+		/// </summary>
+		public float CO2Emission { get; set; }
 
 		#endregion Fields
 
@@ -66,6 +89,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 			WindOptimizedLinear = 0;
 			WindOptimizedPctLinear = 0;
 			Profit = 0;
+			CO2Emission = 0;
 
 			this.minProduction = minProduction;
 			this.maxProduction = maxProduction;
@@ -90,6 +114,12 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 			}
 		}
 
+		/// <summary>
+		/// Starts calculation
+		/// </summary>
+		/// <param name="optModelMap">model for optimization</param>
+		/// <param name="consumption">current consumption</param>
+		/// <returns>linear optimized model</returns>
 		public Dictionary<long, OptimisationModel> Start(Dictionary<long, OptimisationModel> optModelMap, float consumption)
 		{
 			lock (lockObj)
@@ -107,6 +137,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						production -= item.Value.MaxPower;
 					}
 				}
+
 				optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
 				optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
 
@@ -115,7 +146,15 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 				return optModelMap;
 			}
 		}
-
+		
+		/// <summary>
+		/// Linear optimization algorithm
+		/// </summary>
+		/// <param name="optModelMap">model for optimization</param>
+		/// <param name="consumption">current consumption</param>
+		/// <param name="renewable">should renewables be included</param>
+		/// <param name="maxProductionLimit">maximum limit of production</param>
+		/// <returns>linear optimized model</returns>
 		public Dictionary<long, OptimisationModel> StartLinearOptimization(Dictionary<long, OptimisationModel> optModelMap, float consumption, bool renewable, float maxProductionLimit)
 		{
 			lock (lockObj)
@@ -160,7 +199,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
 						Solution solution = context.Solve(new SimplexDirective());
 						Report report = solution.GetReport();
-						//Console.Write("{0}", report);
+						// Console.Write("{0}", report);
 
 						if (renewable)
 						{
@@ -173,10 +212,11 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 									OptimizedLinear += optModel.LinearOptimizedValue;
+									CO2Emission += optModel.LinearOptimizedValue * optModel.EmissionFactor;
 									if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
 									{
 										WindOptimizedLinear += optModel.LinearOptimizedValue;
-									}
+									}								
 								}
 							}
 
@@ -185,6 +225,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 							WindOptimizedPctLinear = 100 * WindOptimizedLinear / OptimizedLinear;
 							Console.WriteLine("Linear optimization: {0}", OptimizedLinear);
 							Console.WriteLine("Linear optimization wind: {0} ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
+							Console.WriteLine("Linear optimization CO2: {0}", CO2Emission);
 						}
 						else
 						{

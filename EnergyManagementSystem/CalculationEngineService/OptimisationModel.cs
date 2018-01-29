@@ -9,8 +9,8 @@ namespace EMS.Services.CalculationEngineService
 	using System;
 	using Common;
 	using CommonMeasurement;
-	using NetworkModelService.DataModel.Wires;
 	using NetworkModelService.DataModel.Production;
+	using NetworkModelService.DataModel.Wires;
 
 	/// <summary>
 	/// class for OptimisationModel
@@ -18,61 +18,69 @@ namespace EMS.Services.CalculationEngineService
 	public class OptimisationModel
 	{
 		/// <summary>
-		/// globalId for OptimisationModel
+		/// Gets or sets globalId for OptimisationModel
 		/// </summary>
 		public long GlobalId { get; set; }
 
 		/// <summary>
-		/// price for OptimisationModel
+		/// Gets or sets price for OptimisationModel
 		/// </summary>
 		public float Price { get; set; }
 
 		/// <summary>
-		/// measuredValue for OptimisationModel
+		/// Gets or sets measuredValue for OptimisationModel
 		/// </summary>
 		public float MeasuredValue { get; set; }
 
 		/// <summary>
-		/// linearOptimizedValue for OptimisationModel
+		/// Gets or sets linearOptimizedValue for OptimisationModel
 		/// </summary>
 		public float LinearOptimizedValue { get; set; }
 
 		/// <summary>
-		/// genericOptimizedValue for OptimisationModel
+		/// Gets or sets genericOptimizedValue for OptimisationModel
 		/// </summary>
 		public float GenericOptimizedValue { get; set; }
 
 		/// <summary>
-		/// minPower for OptimisationModel
+		/// Gets or sets minPower for OptimisationModel
 		/// </summary>
 		public float MinPower { get; set; }
 
 		/// <summary>
-		/// maxPower for OptimisationModel
+		/// Gets or sets maxPower for OptimisationModel
 		/// </summary>
 		public float MaxPower { get; set; }
 
 		/// <summary>
-		/// managable for OptimisationModel
+		/// Gets or sets managable for OptimisationModel
 		/// </summary>
 		public int Managable { get; set; }
 
 		/// <summary>
-		/// renewable for OptimisationModel
+		/// Gets or sets renewable for OptimisationModel
 		/// </summary>
 		public bool Renewable { get; set; }
 
 		/// <summary>
-		/// windPct for OptimisationModel
+		/// Gets or sets windPct for OptimisationModel
 		/// </summary>
 		public float WindPct { get; set; }
 
 		/// <summary>
-		/// emsFuel for OptimisationModel
+		/// Gets emsFuel for OptimisationModel
 		/// </summary>
 		public EMSFuel EmsFuel { get; private set; }
 
-		public SynchronousMachineCurveModel Curve { get; set; }
+		/// <summary>
+		/// Gets data about curve
+		/// </summary>
+		public SynchronousMachineCurveModel Curve { get; private set; }
+
+		/// <summary>
+		/// Gets emission factor for fuel
+		/// </summary>
+		public float EmissionFactor { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OptimisationModel" /> class
@@ -91,19 +99,26 @@ namespace EMS.Services.CalculationEngineService
 			WindPct = 1;
 			Curve = new SynchronousMachineCurveModel();
 			EmsFuel = null;
+			EmissionFactor = 1;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OptimisationModel" /> class
 		/// </summary>
+		/// <param name="sm">generator</param>
+		/// <param name="emsf">fuel</param>
+		/// <param name="mu">measured value</param>
+		/// <param name="windSpeed">speed of wind</param>
+		/// <param name="smcm">generator curve</param>
 		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed, SynchronousMachineCurveModel smcm)
 		{
 			GlobalId = sm.GlobalId;
 			MeasuredValue = mu.CurrentValue;
-			LinearOptimizedValue = 0; //izracunati
-			GenericOptimizedValue = 0; //izracunati			
+			LinearOptimizedValue = 0; // izracunati
+			GenericOptimizedValue = 0; // izracunati			
 			EmsFuel = emsf;
-			Curve = smcm;		
+			Curve = smcm;
+			EmissionFactor = ChooseEmissionFactor(emsf.FuelType);
 
 			Managable = sm.Active ? 1 : 0;
 			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
@@ -112,28 +127,70 @@ namespace EMS.Services.CalculationEngineService
 
 			MinPower = ((Managable == 0) || (Renewable && WindPct == 0)) ? 0 : sm.MinQ;
 
-			if((Managable == 0) || (Renewable && WindPct == 0))
+			if ((Managable == 0) || (Renewable && WindPct == 0))
 			{
 				MaxPower = 0;
 			}
-			else if(Renewable && WindPct>0)
+			else if (Renewable && WindPct > 0)
 			{
-				MaxPower = ((((sm.MaxQ - sm.MinQ) / 100) * WindPct) + sm.MinQ);
+				MaxPower = (sm.MaxQ - sm.MinQ) / 100 * WindPct + sm.MinQ;
 			}
 			else
 			{
 				MaxPower = sm.MaxQ;
-			}	
+			}
 		}
 
+		/// <summary>
+		/// Calculates emission factor for diferent fuel
+		/// </summary>
+		/// <param name="fuelType">fuel type</param>
+		/// <returns>emission factor</returns>
+		public float ChooseEmissionFactor(EmsFuelType fuelType)
+		{
+			float retVal = 1;
+			switch (fuelType)
+			{
+				case EmsFuelType.coal:
+					retVal = 0.30f;
+					break;
+				case EmsFuelType.hydro:
+					break;
+				case EmsFuelType.oil:
+					retVal = 0.25f;
+					break;
+				case EmsFuelType.solar:
+					retVal = 0;
+					break;
+				case EmsFuelType.wind:
+					retVal = 0;
+					break;
+				default:
+					retVal = 1;
+					break;
+			}
+
+			return retVal * 0.001f;
+		}
+
+		/// <summary>
+		/// Calculates price for current power based on curve for generator
+		/// </summary>
+		/// <param name="measuredValue">current power</param>
+		/// <returns>price of power</returns>
 		public float CalculatePrice(float measuredValue)
 		{
 			float price = 0;
 			float amount = (float)Curve.A * measuredValue * measuredValue + (float)Curve.B * measuredValue + (float)Curve.C;
 			price = amount * EmsFuel.UnitPrice;
-			return price; 
+			return price;
 		}
 
+		/// <summary>
+		/// Calculates percentage of production for wind generators
+		/// </summary>
+		/// <param name="windSpeed">speed of wind</param>
+		/// <returns>production percentage</returns>
 		public float CalculateWindPct(float windSpeed)
 		{
 			float pct = 0;
@@ -201,6 +258,5 @@ namespace EMS.Services.CalculationEngineService
 
 			return pct;
 		}
-
 	}
 }
