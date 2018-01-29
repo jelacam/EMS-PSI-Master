@@ -16,6 +16,7 @@ namespace AlarmsEventsServiceTest
         #region Declarations
         private PublisherService publisherUnderTest;
         private AlarmHelper alarmHelper;
+        private PublishingStatus status;
         #endregion 
 
         [OneTimeSetUp]
@@ -23,6 +24,7 @@ namespace AlarmsEventsServiceTest
         {
             publisherUnderTest = new PublisherService();
             alarmHelper = new AlarmHelper();
+            status = PublishingStatus.INSERT;
         }
 
         #region Tests
@@ -40,7 +42,7 @@ namespace AlarmsEventsServiceTest
         [TestCase(TestName = "PublishAlarmsEvents")]
         public void PublishAlarmsEventsTest()
         {
-            publisherUnderTest.PublishAlarmsEvents(alarmHelper);
+            publisherUnderTest.PublishAlarmsEvents(alarmHelper, status);
         }
 
         [Test]

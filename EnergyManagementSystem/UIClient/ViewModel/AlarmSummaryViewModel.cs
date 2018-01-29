@@ -51,9 +51,9 @@ namespace UIClient.ViewModel
                 throw new Exception("CallbackAction receive wrong param");
             }
 
-            if (alarm.StatusChange)
+            if (alarm.PubStatus.Equals(PublishingStatus.UPDATE))
             {
-                ChangeAlarmSate(alarm);
+                UpdateAlarm(alarm);
             }
             else
             {
@@ -77,13 +77,15 @@ namespace UIClient.ViewModel
             OnPropertyChanged(nameof(AlarmSummaryQueue));
         }
 
-        private void ChangeAlarmSate(AlarmHelper alarm)
+        private void UpdateAlarm(AlarmHelper alarm)
         {
             foreach (AlarmHelper aHelper in AlarmSummaryQueue)
             {
                 if (aHelper.Gid.Equals(alarm.Gid))
                 {
                     aHelper.CurrentState = alarm.CurrentState;
+                    aHelper.Value = alarm.Value;
+                    aHelper.LastChange = alarm.TimeStamp;
                     OnPropertyChanged(nameof(AlarmSummaryQueue));
                 }
             }

@@ -29,6 +29,6 @@ namespace EMS.ServiceContracts
         /// <param name="gid"></param>
         /// <param name="value"></param>
         [OperationContract]
-        void UpdateStatus(long gid, State state);
+        void UpdateStatus(AnalogLocation analogLoc, State state);
     }
 }

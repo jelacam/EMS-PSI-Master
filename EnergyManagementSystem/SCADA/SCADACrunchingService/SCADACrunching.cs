@@ -280,6 +280,7 @@ namespace EMS.Services.SCADACrunchingService
                 {
                     AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
                     alarmH.Type = AlarmType.FLATLINE;
+                    alarmH.Persistent = PersistentState.Nonpersistent;
                     alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
                     AlarmsEventsProxy.Instance.AddAlarm(alarmH);
                 }
@@ -288,7 +289,7 @@ namespace EMS.Services.SCADACrunchingService
                 // sa Active na Cleared
                 if (!alarmRaw && !alarmEGU)
                 {
-                    AlarmsEventsProxy.Instance.UpdateStatus(analogLoc.Analog.PowerSystemResource, State.Cleared);
+                    AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
                 }
 
                 // nema alarma - generisi event za promenu vrednosti

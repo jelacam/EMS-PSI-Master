@@ -15,15 +15,15 @@
     {
         public delegate void AlarmEventHandler(object sender, AlarmsEventsEventArgs e);
 
-        public delegate void AlarmStatusHandler(object sender, AlarmStateEventArgs e);
+        public delegate void AlarmUpdateHandler(object sender, AlarmUpdateEventArgs e);
 
         public static event AlarmEventHandler AlarmEvent;
 
-        public static event AlarmStatusHandler AlarmStatus;
+        public static event AlarmUpdateHandler AlarmUpdate;
 
         private IAesPubSubCallbackContract callback = null;
         private AlarmEventHandler alarmEventHandler = null;
-        private AlarmStatusHandler alarmStatusHandler = null;
+        private AlarmUpdateHandler alarmUpdateHandler = null;
 
         /// <summary>
         /// This event handler runs when a AlarmsEvents event is raised.
@@ -36,9 +36,9 @@
             callback.AlarmsEvents(e.Alarm);
         }
 
-        public void AlarmStateEventsHandler(object sender, AlarmStateEventArgs e)
+        public void AlarmUpdateEventsHandler(object sender, AlarmUpdateEventArgs e)
         {
-            callback.ChangeAlarmStatus(e.Gid, e.CurrentState);
+            callback.UpdateAlarmsEvents(e.Alarm);
         }
 
         /// <summary>
@@ -52,8 +52,8 @@
             alarmEventHandler = new AlarmEventHandler(AlarmsEventsHandler);
             AlarmEvent += alarmEventHandler;
 
-            alarmStatusHandler = new AlarmStatusHandler(AlarmStateEventsHandler);
-            AlarmStatus += alarmStatusHandler;
+            alarmUpdateHandler = new AlarmUpdateHandler(AlarmUpdateEventsHandler);
+            AlarmUpdate += alarmUpdateHandler;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@
         public void Unsubscribe()
         {
             AlarmEvent -= alarmEventHandler;
-            AlarmStatus -= alarmStatusHandler;
+            AlarmUpdate -= alarmUpdateHandler;
         }
 
         /// <summary>
@@ -70,39 +70,66 @@
         /// An alarm event is raised. The alarm event handlers for each subscriber will execute.
         /// </summary>
         /// <param name="alarm"></param>
-        public void PublishAlarmsEvents(AlarmHelper alarm)
+        public void PublishAlarmsEvents(AlarmHelper alarm, PublishingStatus status)
         {
-            // TODO dodati novi alarm u kolekciju alarma
-            // ako se novi klijent instancira on ce od alarm servisa raditi integrity update za alarme i dobice listu svih alarma
+            switch(status)
+            {
+                case PublishingStatus.INSERT:
+                {
+                    AlarmsEventsEventArgs e = new AlarmsEventsEventArgs()
+                    {
+                        Alarm = alarm
+                    };
 
-            AlarmsEventsEventArgs e = new AlarmsEventsEventArgs()
-            {
-                Alarm = alarm
-            };
+                    try
+                    {
+                        AlarmEvent(this, e);
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = string.Format("AES does not have any subscribed client for publishing new alarms. {0}", ex.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
+                        Console.WriteLine(message);
+                    }
 
-            try
-            {
-                AlarmEvent(this, e);
+                    break;
+                }
+
+                case PublishingStatus.UPDATE:
+                {
+                    AlarmUpdateEventArgs e = new AlarmUpdateEventArgs()
+                    {
+                        Alarm = alarm
+                    };
+
+                    try
+                    {
+                        AlarmUpdate(this, e);
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = string.Format("AES does not have any subscribed client for publishing alarm status change. {0}", ex.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
+                        Console.WriteLine(message);
+                    }
+                    break;
+                }
             }
-            catch (Exception ex)
-            {
-                string message = string.Format("AES does not have any subscribed client for publishing new alarms. {0}", ex.Message);
-                CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
-                Console.WriteLine(message);
-            }
+
+           
         }
 
-        public void PublishStateChange(long gid, string currentState)
+        public void PublishStateChange(AlarmHelper alarm)
         {
-            AlarmStateEventArgs e = new AlarmStateEventArgs()
+            AlarmUpdateEventArgs e = new AlarmUpdateEventArgs()
             {
-                Gid = gid,
-                CurrentState = currentState
+                Alarm = alarm
+            
             };
 
             try
             {
-                AlarmStatus(this, e);
+                AlarmUpdate(this, e);
             }
             catch (Exception ex)
             {

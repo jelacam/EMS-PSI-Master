@@ -43,4 +43,22 @@ namespace EMS.CommonMeasurement
         Acknowledged = 0,
         Unacknowledged = 1
     }
+
+    public enum PublishingStatus
+    {
+        INSERT = 0,
+        UPDATE = 1
+    }
+
+    public enum PersistentState
+    {
+        Persistent = 0,
+        Nonpersistent = 1,
+    }
+
+    public enum InhibitState
+    {
+        Inhibit = 0,
+        Noninhibit = 1
+    }
 }

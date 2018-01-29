@@ -82,9 +82,9 @@ namespace EMS.ServiceContracts
             proxy.AddAlarm(alarm);
         }
 
-        public void UpdateStatus(long gid, State state)
+        public void UpdateStatus(AnalogLocation analogLoc, State state)
         {
-            proxy.UpdateStatus(gid, state);
+            proxy.UpdateStatus(analogLoc, state);
         }
     }
 }
