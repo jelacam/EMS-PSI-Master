@@ -81,8 +81,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalculationEngineTest.cs" />
+    <Compile Include="LinearOptimizationTest.cs" />
+    <Compile Include="OptimisationModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublisherServiceTest.cs" />
+    <Compile Include="SynchronousMachineCurveModelsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
