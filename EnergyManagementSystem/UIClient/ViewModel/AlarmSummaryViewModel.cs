@@ -1,5 +1,6 @@
 ﻿using EMS.Common;
 using EMS.CommonMeasurement;
+using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,11 +35,21 @@ namespace UIClient.ViewModel
             try
             {
                 aeSubscribeProxy = new AlarmsEventsSubscribeProxy(CallbackAction);
-                aeSubscribeProxy.Subscribe();
+                aeSubscribeProxy.Subscribe();             
             }
             catch (Exception e)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Alarm Publisher Service! \n {0}", e.Message);
+            }
+
+            try
+            {
+                IntegirtyUpdate();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Successfully finished Integirty update operation for existing Alarms on AES! \n");
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Alarm Events Service for Integirty update operation! \n {0}", e.Message);
             }
         }
 
@@ -88,6 +99,17 @@ namespace UIClient.ViewModel
                     aHelper.LastChange = alarm.TimeStamp;
                     OnPropertyChanged(nameof(AlarmSummaryQueue));
                 }
+            }
+        }
+
+        private void IntegirtyUpdate()
+        {
+            List<AlarmHelper> integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
+
+            foreach(AlarmHelper alarm in integirtyResult)
+            {
+                AlarmSummaryQueue.Add(alarm);
+                OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
         }
     }

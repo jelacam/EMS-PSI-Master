@@ -12,11 +12,13 @@ namespace EMS.Services.AlarmsEventsService
     using PubSub;
     using System.Collections.Generic;
     using CommonMeasurement;
+    using System.ServiceModel;
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
     /// </summary>
-    public class AlarmsEvents : IAlarmsEventsContract
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    public class AlarmsEvents : IAlarmsEventsContract, IAesIntegirtyContract
     {
         /// <summary>
         /// entity for storing PublisherService instance
@@ -142,6 +144,14 @@ namespace EMS.Services.AlarmsEventsService
                     }
                 }
             }
+        }
+
+        public List<AlarmHelper> InitiateIntegrityUpdate()
+        {
+            string message = string.Format("UI client requested integirty update for existing alarms.");
+            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+
+            return Alarms;
         }
     }
 }

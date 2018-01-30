@@ -281,6 +281,10 @@
       <Project>{d7d1b621-4053-4a57-8a65-b7b3157f12b2}</Project>
       <Name>AESPubSbuContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\AlarmsEventsContract\AlarmsEventsContract.csproj">
+      <Project>{DC58AA82-434D-4C1B-936A-0AF3E79CBDC5}</Project>
+      <Name>AlarmsEventsContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
       <Project>{D322124E-3C27-45ED-86BB-84DC5621845A}</Project>
       <Name>CalculationEngineContract</Name>
