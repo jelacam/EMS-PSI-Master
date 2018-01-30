@@ -3,6 +3,7 @@ using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using UIClient.View;
 
@@ -16,14 +17,19 @@ namespace UIClient.ViewModel
         private DateTime endTime;
         private List<Property> generatorsGids;
         private List<Tuple<double, DateTime>> measurements;
+		private ObservableCollection<KeyValuePair<long, List<Tuple<double,DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, List<Tuple<double,DateTime>>>>();
+		private ICommand visibilityCheckedCommand;
+		private ICommand visibilityUncheckedCommand;
+		private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
 
-        ModelResourcesDesc modelResourcesDesc;
-        List<ModelCode> properties;
-        int iteratorId;
-        int resourcesLeft;
-        int numberOfResources = 2;
+		private ModelResourcesDesc modelResourcesDesc;
+        private List<ModelCode> properties;
+        private int iteratorId;
+        private int resourcesLeft;
+        private int numberOfResources = 2;
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
+
 
         public HistoryViewModel(HistoryView mainWindow)
         {
@@ -69,6 +75,7 @@ namespace UIClient.ViewModel
                     }
                 }
                 OnPropertyChanged(nameof(GeneratorsGids));
+
             }
             catch (Exception e)
             {
@@ -86,11 +93,28 @@ namespace UIClient.ViewModel
 
         public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
 
-        #endregion
+		public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
 
-        #region Properties
+		public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
 
-        public string GeneratorGid
+		#endregion
+
+		#region Properties
+
+		public ObservableCollection<KeyValuePair<long, List<Tuple<double, DateTime>>>> GeneratorsContainer
+		{
+			get
+			{
+				return generatorsContainer;
+			}
+
+			set
+			{
+				generatorsContainer = value;
+			}
+		}
+
+		public string GeneratorGid
         {
             get { return generatorGid; }
             set { this.generatorGid = value; }
@@ -120,11 +144,24 @@ namespace UIClient.ViewModel
             set { generatorsGids = value; }
         }
 
-        #endregion
+		public Dictionary<long, bool> GidToBoolMap
+		{
+			get
+			{
+				return gidToBoolMap;
+			}
 
-        #region Command Executions
+			set
+			{
+				gidToBoolMap = value;
+			}
+		}
 
-        private void ShowDataCommandExecute(object obj)
+		#endregion
+
+		#region Command Executions
+
+		private void ShowDataCommandExecute(object obj)
         {
             if (generatorGid != null && generatorGid != string.Empty)
             {
@@ -151,7 +188,19 @@ namespace UIClient.ViewModel
             }
         }
 
-        #endregion
+		private void VisibilityCheckedCommandExecute(long gid)
+		{
+			GidToBoolMap[gid] = true;
+			OnPropertyChanged(nameof(GidToBoolMap));
+		}
 
-    }
+		private void VisibilityUncheckedCommandExecute(long gid)
+		{
+			GidToBoolMap[gid] = false;
+			OnPropertyChanged(nameof(GidToBoolMap));
+		}
+
+		#endregion
+
+	}
 }

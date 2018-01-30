@@ -6,30 +6,54 @@
              xmlns:local="clr-namespace:UIClient.View"
 			 xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-             xmlns:converers="clr-namespace:UIClient.Converters"
+             xmlns:converters="clr-namespace:UIClient.Converters"
+             xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
 			 mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="500">
 
     <UserControl.Resources>
-        <converers:TestConverter x:Key="TestConvetrer"/>
-        <converers:HexadecimalConverter x:Key="HexadecimalConverter"/>
+        <converters:TestConverter x:Key="TestConvetrer"/>
+        <converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
+        <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
+
+
+        <DataTemplate x:Key="GensVisibilityCheckbox">
+            <CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
+                <CheckBox.IsChecked>
+                    <MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
+                        <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                        <Binding Path="Key" Mode="OneWay"></Binding>
+                    </MultiBinding>
+                </CheckBox.IsChecked>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding DataContext.VisibilityCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="Unchecked">
+                        <i:InvokeCommandAction Command="{Binding DataContext.VisibilityUncheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
+        </DataTemplate>
+
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
+            
             <ComboBox Grid.Row="0" Grid.Column="0" Width="300" Margin="10" 
                       ItemsSource="{Binding GeneratorsGids}" 
                       SelectedItem="{Binding GeneratorGid}"
@@ -44,59 +68,30 @@
                                     Width="300">
             </toolkit:DateTimePicker>
 
-            <Button Grid.Row="2" Grid.Column="2" Content="Show" Margin="10" 
+            <CheckBox Grid.Row="3" Grid.Column="0" Content="All Generators" Margin="10" Foreground="White" ></CheckBox>
+
+            <GroupBox Grid.Row="4" Grid.Column="0" Margin="10" FontSize="14" Header="Generators" Foreground="White">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+                            <ItemsControl ItemsSource="{Binding GeneratorsContainer}"
+										  ItemTemplate="{StaticResource GensVisibilityCheckbox}"/>
+                        </ScrollViewer>
+                </Grid>
+            </GroupBox>
+
+            <Button Grid.Row="5" Grid.Column="0" Content="Show" Margin="10" 
 					Command="{Binding ShowDataCommand}"></Button>
 
         </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-            <DataGrid Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Measurements}"
-						AutoGenerateColumns="False" 
-						ScrollViewer.CanContentScroll="True" 
-						ScrollViewer.VerticalScrollBarVisibility="Auto"
-						Margin="10"
-						Width="300">
-                <DataGrid.Columns>
-                    <DataGridTextColumn IsReadOnly="True" Header="Measurement Time" Width="120" Binding="{Binding Item2}"/>
-                    <DataGridTextColumn IsReadOnly="True" Header="Measurement Value" Width="120" Binding="{Binding Item1}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <chartingToolkit:Chart Grid.Row="0" Grid.Column="1"
-                                   Title="History Data Graph"
-                                   Style="{StaticResource DashboardChartStyle}"
-                                    >
-
-                <chartingToolkit:LineSeries Title="Measurement Value"  
-											ItemsSource="{Binding Path=Measurements}" 
-											DependentValueBinding="{Binding Path=Item1}" 
-											IndependentValueBinding="{Binding  Path=Item2}"
-											IsSelectionEnabled="False"
-											Style="{StaticResource LineSeriesStyle}">
-                    <chartingToolkit:LineSeries.DataPointStyle>
-                        <Style TargetType="chartingToolkit:LineDataPoint">
-                            <Setter Property="Background" Value="DarkGreen"/>
-                            <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-                        </Style>
-                    </chartingToolkit:LineSeries.DataPointStyle>
-
-                    <chartingToolkit:LineSeries.IndependentAxis>
-                        <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"  />
-                    </chartingToolkit:LineSeries.IndependentAxis>
-
-                    <chartingToolkit:LineSeries.DependentRangeAxis>
-                        <chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-                    </chartingToolkit:LineSeries.DependentRangeAxis>
-
-                </chartingToolkit:LineSeries>
-            </chartingToolkit:Chart>
-
-
-
+        
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
         </Grid>
     </Grid>
 </UserControl>
