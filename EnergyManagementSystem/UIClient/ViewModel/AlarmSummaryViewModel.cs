@@ -82,8 +82,10 @@ namespace UIClient.ViewModel
                     OnPropertyChanged(nameof(AlarmSummaryQueue));
                 }
             }
-
-            AlarmSummaryQueue.Add(alarm);
+            App.Current.Dispatcher.Invoke((Action)delegate
+            {
+                AlarmSummaryQueue.Add(alarm);
+            });
 
             OnPropertyChanged(nameof(AlarmSummaryQueue));
         }

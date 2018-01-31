@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace UIClient.PubSub
 {
+    [CallbackBehavior(UseSynchronizationContext = false)]
     public class CePubSubCallbackService : ICePubSubCallbackContract
     {
 
