@@ -74,7 +74,25 @@ namespace UIClient.ViewModel
                         generatorsGids.Add(rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID));
                     }
                 }
-                OnPropertyChanged(nameof(GeneratorsGids));
+
+				foreach(ResourceDescription rd in internalSynchMachines)
+				{
+					if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
+					{
+						long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
+						var keyValuePair = GeneratorsContainer.FirstOrDefault(x => x.Key == gid);
+						if (keyValuePair.Value == null)
+						{
+							GeneratorsContainer.Add(new KeyValuePair<long, List<Tuple<double, DateTime>>>(gid, new List<Tuple<double, DateTime>>()));
+							GidToBoolMap.Add(gid, false);
+						}
+					}
+				}
+				GeneratorsContainer.ElementAt(0).Value.Add(new Tuple<double, DateTime>(2.5, DateTime.Now.AddSeconds(-3)));
+				GeneratorsContainer.ElementAt(0).Value.Add(new Tuple<double, DateTime>(4.5, DateTime.Now.AddSeconds(-1)));
+
+				OnPropertyChanged(nameof(GeneratorsGids));
+				OnPropertyChanged(nameof(GeneratorsContainer));
 
             }
             catch (Exception e)
@@ -163,29 +181,47 @@ namespace UIClient.ViewModel
 
 		private void ShowDataCommandExecute(object obj)
         {
-            if (generatorGid != null && generatorGid != string.Empty)
-            {
-                if (generatorGid.Trim() != string.Empty)
-                {
-                    try
-                    {
-                        long gid = Convert.ToInt64(generatorGid);
-                        try
-                        {
-                            Measurements = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid, startTime, endTime);
-                            OnPropertyChanged(nameof(Measurements));
-                        }
-                        catch (Exception ex)
-                        {
-                            CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
+			if (GidToBoolMap.Count != 0)
+			{
+				List<Tuple<double, DateTime>> tempList;
+				foreach(KeyValuePair<long,bool> keyPair in GidToBoolMap)
+				{
+					if (keyPair.Value == true)
+					{
+						try
+						{
+							tempList = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(keyPair.Key, startTime, endTime);
+							if (tempList == null)
+							{
+								continue;
+							}
+
+							var keyPairGenerator = GeneratorsContainer.FirstOrDefault(x => x.Key == keyPair.Key);
+							if (keyPairGenerator.Value == null)
+							{
+								GeneratorsContainer.Add(new KeyValuePair<long, List<Tuple<double, DateTime>>>(keyPair.Key, tempList));
+							}
+							else
+							{
+								keyPairGenerator.Value.Clear();
+								foreach(Tuple<double,DateTime> tuple in tempList)
+								{
+									keyPairGenerator.Value.Add(new Tuple<double, DateTime>(tuple.Item1, tuple.Item2));
+								}
+								
+							}
+							tempList.Clear();
+							tempList = null;
+						}
+						catch (Exception ex)
+						{
+							CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
+						}
+						
+					}
+				}
+				OnPropertyChanged(nameof(GeneratorsContainer));
+			}
         }
 
 		private void VisibilityCheckedCommandExecute(long gid)

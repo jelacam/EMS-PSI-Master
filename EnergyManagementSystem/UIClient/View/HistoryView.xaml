@@ -15,7 +15,7 @@
         <converters:TestConverter x:Key="TestConvetrer"/>
         <converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
         <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
-
+        <converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
 
         <DataTemplate x:Key="GensVisibilityCheckbox">
             <CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
@@ -36,6 +36,45 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </CheckBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GraphGeneratorTemplate">
+            <Grid>
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
+                        <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                        <Binding Path="Key"></Binding>
+                    </MultiBinding>
+                </Grid.Visibility>
+                <chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+									   Style="{StaticResource DashboardChartStyle}"
+									    >
+                    
+                    <chartingToolkit:LineSeries Title="Value"  
+												ItemsSource="{Binding Path=Value,Converter={StaticResource TestConvetrer}}" 
+												DependentValueBinding="{Binding Path=Item1}" 
+												IndependentValueBinding="{Binding Path=Item2}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Background" Value="DarkGreen"/>
+                                <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+
+                        <chartingToolkit:LineSeries.IndependentAxis>
+                            <chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
+                        </chartingToolkit:LineSeries.IndependentAxis>
+
+                        <chartingToolkit:LineSeries.DependentRangeAxis>
+                            <chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+                        </chartingToolkit:LineSeries.DependentRangeAxis>
+
+                    </chartingToolkit:LineSeries>
+                </chartingToolkit:Chart>
+            </Grid>
         </DataTemplate>
 
     </UserControl.Resources>
@@ -92,6 +131,15 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
+
+            <ItemsControl Grid.Row="0" Grid.Column="1" ItemsSource="{Binding GeneratorsContainer,Converter={StaticResource TestConvetrer}}" 
+								   ItemTemplate="{StaticResource GraphGeneratorTemplate}" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>
