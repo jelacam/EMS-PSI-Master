@@ -41,7 +41,7 @@ namespace SCADACrunchingServiceTest
 		public void SetupTest()
 		{
 			CalculationEngineProxy.Instance = Substitute.For<ICalculationEngineContract>();
-			CalculationEngineProxy.Instance.OptimisationAlgorithm(new List<MeasurementUnit>(), new List<MeasurementUnit>(), 15).ReturnsForAnyArgs(true);
+			CalculationEngineProxy.Instance.OptimisationAlgorithm(new List<MeasurementUnit>(), new List<MeasurementUnit>(), 15, 20).ReturnsForAnyArgs(true);
 			this.scadaCR = new SCADACrunching();
 		}
 

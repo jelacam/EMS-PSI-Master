@@ -109,8 +109,9 @@ namespace EMS.Services.CalculationEngineService
 		/// <param name="emsf">fuel</param>
 		/// <param name="mu">measured value</param>
 		/// <param name="windSpeed">speed of wind</param>
+		/// <param name="sunlight">sunlight percent</param>
 		/// <param name="smcm">generator curve</param>
-		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed, SynchronousMachineCurveModel smcm)
+		public OptimisationModel(SynchronousMachine sm, EMSFuel emsf, MeasurementUnit mu, float windSpeed, float sunlight, SynchronousMachineCurveModel smcm)
 		{
 			GlobalId = sm.GlobalId;
 			MeasuredValue = mu.CurrentValue;
@@ -125,15 +126,19 @@ namespace EMS.Services.CalculationEngineService
 			Price = Renewable ? 1 : CalculatePrice(MeasuredValue);
 			WindPct = emsf.FuelType.Equals(EmsFuelType.wind) ? CalculateWindPct(windSpeed) : 100;
 
-			MinPower = ((Managable == 0) || (Renewable && WindPct == 0)) ? 0 : sm.MinQ;
+			MinPower = ((Managable == 0) || (Renewable && WindPct == 0) || (Renewable && sunlight <= 0)) ? 0 : sm.MinQ;
 
-			if ((Managable == 0) || (Renewable && WindPct == 0))
+			if ((Managable == 0) || (emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && sunlight <= 0))
 			{
 				MaxPower = 0;
 			}
-			else if (Renewable && WindPct > 0)
+			else if (emsf.FuelType.Equals(EmsFuelType.wind) && WindPct > 0)
 			{
 				MaxPower = (sm.MaxQ - sm.MinQ) / 100 * WindPct + sm.MinQ;
+			}
+			else if (emsf.FuelType.Equals(EmsFuelType.solar) && 0 < sunlight && sunlight < 100)
+			{
+				MaxPower = (sm.MaxQ - sm.MinQ) / 100 * sunlight + sm.MinQ;
 			}
 			else
 			{
@@ -148,13 +153,14 @@ namespace EMS.Services.CalculationEngineService
 		/// <returns>emission factor</returns>
 		public float ChooseEmissionFactor(EmsFuelType fuelType)
 		{
-			float retVal = 1;
+			float retVal = 0;
 			switch (fuelType)
 			{
 				case EmsFuelType.coal:
 					retVal = 0.30f;
 					break;
 				case EmsFuelType.hydro:
+					retVal = 0;
 					break;
 				case EmsFuelType.oil:
 					retVal = 0.25f;
@@ -166,7 +172,7 @@ namespace EMS.Services.CalculationEngineService
 					retVal = 0;
 					break;
 				default:
-					retVal = 1;
+					retVal = 0;
 					break;
 			}
 

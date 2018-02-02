@@ -37,7 +37,8 @@ namespace UISimulator.ViewModel
 		private IList<KeyValuePair<long, float>> simulationData20;
 
 		private IList<KeyValuePair<long, float>> simulationWindData;
-        private readonly long DURATION = 100;
+		private IList<KeyValuePair<long, float>> simulationSunData;
+		private readonly long DURATION = 100;
         private ModbusClient modbusClient;
         private ConvertorHelper convertorHelper;
 
@@ -116,6 +117,7 @@ namespace UISimulator.ViewModel
 				modbusClient.WriteSingleRegister(38, simulationData20[i].Value);
 
 				modbusClient.WriteSingleRegister(100, simulationWindData[i].Value);
+				modbusClient.WriteSingleRegister(102, simulationSunData[i].Value);
                 Thread.Sleep(1);
             }
 
@@ -378,17 +380,33 @@ namespace UISimulator.ViewModel
             }
         }
 
-        private void PopulateSimulationData()
+		public IList<KeyValuePair<long, float>> SimulationSunData
+		{
+			get
+			{
+				return simulationSunData;
+			}
+
+			set
+			{
+				simulationSunData = value;
+			}
+		}
+
+		private void PopulateSimulationData()
         {
             SimulationData1 = new List<KeyValuePair<long, float>>();
             SimulationWindData = new List<KeyValuePair<long, float>>();
+			SimulationSunData = new List<KeyValuePair<long, float>>();
             for (int i = 0; i < DURATION; i++)
             {
                 float value = (float)SimulationFunction(i);
                 SimulationData1.Add(new KeyValuePair<long, float>(i, value));
 
                 float windValue = (float)SimulateWind(i);
+				float sunValue = (float)SimulateSun(i);
                 SimulationWindData.Add(new KeyValuePair<long, float>(i, windValue));
+				SimulationSunData.Add(new KeyValuePair<long, float>(i, sunValue));
             }
         }
 
@@ -412,5 +430,10 @@ namespace UISimulator.ViewModel
         {
             return Math.Sin((float)x / 10f) * 13.5 + 13.5;
         }
-    }
+
+		private double SimulateSun(int x)
+		{
+			return Math.Sin((float)x / 10f) * 50 + 50;
+		}
+	}
 }
