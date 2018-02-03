@@ -385,8 +385,9 @@ namespace EMS.Common
             // change ids and reference ids in update operations
             foreach (ResourceDescription rd in updateOps)
             {
+                //long gidOld = globaldChanges[rd.Id];
                 long gidOld = rd.Id;
-                int idOld = ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id);
+                int idOld = ModelCodeHelper.ExtractEntityIdFromGlobalId(gidOld);
                 if (idOld < 0)
                 {
                     if (globaldChanges.ContainsKey(gidOld))
@@ -791,6 +792,30 @@ namespace EMS.Common
                     if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
                     {
                         newDelta.AddDeltaOperation(DeltaOpType.Insert, rd_item.Clone() as ResourceDescription, true);
+                        break;
+                    }
+                }
+            }
+
+            foreach (ResourceDescription rd_item in this.UpdateOperations)
+            {
+                foreach (Property pr_item in rd_item.Properties)
+                {
+                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+                    {
+                        newDelta.AddDeltaOperation(DeltaOpType.Update, rd_item.Clone() as ResourceDescription, true);
+                        break;
+                    }
+                }
+            }
+
+            foreach (ResourceDescription rd_item in this.DeleteOperations)
+            {
+                foreach (Property pr_item in rd_item.Properties)
+                {
+                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+                    {
+                        newDelta.AddDeltaOperation(DeltaOpType.Delete, rd_item.Clone() as ResourceDescription, true);
                         break;
                     }
                 }

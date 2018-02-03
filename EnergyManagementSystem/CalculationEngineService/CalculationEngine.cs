@@ -652,6 +652,64 @@ namespace EMS.Services.CalculationEngineService
                     }
                 }
 
+                foreach (ResourceDescription rd in delta.UpdateOperations)
+                {
+                    foreach (Property prop in rd.Properties)
+                    {
+                        if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.EMSFUEL))
+                        {
+                            foreach (ResourceDescription res in internalEmsFuelsCopy)
+                            {
+                                if(rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
+                        {
+                            foreach (ResourceDescription res in internalSynchMachinesCopy)
+                            {
+                                if (rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.ENERGYCONSUMER))
+                        {
+                            foreach (ResourceDescription res in internalEnergyConsumersCopy)
+                            {
+                                if (rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 updateResult.Message = "CE Transaction Prepare finished.";
                 updateResult.Result = ResultType.Succeeded;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CETransaction Prepare finished successfully.");

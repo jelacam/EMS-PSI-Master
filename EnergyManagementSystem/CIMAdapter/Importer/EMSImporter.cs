@@ -3,6 +3,7 @@ using EMS.CIMAdapter.Manager;
 using CIM.Model;
 using EMS.Common;
 using System.Collections.Generic;
+using EMS.ServiceContracts;
 
 namespace EMS.CIMAdapter.Importer
 {
@@ -133,8 +134,51 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-                        delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
-                        report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        int iteratorId = 0;
+                        int resourcesLeft = 0;
+                        int numberOfResources = 2;
+                        string message = string.Empty;
+                        bool contains = false;
+
+                        ModelCode modelCodeEMSFuel = ModelCode.EMSFUEL;
+                        List<ModelCode> properties = new List<ModelCode>();
+                        ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+                        List<ResourceDescription> retList = new List<ResourceDescription>();
+
+                        properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEMSFuel);
+                        iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEMSFuel, properties);
+                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                        while (resourcesLeft > 0)
+                        {
+                            List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                            retList.AddRange(rds);
+                            resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                        }
+                        NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                        foreach(ResourceDescription res in retList)
+                        {
+                            foreach(Property pr in res.Properties)
+                            {
+                                if(pr.PropertyValue.StringValue.Equals(emsFuel.MRID))
+                                {
+                                    contains = true;
+                                    rd.Id = res.Id;
+                                }
+                            }
+                        }
+
+                        if (contains)
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
+                            report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        else
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
+                            report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
                     }
                     else
                     {
@@ -175,8 +219,52 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-                        delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
-                        report.Report.Append("EnergyConsumer ID = ").Append(energyConsumer.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        int iteratorId = 0;
+                        int resourcesLeft = 0;
+                        int numberOfResources = 2;
+                        string message = string.Empty;
+                        bool contains = false;
+
+                        ModelCode modelCodeEnergyConsumer = ModelCode.ENERGYCONSUMER;
+                        List<ModelCode> properties = new List<ModelCode>();
+                        ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+                        List<ResourceDescription> retList = new List<ResourceDescription>();
+
+                        properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEnergyConsumer);
+                        iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEnergyConsumer, properties);
+                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                        while (resourcesLeft > 0)
+                        {
+                            List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                            retList.AddRange(rds);
+                            resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                        }
+                        NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                        foreach (ResourceDescription res in retList)
+                        {
+                            foreach (Property pr in res.Properties)
+                            {
+                                if (pr.PropertyValue.StringValue.Equals(energyConsumer.MRID))
+                                {
+                                    contains = true;
+                                    rd.Id = res.Id;
+                                }
+                            }
+                        }
+
+                        if (contains)
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
+                            report.Report.Append("EnergyConsumer ID = ").Append(energyConsumer.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        else
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
+                            report.Report.Append("EnergyConsumer ID = ").Append(energyConsumer.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        
                     }
                     else
                     {
@@ -221,8 +309,52 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-                        delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
-                        report.Report.Append("SynchronousMachine ID = ").Append(synchronousMachine.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        int iteratorId = 0;
+                        int resourcesLeft = 0;
+                        int numberOfResources = 2;
+                        string message = string.Empty;
+                        bool contains = false;
+
+                        ModelCode modelCodeSynchronusMachine = ModelCode.SYNCHRONOUSMACHINE;
+                        List<ModelCode> properties = new List<ModelCode>();
+                        ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+                        List<ResourceDescription> retList = new List<ResourceDescription>();
+
+                        properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronusMachine);
+                        iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronusMachine, properties);
+                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                        while (resourcesLeft > 0)
+                        {
+                            List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                            retList.AddRange(rds);
+                            resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                        }
+                        NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                        foreach (ResourceDescription res in retList)
+                        {
+                            foreach (Property pr in res.Properties)
+                            {
+                                if (pr.PropertyValue.StringValue.Equals(synchronousMachine.MRID))
+                                {
+                                    contains = true;
+                                    rd.Id = res.Id;
+                                }
+                            }
+                        }
+
+                        if (contains)
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
+                            report.Report.Append("SynchronousMachine ID = ").Append(synchronousMachine.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        else
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
+                            report.Report.Append("SynchronousMachine ID = ").Append(synchronousMachine.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                       
                     }
                     else
                     {
@@ -267,8 +399,52 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-                        delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
-                        report.Report.Append("Analog ID = ").Append(analog.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        int iteratorId = 0;
+                        int resourcesLeft = 0;
+                        int numberOfResources = 2;
+                        string message = string.Empty;
+                        bool contains = false;
+
+                        ModelCode modelCodeAnalog = ModelCode.ANALOG;
+                        List<ModelCode> properties = new List<ModelCode>();
+                        ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
+                        List<ResourceDescription> retList = new List<ResourceDescription>();
+
+                        properties = modelResourcesDesc.GetAllPropertyIds(modelCodeAnalog);
+                        iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeAnalog, properties);
+                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+
+                        while (resourcesLeft > 0)
+                        {
+                            List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                            retList.AddRange(rds);
+                            resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                        }
+                        NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+
+                        foreach (ResourceDescription res in retList)
+                        {
+                            foreach (Property pr in res.Properties)
+                            {
+                                if (pr.PropertyValue.StringValue.Equals(analog.MRID))
+                                {
+                                    contains = true;
+                                    rd.Id = res.Id;
+                                }
+                            }
+                        }
+
+                        if (contains)
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
+                            report.Report.Append("Analog ID = ").Append(analog.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        else
+                        {
+                            delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
+                            report.Report.Append("Analog ID = ").Append(analog.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
+                        }
+                        
                     }
                     else
                     {

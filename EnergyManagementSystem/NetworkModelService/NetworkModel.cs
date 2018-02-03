@@ -43,12 +43,14 @@ namespace EMS.Services.NetworkModelService
         private int deltaCount = 0;
 
 		private readonly string MODE = "DATABASE";
-		//private readonly string MODE = "FILE";
+        //private readonly string MODE = "FILE";
 
-		/// <summary>
-		/// Initializes a new instance of the Model class.
-		/// </summary>
-		public NetworkModel()
+        public static Dictionary<long, long> globalIdPairs = new Dictionary<long, long>();
+
+        /// <summary>
+        /// Initializes a new instance of the Model class.
+        /// </summary>
+        public NetworkModel()
         {
             networkDataModelCopy = new Dictionary<EMSType, Container>();
             networkDataModel = new Dictionary<EMSType, Container>();
@@ -323,7 +325,6 @@ namespace EMS.Services.NetworkModelService
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Applying  delta to network model.");
 
                 Dictionary<short, int> typesCounters = GetCounters();
-                Dictionary<long, long> globalIdPairs = new Dictionary<long, long>();
                 delta.FixNegativeToPositiveIds(ref typesCounters, ref globalIdPairs);
                 updateResult.GlobalIdPairs = globalIdPairs;
                 delta.SortOperations();
@@ -479,6 +480,8 @@ namespace EMS.Services.NetworkModelService
 
             try
             {
+                //long globalId = globalIdPairs[rd.Id];
+
                 long globalId = rd.Id;
 
                 CommonTrace.WriteTrace(CommonTrace.TraceVerbose, "Updating entity with GID ({0:x16}).", globalId);
@@ -1051,5 +1054,31 @@ namespace EMS.Services.NetworkModelService
         }
 
         #endregion Transaction
+
+        #region HelpFunctions
+
+        public static bool ContainsElementWithMrID(string mrid)
+        {
+            if (networkDataModel == null || networkDataModel.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                foreach (KeyValuePair<EMSType, Container> entry in networkDataModel)
+                {
+                    foreach (KeyValuePair<long, IdentifiedObject> item in entry.Value.Entities)
+                    {
+                        if (item.Value.Mrid.Equals(mrid))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+        }
+        #endregion
     }
 }

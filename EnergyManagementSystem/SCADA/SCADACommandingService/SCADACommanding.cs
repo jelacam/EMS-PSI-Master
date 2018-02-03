@@ -196,6 +196,50 @@ namespace EMS.Services.SCADACommandingService
                     }
                 }
 
+                foreach (ResourceDescription analogRd in delta.UpdateOperations)
+                {
+                    analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
+
+                    foreach (AnalogLocation al in listOfAnalogCopy)
+                    {
+                        if (al.Analog.Mrid.Equals(analog.Mrid))
+                        {
+                            if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue.ToString() != "")
+                            {
+                                al.Analog.MaxValue = analog.MaxValue;
+                            }
+                            else if (analog.MeasurementType != al.Analog.MeasurementType && analog.MeasurementType.ToString() != "")
+                            {
+                                al.Analog.MeasurementType = analog.MeasurementType;
+                            }
+                            else if (analog.MinValue != al.Analog.MinValue && analog.MinValue.ToString() != "")
+                            {
+                                al.Analog.MinValue = analog.MinValue;
+                            }
+                            else if (analog.Name != al.Analog.Name && analog.Name.ToString() != "")
+                            {
+                                al.Analog.Name = analog.Name;
+                            }
+                            else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue.ToString() != "")
+                            {
+                                al.Analog.NormalValue = analog.NormalValue;
+                            }
+                            else if (analog.PowerSystemResource != al.Analog.PowerSystemResource && analog.PowerSystemResource.ToString() != "")
+                            {
+                                al.Analog.PowerSystemResource = analog.PowerSystemResource;
+                            }
+                            else if (analog.SignalDirection != al.Analog.SignalDirection && analog.SignalDirection.ToString() != "")
+                            {
+                                al.Analog.SignalDirection = analog.SignalDirection;
+                            }
+                            else if (analog.UnitSymbol != al.Analog.UnitSymbol && analog.UnitSymbol.ToString() != "")
+                            {
+                                al.Analog.UnitSymbol = analog.UnitSymbol;
+                            }
+                        }
+                    }
+                }
+
                 updateResult.Message = "SCADA CMD Transaction Prepare finished.";
                 updateResult.Result = ResultType.Succeeded;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CMD Transaction Prepare finished successfully.");
