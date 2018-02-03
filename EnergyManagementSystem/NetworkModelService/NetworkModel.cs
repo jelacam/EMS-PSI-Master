@@ -483,14 +483,14 @@ namespace EMS.Services.NetworkModelService
 
                 CommonTrace.WriteTrace(CommonTrace.TraceVerbose, "Updating entity with GID ({0:x16}).", globalId);
 
-                if (!this.EntityExists(globalId))
+                if (!this.EntityCopyExists(globalId))
                 {
                     string message = String.Format("Failed to update entity because entity with specified GID ({0:x16}) does not exist in network model.", globalId);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                     throw new Exception(message);
                 }
 
-                IdentifiedObject io = GetEntity(globalId);
+                IdentifiedObject io = GetEntityCopy(globalId);
 
                 // updating properties of entity
                 foreach (Property property in rd.Properties)
@@ -501,7 +501,7 @@ namespace EMS.Services.NetworkModelService
 
                         if (oldTargetGlobalId != 0)
                         {
-                            IdentifiedObject oldTargetEntity = GetEntity(oldTargetGlobalId);
+                            IdentifiedObject oldTargetEntity = GetEntityCopy(oldTargetGlobalId);
                             oldTargetEntity.RemoveReference(property.Id, globalId);
                         }
 
@@ -510,13 +510,13 @@ namespace EMS.Services.NetworkModelService
 
                         if (targetGlobalId != 0)
                         {
-                            if (!EntityExists(targetGlobalId))
+                            if (!EntityCopyExists(targetGlobalId))
                             {
                                 string message = string.Format("Failed to get target entity with GID: 0x{0:X16}.", targetGlobalId);
                                 throw new Exception(message);
                             }
 
-                            IdentifiedObject targetEntity = GetEntity(targetGlobalId);
+                            IdentifiedObject targetEntity = GetEntityCopy(targetGlobalId);
                             targetEntity.AddReference(property.Id, globalId);
                         }
 
