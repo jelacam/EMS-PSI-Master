@@ -46,12 +46,14 @@ namespace EMS.Services.CalculationEngineService
 		/// </summary>
 		/// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
 		/// <param name="measGenerators">list of measurements for generators</param>
+		/// <param name="windSpeed">speed of wind</param>
+		/// <param name="sunlight">sunlight percent</param>
 		/// <returns>returns true if optimization was successful</returns>
-		public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
+		public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
 		{
 			try
 			{
-				bool retVal = ce.Optimize(measEnergyConsumers, measGenerators, windSpeed);
+				bool retVal = ce.Optimize(measEnergyConsumers, measGenerators, windSpeed, sunlight);
 				return retVal;
 			}
 			catch (Exception ex)

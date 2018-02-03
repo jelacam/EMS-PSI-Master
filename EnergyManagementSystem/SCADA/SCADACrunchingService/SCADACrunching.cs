@@ -312,23 +312,27 @@ namespace EMS.Services.SCADACrunchingService
 
             int arrayLength = value[1];
             int windByteLength = 4;
+			int sunByteLength = 4;
             byte[] windData = new byte[windByteLength];
-            byte[] data = new byte[arrayLength - windByteLength];
+			byte[] sunData = new byte[sunByteLength];
+			byte[] data = new byte[arrayLength - windByteLength - sunByteLength];
 
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-            Array.Copy(value, 2, data, 0, arrayLength - windByteLength);
-            Array.Copy(value, 2 + arrayLength - windByteLength, windData, 0, windByteLength);
+			Array.Copy(value, 2, data, 0, arrayLength - windByteLength-sunByteLength);
+			Array.Copy(value, 2 + arrayLength - windByteLength - sunByteLength, windData, 0, windByteLength);
+			Array.Copy(value, 2 + arrayLength - sunByteLength, sunData, 0, sunByteLength);
 
-            List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
+			List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
             List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0);
 
             float windSpeed = GetWindSpeed(windData, windByteLength);
+			float sunlight = GetSunlight(sunData, sunByteLength);
 
             bool isSuccess = false;
             try
             {
-                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed);
+                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
             }
             catch (Exception ex)
             {
@@ -351,7 +355,13 @@ namespace EMS.Services.SCADACrunchingService
             return values[0];
         }
 
-        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
+		private float GetSunlight(byte[] sunData, int byteLength)
+		{
+			float[] values = ModbusHelper.GetValueFromByteArray<float>(sunData, byteLength);
+			return values[0];
+		}
+
+		private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
         {
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (AnalogLocation analogLoc in analogList)

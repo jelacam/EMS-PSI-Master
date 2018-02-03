@@ -12,12 +12,13 @@ using System.Windows;
 
 namespace UISimulator.ViewModel
 {
-    public class MainWindowViewModel
-    {
-        private IList<KeyValuePair<long, float>> simulationData1;
-        private IList<KeyValuePair<long, float>> simulationData2;
-        private IList<KeyValuePair<long, float>> simulationData3;
+	public class MainWindowViewModel
+	{
+		#region Fields
 
+		private IList<KeyValuePair<long, float>> simulationData1;
+		private IList<KeyValuePair<long, float>> simulationData2;
+		private IList<KeyValuePair<long, float>> simulationData3;
 		private IList<KeyValuePair<long, float>> simulationData4;
 		private IList<KeyValuePair<long, float>> simulationData5;
 		private IList<KeyValuePair<long, float>> simulationData6;
@@ -35,70 +36,52 @@ namespace UISimulator.ViewModel
 		private IList<KeyValuePair<long, float>> simulationData18;
 		private IList<KeyValuePair<long, float>> simulationData19;
 		private IList<KeyValuePair<long, float>> simulationData20;
-
 		private IList<KeyValuePair<long, float>> simulationWindData;
-        private readonly long DURATION = 100;
-        private ModbusClient modbusClient;
-        private ConvertorHelper convertorHelper;
+		private IList<KeyValuePair<long, float>> simulationSunData;
 
-        public MainWindowViewModel()
-        {
-            ConnectToSimulator();
-            convertorHelper = new ConvertorHelper();
-            PopulateSimulationData();
-            SimulationData2 = SimulationData1;
-            SimulationData3 = SimulationData1;
+		private readonly long DURATION = 100;
+		private ModbusClient modbusClient;
+		private ConvertorHelper convertorHelper;
 
-			SimulationData4 = SimulationData1;
-			SimulationData5 = SimulationData1;
-			SimulationData6 = SimulationData1;
-			SimulationData7 = SimulationData1;
-			SimulationData8 = SimulationData1;
-			SimulationData9 = SimulationData1;
-			SimulationData10 = SimulationData1;
-			SimulationData11 = SimulationData1;
-			SimulationData12= SimulationData1;
-			SimulationData13 = SimulationData1;
-			SimulationData14 = SimulationData1;
-			SimulationData15 = SimulationData1;
-			SimulationData16 = SimulationData1;
-			SimulationData17 = SimulationData1;
-			SimulationData18 = SimulationData1;
-			SimulationData19 = SimulationData1;
-			SimulationData20 = SimulationData1;
+		#endregion Fields
 
+		public MainWindowViewModel()
+		{
+			ConnectToSimulator();
+			convertorHelper = new ConvertorHelper();
+			PopulateSimulationData();
+			
 			Task task = new Task(StartSimulation);
-            task.Start();
-        }
+			task.Start();
+		}
 
-        private void ConnectToSimulator()
-        {
-            try
-            {
-                modbusClient = new ModbusClient("localhost", 502);
-                modbusClient.Connect();
-            }
-            catch (SocketException)
-            {
-                Thread.Sleep(2000);
-                ConnectToSimulator();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+		private void ConnectToSimulator()
+		{
+			try
+			{
+				modbusClient = new ModbusClient("localhost", 502);
+				modbusClient.Connect();
+			}
+			catch (SocketException)
+			{
+				Thread.Sleep(2000);
+				ConnectToSimulator();
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
 
-        private void StartSimulation()
-        {
-            for (int i = 0; i < DURATION; i++)
-            {
-                modbusClient.WriteSingleRegister(0, simulationData1[i].Value);
-                modbusClient.WriteSingleRegister(2, simulationData2[i].Value);
-                modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
-
-				modbusClient.WriteSingleRegister(6, simulationData4[i].Value);
-				modbusClient.WriteSingleRegister(8, simulationData5[i].Value);
+		private void StartSimulation()
+		{
+			for (int i = 0; i < DURATION; i++)
+			{
+				modbusClient.WriteSingleRegister(0, SimulationData1[i].Value);
+				modbusClient.WriteSingleRegister(2, SimulationData2[i].Value);
+				modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
+				modbusClient.WriteSingleRegister(6, SimulationData4[i].Value);
+				modbusClient.WriteSingleRegister(8, SimulationData5[i].Value);
 				modbusClient.WriteSingleRegister(10, simulationData6[i].Value);
 				modbusClient.WriteSingleRegister(12, simulationData7[i].Value);
 				modbusClient.WriteSingleRegister(14, simulationData8[i].Value);
@@ -114,52 +97,53 @@ namespace UISimulator.ViewModel
 				modbusClient.WriteSingleRegister(34, simulationData18[i].Value);
 				modbusClient.WriteSingleRegister(36, simulationData19[i].Value);
 				modbusClient.WriteSingleRegister(38, simulationData20[i].Value);
-
 				modbusClient.WriteSingleRegister(100, simulationWindData[i].Value);
-                Thread.Sleep(1);
-            }
+				modbusClient.WriteSingleRegister(102, simulationSunData[i].Value);
+				Thread.Sleep(1);
+			}
 
-            StartSimulation();
-        }
+			StartSimulation();
+		}
 
-        public IList<KeyValuePair<long, float>> SimulationData1
-        {
-            get
-            {
-                return simulationData1;
-            }
+		#region SimulationData properties
+		public IList<KeyValuePair<long, float>> SimulationData1
+		{
+			get
+			{
+				return simulationData1;
+			}
 
-            set
-            {
-                simulationData1 = value;
-            }
-        }
+			set
+			{
+				simulationData1 = value;
+			}
+		}
 
-        public IList<KeyValuePair<long, float>> SimulationData2
-        {
-            get
-            {
-                return simulationData2;
-            }
+		public IList<KeyValuePair<long, float>> SimulationData2
+		{
+			get
+			{
+				return simulationData2;
+			}
 
-            set
-            {
-                simulationData2 = value;
-            }
-        }
+			set
+			{
+				simulationData2 = value;
+			}
+		}
 
-        public IList<KeyValuePair<long, float>> SimulationData3
-        {
-            get
-            {
-                return simulationData3;
-            }
+		public IList<KeyValuePair<long, float>> SimulationData3
+		{
+			get
+			{
+				return simulationData3;
+			}
 
-            set
-            {
-                simulationData3 = value;
-            }
-        }
+			set
+			{
+				simulationData3 = value;
+			}
+		}
 		public IList<KeyValuePair<long, float>> SimulationData4
 		{
 			get
@@ -366,36 +350,117 @@ namespace UISimulator.ViewModel
 		}
 
 		public IList<KeyValuePair<long, float>> SimulationWindData
-        {
-            get
-            {
-                return simulationWindData;
-            }
+		{
+			get
+			{
+				return simulationWindData;
+			}
 
-            set
-            {
-                simulationWindData = value;
-            }
-        }
+			set
+			{
+				simulationWindData = value;
+			}
+		}
 
-        private void PopulateSimulationData()
-        {
-            SimulationData1 = new List<KeyValuePair<long, float>>();
-            SimulationWindData = new List<KeyValuePair<long, float>>();
-            for (int i = 0; i < DURATION; i++)
-            {
-                float value = (float)SimulationFunction(i);
-                SimulationData1.Add(new KeyValuePair<long, float>(i, value));
+		public IList<KeyValuePair<long, float>> SimulationSunData
+		{
+			get
+			{
+				return simulationSunData;
+			}
 
-                float windValue = (float)SimulateWind(i);
-                SimulationWindData.Add(new KeyValuePair<long, float>(i, windValue));
-            }
-        }
+			set
+			{
+				simulationSunData = value;
+			}
+		}
 
-        private double SimulationFunction(int x)
-        {
+		#endregion SimulationData properties
 
-            double v = 1500 * (Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2);
+		private void PopulateSimulationData()
+		{
+			SimulationData1 = new List<KeyValuePair<long, float>>();
+			SimulationData2 = new List<KeyValuePair<long, float>>();
+			SimulationData3 = new List<KeyValuePair<long, float>>();
+			SimulationData4 = new List<KeyValuePair<long, float>>();
+			SimulationData5 = new List<KeyValuePair<long, float>>();
+			SimulationData6 = new List<KeyValuePair<long, float>>();
+			SimulationData7 = new List<KeyValuePair<long, float>>();
+			SimulationData8 = new List<KeyValuePair<long, float>>();
+			SimulationData9 = new List<KeyValuePair<long, float>>();
+			SimulationData10 = new List<KeyValuePair<long, float>>();
+			SimulationData11 = new List<KeyValuePair<long, float>>();
+			SimulationData12 = new List<KeyValuePair<long, float>>();
+			SimulationData13 = new List<KeyValuePair<long, float>>();
+			SimulationData14 = new List<KeyValuePair<long, float>>();
+			SimulationData15 = new List<KeyValuePair<long, float>>();
+			SimulationData16 = new List<KeyValuePair<long, float>>();
+			SimulationData17 = new List<KeyValuePair<long, float>>();
+			SimulationData18 = new List<KeyValuePair<long, float>>();
+			SimulationData19 = new List<KeyValuePair<long, float>>();
+			SimulationData20 = new List<KeyValuePair<long, float>>();
+
+			SimulationWindData = new List<KeyValuePair<long, float>>();
+			SimulationSunData = new List<KeyValuePair<long, float>>();
+
+			float value = 0;
+			float windValue = 0;
+			float sunValue = 0;
+
+			for (int i = 0; i < DURATION; i++)
+			{
+				value = (float)SimulationFunction1(i);
+				SimulationData1.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction2(i);
+				SimulationData2.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction3(i);
+				SimulationData3.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction4(i);
+				SimulationData4.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction5(i);
+				SimulationData5.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction6(i);
+				SimulationData6.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction7(i);
+				SimulationData7.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction8(i);
+				SimulationData8.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction9(i);
+				SimulationData9.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction10(i);
+				SimulationData10.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction11(i);
+				SimulationData11.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction12(i);
+				SimulationData12.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction13(i);
+				SimulationData13.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction14(i);
+				SimulationData14.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction15(i);
+				SimulationData15.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction16(i);
+				SimulationData16.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction17(i);
+				SimulationData17.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction18(i);
+				SimulationData18.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction19(i);
+				SimulationData19.Add(new KeyValuePair<long, float>(i, value));
+				value = SimulationFunction20(i);
+				SimulationData20.Add(new KeyValuePair<long, float>(i, value));
+
+				windValue = (float)SimulateWind(i);
+				SimulationWindData.Add(new KeyValuePair<long, float>(i, windValue));
+				sunValue = (float)SimulateSun(i);
+				SimulationSunData.Add(new KeyValuePair<long, float>(i, sunValue));
+			}
+		}
+
+		#region Simulation functions
+		private double SimulationFunction1(int x)
+		{
+			double v = 1500 * (Math.Sin(x) * (Math.Sin(x) - 1) + Math.Cos(x) / 2);
 			if (v < 10)
 			{
 				v = 10;
@@ -408,9 +473,319 @@ namespace UISimulator.ViewModel
 			return v;
 		}
 
-        private double SimulateWind(int x)
-        {
-            return Math.Sin((float)x / 10f) * 13.5 + 13.5;
-        }
-    }
+		private float SimulationFunction2(int x)
+		{
+			double retVal = 0;
+			retVal = (Math.Sin(x + 5) + Math.Cos(Math.Sqrt(1.5) * x)) * 2000;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return (float)retVal;
+		}
+
+		private float SimulationFunction3(int x)
+		{
+			float retVal = 0;
+			retVal = 300;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction4(int x)
+		{
+			float retVal = 0;
+			retVal = 400;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction5(int x)
+		{
+			float retVal = 0;
+			retVal = 500;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction6(int x)
+		{
+			float retVal = 0;
+			retVal = 600;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction7(int x)
+		{
+			float retVal = 0;
+			retVal = 700;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction8(int x)
+		{
+			float retVal = 0;
+			retVal = 800;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction9(int x)
+		{
+			float retVal = 0;
+			retVal = 900;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction10(int x)
+		{
+			float retVal = 0;
+			retVal = 1000;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction11(int x)
+		{
+			float retVal = 0;
+			retVal = 1100;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction12(int x)
+		{
+			float retVal = 0;
+			retVal = 1200;
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction13(int x)
+		{
+			float retVal = 0;
+			retVal = 1300;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction14(int x)
+		{
+			float retVal = 0;
+			retVal = 1400;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction15(int x)
+		{
+			float retVal = 0;
+			retVal = 1500;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction16(int x)
+		{
+			float retVal = 0;
+			retVal = 1600;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction17(int x)
+		{
+			float retVal = 0;
+			retVal = 1700;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction18(int x)
+		{
+			float retVal = 0;
+			retVal = 1800;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction19(int x)
+		{
+			float retVal = 0;
+			retVal = 1900;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private float SimulationFunction20(int x)
+		{
+			float retVal = 0;
+			retVal = 2000;
+
+			if (retVal < 10)
+			{
+				retVal = 10;
+			}
+			else if (retVal > 4090)
+			{
+				retVal = 4090;
+			}
+			return retVal;
+		}
+
+		private double SimulateWind(int x)
+		{
+			return (float)Math.Sin(x / 10f) * 13.5f + 13.5f;
+		}
+
+		private double SimulateSun(int x)
+		{
+			return (float)Math.Sin(x / 10f) * 50f + 50f;
+		}
+
+		#endregion Simulation functions
+	}
 }

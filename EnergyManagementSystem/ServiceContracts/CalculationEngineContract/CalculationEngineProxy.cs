@@ -74,15 +74,17 @@ namespace EMS.ServiceContracts
             }
         }
 
-        /// <summary>
-        /// Optimization algorithm
-        /// </summary>
-        /// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
-        /// <param name="measGenerators">list of measurements for generators</param>
-        /// <returns>returns true if optimization was successful</returns>
-        public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
+		/// <summary>
+		/// Optimization algorithm
+		/// </summary>
+		/// <param name="measEnergyConsumers">list of measurements for energyConsumers</param>
+		/// <param name="measGenerators">list of measurements for generators</param>
+		/// <param name="windSpeed">speed of wind</param>
+		/// <param name="sunlight">sunlight percent</param>
+		/// <returns>returns true if optimization was successful</returns>
+		public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
         {
-            return proxy.OptimisationAlgorithm(measEnergyConsumers,measGenerators, windSpeed);
+            return proxy.OptimisationAlgorithm(measEnergyConsumers,measGenerators, windSpeed, sunlight);
         }
     }
 }
