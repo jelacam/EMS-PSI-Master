@@ -489,7 +489,7 @@ namespace EMS.CIMAdapter.Importer
 
                 if (!contains)
                 {
-                    gid = ModelCodeHelper.CreateGlobalId(0, (short)EMSType.SYNCHRONOUSMACHINE, importHelper.CheckOutIndexForDMSType(EMSType.SYNCHRONOUSMACHINE));
+                    gid = ModelCodeHelper.CreateGlobalId(0, (short)EMSType.ANALOG, importHelper.CheckOutIndexForDMSType(EMSType.ANALOG));
                 }
                 rd = new ResourceDescription(gid);
                 importHelper.DefineIDMapping(analog.ID, gid);
