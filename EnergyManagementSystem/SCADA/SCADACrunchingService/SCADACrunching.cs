@@ -178,6 +178,94 @@ namespace EMS.Services.SCADACrunchingService
                     }
                 }
 
+                foreach (ResourceDescription analogRd in delta.UpdateOperations)
+                {
+                    analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
+
+                    if (ContainsMrid(analog, energyConsumersAnalogsCopy))
+                    {
+                        foreach (AnalogLocation al in energyConsumersAnalogsCopy)
+                        {
+                            if (al.Analog.Mrid.Equals(analog.Mrid))
+                            {
+                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue != 0)
+                                {
+                                    al.Analog.MaxValue = analog.MaxValue;
+                                }
+                                else if (analog.MeasurementType != al.Analog.MeasurementType && analog.MeasurementType.ToString() != "")
+                                {
+                                    al.Analog.MeasurementType = analog.MeasurementType;
+                                }
+                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue != 0)
+                                {
+                                    al.Analog.MinValue = analog.MinValue;
+                                }
+                                else if (analog.Name != al.Analog.Name && analog.Name.ToString() != "")
+                                {
+                                    al.Analog.Name = analog.Name;
+                                }
+                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue != 0)
+                                {
+                                    al.Analog.NormalValue = analog.NormalValue;
+                                }
+                                else if (analog.PowerSystemResource != al.Analog.PowerSystemResource && analog.PowerSystemResource.ToString() != "")
+                                {
+                                    al.Analog.PowerSystemResource = analog.PowerSystemResource;
+                                }
+                                else if (analog.SignalDirection != al.Analog.SignalDirection && analog.SignalDirection.ToString() != "")
+                                {
+                                    al.Analog.SignalDirection = analog.SignalDirection;
+                                }
+                                else if (analog.UnitSymbol != al.Analog.UnitSymbol && analog.UnitSymbol.ToString() != "")
+                                {
+                                    al.Analog.UnitSymbol = analog.UnitSymbol;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (AnalogLocation al in generatorAnalogsCopy)
+                        {
+                            if (al.Analog.Mrid.Equals(analog.Mrid))
+                            {
+                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue != 0)
+                                {
+                                    al.Analog.MaxValue = analog.MaxValue;
+                                }
+                                else if (analog.MeasurementType != al.Analog.MeasurementType && analog.MeasurementType.ToString() != "")
+                                {
+                                    al.Analog.MeasurementType = analog.MeasurementType;
+                                }
+                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue != 0)
+                                {
+                                    al.Analog.MinValue = analog.MinValue;
+                                }
+                                else if (analog.Name != al.Analog.Name && analog.Name.ToString() != "")
+                                {
+                                    al.Analog.Name = analog.Name;
+                                }
+                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue != 0)
+                                {
+                                    al.Analog.NormalValue = analog.NormalValue;
+                                }
+                                else if (analog.PowerSystemResource != al.Analog.PowerSystemResource && analog.PowerSystemResource.ToString() != "")
+                                {
+                                    al.Analog.PowerSystemResource = analog.PowerSystemResource;
+                                }
+                                else if (analog.SignalDirection != al.Analog.SignalDirection && analog.SignalDirection.ToString() != "")
+                                {
+                                    al.Analog.SignalDirection = analog.SignalDirection;
+                                }
+                                else if (analog.UnitSymbol != al.Analog.UnitSymbol && analog.UnitSymbol.ToString() != "")
+                                {
+                                    al.Analog.UnitSymbol = analog.UnitSymbol;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 updateResult.Message = "SCADA CR Transaction Prepare finished.";
                 updateResult.Result = ResultType.Succeeded;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "SCADA CR Transaction Prepare finished successfully.");
@@ -212,6 +300,19 @@ namespace EMS.Services.SCADACrunchingService
 
         #endregion Transaction
 
+        public bool ContainsMrid(Analog analog, List<AnalogLocation> list)
+        {
+            foreach (AnalogLocation al in list)
+            {
+                if (al.Analog.Mrid.Equals(analog.Mrid))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// SendValues method implementation
         /// </summary>
@@ -224,23 +325,27 @@ namespace EMS.Services.SCADACrunchingService
 
             int arrayLength = value[1];
             int windByteLength = 4;
+			int sunByteLength = 4;
             byte[] windData = new byte[windByteLength];
-            byte[] data = new byte[arrayLength - windByteLength];
+			byte[] sunData = new byte[sunByteLength];
+			byte[] data = new byte[arrayLength - windByteLength - sunByteLength];
 
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-            Array.Copy(value, 2, data, 0, arrayLength - windByteLength);
-            Array.Copy(value, 2 + arrayLength - windByteLength, windData, 0, windByteLength);
+			Array.Copy(value, 2, data, 0, arrayLength - windByteLength-sunByteLength);
+			Array.Copy(value, 2 + arrayLength - windByteLength - sunByteLength, windData, 0, windByteLength);
+			Array.Copy(value, 2 + arrayLength - sunByteLength, sunData, 0, sunByteLength);
 
-            List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
+			List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
             List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0);
 
             float windSpeed = GetWindSpeed(windData, windByteLength);
+			float sunlight = GetSunlight(sunData, sunByteLength);
 
             bool isSuccess = false;
             try
             {
-                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed);
+                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
             }
             catch (Exception ex)
             {
@@ -263,7 +368,13 @@ namespace EMS.Services.SCADACrunchingService
             return values[0];
         }
 
-        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
+		private float GetSunlight(byte[] sunData, int byteLength)
+		{
+			float[] values = ModbusHelper.GetValueFromByteArray<float>(sunData, byteLength);
+			return values[0];
+		}
+
+		private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
         {
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (AnalogLocation analogLoc in analogList)

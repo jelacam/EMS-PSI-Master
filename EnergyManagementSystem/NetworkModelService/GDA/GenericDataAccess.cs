@@ -28,6 +28,10 @@ namespace EMS.Services.NetworkModelService
             {
                 nm = value;
             }
+            get
+            {
+                return nm;
+            }
         }
 
         public UpdateResult ApplyUpdate(Delta delta)

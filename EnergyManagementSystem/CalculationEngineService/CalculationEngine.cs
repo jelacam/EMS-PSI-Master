@@ -98,17 +98,17 @@ namespace EMS.Services.CalculationEngineService
         /// <param name="measEnergyConsumers">list of measurements for Energy Consumers</param>
         /// <param name="measGenerators">list of measurements for Generators</param>
         /// <returns>returns true if optimization was successful</returns>
-        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
+        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
         {
             bool result = false;
             totalProduction = 0;
 
             PublishConsumersToUI(measEnergyConsumers);
 
-            Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed);
+            Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed, sunlight);
             float powerOfConsumers = CalculationHelper.CalculateConsumption(measEnergyConsumers);
 
-            List<MeasurementUnit> measurementsOptimized = DoOptimization(optModelMap, powerOfConsumers, windSpeed);
+            List<MeasurementUnit> measurementsOptimized = DoOptimization(optModelMap, powerOfConsumers, windSpeed, sunlight);
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
@@ -151,7 +151,7 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed)
+        private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
         {
             try
             {
@@ -178,8 +178,8 @@ namespace EMS.Services.CalculationEngineService
                 {
                     return DoNotOptimized(optModelMap, powerOfConsumers);
                 }
-                Console.WriteLine("CE: Optimize {0}", powerOfConsumers);
-                Console.WriteLine("CE: TotalCost {0}\n", totalCost);
+                Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
+                Console.WriteLine("CE: TotalCost {0}$\n", totalCost);
                 return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
             catch (Exception e)
@@ -252,7 +252,7 @@ namespace EMS.Services.CalculationEngineService
             return retList;
         }
 
-        private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed)
+        private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
         {
             lock (lockObj)
             {
@@ -269,7 +269,7 @@ namespace EMS.Services.CalculationEngineService
                         EMSFuel emsf = fuels[sm.Fuel];
                         if (generatorCurves[sm.Mrid] != null)
                         {
-                            OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, generatorCurves[sm.Mrid]);
+                            OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, sunlight, generatorCurves[sm.Mrid]);
                             if (om.Managable != 0)
                             {
                                 maxProduction += om.MaxPower;
@@ -812,6 +812,64 @@ namespace EMS.Services.CalculationEngineService
                         {
                             internalEnergyConsumersCopy.Add(rd);
                             break;
+                        }
+                    }
+                }
+
+                foreach (ResourceDescription rd in delta.UpdateOperations)
+                {
+                    foreach (Property prop in rd.Properties)
+                    {
+                        if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.EMSFUEL))
+                        {
+                            foreach (ResourceDescription res in internalEmsFuelsCopy)
+                            {
+                                if(rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
+                        {
+                            foreach (ResourceDescription res in internalSynchMachinesCopy)
+                            {
+                                if (rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (ModelCodeHelper.GetTypeFromModelCode(prop.Id).Equals(EMSType.ENERGYCONSUMER))
+                        {
+                            foreach (ResourceDescription res in internalEnergyConsumersCopy)
+                            {
+                                if (rd.Id.Equals(res.Id))
+                                {
+                                    foreach (Property p in res.Properties)
+                                    {
+                                        if (prop.Id.Equals(p.Id))
+                                        {
+                                            p.PropertyValue = prop.PropertyValue;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

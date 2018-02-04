@@ -14,7 +14,7 @@ namespace EMS.Services.TransactionManagerService
     public class TransactionManager : ITransactionCallback, IImporterContract
     {
         private static Delta deltaToApply;
-
+        private static Delta ceDeltaToApply;
         private static int noRespone = 0;
         private static int toRespond = 1;
         private object obj = new object();
@@ -112,11 +112,11 @@ namespace EMS.Services.TransactionManagerService
 
             #endregion oldcode
 
-            if (analogsDelta.InsertOperations.Count != 0)
+            if (analogsDelta.InsertOperations.Count != 0 || analogsDelta.UpdateOperations.Count != 0)
             {
                 toRespond++;
             }
-            if (ceDelta.InsertOperations.Count != 0)
+            if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
             {
                 toRespond++;
             }
@@ -131,12 +131,21 @@ namespace EMS.Services.TransactionManagerService
             energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
 
             ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
-
+            ceDeltaToApply = ceDelta;
 
             // second transaction - send ceDelta to CE
             if (toRespond == 2)
             {
-                TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
+                {
+                    TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                }
+                else
+                {
+                    TransactionCRProxy.Instance.Prepare(ref analogsDelta);
+                    TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                }
+                    
             }
             else if (toRespond == 3)
             {
@@ -209,7 +218,16 @@ namespace EMS.Services.TransactionManagerService
             }
             else if (toRespond == 2)
             {
-                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                if (ceDeltaToApply.InsertOperations.Count != 0 || ceDeltaToApply.UpdateOperations.Count != 0)
+                {
+                    commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                }
+                else
+                {
+                    commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                    commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+                }
+                
             }
 
             if (commitResultNMS && commitResultSCADA && commitResultCE)

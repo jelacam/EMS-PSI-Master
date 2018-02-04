@@ -7,7 +7,7 @@
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 		mc:Ignorable="d"
-        Title="Simulator" Height="350" Width="900">
+        Title="Simulator" Height="700" Width="1250">
 	<Window.Resources>
 		<DataTemplate x:Key="ChartView">
 			<chartingToolkit:Chart Title="Energy Consumer 1" Background="DimGray" 
@@ -45,23 +45,89 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
 
-		<Grid>
+		<Grid Grid.Column="0" Grid.Row="0">
 			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData1}" />
 		</Grid>
-
-		<Grid Grid.Column="1">
+		<Grid Grid.Column="1" Grid.Row="0">
 			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData2}" />
 		</Grid>
-
-		<Grid Grid.Column="2">
+		<Grid Grid.Column="2" Grid.Row="0">
 			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData3}" />
 		</Grid>
-
-		<Grid Grid.Column="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationWindData}" />
+		<Grid Grid.Column="3" Grid.Row="0">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData4}" />
+		</Grid>
+		<Grid Grid.Column="4" Grid.Row="0">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData5}" />
+		</Grid>
+		<Grid Grid.Column="0" Grid.Row="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData6}" />
+		</Grid>
+		<Grid Grid.Column="1" Grid.Row="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData7}" />
+		</Grid>
+		<Grid Grid.Column="2" Grid.Row="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData8}" />
+		</Grid>
+		<Grid Grid.Column="3" Grid.Row="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData9}" />
+		</Grid>
+		<Grid Grid.Column="4" Grid.Row="1">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData10}" />
+		</Grid>
+		<Grid Grid.Column="0" Grid.Row="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData11}" />
+		</Grid>
+		<Grid Grid.Column="1" Grid.Row="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData12}" />
+		</Grid>
+		<Grid Grid.Column="2" Grid.Row="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData13}" />
+		</Grid>
+		<Grid Grid.Column="3" Grid.Row="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData14}" />
+		</Grid>
+		<Grid Grid.Column="4" Grid.Row="2">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData15}" />
+		</Grid>
+		<Grid Grid.Column="0" Grid.Row="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData16}" />
+		</Grid>
+		<Grid Grid.Column="1" Grid.Row="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData17}" />
+		</Grid>
+		<Grid Grid.Column="2" Grid.Row="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData18}" />
+		</Grid>
+		<Grid Grid.Column="3" Grid.Row="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData19}" />
+		</Grid>
+		<Grid Grid.Column="4" Grid.Row="3">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData20}" />
 		</Grid>
 
+		<Grid Grid.Column="0" Grid.Row="4">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationWindData}" />
+		</Grid>
+		<Grid Grid.Column="1" Grid.Row="4">
+			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationSunData}" />
+		</Grid>
+
+		<Grid Grid.Column="2" Grid.Row="4">
+		</Grid>
+		<Grid Grid.Column="3" Grid.Row="4">
+		</Grid>
+		<Grid Grid.Column="4" Grid.Row="4">
+		</Grid>
 	</Grid>
 </Window>

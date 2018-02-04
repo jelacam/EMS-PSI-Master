@@ -290,13 +290,19 @@ namespace UIClient.ViewModel
 
             if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUIs[0].Gid) == EMSType.ENERGYCONSUMER)
             {
-                AddMeasurmentTo(EnergyConsumersContainer, measUIs);
-                CurrentConsumption = measUIs.Sum(x => x.CurrentValue);
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    AddMeasurmentTo(EnergyConsumersContainer, measUIs);
+                    CurrentConsumption = measUIs.Sum(x => x.CurrentValue);
+                });
             }
             else
             {
-                AddMeasurmentTo(GeneratorsContainer, measUIs);
-                CurrentProduction = measUIs.Sum(x => x.CurrentValue);
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    AddMeasurmentTo(GeneratorsContainer, measUIs);
+                    CurrentProduction = measUIs.Sum(x => x.CurrentValue);
+                });
             }
         }
 

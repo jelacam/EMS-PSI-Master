@@ -204,11 +204,12 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						model.AddGoal("cost", GoalKind.Minimize, goal);
 
 						Solution solution = context.Solve(new SimplexDirective());
-						Report report = solution.GetReport();
-						// Console.Write("{0}", report);
+						Report report = solution.GetReport();					
 
 						if (renewable)
 						{
+							// Console.Write("{0}", report);
+
 							string name = string.Empty;
 							foreach (var item in model.Decisions)
 							{
@@ -229,9 +230,11 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 							totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
 
 							WindOptimizedPctLinear = 100 * WindOptimizedLinear / OptimizedLinear;
-							Console.WriteLine("Linear optimization: {0}", OptimizedLinear);
-							Console.WriteLine("Linear optimization wind: {0} ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
-							Console.WriteLine("Linear optimization CO2 Renewable: {0}", CO2EmmissionRenewable);
+
+							Console.WriteLine("Linear optimization: {0}kW", OptimizedLinear);
+							Console.WriteLine("Linear optimization wind: {0}kW ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
+							Console.WriteLine("Linear optimization CO2: {0}", CO2EmmissionRenewable);
+
 						}
 						else
 						{
