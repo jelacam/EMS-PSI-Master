@@ -317,7 +317,10 @@ namespace UIClient.ViewModel
                     var tempQueue = new ObservableCollection<MeasurementUI>();
                     tempQueue.Add(measUI);
                     container.Add(new KeyValuePair<long, ObservableCollection<MeasurementUI>>(measUI.Gid, tempQueue));
-                    GidToBoolMap.Add(measUI.Gid, true);
+                    if (!GidToBoolMap.ContainsKey(measUI.Gid))
+                    {
+                        GidToBoolMap.Add(measUI.Gid, true);
+                    }
                 }
                 else
                 {

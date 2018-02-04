@@ -6,7 +6,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
     public class GAOptimization
     {
         private readonly int ELITIMS_PERCENTAGE = 5;
-        private readonly int NUMBER_OF_ITERATION = 10000;
+        private readonly int NUMBER_OF_ITERATION = 1000;
         private readonly int NUMBER_OF_POPULATION = 100;
 
         private readonly float mutationRate = 0.3f;
@@ -46,8 +46,8 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         public Dictionary<long, OptimisationModel> StartAlgorithmWithReturn()
         {
             random = new Random();
-            ga = new GeneticAlgorithm<Tuple<long, float>>(NUMBER_OF_POPULATION, optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, ELITIMS_PERCENTAGE, mutationRate);
-
+            ga = new GeneticAlgorithm<Tuple<long, float>>(NUMBER_OF_POPULATION, optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, ELITIMS_PERCENTAGE, mutationRate,false);
+            ga.Population = PopulateFirstPopulation();
             Tuple<long, float>[] bestGenes = ga.StartAndReturnBest(NUMBER_OF_ITERATION);
 
             for (int i = 0; i < bestGenes.Length; i++)
@@ -60,6 +60,27 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             return optModelMap;
         }
 
+        private List<DNA<Tuple<long, float>>> PopulateFirstPopulation()
+        {
+            List<DNA<Tuple<long, float>>> firstPopulation = new List<DNA<Tuple<long, float>>> ();
+
+            DNA<Tuple<long, float>> previousBest = new DNA<Tuple<long, float>>(optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, shouldInitGenes: false);
+            previousBest.Genes = new Tuple<long, float>[optModelMap.Count];
+
+            for(int i = 0; i < optModelMap.Count; i++)
+            {
+                long gid = indexToGid[i];
+                previousBest.Genes[i] = new Tuple<long, float>(gid, optModelMap[gid].MeasuredValue);
+            }
+            firstPopulation.Add(previousBest);
+
+            for (int i = 1; i < NUMBER_OF_POPULATION; i++)
+            {
+                firstPopulation.Add(new DNA<Tuple<long, float>>(optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, shouldInitGenes: true));
+            }
+
+            return firstPopulation;
+        }
 
         private void Callback(Tuple<long, float>[] bestGenes)
         {

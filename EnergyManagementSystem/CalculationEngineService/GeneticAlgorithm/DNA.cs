@@ -8,7 +8,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 {
     public class DNA<T>
     {
-        public T[] Genes { get; private set; }
+        public T[] Genes { get; set; }
         public float Fitness { get; private set; }
 
         private Random random;
