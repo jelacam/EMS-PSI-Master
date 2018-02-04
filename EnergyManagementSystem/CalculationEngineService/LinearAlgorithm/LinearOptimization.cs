@@ -70,9 +70,14 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		public float Profit { get; set; }
 
 		/// <summary>
-		/// Gets or sets emission of CO2
+		/// Gets or sets emission of CO2 non renewable generator
 		/// </summary>
-		public float CO2Emission { get; set; }
+		public float CO2EmissionNonRenewable { get; set; }
+
+        /// <summary>
+        /// Gets or sets emission of CO2 with renewable generator
+        /// </summary>
+        public float CO2EmmissionRenewable { get; set; }
 
 		#endregion Fields
 
@@ -89,9 +94,10 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 			WindOptimizedLinear = 0;
 			WindOptimizedPctLinear = 0;
 			Profit = 0;
-			CO2Emission = 0;
+            CO2EmissionNonRenewable = 0;
+            CO2EmmissionRenewable = 0;
 
-			this.minProduction = minProduction;
+            this.minProduction = minProduction;
 			this.maxProduction = maxProduction;
 
 			lockObj = new object();
@@ -213,7 +219,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 									OptimizedLinear += optModel.LinearOptimizedValue;
-									CO2Emission += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+									CO2EmmissionRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
 									if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
 									{
 										WindOptimizedLinear += optModel.LinearOptimizedValue;
@@ -224,13 +230,27 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 							totalCostLinear = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
 
 							WindOptimizedPctLinear = 100 * WindOptimizedLinear / OptimizedLinear;
+
 							Console.WriteLine("Linear optimization: {0}kW", OptimizedLinear);
 							Console.WriteLine("Linear optimization wind: {0}kW ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
-							Console.WriteLine("Linear optimization CO2: {0}", CO2Emission);
+							Console.WriteLine("Linear optimization CO2: {0}", CO2EmmissionRenewable);
+
 						}
 						else
 						{
-							totalCostNonRenewable = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
+                            totalCostNonRenewable = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
+
+                            string name = string.Empty;
+                            foreach (var item in model.Decisions)
+                            {
+                                name = item.Name.Substring(1);
+                                OptimisationModel optModel = null;
+                                if (optModelMap.TryGetValue(long.Parse(name), out optModel))
+                                {
+                                    optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
+                                    CO2EmissionNonRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+                                }
+                            }
 						}
 					}
 

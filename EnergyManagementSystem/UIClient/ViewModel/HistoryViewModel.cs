@@ -3,33 +3,47 @@ using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
+using UIClient.Model;
 using UIClient.View;
 
 namespace UIClient.ViewModel
 {
     public class HistoryViewModel : ViewModelBase
     {
+        #region Fields
+
         private ICommand showDataCommand;
         private string generatorGid;
         private DateTime startTime;
         private DateTime endTime;
-        private List<Property> generatorsGids;
+        private ICommand visibilityCheckedCommand;
+        private ICommand visibilityUncheckedCommand;
+        private ICommand allGeneratorsCheckedCommand;
+        private ICommand allGeneratorsUnheckedCommand;
+        private ICommand selectedPeriodCommand;
+        private PeriodValues selectedPeriod;
+        private List<long> generatorsFromNms = new List<long>();
         private List<Tuple<double, DateTime>> measurements;
+        private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
+        private ObservableCollection<Tuple<double, DateTime>> totalProduction = new ObservableCollection<Tuple<double, DateTime>>();
+        private ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>>();
 
-        ModelResourcesDesc modelResourcesDesc;
-        List<ModelCode> properties;
-        int iteratorId;
-        int resourcesLeft;
-        int numberOfResources = 2;
+        private ModelResourcesDesc modelResourcesDesc;
+        private List<ModelCode> properties;
+        private int iteratorId;
+        private int resourcesLeft;
+        private int numberOfResources = 2;
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
+
+        #endregion
 
         public HistoryViewModel(HistoryView mainWindow)
         {
             startTime = DateTime.Now;
             endTime = DateTime.Now;
-            generatorsGids = new List<Property>();
 
             internalSynchMachines = new List<ResourceDescription>(5);
             modelResourcesDesc = new ModelResourcesDesc();
@@ -65,10 +79,17 @@ namespace UIClient.ViewModel
                 {
                     if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
                     {
-                        generatorsGids.Add(rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID));
+                        long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
+                        if (GeneratorsFromNms.Contains(gid))
+                        {
+                            continue;
+                        }
+                        GeneratorsFromNms.Add(gid);
+                        GidToBoolMap.Add(gid, false);
                     }
                 }
-                OnPropertyChanged(nameof(GeneratorsGids));
+                OnPropertyChanged(nameof(GeneratorsFromNms));
+
             }
             catch (Exception e)
             {
@@ -86,9 +107,68 @@ namespace UIClient.ViewModel
 
         public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
 
+        public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
+
+        public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
+
+        public ICommand AllGeneratorsCheckedCommand => allGeneratorsCheckedCommand ?? (allGeneratorsCheckedCommand = new RelayCommand(AllGeneratorsCheckedCommandExecute));
+
+        public ICommand AllGeneratorsUncheckedCommand => allGeneratorsUnheckedCommand ?? (allGeneratorsUnheckedCommand = new RelayCommand(AllGeneratorsUnheckedCommandExecute));
+
+        public ICommand ChangePeriodCommand => selectedPeriodCommand ?? (selectedPeriodCommand = new RelayCommand(SelectedPeriodCommandExecute));
+
         #endregion
 
         #region Properties
+
+        public List<long> GeneratorsFromNms
+        {
+            get
+            {
+                return generatorsFromNms;
+            }
+            set
+            {
+                generatorsFromNms = value;
+            }
+        }
+
+        public ObservableCollection<Tuple<double, DateTime>> TotalProduction
+        {
+            get
+            {
+                return totalProduction;
+            }
+            set
+            {
+                totalProduction = value;
+            }
+        }
+    
+        public PeriodValues SelectedPeriod
+        {
+            get
+            {
+                return selectedPeriod;
+            }
+            set
+            {
+                selectedPeriod = value;
+            }
+        }
+
+        public ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> GeneratorsContainer
+        {
+            get
+            {
+                return generatorsContainer;
+            }
+
+            set
+            {
+                generatorsContainer = value;
+            }
+        }
 
         public string GeneratorGid
         {
@@ -105,19 +185,34 @@ namespace UIClient.ViewModel
         public DateTime StartTime
         {
             get { return startTime; }
-            set { startTime = value; }
+            set
+            {
+                startTime = value;
+                OnPropertyChanged(nameof(StartTime));
+            }
         }
 
         public DateTime EndTime
         {
             get { return endTime; }
-            set { endTime = value; }
+            set
+            {
+                endTime = value;
+                OnPropertyChanged(nameof(EndTime));
+            }
         }
 
-        public List<Property> GeneratorsGids
+        public Dictionary<long, bool> GidToBoolMap
         {
-            get { return generatorsGids; }
-            set { generatorsGids = value; }
+            get
+            {
+                return gidToBoolMap;
+            }
+
+            set
+            {
+                gidToBoolMap = value;
+            }
         }
 
         #endregion
@@ -126,28 +221,89 @@ namespace UIClient.ViewModel
 
         private void ShowDataCommandExecute(object obj)
         {
-            if (generatorGid != null && generatorGid != string.Empty)
+            ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
+            GeneratorsContainer.Clear();
+            foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
             {
-                if (generatorGid.Trim() != string.Empty)
+                if (keyPair.Value == true)
                 {
                     try
                     {
-                        long gid = Convert.ToInt64(generatorGid);
-                        try
+                        measurementsFromDb = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetHistoryMeasurements(keyPair.Key, startTime, endTime));
+
+                        if (measurementsFromDb == null)
                         {
-                            Measurements = CalculationEngineUIProxy.Instance.GetHistoryMeasurements(gid, startTime, endTime);
-                            OnPropertyChanged(nameof(Measurements));
+                            continue;
                         }
-                        catch (Exception ex)
-                        {
-                            CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
-                        }
+
+                        GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb)));
+
+                        measurementsFromDb.Clear();
+                        measurementsFromDb = null;
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
                     }
+
                 }
+            }
+            TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
+
+            OnPropertyChanged(nameof(TotalProduction));
+            OnPropertyChanged(nameof(GeneratorsContainer));
+        }
+
+        private void VisibilityCheckedCommandExecute(long gid)
+        {
+            GidToBoolMap[gid] = true;
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void VisibilityUncheckedCommandExecute(long gid)
+        {
+            GidToBoolMap[gid] = false;
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void AllGeneratorsCheckedCommandExecute(object obj)
+        {
+            GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => true);
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void AllGeneratorsUnheckedCommandExecute(object obj)
+        {
+            GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => false);
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void SelectedPeriodCommandExecute(object obj)
+        {
+            if (SelectedPeriod == PeriodValues.Last_Hour)
+            {
+                StartTime = DateTime.Now.AddHours(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Today)
+            {
+                StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_Year)
+            {
+                StartTime = DateTime.Now.AddYears(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_Month)
+            {
+                StartTime = DateTime.Now.AddMonths(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_4_Month)
+            {
+                StartTime = DateTime.Now.AddMonths(-4);
+                EndTime = DateTime.Now;
             }
         }
 

@@ -71,5 +71,15 @@ namespace EMS.ServiceContracts
 		{
 			return proxy.GetHistoryMeasurements(gid, startTime, endTime);
 		}
-	}
+
+        public List<Tuple<double,DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
+        {
+            return proxy.GetTotalProduction(startTime, endTime);
+        }
+
+        public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
+        {
+            return proxy.GetCO2Emission(startTime, endTime);
+        }
+    }
 }
