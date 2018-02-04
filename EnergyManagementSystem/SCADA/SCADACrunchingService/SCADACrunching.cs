@@ -178,17 +178,17 @@ namespace EMS.Services.SCADACrunchingService
                     }
                 }
 
-                foreach (ResourceDescription analogRd in delta.InsertOperations)
+                foreach (ResourceDescription analogRd in delta.UpdateOperations)
                 {
                     analog = ResourcesDescriptionConverter.ConvertTo<Analog>(analogRd);
 
-                    if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(analog.PowerSystemResource) == EMSType.ENERGYCONSUMER)
+                    if (ContainsMrid(analog, energyConsumersAnalogsCopy))
                     {
                         foreach (AnalogLocation al in energyConsumersAnalogsCopy)
                         {
                             if (al.Analog.Mrid.Equals(analog.Mrid))
                             {
-                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue.ToString() != "")
+                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue != 0)
                                 {
                                     al.Analog.MaxValue = analog.MaxValue;
                                 }
@@ -196,7 +196,7 @@ namespace EMS.Services.SCADACrunchingService
                                 {
                                     al.Analog.MeasurementType = analog.MeasurementType;
                                 }
-                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue.ToString() != "")
+                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue != 0)
                                 {
                                     al.Analog.MinValue = analog.MinValue;
                                 }
@@ -204,7 +204,7 @@ namespace EMS.Services.SCADACrunchingService
                                 {
                                     al.Analog.Name = analog.Name;
                                 }
-                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue.ToString() != "")
+                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue != 0)
                                 {
                                     al.Analog.NormalValue = analog.NormalValue;
                                 }
@@ -229,7 +229,7 @@ namespace EMS.Services.SCADACrunchingService
                         {
                             if (al.Analog.Mrid.Equals(analog.Mrid))
                             {
-                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue.ToString() != "")
+                                if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue != 0)
                                 {
                                     al.Analog.MaxValue = analog.MaxValue;
                                 }
@@ -237,7 +237,7 @@ namespace EMS.Services.SCADACrunchingService
                                 {
                                     al.Analog.MeasurementType = analog.MeasurementType;
                                 }
-                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue.ToString() != "")
+                                else if (analog.MinValue != al.Analog.MinValue && analog.MinValue != 0)
                                 {
                                     al.Analog.MinValue = analog.MinValue;
                                 }
@@ -245,7 +245,7 @@ namespace EMS.Services.SCADACrunchingService
                                 {
                                     al.Analog.Name = analog.Name;
                                 }
-                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue.ToString() != "")
+                                else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue != 0)
                                 {
                                     al.Analog.NormalValue = analog.NormalValue;
                                 }
@@ -299,6 +299,19 @@ namespace EMS.Services.SCADACrunchingService
         }
 
         #endregion Transaction
+
+        public bool ContainsMrid(Analog analog, List<AnalogLocation> list)
+        {
+            foreach (AnalogLocation al in list)
+            {
+                if (al.Analog.Mrid.Equals(analog.Mrid))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// SendValues method implementation

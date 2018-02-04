@@ -412,9 +412,9 @@ namespace EMS.Common
                         int idOldRef = ModelCodeHelper.ExtractEntityIdFromGlobalId(gidOldRef);
                         if (idOldRef < 0)
                         {
-                            if (gidOldRef > 0)
+                            if (globaldChanges.ContainsKey(gidOldRef))
                             {
-                                p.SetValue(gidOldRef);
+                                p.SetValue(globaldChanges[gidOldRef]);
                             }
                             else
                             {

@@ -204,7 +204,7 @@ namespace EMS.Services.SCADACommandingService
                     {
                         if (al.Analog.Mrid.Equals(analog.Mrid))
                         {
-                            if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue.ToString() != "")
+                            if (analog.MaxValue != al.Analog.MaxValue && analog.MaxValue != 0)
                             {
                                 al.Analog.MaxValue = analog.MaxValue;
                             }
@@ -212,7 +212,7 @@ namespace EMS.Services.SCADACommandingService
                             {
                                 al.Analog.MeasurementType = analog.MeasurementType;
                             }
-                            else if (analog.MinValue != al.Analog.MinValue && analog.MinValue.ToString() != "")
+                            else if (analog.MinValue != al.Analog.MinValue && analog.MinValue != 0)
                             {
                                 al.Analog.MinValue = analog.MinValue;
                             }
@@ -220,7 +220,7 @@ namespace EMS.Services.SCADACommandingService
                             {
                                 al.Analog.Name = analog.Name;
                             }
-                            else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue.ToString() != "")
+                            else if (analog.NormalValue != al.Analog.NormalValue && analog.NormalValue != 0)
                             {
                                 al.Analog.NormalValue = analog.NormalValue;
                             }
