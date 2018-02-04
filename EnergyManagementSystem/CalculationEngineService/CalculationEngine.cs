@@ -22,6 +22,7 @@ namespace EMS.Services.CalculationEngineService
     using Helpers;
     using LinearAlgorithm;
     using System.Threading;
+    using System.Linq;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -53,7 +54,8 @@ namespace EMS.Services.CalculationEngineService
         private float profit = 0;
         private float windProductionPct = 0;
         private float windProductionkW = 0;
-		private float emissionCO2 = 0;
+        private float emissionCO2 = 0;
+        private float totalProduction = 0;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
@@ -98,6 +100,7 @@ namespace EMS.Services.CalculationEngineService
         public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed)
         {
             bool result = false;
+            totalProduction = 0;
 
             PublishConsumersToUI(measEnergyConsumers);
 
@@ -108,6 +111,14 @@ namespace EMS.Services.CalculationEngineService
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
+                totalProduction = measurementsOptimized.Sum(x => x.CurrentValue);
+
+                if (WriteTotalProductionIntoDb(totalProduction, DateTime.Now))
+                {
+                    Console.WriteLine("The total production is recorded into history database.");
+
+                }
+
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
                     Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
@@ -155,7 +166,7 @@ namespace EMS.Services.CalculationEngineService
                     profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
                     windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
                     windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
-					emissionCO2 = linearAlgorithm.CO2Emission; // smanjenje CO2 emisije izrazeno u tonama
+                    emissionCO2 = linearAlgorithm.CO2Emission; // smanjenje CO2 emisije izrazeno u tonama
                 }
                 else
                 {
@@ -392,6 +403,82 @@ namespace EMS.Services.CalculationEngineService
                         while (reader.Read())
                         {
                             retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[3]), Convert.ToDateTime(reader[2])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read Measurements from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+        
+        /// <summary>
+        /// Write total production into database
+        /// </summary>
+        /// <param name="totalProduction">Float value of total production</param>
+        /// <param name="time">Time of calculation</param>
+        /// <returns>Return true if success</returns>
+        public bool WriteTotalProductionIntoDb(float totalProduction, DateTime time)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("InsertTotalProduction", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
+                        cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = time.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to insert total production into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
+        }
+
+        public List<Tuple<double, DateTime>> ReadTotalProductionsFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT * FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[1]), Convert.ToDateTime(reader[2])));
                         }
                     }
 

@@ -101,5 +101,8 @@
     <Build Include="Schema objects\Schemas\dbo\Tables\HistoryMeasurement.sql" />
     <Build Include="Schema objects\Schemas\dbo\Tables\Keys\HistoryMeasurement_PK.sql" />
     <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertMeasurement.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\TotalProduction.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\TotalProduction_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertTotalProduction.sql" />
   </ItemGroup>
 </Project>

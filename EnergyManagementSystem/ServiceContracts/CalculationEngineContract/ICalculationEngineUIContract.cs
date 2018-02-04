@@ -25,5 +25,14 @@ namespace EMS.ServiceContracts
 		/// <returns>return list of measurements value and measurement time</returns>
 		[OperationContract]
 		List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime);
+
+        /// <summary>
+        /// Get Total Production from database
+        /// </summary>
+        /// <param name="startTime">Start time of period</param>
+        /// <param name="endTime">End time of period</param>
+        /// <returns>returns list of float and time of calculation</returns>
+        [OperationContract] 
+        List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime);
 	}
 }

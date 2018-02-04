@@ -10,314 +10,301 @@ using UIClient.View;
 
 namespace UIClient.ViewModel
 {
-	public class HistoryViewModel : ViewModelBase
-	{
-		private ICommand showDataCommand;
-		private string generatorGid;
-		private DateTime startTime;
-		private DateTime endTime;
-		private List<Tuple<double, DateTime>> measurements;
-		private ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>>();
-		private ICommand visibilityCheckedCommand;
-		private ICommand visibilityUncheckedCommand;
-		private ICommand allGeneratorsCheckedCommand;
-		private ICommand allGeneratorsUnheckedCommand;
-		private ICommand selectedPeriodCommand;
-		private ICommand expandSeparateGensCommand;
-		private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
-		private PeriodValues selectedPeriod;
-		private bool isSeparateGensExpanded = false;
+    public class HistoryViewModel : ViewModelBase
+    {
+        private ICommand showDataCommand;
+        private string generatorGid;
+        private DateTime startTime;
+        private DateTime endTime;
+        private ICommand visibilityCheckedCommand;
+        private ICommand visibilityUncheckedCommand;
+        private ICommand allGeneratorsCheckedCommand;
+        private ICommand allGeneratorsUnheckedCommand;
+        private ICommand selectedPeriodCommand;
+        private PeriodValues selectedPeriod;
+        private List<long> generatorsFromNms = new List<long>();
+        private List<Tuple<double, DateTime>> measurements;
+        private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
+        private ObservableCollection<Tuple<double, DateTime>> totalProduction = new ObservableCollection<Tuple<double, DateTime>>();
+        private ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>>();
 
-		private ModelResourcesDesc modelResourcesDesc;
-		private List<ModelCode> properties;
-		private int iteratorId;
-		private int resourcesLeft;
-		private int numberOfResources = 2;
-		private List<ResourceDescription> retList;
-		private static List<ResourceDescription> internalSynchMachines;
-
-
-		public HistoryViewModel(HistoryView mainWindow)
-		{
-			startTime = DateTime.Now;
-			endTime = DateTime.Now;
-
-			internalSynchMachines = new List<ResourceDescription>(5);
-			modelResourcesDesc = new ModelResourcesDesc();
-			retList = new List<ResourceDescription>(5);
-			properties = new List<ModelCode>(10);
-			ModelCode modelCodeSynchronousMachine = ModelCode.SYNCHRONOUSMACHINE;
-			iteratorId = 0;
-			resourcesLeft = 0;
-			numberOfResources = 2;
-			string message = string.Empty;
+        private ModelResourcesDesc modelResourcesDesc;
+        private List<ModelCode> properties;
+        private int iteratorId;
+        private int resourcesLeft;
+        private int numberOfResources = 2;
+        private List<ResourceDescription> retList;
+        private static List<ResourceDescription> internalSynchMachines;
 
 
-			// getting SynchronousMachine
-			try
-			{
-				// first get all synchronous machines from NMS
-				properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
-				iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
-				resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+        public HistoryViewModel(HistoryView mainWindow)
+        {
+            startTime = DateTime.Now;
+            endTime = DateTime.Now;
 
-				while (resourcesLeft > 0)
-				{
-					List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+            internalSynchMachines = new List<ResourceDescription>(5);
+            modelResourcesDesc = new ModelResourcesDesc();
+            retList = new List<ResourceDescription>(5);
+            properties = new List<ModelCode>(10);
+            ModelCode modelCodeSynchronousMachine = ModelCode.SYNCHRONOUSMACHINE;
+            iteratorId = 0;
+            resourcesLeft = 0;
+            numberOfResources = 2;
+            string message = string.Empty;
 
-				// add synchronous machines to internal collection
-				internalSynchMachines.AddRange(retList);
 
-				foreach (ResourceDescription rd in internalSynchMachines)
-				{
-					if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
-					{
-						long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
-						var keyValuePair = GeneratorsContainer.FirstOrDefault(x => x.Key == gid);
-						if (keyValuePair.Value == null)
-						{
-							GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(gid, new ObservableCollection<Tuple<double, DateTime>>()));
-							GidToBoolMap.Add(gid, false);
-						}
-					}
-				}
-				OnPropertyChanged(nameof(GeneratorsContainer));
+            // getting SynchronousMachine
+            try
+            {
+                // first get all synchronous machines from NMS
+                properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-			}
-			catch (Exception e)
-			{
-				message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
-				Console.WriteLine(message);
-				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-				//return false;
-			}
+                while (resourcesLeft > 0)
+                {
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-			// clear retList for getting new model from NMS
-			retList.Clear();
-		}
+                // add synchronous machines to internal collection
+                internalSynchMachines.AddRange(retList);
 
-		#region Commands
+                foreach (ResourceDescription rd in internalSynchMachines)
+                {
+                    if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
+                    {
+                        long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
+                        if (GeneratorsFromNms.Contains(gid))
+                        {
+                            continue;
+                        }
+                        GeneratorsFromNms.Add(gid);
+                        GidToBoolMap.Add(gid, false);
+                    }
+                }
+                OnPropertyChanged(nameof(GeneratorsFromNms));
 
-		public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
+            }
+            catch (Exception e)
+            {
+                message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
+                Console.WriteLine(message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                //return false;
+            }
 
-		public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
+            // clear retList for getting new model from NMS
+            retList.Clear();
+        }
 
-		public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
+        #region Commands
 
-		public ICommand AllGeneratorsCheckedCommand => allGeneratorsCheckedCommand ?? (allGeneratorsCheckedCommand = new RelayCommand(AllGeneratorsCheckedCommandExecute));
+        public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
 
-		public ICommand AllGeneratorsUncheckedCommand => allGeneratorsUnheckedCommand ?? (allGeneratorsUnheckedCommand = new RelayCommand(AllGeneratorsUnheckedCommandExecute));
+        public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
 
-		public ICommand ChangePeriodCommand => selectedPeriodCommand ?? (selectedPeriodCommand = new RelayCommand(SelectedPeriodCommandExecute));
+        public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
 
-		public ICommand ExpandSeparateGensCommand => expandSeparateGensCommand ?? (expandSeparateGensCommand = new RelayCommand(ExpandSeparateGensCommandExecute));
+        public ICommand AllGeneratorsCheckedCommand => allGeneratorsCheckedCommand ?? (allGeneratorsCheckedCommand = new RelayCommand(AllGeneratorsCheckedCommandExecute));
 
-		#endregion
+        public ICommand AllGeneratorsUncheckedCommand => allGeneratorsUnheckedCommand ?? (allGeneratorsUnheckedCommand = new RelayCommand(AllGeneratorsUnheckedCommandExecute));
 
-		#region Properties
+        public ICommand ChangePeriodCommand => selectedPeriodCommand ?? (selectedPeriodCommand = new RelayCommand(SelectedPeriodCommandExecute));
 
-		public bool IsSeparateGensExpanded
-		{
-			get
-			{
-				return isSeparateGensExpanded;
-			}
-			set
-			{
-				isSeparateGensExpanded = value;
-				OnPropertyChanged(nameof(IsSeparateGensExpanded));
-			}
-		}
+        #endregion
 
-		public PeriodValues SelectedPeriod
-		{
-			get
-			{
-				return selectedPeriod;
-			}
-			set
-			{
-				selectedPeriod = value;
-			}
-		}
+        #region Properties
 
-		public ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> GeneratorsContainer
-		{
-			get
-			{
-				return generatorsContainer;
-			}
+        public List<long> GeneratorsFromNms
+        {
+            get
+            {
+                return generatorsFromNms;
+            }
+            set
+            {
+                generatorsFromNms = value;
+            }
+        }
 
-			set
-			{
-				generatorsContainer = value;
-			}
-		}
+        public ObservableCollection<Tuple<double, DateTime>> TotalProduction
+        {
+            get
+            {
+                return totalProduction;
+            }
+            set
+            {
+                totalProduction = value;
+            }
+        }
+    
+        public PeriodValues SelectedPeriod
+        {
+            get
+            {
+                return selectedPeriod;
+            }
+            set
+            {
+                selectedPeriod = value;
+            }
+        }
 
-		public string GeneratorGid
-		{
-			get { return generatorGid; }
-			set { this.generatorGid = value; }
-		}
+        public ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> GeneratorsContainer
+        {
+            get
+            {
+                return generatorsContainer;
+            }
 
-		public List<Tuple<double, DateTime>> Measurements
-		{
-			get { return measurements; }
-			set { measurements = value; }
-		}
+            set
+            {
+                generatorsContainer = value;
+            }
+        }
 
-		public DateTime StartTime
-		{
-			get { return startTime; }
-			set
-			{
-				startTime = value;
-				OnPropertyChanged(nameof(StartTime));
-			}
-		}
+        public string GeneratorGid
+        {
+            get { return generatorGid; }
+            set { this.generatorGid = value; }
+        }
 
-		public DateTime EndTime
-		{
-			get { return endTime; }
-			set
-			{
-				endTime = value;
-				OnPropertyChanged(nameof(EndTime));
-			}
-		}
+        public List<Tuple<double, DateTime>> Measurements
+        {
+            get { return measurements; }
+            set { measurements = value; }
+        }
 
-		public Dictionary<long, bool> GidToBoolMap
-		{
-			get
-			{
-				return gidToBoolMap;
-			}
+        public DateTime StartTime
+        {
+            get { return startTime; }
+            set
+            {
+                startTime = value;
+                OnPropertyChanged(nameof(StartTime));
+            }
+        }
 
-			set
-			{
-				gidToBoolMap = value;
-			}
-		}
+        public DateTime EndTime
+        {
+            get { return endTime; }
+            set
+            {
+                endTime = value;
+                OnPropertyChanged(nameof(EndTime));
+            }
+        }
 
-		#endregion
+        public Dictionary<long, bool> GidToBoolMap
+        {
+            get
+            {
+                return gidToBoolMap;
+            }
 
-		#region Command Executions
+            set
+            {
+                gidToBoolMap = value;
+            }
+        }
 
-		private void ShowDataCommandExecute(object obj)
-		{
-			if (GidToBoolMap.Count != 0)
-			{
-				ObservableCollection<Tuple<double, DateTime>> tempList;
-				foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
-				{
-					if (keyPair.Value == true)
-					{
-						try
-						{
-							tempList = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetHistoryMeasurements(keyPair.Key, startTime, endTime));
-							if (tempList == null)
-							{
-								continue;
-							}
+        #endregion
 
-							var keyPairGenerator = GeneratorsContainer.FirstOrDefault(x => x.Key == keyPair.Key);
-							if (keyPairGenerator.Value == null)
-							{
-								GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, tempList));
-							}
-							else
-							{
-								keyPairGenerator.Value.Clear();
-								foreach (Tuple<double, DateTime> tuple in tempList)
-								{
-									keyPairGenerator.Value.Add(new Tuple<double, DateTime>(tuple.Item1, tuple.Item2));
-								}
+        #region Command Executions
 
-							}
-							tempList.Clear();
-							tempList = null;
-						}
-						catch (Exception ex)
-						{
-							CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
-						}
+        private void ShowDataCommandExecute(object obj)
+        {
+            ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
+            GeneratorsContainer.Clear();
+            foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
+            {
+                if (keyPair.Value == true)
+                {
+                    try
+                    {
+                        measurementsFromDb = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetHistoryMeasurements(keyPair.Key, startTime, endTime));
 
-					}
-				}
-				OnPropertyChanged(nameof(GeneratorsContainer));
-			}
-		}
+                        if (measurementsFromDb == null)
+                        {
+                            continue;
+                        }
 
-		private void VisibilityCheckedCommandExecute(long gid)
-		{
-			GidToBoolMap[gid] = true;
-			OnPropertyChanged(nameof(GidToBoolMap));
-		}
+                        GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb)));
 
-		private void VisibilityUncheckedCommandExecute(long gid)
-		{
-			GidToBoolMap[gid] = false;
-			OnPropertyChanged(nameof(GidToBoolMap));
-		}
+                        measurementsFromDb.Clear();
+                        measurementsFromDb = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
+                    }
 
-		private void AllGeneratorsCheckedCommandExecute(object obj)
-		{
-			GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => true);
-			OnPropertyChanged(nameof(GidToBoolMap));
-		}
+                }
+            }
+            TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
 
-		private void AllGeneratorsUnheckedCommandExecute(object obj)
-		{
-			GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => false);
-			OnPropertyChanged(nameof(GidToBoolMap));
-		}
+            OnPropertyChanged(nameof(TotalProduction));
+            OnPropertyChanged(nameof(GeneratorsContainer));
+        }
 
-		private void SelectedPeriodCommandExecute(object obj)
-		{
-			if (SelectedPeriod == PeriodValues.Last_Hour)
-			{
-				StartTime = DateTime.Now.AddHours(-1);
-				EndTime = DateTime.Now;
-			}
-			else if (SelectedPeriod == PeriodValues.Today)
-			{
-				StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-				EndTime = DateTime.Now;
-			}
-			else if (SelectedPeriod == PeriodValues.Last_Year)
-			{
-				StartTime = DateTime.Now.AddYears(-1);
-				EndTime = DateTime.Now;
-			}
-			else if (SelectedPeriod == PeriodValues.Last_Month)
-			{
-				StartTime = DateTime.Now.AddMonths(-1);
-				EndTime = DateTime.Now;
-			}
-			else if (SelectedPeriod == PeriodValues.Last_4_Month)
-			{
-				StartTime = DateTime.Now.AddMonths(-4);
-				EndTime = DateTime.Now;
-			}
-		}
+        private void VisibilityCheckedCommandExecute(long gid)
+        {
+            GidToBoolMap[gid] = true;
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
 
-		private void ExpandSeparateGensCommandExecute(object obj)
-		{
-			if (IsSeparateGensExpanded)
-			{
-				IsSeparateGensExpanded = false;
-			}
-			else
-			{
-				IsSeparateGensExpanded = true;
-			}
-		}
+        private void VisibilityUncheckedCommandExecute(long gid)
+        {
+            GidToBoolMap[gid] = false;
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
 
-		#endregion
+        private void AllGeneratorsCheckedCommandExecute(object obj)
+        {
+            GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => true);
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
 
-	}
+        private void AllGeneratorsUnheckedCommandExecute(object obj)
+        {
+            GidToBoolMap = GidToBoolMap.ToDictionary(p => p.Key, p => false);
+            OnPropertyChanged(nameof(GidToBoolMap));
+        }
+
+        private void SelectedPeriodCommandExecute(object obj)
+        {
+            if (SelectedPeriod == PeriodValues.Last_Hour)
+            {
+                StartTime = DateTime.Now.AddHours(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Today)
+            {
+                StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_Year)
+            {
+                StartTime = DateTime.Now.AddYears(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_Month)
+            {
+                StartTime = DateTime.Now.AddMonths(-1);
+                EndTime = DateTime.Now;
+            }
+            else if (SelectedPeriod == PeriodValues.Last_4_Month)
+            {
+                StartTime = DateTime.Now.AddMonths(-4);
+                EndTime = DateTime.Now;
+            }
+        }
+
+        #endregion
+
+    }
 }
