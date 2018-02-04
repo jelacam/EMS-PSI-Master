@@ -104,5 +104,8 @@
     <Build Include="Schema objects\Schemas\dbo\Tables\TotalProduction.sql" />
     <Build Include="Schema objects\Schemas\dbo\Tables\Keys\TotalProduction_PK.sql" />
     <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertTotalProduction.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\CO2Emission.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\CO2Emission_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertCO2Emission.sql" />
   </ItemGroup>
 </Project>

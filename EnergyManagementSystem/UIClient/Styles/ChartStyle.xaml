@@ -321,7 +321,7 @@
 										ContentStringFormat="Time : {0}"/>
 						<ContentControl Content="{TemplateBinding DependentValue}" 
 										Foreground="{TemplateBinding Foreground}" 
-										ContentStringFormat="Value1 : {0:###}"/>
+										ContentStringFormat="Value : {0:###}"/>
 					</StackPanel>
 				</Grid>
 			</ToolTipService.ToolTip>

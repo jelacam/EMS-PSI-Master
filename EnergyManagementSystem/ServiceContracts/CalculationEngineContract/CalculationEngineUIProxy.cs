@@ -76,5 +76,10 @@ namespace EMS.ServiceContracts
         {
             return proxy.GetTotalProduction(startTime, endTime);
         }
-	}
+
+        public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
+        {
+            return proxy.GetCO2Emission(startTime, endTime);
+        }
+    }
 }

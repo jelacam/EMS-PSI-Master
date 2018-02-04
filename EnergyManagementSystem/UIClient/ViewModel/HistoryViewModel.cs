@@ -12,6 +12,8 @@ namespace UIClient.ViewModel
 {
     public class HistoryViewModel : ViewModelBase
     {
+        #region Fields
+
         private ICommand showDataCommand;
         private string generatorGid;
         private DateTime startTime;
@@ -36,6 +38,7 @@ namespace UIClient.ViewModel
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
 
+        #endregion
 
         public HistoryViewModel(HistoryView mainWindow)
         {

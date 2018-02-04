@@ -33,7 +33,23 @@ namespace EMS.Services.CalculationEngineService
 			}
 		}
 
-		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double, DateTime>> retList = new List<Tuple<double, double, DateTime>>();
+
+            try
+            {
+                retList = ce.ReadCO2EmissionFromDb(startTime, endTime);
+            }
+            catch (Exception ex)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetCO2 emission {0}", ex.Message);
+            }
+
+            return retList;
+        }
+
+        public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
 		{
 			List<Tuple<double, DateTime>> retList = new List<Tuple<double, DateTime>>();
 			try

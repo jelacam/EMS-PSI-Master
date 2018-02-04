@@ -72,7 +72,7 @@
                         </chartingToolkit:LineSeries.DataPointStyle>
 
                         <chartingToolkit:LineSeries.IndependentAxis>
-                            <chartingToolkit:CategoryAxis Orientation="X" Title="Time"  />
+                            <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"  />
                         </chartingToolkit:LineSeries.IndependentAxis>
 
                         <chartingToolkit:LineSeries.DependentRangeAxis>
@@ -153,34 +153,33 @@
                 </Grid>
             </GroupBox>
 
-            <Button Grid.Row="5" Grid.Column="0" Content="Show" Margin="10" 
+            <Button Grid.Row="5" Grid.Column="0" Content="View Data" Margin="10" 
 					Command="{Binding ShowDataCommand}"></Button>
         </Grid>
 
-        <ScrollViewer Grid.Column="1">
+        <ScrollViewer Grid.Column="1" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <Expander Grid.Row="0" IsExpanded="False" Header="Production by separate generator" Foreground="White" Margin="10">
-                    <DockPanel >
-                        <ItemsControl ItemsSource="{Binding GeneratorsContainer}" 
+                    <ItemsControl ItemsSource="{Binding GeneratorsContainer}" 
 								   ItemTemplate="{StaticResource GraphGeneratorTemplate}" >
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                    </DockPanel>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                 </Expander>
-                
+
                 <Expander Grid.Row="1" Margin="10" IsExpanded="False" Header="Total Production" Foreground="White">
                     <chartingToolkit:Chart Margin="10"
                                         Title="Total Production" 
 									   Style="{StaticResource DashboardChartStyle}"
+                                         Height="600"
 									    >
 
                         <chartingToolkit:LineSeries Title="Value"  
@@ -198,7 +197,7 @@
                             </chartingToolkit:LineSeries.DataPointStyle>
 
                             <chartingToolkit:LineSeries.IndependentAxis>
-                                <chartingToolkit:CategoryAxis Orientation="X" Title="Time"  />
+                                <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"  />
                             </chartingToolkit:LineSeries.IndependentAxis>
 
                             <chartingToolkit:LineSeries.DependentRangeAxis>

@@ -31,8 +31,17 @@ namespace EMS.ServiceContracts
         /// </summary>
         /// <param name="startTime">Start time of period</param>
         /// <param name="endTime">End time of period</param>
-        /// <returns>returns list of float and time of calculation</returns>
+        /// <returns>returns list of double and time of calculation</returns>
         [OperationContract] 
         List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime);
+
+        /// <summary>
+        /// Get CO2 Emission from database
+        /// </summary>
+        /// <param name="startTime">Start time of period</param>
+        /// <param name="endTime">End time of period</param>
+        /// <returns>returns list of nonrenewable, renewable and measurementtime</returns>
+        [OperationContract]
+        List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime);
 	}
 }

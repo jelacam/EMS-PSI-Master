@@ -46,7 +46,15 @@
 				</TabItem.ContentTemplate>
 			</TabItem>
 
-			<TabItem Header="Alarm Summary" Style="{StaticResource TabItemStyle}">
+            <TabItem Header="DMS" Style="{StaticResource TabItemStyle}">
+                <TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <view:DMSOptionsView></view:DMSOptionsView>
+                    </DataTemplate>
+                </TabItem.ContentTemplate>
+            </TabItem>
+
+            <TabItem Header="Alarm Summary" Style="{StaticResource TabItemStyle}">
 				<TabItem.ContentTemplate>
 					<DataTemplate>
 						<view:AlarmSummaryView DataContext="{Binding Path = DataContext.AlarmSummaryViewModel, RelativeSource={RelativeSource AncestorType=Window}}"/>

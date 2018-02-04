@@ -133,6 +133,7 @@
     <Compile Include="Converters\StringCompareConverter.cs" />
     <Compile Include="Converters\TestConverter.cs" />
     <Compile Include="Model\PeriodValues.cs" />
+    <Compile Include="Model\PieChart.cs" />
     <Compile Include="PubSub\CallbackEventArgs.cs" />
     <Compile Include="PubSub\AePubSubCallbackService.cs" />
     <Compile Include="PubSub\AlarmsEventsSubscribeProxy.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="ViewModel\AlarmSummaryViewModel.cs" />
     <Compile Include="ViewModel\AlarmViewModel.cs" />
     <Compile Include="ViewModel\DashboardViewModel.cs" />
+    <Compile Include="ViewModel\DMSOptionsViewModel.cs" />
     <Compile Include="ViewModel\HistoryViewModel.cs" />
     <Compile Include="ViewModel\ImporterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
@@ -156,6 +158,9 @@
     </Compile>
     <Compile Include="View\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DMSOptionsView.xaml.cs">
+      <DependentUpon>DMSOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HistoryView.xaml.cs">
       <DependentUpon>HistoryView.xaml</DependentUpon>
@@ -230,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DashboardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DMSOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
