@@ -143,9 +143,9 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						production -= item.Value.MaxPower;
 					}
 				}
-
-				optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
+				
 				optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
+				optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
 
 				Profit = totalCostNonRenewable - totalCostLinear;
 
@@ -234,7 +234,6 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 							Console.WriteLine("Linear optimization: {0}kW", OptimizedLinear);
 							Console.WriteLine("Linear optimization wind: {0}kW ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
 							Console.WriteLine("Linear optimization CO2: {0}", CO2EmmissionRenewable);
-
 						}
 						else
 						{

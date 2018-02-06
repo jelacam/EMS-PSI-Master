@@ -99,6 +99,14 @@
       <Project>{94842C81-93DE-4490-A3D0-BC420C97B850}</Project>
       <Name>CommonMeasurement</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Common.csproj">
+      <Project>{892cbe15-9ed7-4540-81fa-0eaaba592138}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\NetworkModelService\DataModel\DataModel.csproj">
+      <Project>{ade96497-7c11-40b6-ae82-57f956c9f104}</Project>
+      <Name>DataModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\ServiceContracts\CEPubSubContract\CEPubSubContract.csproj">
       <Project>{001A5767-0640-4E4E-8AD8-22AEBFD8C069}</Project>
       <Name>CEPubSubContract</Name>
