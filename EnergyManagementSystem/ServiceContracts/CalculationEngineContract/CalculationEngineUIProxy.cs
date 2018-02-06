@@ -81,5 +81,10 @@ namespace EMS.ServiceContracts
         {
             return proxy.GetCO2Emission(startTime, endTime);
         }
+
+        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        {
+            return proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
+        }
     }
 }
