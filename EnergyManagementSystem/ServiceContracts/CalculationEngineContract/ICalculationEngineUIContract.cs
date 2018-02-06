@@ -43,5 +43,15 @@ namespace EMS.ServiceContracts
         /// <returns>returns list of nonrenewable, renewable and measurementtime</returns>
         [OperationContract]
         List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime);
-	}
+
+        /// <summary>
+        /// Get Wind Farm Saving Data from database
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>returns list of total cost without renewable, total cost with renewable and profit</returns>
+        [OperationContract]
+        List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime);
+
+    }
 }

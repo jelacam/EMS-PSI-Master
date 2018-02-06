@@ -80,5 +80,21 @@ namespace EMS.Services.CalculationEngineService
             return retList;
 
         }
-	}
+
+        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double, double>> retList = new List<Tuple<double, double, double>>();
+
+            try
+            {
+                retList = ce.ReadWindFarmSavingDataFromDb(startTime, endTime);
+            }
+            catch (Exception ex)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadWindFarmSavingDataFromD {0}", ex.Message);
+            }
+
+            return retList;
+        }
+    }
 }
