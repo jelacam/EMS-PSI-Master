@@ -53,5 +53,14 @@ namespace EMS.ServiceContracts
         [OperationContract]
         List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime);
 
+        /// <summary>
+        /// Get Wind Farm Saving Data from database
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>returns list of wind production and wind production percentage</returns>
+        [OperationContract]
+        List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime);
+
     }
 }

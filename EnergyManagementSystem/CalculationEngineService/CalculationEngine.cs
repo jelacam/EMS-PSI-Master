@@ -560,6 +560,48 @@ namespace EMS.Services.CalculationEngineService
         }
 
         /// <summary>
+        /// Read wind farm savin data from database (total cost without wind farm, total cost with wind farm and profit)
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
+        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT WindProduction, WindProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read Wind Farm Production Data from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
         /// Write CO2 Emission into database
         /// </summary>
         /// <param name="nonRenewableEmissionValue">emission value without renewable generators</param>

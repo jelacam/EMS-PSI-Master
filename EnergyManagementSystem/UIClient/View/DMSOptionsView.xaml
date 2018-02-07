@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:UIClient.View"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+             xmlns:dv="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:converters="clr-namespace:UIClient.Converters"
              xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -31,6 +32,91 @@
             </Grid.RowDefinitions>
 
             <Expander Grid.Row="0" IsExpanded="False" Header="Wind Farm Saving" Foreground="White" Margin="10">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+                        <GroupBox Margin="10" FontSize="14" Header="Period"  Foreground="White">
+                            <ComboBox Margin="10" ItemsSource="{Binding Source={StaticResource dataFromPeriodEnum}}" SelectedValue="{Binding SelectedPeriodWind}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource PeriodEnumToStringConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ChangePeriodWindProductionCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox Margin="10" FontSize="14" Header="Start Time"  Foreground="White">
+                            <toolkit:DateTimePicker  Margin="10" Value="{Binding StartTimeWind}" 
+                                    Width="300">
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
+
+                        <GroupBox Margin="10" FontSize="14" Header="End Time"  Foreground="White">
+                            <toolkit:DateTimePicker Margin="10" Value="{Binding EndTimeWind}"
+                                        Width="300">
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
+
+                        <Button Content="View Data" Margin="10" 
+					Command="{Binding ViewWindProductionDataCommand}"></Button>
+
+                    </StackPanel >
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10" >
+                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind production in selected period: "></TextBlock>
+                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalWindProduction}"></TextBlock>
+                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="kW"></TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10" >
+                            <chartingToolkit:Chart Margin="10" Height="600" Width="600" BorderThickness="0" >
+                            <chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
+                                                       IndependentValueBinding="{Binding Path=Key}"
+                                                       DependentValueBinding="{Binding Path=Value}"
+                                                       IsSelectionEnabled="False"
+                                                       BorderThickness="0">
+                                <chartingToolkit:PieSeries.Palette>
+                                    <dv:ResourceDictionaryCollection>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="green" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="orange" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style TargetType="dv:Legend">
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Foreground" Value="Transparent"/>
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <!--<ResourceDictionary>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                            </Style>
+                                        </ResourceDictionary>-->
+                                    </dv:ResourceDictionaryCollection>
+                                </chartingToolkit:PieSeries.Palette>
+                            </chartingToolkit:PieSeries>
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
+                        </chartingToolkit:Chart>
+                    </StackPanel>
+                    
+                </Grid>
             </Expander>
 
             <Expander Grid.Row="1" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
@@ -73,8 +159,8 @@
 
                     </StackPanel >
                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
-                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="Total CO2 reduction for selected period [tonnes]:" Margin="5,0,0,0"/>
-                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkGreen" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period [tonnes]:" Margin="5,0,0,0"/>
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
 
                         <chartingToolkit:Chart 
                                     Margin="10"
@@ -121,12 +207,31 @@
                             </chartingToolkit:LineSeries>
                         </chartingToolkit:Chart>
 
-                        <chartingToolkit:Chart Margin="10" Height="600" Width="600">
+                        <chartingToolkit:Chart Margin="10" Height="600" Width="600"  BorderThickness="0">
                             <chartingToolkit:PieSeries ItemsSource="{Binding PieData}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
                                                        IsSelectionEnabled="False">
+                                <chartingToolkit:PieSeries.Palette>
+                                    <dv:ResourceDictionaryCollection>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="green" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="orange" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                    </dv:ResourceDictionaryCollection>
+                                </chartingToolkit:PieSeries.Palette>
                             </chartingToolkit:PieSeries>
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
                         </chartingToolkit:Chart>
 
                     </StackPanel>
