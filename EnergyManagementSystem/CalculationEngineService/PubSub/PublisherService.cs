@@ -10,7 +10,7 @@ using EMS.CommonMeasurement;
 
 namespace EMS.Services.CalculationEngineService.PubSub
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class PublisherService : ICePubSubContract
     {
         public delegate void OptimizationResultEventHandler(object sender, OptimizationEventArgs e);
@@ -21,7 +21,17 @@ namespace EMS.Services.CalculationEngineService.PubSub
         private OptimizationResultEventHandler optimizationResultHandler = null;
 
         public static OptimizationType OptimizationType = OptimizationType.None;
-       // public static Action<OptimizationType> ChangeOptimizationTypeAction;
+        // public static Action<OptimizationType> ChangeOptimizationTypeAction;
+
+        private static List<ICePubSubCallbackContract> clientsToPublish = new List<ICePubSubCallbackContract>(4);
+
+        private object clientsLocker = new object();
+
+        public PublisherService()
+        {
+            optimizationResultHandler = new OptimizationResultEventHandler(OptimizationResultHandler);
+            OptimizationResultEvent += optimizationResultHandler;
+        }
 
         /// <summary>
         /// This sevent handler runs when a OptimizationChange event is raised.
@@ -31,7 +41,27 @@ namespace EMS.Services.CalculationEngineService.PubSub
         /// <param name="e"></param>
         public void OptimizationResultHandler(object sender, OptimizationEventArgs e)
         {
-            callback.OptimizationResults(e.OptimizationResult);
+            List<ICePubSubCallbackContract> faultetClients = new List<ICePubSubCallbackContract>(4);
+            //callback.OptimizationResults(e.OptimizationResult);
+            foreach (ICePubSubCallbackContract client in clientsToPublish)
+            {
+                if ((client as ICommunicationObject).State.Equals(CommunicationState.Opened))
+                {
+                    client.OptimizationResults(e.OptimizationResult);
+                }
+                else
+                {
+                    faultetClients.Add(client);
+                }
+            }
+
+            lock (clientsLocker)
+            {
+                foreach (ICePubSubCallbackContract client in faultetClients)
+                {
+                    clientsToPublish.Remove(client);
+                }
+            }
         }
 
         /// <summary>
@@ -41,15 +71,17 @@ namespace EMS.Services.CalculationEngineService.PubSub
         public void Subscribe()
         {
             callback = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
-            optimizationResultHandler = new OptimizationResultEventHandler(OptimizationResultHandler);
-            OptimizationResultEvent += optimizationResultHandler;
+            //optimizationResultHandler = new OptimizationResultEventHandler(OptimizationResultHandler);
+            //OptimizationResultEvent += optimizationResultHandler;
+            clientsToPublish.Add(callback);
         }
 
         public void Unsubscribe()
         {
-            OptimizationResultEvent -= optimizationResultHandler;
+            //OptimizationResultEvent -= optimizationResultHandler;
+            callback = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
+            clientsToPublish.Remove(callback);
         }
-
 
         /// <summary>
         /// Information source, in our case it is Calculation Engine, call this service operation to report a optimization result.
@@ -82,7 +114,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         public bool ChooseOptimization(OptimizationType optimizationType)
         {
             OptimizationType = optimizationType;
-           // ChangeOptimizationTypeAction?.Invoke(optimizationType);
+            // ChangeOptimizationTypeAction?.Invoke(optimizationType);
             return true;
         }
     }
