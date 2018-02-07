@@ -481,7 +481,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction2(int x)
 		{
 			double retVal = 0;
-			retVal = 200 - 9.824232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 200 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -497,7 +497,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction3(int x)
 		{
 			double retVal = 0;
-			retVal = 300 - 9.724232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 300 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -513,7 +513,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction4(int x)
 		{
 			double retVal = 0;
-			retVal = 400 - 9.624232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 400 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -529,7 +529,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction5(int x)
 		{
 			double retVal = 0;
-			retVal = 500 - 9.524232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 500 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -545,7 +545,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction6(int x)
 		{
 			double retVal = 0;
-			retVal = 600 - 9.524232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 600 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -561,7 +561,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction7(int x)
 		{
 			double retVal = 0;
-			retVal = 700 - 9.624232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 700 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -577,7 +577,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction8(int x)
 		{
 			double retVal = 0;
-			retVal = 800 - 9.724232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 800 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
@@ -593,7 +593,7 @@ namespace UISimulator.ViewModel
 		private float SimulationFunction9(int x)
 		{
 			double retVal = 0;
-			retVal = 900 - 9.824232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
+			retVal = 900 - 9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5);
 
             if (retVal < 10)
 			{
