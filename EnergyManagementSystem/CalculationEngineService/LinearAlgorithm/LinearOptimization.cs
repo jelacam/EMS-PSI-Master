@@ -167,7 +167,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
         /// <param name="renewable">should renewables be included</param>
         /// <param name="maxProductionLimit">maximum limit of production</param>
         /// <returns>linear optimized model</returns>
-        public Dictionary<long, OptimisationModel> StartLinearOptimization(Dictionary<long, OptimisationModel> optModelMap, float consumption, bool renewable, float maxProductionLimit)
+        private Dictionary<long, OptimisationModel> StartLinearOptimization(Dictionary<long, OptimisationModel> optModelMap, float consumption, bool renewable, float maxProductionLimit)
         {
             lock (lockObj)
             {
