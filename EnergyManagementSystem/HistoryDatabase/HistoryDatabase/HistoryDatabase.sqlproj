@@ -132,5 +132,8 @@
     <Build Include="Schema objects\Schemas\dbo\Tables\CO2Emission.sql" />
     <Build Include="Schema objects\Schemas\dbo\Tables\Keys\CO2Emission_PK.sql" />
     <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertCO2Emission.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Alarms.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\Alarms_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertAlarm.sql" />
   </ItemGroup>
 </Project>
