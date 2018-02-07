@@ -149,9 +149,9 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
                         production -= item.Value.MaxPower;
                     }
                 }
-
-                optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
-                optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
+				//mora prvo optimizacija bez vetrogeneratora
+				optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
+				optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
 
                 Profit = totalCostNonRenewable - totalCostWithRenewable;
 
