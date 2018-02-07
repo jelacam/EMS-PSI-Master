@@ -29,9 +29,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Expander Grid.Row="0" IsExpanded="False" Header="Wind Farm Saving" Foreground="White" Margin="10">
+            <Expander Grid.Row="0" IsExpanded="False" Header="Wind Farm Production" Foreground="White" Margin="10">
                 <Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -119,7 +120,76 @@
                 </Grid>
             </Expander>
 
-            <Expander Grid.Row="1" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
+            <Expander Grid.Row="1" IsExpanded="False" Header="Wind Farm Saving" Foreground="White" Margin="10">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+                        <GroupBox Margin="10" FontSize="14" Header="Period"  Foreground="White">
+                            <ComboBox Margin="10" ItemsSource="{Binding Source={StaticResource dataFromPeriodEnum}}" SelectedValue="{Binding SelectedPeriodSaving}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource PeriodEnumToStringConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ChangePeriodSavingCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox Margin="10" FontSize="14" Header="Start Time"  Foreground="White">
+                            <toolkit:DateTimePicker  Margin="10" Value="{Binding StartTimeSaving}" 
+                                    Width="300">
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
+
+                        <GroupBox Margin="10" FontSize="14" Header="End Time"  Foreground="White">
+                            <toolkit:DateTimePicker Margin="10" Value="{Binding EndTimeSaving}"
+                                        Width="300">
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
+
+                        <Button Content="View Data" Margin="10" 
+					Command="{Binding ViewSavingnDataCommand}"></Button>
+
+                    </StackPanel >
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                   
+                    <chartingToolkit:Chart Grid.Row="0" Margin="10" Height="600" Width="600" BorderThickness="0" >
+                        <chartingToolkit:BarSeries ItemsSource="{Binding BarSavingData}" 
+                                                       IndependentValueBinding="{Binding Path=Key}"
+                                                       DependentValueBinding="{Binding Path=Value}"
+                                                       IsSelectionEnabled="False"
+                                                       BorderThickness="0">
+                        </chartingToolkit:BarSeries>
+                        <chartingToolkit:Chart.PlotAreaStyle>
+                            <Style TargetType="Grid">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </chartingToolkit:Chart.PlotAreaStyle>
+                    </chartingToolkit:Chart>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" >
+                    <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind farm saving in selected period: "></TextBlock>
+                    <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalWindSaving}"></TextBlock>
+                    <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" $"></TextBlock>
+                </StackPanel>
+                    </Grid>
+                </Grid>
+            </Expander>
+
+            <Expander Grid.Row="2" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
                 <Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>

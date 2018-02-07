@@ -13,6 +13,8 @@ namespace EMS.Services.AlarmsEventsService
     using System.Collections.Generic;
     using CommonMeasurement;
     using System.ServiceModel;
+    using System.Data.SqlClient;
+    using System.Data;
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
@@ -106,6 +108,10 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     alarm.InitiatingValue = alarm.Value;
                     this.Alarms.Add(alarm);
+                    if (InsertAlarmIntoDb(alarm))
+                    {
+                        Console.WriteLine("Alarm with GID:{0} recorded into alarms database.",alarm.Gid);
+                    }
                 }
 
                 this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
@@ -152,6 +158,54 @@ namespace EMS.Services.AlarmsEventsService
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
 
             return Alarms;
+        }
+
+        private bool InsertAlarmIntoDb(AlarmHelper alarm)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("InsertAlarm", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = alarm.Gid;
+                        cmd.Parameters.Add("@alarmValue", SqlDbType.Float).Value = alarm.Value;
+                        cmd.Parameters.Add("@minValue", SqlDbType.Float).Value = alarm.MinValue;
+                        cmd.Parameters.Add("@maxValue", SqlDbType.Float).Value = alarm.MaxValue;
+                        cmd.Parameters.Add("@timeStamp", SqlDbType.DateTime).Value = alarm.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@severity", SqlDbType.Int).Value = alarm.Severity;
+                        cmd.Parameters.Add("@initiatingValue", SqlDbType.Float).Value = alarm.InitiatingValue;
+                        cmd.Parameters.Add("@lastChange", SqlDbType.DateTime).Value = alarm.LastChange.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@currentState", SqlDbType.VarChar).Value = alarm.CurrentState;
+                        cmd.Parameters.Add("@ackState", SqlDbType.Int).Value = alarm.AckState;
+                        cmd.Parameters.Add("@pubStatus", SqlDbType.Int).Value = alarm.PubStatus;
+                        cmd.Parameters.Add("@alarmType", SqlDbType.Int).Value = alarm.Type;
+                        cmd.Parameters.Add("@persistent", SqlDbType.Int).Value = alarm.Persistent;
+                        cmd.Parameters.Add("@inhibit", SqlDbType.Int).Value = alarm.Inhibit;
+                        cmd.Parameters.Add("@message", SqlDbType.NText).Value = alarm.Message;
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to insert alarm into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
         }
     }
 }

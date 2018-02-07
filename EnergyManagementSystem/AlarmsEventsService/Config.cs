@@ -7,6 +7,7 @@
 namespace EMS.Services.AlarmsEventsService
 {
     using System;
+    using System.Configuration;
 
     public class Config
     {
@@ -20,6 +21,7 @@ namespace EMS.Services.AlarmsEventsService
         private Config()
         {
             //connectionString = ConfigurationManager.ConnectionStrings["alarmsEventsconnectionString"].ConnectionString;
+            connectionString = ConfigurationManager.ConnectionStrings["historyDbConnectionString"].ConnectionString;
         }
 
         #region Static members

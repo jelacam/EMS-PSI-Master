@@ -107,6 +107,7 @@ namespace EMS.CommonMeasurement
             this.message = "";
             this.persistent = PersistentState.Persistent;
             this.inhibit = InhibitState.Noninhibit;
+            this.lastChange = timeStamp;
         }
 
         /// <summary>
