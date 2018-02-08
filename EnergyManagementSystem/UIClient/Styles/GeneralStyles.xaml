@@ -1,12 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UIClient.Styles">
+                    xmlns:local="clr-namespace:UIClient.Styles"
+					xmlns:converters="clr-namespace:UIClient.Converters">
 
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
 	<SolidColorBrush x:Key="LigthBrush" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="BlueMouseOver" Color="#1C97EA"/>
-
+	
+	<converters:TestConverter x:Key="TestConv"/>
+	
 	<Style TargetType="Window" x:Key="BasicWindowStyle">
 		<Setter Property="Background" Value="{StaticResource AppBackground}" ></Setter>
 		<Setter Property="Foreground" Value="White" ></Setter>
@@ -32,16 +35,12 @@
 		<Setter Property="BorderThickness" Value="0" ></Setter>
 	</Style>
 
-	<Style TargetType="DataGridRow" x:Key="AlarmDataGridRowStyle">
-		<Setter Property="Background" Value="Red"></Setter>
-	</Style>
-
 	<Style TargetType="DataGrid">
 		<Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
 		<Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
 		<Setter Property="Foreground" Value="{StaticResource DarkBrush}"></Setter>
- 	</Style>
-	
+	</Style>
+
 	<Style TargetType="TabItem" x:Key="TabItemStyle">
 		<Setter Property="Foreground" Value="White"/>
 		<Setter Property="FontSize" Value="14"/>
@@ -60,7 +59,7 @@
 							<Setter TargetName="Panel" Property="Background" Value="{StaticResource DarkBrush}" />
 							<Setter Property="FontSize" Value="15"/>
 							<Setter Property="Margin" Value="-1,0,-1,-1"/>
-						</Trigger> 
+						</Trigger>
 						<Trigger Property="IsSelected" Value="False">
 							<Setter TargetName="Panel" Property="Background" Value="{StaticResource AppBackground}" />
 						</Trigger>
@@ -95,7 +94,8 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="AlarmSummaryDataGridRowStyle" TargetType="DataGridRow">
+	<Style x:Key="AlarmGridCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+		<Setter Property="BorderThickness" Value="0" />
 		<Style.Triggers>
 			<DataTrigger Binding="{Binding Severity}" Value="CRITICAL">
 				<Setter Property="Background" Value="Magenta"></Setter>
@@ -111,6 +111,7 @@
 
 			<DataTrigger Binding="{Binding Severity}" Value="MEDIUM">
 				<Setter Property="Background" Value="Yellow"></Setter>
+				<Setter Property="Foreground" Value="Gray" />
 			</DataTrigger>
 
 			<DataTrigger Binding="{Binding Severity}" Value="LOW">
@@ -120,7 +121,12 @@
 			<DataTrigger Binding="{Binding Severity}" Value="MINOR">
 				<Setter Property="Background" Value="Cyan"></Setter>
 			</DataTrigger>
-
 		</Style.Triggers>
+	</Style>
+
+
+	<Style x:Key="AlarmSummaryDataGridRowStyle" TargetType="DataGridRow">
+		<Setter Property="Background" Value="Transparent"></Setter>
+		<Setter Property="Foreground" Value="White"></Setter>
 	</Style>
 </ResourceDictionary>
