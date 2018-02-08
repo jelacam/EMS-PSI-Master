@@ -32,6 +32,11 @@ namespace EMS.Services.AlarmsEventsService
         /// </summary>
         private List<AlarmHelper> alarms;
 
+        /// <summary>
+        /// Temp list for alarms from database
+        /// </summary>
+        private List<AlarmHelper> alarmsFromDatabase;
+
         private readonly int DEADBAND_VALUE = 20;
 
         /// <summary>
@@ -41,6 +46,11 @@ namespace EMS.Services.AlarmsEventsService
         {
             this.Publisher = new PublisherService();
             this.Alarms = new List<AlarmHelper>();
+            alarmsFromDatabase = SelectAlarmsFromDatabase();
+            if (alarmsFromDatabase != null)
+            {
+                this.Alarms = alarmsFromDatabase;
+            }
         }
 
         /// <summary>
@@ -86,7 +96,7 @@ namespace EMS.Services.AlarmsEventsService
             {
                 alarm.AckState = AckState.Unacknowledged;
                 alarm.CurrentState = string.Format("{0}, {1}", State.Active, alarm.AckState);
-                
+
                 // deadband check
                 foreach (AlarmHelper item in Alarms)
                 {
@@ -100,6 +110,10 @@ namespace EMS.Services.AlarmsEventsService
                             item.Value = alarm.Value;
                             item.CurrentState = alarm.CurrentState;
                             item.LastChange = alarm.TimeStamp;
+                            if (UpdateAlarmIntoDb(item))
+                            {
+                                Console.WriteLine("Alarm with GID: {0} updated into database.", item.Gid);
+                            }
                         }
                     }
                 }
@@ -110,7 +124,7 @@ namespace EMS.Services.AlarmsEventsService
                     this.Alarms.Add(alarm);
                     if (InsertAlarmIntoDb(alarm))
                     {
-                        Console.WriteLine("Alarm with GID:{0} recorded into alarms database.",alarm.Gid);
+                        Console.WriteLine("Alarm with GID:{0} recorded into alarms database.", alarm.Gid);
                     }
                 }
 
@@ -136,6 +150,10 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     alarm.CurrentState = string.Format("{0}, {1}", state, alarm.AckState);
                     alarm.PubStatus = PublishingStatus.UPDATE;
+                    if (UpdateAlarmStatusIntoDb(alarm))
+                    {
+                        Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
+                    }
                     try
                     {
                         this.Publisher.PublishStateChange(alarm);
@@ -200,6 +218,147 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     success = false;
                     string message = string.Format("Failed to insert alarm into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
+        }
+
+        private List<AlarmHelper> SelectAlarmsFromDatabase()
+        {
+            List<AlarmHelper> alarms = new List<AlarmHelper>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT * FROM Alarms;", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            long gid = Convert.ToInt64(reader[1]);
+                            float alarmValue = (float)Convert.ToDouble(reader[2]);
+                            float minValue = (float)Convert.ToDouble(reader[3]);
+                            float maxValue = (float)Convert.ToDouble(reader[4]);
+                            DateTime timestamp = Convert.ToDateTime(reader[5]);
+                            int severity = Convert.ToInt32(reader[6]);
+                            float initiatingValue = (float)Convert.ToDouble(reader[7]);
+                            DateTime lastChange = Convert.ToDateTime(reader[8]);
+                            string currentState = Convert.ToString(reader[9]);
+                            int ackState = Convert.ToInt32(reader[10]);
+                            int pubStatus = Convert.ToInt32(reader[11]);
+                            int alarmType = Convert.ToInt32(reader[12]);
+                            int persistent = Convert.ToInt32(reader[13]);
+                            int inhibit = Convert.ToInt32(reader[14]);
+                            string alarmMessage = Convert.ToString(reader[15]);
+
+                            AlarmHelper alarm = new AlarmHelper
+                            {
+                                Gid = gid,
+                                Severity = (SeverityLevel)severity,
+                                Value = alarmValue,
+                                InitiatingValue = initiatingValue,
+                                MinValue = minValue,
+                                MaxValue = maxValue,
+                                TimeStamp = timestamp,
+                                LastChange = lastChange,
+                                CurrentState = currentState,
+                                AckState = (AckState)ackState,
+                                PubStatus = (PublishingStatus)pubStatus,
+                                Type = (AlarmType)alarmType,
+                                Persistent = (PersistentState)persistent,
+                                Inhibit = (InhibitState)inhibit,
+                                Message = alarmMessage
+                            };
+
+                            alarms.Add(alarm);
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read alarms from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return alarms;
+        }
+
+        private bool UpdateAlarmIntoDb(AlarmHelper alarm)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("UpdateAlarm", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = alarm.Gid;
+                        cmd.Parameters.Add("@alarmValue", SqlDbType.Float).Value = alarm.Value;
+                        cmd.Parameters.Add("@lastChange", SqlDbType.DateTime).Value = alarm.LastChange.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@currentState", SqlDbType.NText, 100).Value = alarm.CurrentState;
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to update alarm into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
+        }
+
+        private bool UpdateAlarmStatusIntoDb(AlarmHelper alarm)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("UpdateAlarmStatus", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = alarm.Gid;
+                        cmd.Parameters.Add("@currentState", SqlDbType.NText, 100).Value = alarm.CurrentState;
+                        cmd.Parameters.Add("@pubStatus", SqlDbType.Int).Value = alarm.PubStatus;
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to update alarm status into database. {0}", e.Message);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
                     Console.WriteLine(message);
                 }
