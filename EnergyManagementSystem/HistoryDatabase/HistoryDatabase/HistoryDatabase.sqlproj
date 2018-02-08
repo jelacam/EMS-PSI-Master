@@ -135,5 +135,7 @@
     <Build Include="Schema objects\Schemas\dbo\Tables\Alarms.sql" />
     <Build Include="Schema objects\Schemas\dbo\Tables\Keys\Alarms_PK.sql" />
     <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertAlarm.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\UpdateAlarm.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\UpdateAlarmStatus.sql" />
   </ItemGroup>
 </Project>
