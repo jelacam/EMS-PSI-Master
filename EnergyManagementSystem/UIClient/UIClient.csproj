@@ -55,6 +55,26 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -108,9 +128,12 @@
     <Compile Include="Converters\HexadecimalConverter.cs" />
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
     <Compile Include="Converters\NumberToSizeNameConverter.cs" />
+    <Compile Include="Converters\PeriodEnumToStringConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
     <Compile Include="Converters\TestConverter.cs" />
+    <Compile Include="Model\PeriodValues.cs" />
+    <Compile Include="Model\PieChart.cs" />
     <Compile Include="PubSub\CallbackEventArgs.cs" />
     <Compile Include="PubSub\AePubSubCallbackService.cs" />
     <Compile Include="PubSub\AlarmsEventsSubscribeProxy.cs" />
@@ -120,6 +143,7 @@
     <Compile Include="ViewModel\AlarmSummaryViewModel.cs" />
     <Compile Include="ViewModel\AlarmViewModel.cs" />
     <Compile Include="ViewModel\DashboardViewModel.cs" />
+    <Compile Include="ViewModel\DMSOptionsViewModel.cs" />
     <Compile Include="ViewModel\HistoryViewModel.cs" />
     <Compile Include="ViewModel\ImporterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
@@ -134,6 +158,9 @@
     </Compile>
     <Compile Include="View\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DMSOptionsView.xaml.cs">
+      <DependentUpon>DMSOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HistoryView.xaml.cs">
       <DependentUpon>HistoryView.xaml</DependentUpon>
@@ -211,6 +238,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\DMSOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\HistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -261,7 +292,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
     <Folder Include="View\Templates\" />
   </ItemGroup>
   <ItemGroup>

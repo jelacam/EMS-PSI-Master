@@ -21,9 +21,9 @@
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
       <MRId>SyncMachine_4</MRId>
-      <A>2</A>
-      <B>3</B>
-      <C>1</C>
+      <A>5</A>
+      <B>4</B>
+      <C>10</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
       <MRId>SyncMachine_5</MRId>

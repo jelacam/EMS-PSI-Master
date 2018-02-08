@@ -415,7 +415,7 @@ namespace EMS.Services.SCADACrunchingService
                 //    ));
                 //}
 
-                if (analogLoc.Analog.Mrid.Equals("Analog_sm_10"))
+                if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
                 {
                     using (var txtWriter = new StreamWriter("PointsReport.txt", true))
                     {

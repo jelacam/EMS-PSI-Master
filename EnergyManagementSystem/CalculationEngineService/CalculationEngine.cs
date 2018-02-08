@@ -22,6 +22,7 @@ namespace EMS.Services.CalculationEngineService
     using Helpers;
     using LinearAlgorithm;
     using System.Threading;
+    using System.Linq;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -53,7 +54,11 @@ namespace EMS.Services.CalculationEngineService
         private float profit = 0;
         private float windProductionPct = 0;
         private float windProductionkW = 0;
-		private float emissionCO2 = 0;
+        private float emissionCO2Renewable = 0;
+        private float emissionCO2NonRenewable = 0;
+        private float totalProduction = 0;
+        private float totalCost = 0;
+        private float totalCostWithRenewable = 0;
 
         private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
@@ -64,12 +69,14 @@ namespace EMS.Services.CalculationEngineService
             set { generatorCharacteristics = value; }
         }
 
-        #endregion Fields
+		private static Dictionary<long, OptimisationModel> oldOptModelMap;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CalculationEngine" /> class
-        /// </summary>
-        public CalculationEngine()
+		#endregion Fields
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CalculationEngine" /> class
+		/// </summary>
+		public CalculationEngine()
         {
             publisher = new PublisherService();
             generatorCurves = new Dictionary<string, SynchronousMachineCurveModel>();
@@ -87,7 +94,9 @@ namespace EMS.Services.CalculationEngineService
             internalEnergyConsumersCopy = new List<ResourceDescription>(5);
 
             GeneratorCharacteristics = LoadCharacteristics.Load();
-        }
+
+			oldOptModelMap = new Dictionary<long, OptimisationModel>();
+		}
 
         /// <summary>
         /// Optimization algorithm
@@ -98,6 +107,7 @@ namespace EMS.Services.CalculationEngineService
         public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
         {
             bool result = false;
+            totalProduction = 0;
 
             PublishConsumersToUI(measEnergyConsumers);
 
@@ -108,9 +118,21 @@ namespace EMS.Services.CalculationEngineService
 
             if (measurementsOptimized != null && measurementsOptimized.Count > 0)
             {
+                totalProduction = measurementsOptimized.Sum(x => x.CurrentValue);
+
+                if (WriteTotalProductionIntoDb(totalProduction, windProductionkW, windProductionPct, totalCost, totalCostWithRenewable, profit, DateTime.Now))
+                {
+                    Console.WriteLine("The total production is recorded into history database.");
+                }
+
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
                     Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
+                }
+
+                if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, DateTime.Now))
+                {
+                    Console.WriteLine("The CO2 emission is recorded into history database.");
                 }
 
                 PublishGeneratorsToUI(measurementsOptimized);
@@ -140,7 +162,8 @@ namespace EMS.Services.CalculationEngineService
             try
             {
                 Dictionary<long, OptimisationModel> optModelMapOptimizied = null;
-                float totalCost = -1;
+                totalCost = -1;
+                totalCostWithRenewable = -1;
                 if (PublisherService.OptimizationType == OptimizationType.Genetic)
                 {
                     GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
@@ -149,25 +172,31 @@ namespace EMS.Services.CalculationEngineService
                 }
                 else if (PublisherService.OptimizationType == OptimizationType.Linear)
                 {
-                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
+                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction, oldOptModelMap);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
-                    totalCost = linearAlgorithm.TotalCost; // ukupna cena linearne optimizacije
+                    totalCost = linearAlgorithm.TotalCostNonRenewable; // ukupna cena linearne optimizacije bez obnovljivih
+                    totalCostWithRenewable = linearAlgorithm.TotalCostWithRenewable; //// ukupna cena linearne optimizacije sa obnovljivim
                     profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
                     windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
                     windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
-					emissionCO2 = linearAlgorithm.CO2Emission; // smanjenje CO2 emisije izrazeno u tonama
+                    emissionCO2Renewable = linearAlgorithm.CO2EmmissionRenewable; // CO2 emisija sa obnovljivim izrazeno u tonama
+                    emissionCO2NonRenewable = linearAlgorithm.CO2EmissionNonRenewable; //CO2 emisija bez obnovljivih izrazena u tonama
                 }
                 else
                 {
                     return DoNotOptimized(optModelMap, powerOfConsumers);
                 }
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
-                Console.WriteLine("CE: TotalCost {0}$\n", totalCost);
-                return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
+                Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
+                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
+
+				oldOptModelMap = optModelMapOptimizied;
+
+				return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
             catch (Exception e)
             {
-                throw new Exception("[Mehtod = DoGeneticAlgorithm] Exception = " + e.Message);
+                throw new Exception("[Mehtod = DoOptimization] Exception = " + e.Message);
             }
         }
 
@@ -408,6 +437,261 @@ namespace EMS.Services.CalculationEngineService
             return retVal;
         }
 
+        /// <summary>
+        /// Write total production into database
+        /// </summary>
+        /// <param name="totalProduction">Float value of total production</param>
+        /// <param name="time">Time of calculation</param>
+        /// <returns>Return true if success</returns>
+        public bool WriteTotalProductionIntoDb(float totalProduction, float windProduction, float windProductionPercent, float totalCostWithoutRenewable, float totalCostWithRenewable, float profit, DateTime time)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("InsertTotalProduction", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
+                        cmd.Parameters.Add("@windProduction", SqlDbType.Float).Value = windProduction;
+                        cmd.Parameters.Add("@windProductionPercent", SqlDbType.Float).Value = windProductionPercent;
+                        cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
+                        cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
+                        cmd.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
+                        cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = time.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to insert total production into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Read total production from database
+        /// </summary>
+        /// <param name="startTime">Start time for period</param>
+        /// <param name="endTime">End time for period</param>
+        /// <returns>Tuple list od pair double and datetime for period</returns>
+        public List<Tuple<double, DateTime>> ReadTotalProductionsFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT TotalProduction,TimeOfCalculation FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[0]), Convert.ToDateTime(reader[1])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read Measurements from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Read wind farm savin data from database (total cost without wind farm, total cost with wind farm and profit)
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
+        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double, double>> retVal = new List<Tuple<double, double, double>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT TotalCostWithoutRenewable,TotalCostWithRenewable,Profit FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read Wind Farm Saving from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Read wind farm savin data from database (total cost without wind farm, total cost with wind farm and profit)
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
+        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT WindProduction, WindProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read Wind Farm Production Data from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Write CO2 Emission into database
+        /// </summary>
+        /// <param name="nonRenewableEmissionValue">emission value without renewable generators</param>
+        /// <param name="withRenewableEmissionValue">emission value with renewable generators</param>
+        /// <param name="measurementTime">time of measurement</param>
+        /// <returns>return true if success</returns>
+        public bool WriteCO2EmissionIntoDb(float nonRenewableEmissionValue, float withRenewableEmissionValue, DateTime measurementTime)
+        {
+            bool success = true;
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("InsertCO2Emission", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@nonRenewable", SqlDbType.Float).Value = nonRenewableEmissionValue;
+                        cmd.Parameters.Add("@renewable", SqlDbType.Float).Value = withRenewableEmissionValue;
+                        cmd.Parameters.Add("@timeOfMeasurement", SqlDbType.DateTime).Value = measurementTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    success = false;
+                    string message = string.Format("Failed to insert co2 emission into database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// Read CO2 emission values from database
+        /// </summary>
+        /// <param name="startTime">start time of period</param>
+        /// <param name="endTime">end time of period</param>
+        /// <returns>returns list of pair values</returns>
+        public List<Tuple<double, double, DateTime>> ReadCO2EmissionFromDb(DateTime startTime, DateTime endTime)
+        {
+            List<Tuple<double, double, DateTime>> retVal = new List<Tuple<double, double, DateTime>>();
+
+            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("SELECT * FROM CO2Emission WHERE (MeasurementTime BETWEEN @startTime AND @endTime)", connection))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        SqlDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            retVal.Add(new Tuple<double, double, DateTime>(Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2]), Convert.ToDateTime(reader[3])));
+                        }
+                    }
+
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    string message = string.Format("Failed read CO2 emission from database. {0}", e.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    Console.WriteLine(message);
+                }
+            }
+
+            return retVal;
+        }
+
         #endregion Database methods
 
         #region Fill and Clear data
@@ -485,38 +769,39 @@ namespace EMS.Services.CalculationEngineService
 
                 List<ResourceDescription> retList = new List<ResourceDescription>(5);
 
-                // getting SynchronousMachine
-                try
-                {
-                    // first get all synchronous machines from NMS
-                    properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
+				#region getting SynchronousMachine
+				try
+				{
+					// first get all synchronous machines from NMS
+					properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
 
-                    iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
+					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                    while (resourcesLeft > 0)
-                    {
-                        List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                        retList.AddRange(rds);
-                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                    }
-                    NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+					while (resourcesLeft > 0)
+					{
+						List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+						retList.AddRange(rds);
+						resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					}
+					NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add synchronous machines to internal collection
-                    internalSynchMachines.AddRange(retList);
-                }
-                catch (Exception e)
-                {
-                    message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
-                    Console.WriteLine(message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					// add synchronous machines to internal collection
+					internalSynchMachines.Clear();
+					internalSynchMachines.AddRange(retList);
+				}
+				catch (Exception e)
+				{
+					message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
+					Console.WriteLine(message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
 
-                    Console.WriteLine("Trying again...");
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
-                    NetworkModelGDAProxy.Instance = null;
-                    Thread.Sleep(1000);
-                    InitiateIntegrityUpdate();
-                }
+					Console.WriteLine("Trying again...");
+					CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
+					NetworkModelGDAProxy.Instance = null;
+					Thread.Sleep(1000);
+					InitiateIntegrityUpdate();
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeSynchronousMachine.ToString(), internalSynchMachines.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -525,33 +810,38 @@ namespace EMS.Services.CalculationEngineService
                 // clear retList for getting new model from NMS
                 retList.Clear();
 
-                // getting EMSFuel
-                try
-                {
-                    // second get all ems fuels from NMS
-                    properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEmsFuel);
+				properties.Clear();
+				iteratorId = 0;
+				resourcesLeft = 0;
+				#endregion
+				#region getting EMSFuel
+				try
+				{
+					// second get all ems fuels from NMS
+					properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEmsFuel);
 
-                    iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEmsFuel, properties);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEmsFuel, properties);
+					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                    while (resourcesLeft > 0)
-                    {
-                        List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                        retList.AddRange(rds);
-                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                    }
-                    NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+					while (resourcesLeft > 0)
+					{
+						List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+						retList.AddRange(rds);
+						resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					}
+					NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add ems fuels to internal collection
-                    internalEmsFuels.AddRange(retList);
-                }
-                catch (Exception e)
-                {
-                    message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEmsFuel, e.Message);
-                    Console.WriteLine(message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    return false;
-                }
+					// add ems fuels to internal collection
+					internalEmsFuels.Clear();
+					internalEmsFuels.AddRange(retList);
+				}
+				catch (Exception e)
+				{
+					message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEmsFuel, e.Message);
+					Console.WriteLine(message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					return false;
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -559,10 +849,10 @@ namespace EMS.Services.CalculationEngineService
 
                 // clear retList for getting new model from NMS
                 retList.Clear();
-
-                // getting EnergyConsumer
-                try
-                {
+				#endregion
+				#region getting EnergyConsumer
+				try
+				{
                     // third get all enenrgy consumers from NMS
                     properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEnergyConsumer);
 
@@ -577,7 +867,8 @@ namespace EMS.Services.CalculationEngineService
                     }
                     NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add energy consumer to internal collection
+					// add energy consumer to internal collection
+					internalEnergyConsumers.Clear();
                     internalEnergyConsumers.AddRange(retList);
                 }
                 catch (Exception e)
@@ -585,8 +876,8 @@ namespace EMS.Services.CalculationEngineService
                     message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEnergyConsumer, e.Message);
                     Console.WriteLine(message);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    return false;
-                }
+					return false;
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEnergyConsumer.ToString(), internalEnergyConsumers.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -594,8 +885,9 @@ namespace EMS.Services.CalculationEngineService
 
                 // clear retList
                 retList.Clear();
+				#endregion
 
-                FillData();
+				FillData();
                 return true;
             }
         }
@@ -660,7 +952,7 @@ namespace EMS.Services.CalculationEngineService
                         {
                             foreach (ResourceDescription res in internalEmsFuelsCopy)
                             {
-                                if(rd.Id.Equals(res.Id))
+                                if (rd.Id.Equals(res.Id))
                                 {
                                     foreach (Property p in res.Properties)
                                     {

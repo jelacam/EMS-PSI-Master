@@ -78,6 +78,31 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
@@ -101,5 +126,14 @@
     <Build Include="Schema objects\Schemas\dbo\Tables\HistoryMeasurement.sql" />
     <Build Include="Schema objects\Schemas\dbo\Tables\Keys\HistoryMeasurement_PK.sql" />
     <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertMeasurement.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\TotalProduction.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\TotalProduction_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertTotalProduction.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\CO2Emission.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\CO2Emission_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertCO2Emission.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Alarms.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Tables\Keys\Alarms_PK.sql" />
+    <Build Include="Schema objects\Schemas\dbo\Programmability\Stored Procedures\InsertAlarm.sql" />
   </ItemGroup>
 </Project>
