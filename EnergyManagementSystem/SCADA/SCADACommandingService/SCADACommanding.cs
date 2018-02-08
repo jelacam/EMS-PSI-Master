@@ -414,7 +414,7 @@ namespace EMS.Services.SCADACommandingService
                             modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
 
 
-                            if (analogLoc.Analog.Mrid.Equals("Analog_sm_8"))
+                            if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
                             {
 
                                 float[] values = new float[100];

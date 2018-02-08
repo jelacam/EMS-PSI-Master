@@ -14,7 +14,7 @@
 	
 	<cim:EMSFuel rdf:ID="Fuel_2">
 		<cim:EMSFuel.fuelType>hydro</cim:EMSFuel.fuelType>
-		<cim:EMSFuel.unitPrice>15</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.unitPrice>1</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_2</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Fuel_2_hydro</cim:IdentifiedObject.name>
 	</cim:EMSFuel>
