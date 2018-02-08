@@ -43,6 +43,7 @@ namespace UISimulator.ViewModel
 		private ModbusClient modbusClient;
 		private ConvertorHelper convertorHelper;
 
+		private object lockObj = new object();
 		#endregion Fields
 
 		public MainWindowViewModel()
@@ -75,31 +76,34 @@ namespace UISimulator.ViewModel
 
 		private void StartSimulation()
 		{
-			for (int i = 0; i < DURATION; i++)
+			lock (lockObj)
 			{
-				modbusClient.WriteSingleRegister(0, SimulationData1[i].Value);
-				modbusClient.WriteSingleRegister(2, SimulationData2[i].Value);
-				modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
-				modbusClient.WriteSingleRegister(6, SimulationData4[i].Value);
-				modbusClient.WriteSingleRegister(8, SimulationData5[i].Value);
-				modbusClient.WriteSingleRegister(10, simulationData6[i].Value);
-				modbusClient.WriteSingleRegister(12, simulationData7[i].Value);
-				modbusClient.WriteSingleRegister(14, simulationData8[i].Value);
-				modbusClient.WriteSingleRegister(16, simulationData9[i].Value);
-				modbusClient.WriteSingleRegister(18, simulationData10[i].Value);
-				modbusClient.WriteSingleRegister(20, simulationData11[i].Value);
-				modbusClient.WriteSingleRegister(22, simulationData12[i].Value);
-				modbusClient.WriteSingleRegister(24, simulationData13[i].Value);
-				modbusClient.WriteSingleRegister(26, simulationData14[i].Value);
-				modbusClient.WriteSingleRegister(28, simulationData15[i].Value);
-				modbusClient.WriteSingleRegister(30, simulationData16[i].Value);
-				modbusClient.WriteSingleRegister(32, simulationData17[i].Value);
-				modbusClient.WriteSingleRegister(34, simulationData18[i].Value);
-				modbusClient.WriteSingleRegister(36, simulationData19[i].Value);
-				modbusClient.WriteSingleRegister(38, simulationData20[i].Value);
-				modbusClient.WriteSingleRegister(100, simulationWindData[i].Value);
-				modbusClient.WriteSingleRegister(102, simulationSunData[i].Value);
-				Thread.Sleep(1);
+				for (int i = 0; i < DURATION; i++)
+				{
+					modbusClient.WriteSingleRegister(0, SimulationData1[i].Value);
+					modbusClient.WriteSingleRegister(2, SimulationData2[i].Value);
+					modbusClient.WriteSingleRegister(4, SimulationData3[i].Value);
+					modbusClient.WriteSingleRegister(6, SimulationData4[i].Value);
+					modbusClient.WriteSingleRegister(8, SimulationData5[i].Value);
+					modbusClient.WriteSingleRegister(10, simulationData6[i].Value);
+					modbusClient.WriteSingleRegister(12, simulationData7[i].Value);
+					modbusClient.WriteSingleRegister(14, simulationData8[i].Value);
+					modbusClient.WriteSingleRegister(16, simulationData9[i].Value);
+					modbusClient.WriteSingleRegister(18, simulationData10[i].Value);
+					modbusClient.WriteSingleRegister(20, simulationData11[i].Value);
+					modbusClient.WriteSingleRegister(22, simulationData12[i].Value);
+					modbusClient.WriteSingleRegister(24, simulationData13[i].Value);
+					modbusClient.WriteSingleRegister(26, simulationData14[i].Value);
+					modbusClient.WriteSingleRegister(28, simulationData15[i].Value);
+					modbusClient.WriteSingleRegister(30, simulationData16[i].Value);
+					modbusClient.WriteSingleRegister(32, simulationData17[i].Value);
+					modbusClient.WriteSingleRegister(34, simulationData18[i].Value);
+					modbusClient.WriteSingleRegister(36, simulationData19[i].Value);
+					modbusClient.WriteSingleRegister(38, simulationData20[i].Value);
+					modbusClient.WriteSingleRegister(100, simulationWindData[i].Value);
+					modbusClient.WriteSingleRegister(102, simulationSunData[i].Value);
+					Thread.Sleep(1);
+				}
 			}
 
 			StartSimulation();

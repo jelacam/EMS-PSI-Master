@@ -49,14 +49,15 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
         /// </summary>
         private float maxProduction = 0;
 
-        #endregion
+		private static Dictionary<long, OptimisationModel> old;
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        /// Gets or sets total production
-        /// </summary>
-        public float OptimizedLinear { get; set; }
+		/// <summary>
+		/// Gets or sets total production
+		/// </summary>
+		public float OptimizedLinear { get; set; }
 
         /// <summary>
         /// Gets or sets total production of wind generators
@@ -108,7 +109,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
         /// </summary>
         /// <param name="minProduction">minimal production of generators</param>
         /// <param name="maxProduction">maximal production of generators</param>
-        public LinearOptimization(float minProduction, float maxProduction)
+        public LinearOptimization(float minProduction, float maxProduction, Dictionary<long, OptimisationModel> oldOptModelMap)
         {
             totalCostWithRenewable = 0;
             totalCostNonRenewable = 0;
@@ -121,43 +122,49 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
             this.minProduction = minProduction;
             this.maxProduction = maxProduction;
+			old = oldOptModelMap;
 
-            lockObj = new object();
+			lockObj = new object();
             context = SolverContext.GetContext();
         }
 
-        /// <summary>
-        /// Starts calculation
-        /// </summary>
-        /// <param name="optModelMap">model for optimization</param>
-        /// <param name="consumption">current consumption</param>
-        /// <returns>linear optimized model</returns>
-        public Dictionary<long, OptimisationModel> Start(Dictionary<long, OptimisationModel> optModelMap, float consumption)
-        {
-            lock (lockObj)
-            {
-                float production = maxProduction;
-                Dictionary<long, OptimisationModel> optModelMapNonRenewable = new Dictionary<long, OptimisationModel>();
-                foreach (var item in optModelMap)
-                {
-                    if (!item.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind))
-                    {
-                        optModelMapNonRenewable.Add(item.Key, item.Value);
-                    }
-                    else
-                    {
-                        production -= item.Value.MaxPower;
-                    }
-                }
-				//mora prvo optimizacija bez vetrogeneratora
-				optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
-				optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
+		/// <summary>
+		/// Starts calculation
+		/// </summary>
+		/// <param name="optModelMap">model for optimization</param>
+		/// <param name="consumption">current consumption</param>
+		/// <returns>linear optimized model</returns>
+		public Dictionary<long, OptimisationModel> Start(Dictionary<long, OptimisationModel> optModelMap, float consumption)
+		{
+			lock (lockObj)
+			{
+				if (optModelMap.Count() > 0)
+				{
+					float production = maxProduction;
+					Dictionary<long, OptimisationModel> optModelMapNonRenewable = new Dictionary<long, OptimisationModel>();
 
-                Profit = totalCostNonRenewable - totalCostWithRenewable;
+					foreach (var item in optModelMap)
+					{
+						if (!item.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind))
+						{
+							optModelMapNonRenewable.Add(item.Key, item.Value);
+						}
+						else
+						{
+							production -= item.Value.MaxPower;
+						}
+					}
 
-                return optModelMap;
-            }
-        }
+					//mora prvo optimizacija bez vetrogeneratora
+					optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
+					optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
+
+					Profit = totalCostNonRenewable - totalCostWithRenewable;
+				}
+
+				return optModelMap;
+			}
+		}
 
         /// <summary>
         /// Linear optimization algorithm
@@ -190,17 +197,38 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
                         string limit = "limit";
                         string production = consumption.ToString() + "<=";
 
-                        foreach (var optModel in optModelMap)
-                        {
-                            help = decisions[optModel.Value.GlobalId];
-                            Term termLimit;
-                            termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
+						foreach (var optModel in optModelMap)
+						{
+							help = decisions[optModel.Value.GlobalId];							
+							Term termLimit;
 
-                            model.AddConstraint(limit + optModel.Value.GlobalId, termLimit);
+							if (old != null && old.Count > 0 && renewable && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind) && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.solar))
+							{
+								float oldValue = old[optModel.Value.GlobalId].LinearOptimizedValue;
 
-                            production += help.ToString() + "+";
-                            goal += help.ToString() + "*" + optModel.Value.Price.ToString() + "+";
-                        }
+								if (oldValue == optModel.Value.MinPower)
+								{
+									termLimit = optModel.Value.MinPower <= help <= (float)((0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower)) + optModel.Value.MinPower);
+								}
+								else if (oldValue == optModel.Value.MaxPower)
+								{
+									termLimit = (float)((0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower)) + optModel.Value.MinPower) <= help <= optModel.Value.MaxPower;
+								}
+								else
+								{
+									termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
+								}
+							}
+							else
+							{			
+								termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;								
+							}
+
+							model.AddConstraint(limit + optModel.Value.GlobalId, termLimit);
+
+							production += help.ToString() + "+";
+							goal += help.ToString() + "*" + optModel.Value.Price.ToString() + "+";
+						}
 
                         production = production.Substring(0, production.Length - 1);
                         production += "<=" + maxProductionLimit.ToString();
@@ -214,7 +242,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
                         if (renewable)
                         {
-                            // Console.Write("{0}", report);
+                            Console.Write("{0}", report);
 
                             string name = string.Empty;
                             foreach (var item in model.Decisions)

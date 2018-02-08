@@ -69,12 +69,14 @@ namespace EMS.Services.CalculationEngineService
             set { generatorCharacteristics = value; }
         }
 
-        #endregion Fields
+		private static Dictionary<long, OptimisationModel> oldOptModelMap;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CalculationEngine" /> class
-        /// </summary>
-        public CalculationEngine()
+		#endregion Fields
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CalculationEngine" /> class
+		/// </summary>
+		public CalculationEngine()
         {
             publisher = new PublisherService();
             generatorCurves = new Dictionary<string, SynchronousMachineCurveModel>();
@@ -92,7 +94,9 @@ namespace EMS.Services.CalculationEngineService
             internalEnergyConsumersCopy = new List<ResourceDescription>(5);
 
             GeneratorCharacteristics = LoadCharacteristics.Load();
-        }
+
+			oldOptModelMap = new Dictionary<long, OptimisationModel>();
+		}
 
         /// <summary>
         /// Optimization algorithm
@@ -168,7 +172,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 else if (PublisherService.OptimizationType == OptimizationType.Linear)
                 {
-                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
+                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction, oldOptModelMap);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
                     totalCost = linearAlgorithm.TotalCostNonRenewable; // ukupna cena linearne optimizacije bez obnovljivih
                     totalCostWithRenewable = linearAlgorithm.TotalCostWithRenewable; //// ukupna cena linearne optimizacije sa obnovljivim
@@ -185,11 +189,14 @@ namespace EMS.Services.CalculationEngineService
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
                 Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
-                return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
+
+				oldOptModelMap = optModelMapOptimizied;
+
+				return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
             catch (Exception e)
             {
-                throw new Exception("[Mehtod = DoGeneticAlgorithm] Exception = " + e.Message);
+                throw new Exception("[Mehtod = DoOptimization] Exception = " + e.Message);
             }
         }
 
@@ -762,38 +769,39 @@ namespace EMS.Services.CalculationEngineService
 
                 List<ResourceDescription> retList = new List<ResourceDescription>(5);
 
-                // getting SynchronousMachine
-                try
-                {
-                    // first get all synchronous machines from NMS
-                    properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
+				#region getting SynchronousMachine
+				try
+				{
+					// first get all synchronous machines from NMS
+					properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
 
-                    iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
+					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                    while (resourcesLeft > 0)
-                    {
-                        List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                        retList.AddRange(rds);
-                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                    }
-                    NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+					while (resourcesLeft > 0)
+					{
+						List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+						retList.AddRange(rds);
+						resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					}
+					NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add synchronous machines to internal collection
-                    internalSynchMachines.AddRange(retList);
-                }
-                catch (Exception e)
-                {
-                    message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
-                    Console.WriteLine(message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					// add synchronous machines to internal collection
+					internalSynchMachines.Clear();
+					internalSynchMachines.AddRange(retList);
+				}
+				catch (Exception e)
+				{
+					message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
+					Console.WriteLine(message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
 
-                    Console.WriteLine("Trying again...");
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
-                    NetworkModelGDAProxy.Instance = null;
-                    Thread.Sleep(1000);
-                    InitiateIntegrityUpdate();
-                }
+					Console.WriteLine("Trying again...");
+					CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
+					NetworkModelGDAProxy.Instance = null;
+					Thread.Sleep(1000);
+					InitiateIntegrityUpdate();
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeSynchronousMachine.ToString(), internalSynchMachines.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -802,33 +810,38 @@ namespace EMS.Services.CalculationEngineService
                 // clear retList for getting new model from NMS
                 retList.Clear();
 
-                // getting EMSFuel
-                try
-                {
-                    // second get all ems fuels from NMS
-                    properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEmsFuel);
+				properties.Clear();
+				iteratorId = 0;
+				resourcesLeft = 0;
+				#endregion
+				#region getting EMSFuel
+				try
+				{
+					// second get all ems fuels from NMS
+					properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEmsFuel);
 
-                    iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEmsFuel, properties);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEmsFuel, properties);
+					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                    while (resourcesLeft > 0)
-                    {
-                        List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                        retList.AddRange(rds);
-                        resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                    }
-                    NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+					while (resourcesLeft > 0)
+					{
+						List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+						retList.AddRange(rds);
+						resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+					}
+					NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add ems fuels to internal collection
-                    internalEmsFuels.AddRange(retList);
-                }
-                catch (Exception e)
-                {
-                    message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEmsFuel, e.Message);
-                    Console.WriteLine(message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    return false;
-                }
+					// add ems fuels to internal collection
+					internalEmsFuels.Clear();
+					internalEmsFuels.AddRange(retList);
+				}
+				catch (Exception e)
+				{
+					message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEmsFuel, e.Message);
+					Console.WriteLine(message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					return false;
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEmsFuel.ToString(), internalEmsFuels.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -836,10 +849,10 @@ namespace EMS.Services.CalculationEngineService
 
                 // clear retList for getting new model from NMS
                 retList.Clear();
-
-                // getting EnergyConsumer
-                try
-                {
+				#endregion
+				#region getting EnergyConsumer
+				try
+				{
                     // third get all enenrgy consumers from NMS
                     properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEnergyConsumer);
 
@@ -854,7 +867,8 @@ namespace EMS.Services.CalculationEngineService
                     }
                     NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                    // add energy consumer to internal collection
+					// add energy consumer to internal collection
+					internalEnergyConsumers.Clear();
                     internalEnergyConsumers.AddRange(retList);
                 }
                 catch (Exception e)
@@ -862,8 +876,8 @@ namespace EMS.Services.CalculationEngineService
                     message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeEnergyConsumer, e.Message);
                     Console.WriteLine(message);
                     CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    return false;
-                }
+					return false;
+				}
 
                 message = string.Format("Integrity update: Number of {0} values: {1}", modelCodeEnergyConsumer.ToString(), internalEnergyConsumers.Count.ToString());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -871,8 +885,9 @@ namespace EMS.Services.CalculationEngineService
 
                 // clear retList
                 retList.Clear();
+				#endregion
 
-                FillData();
+				FillData();
                 return true;
             }
         }

@@ -244,8 +244,8 @@ namespace CalculationEngineServiceTest
 			optModelMap.Add(om5.GlobalId, om5);
 			#endregion
 
-			lo = new LinearOptimization(minProduction, maxProduction);
-			lino = new LinearOptimization(minProduction, maxProduction);
+			lo = new LinearOptimization(minProduction, maxProduction, new Dictionary<long, OptimisationModel>());
+			lino = new LinearOptimization(minProduction, maxProduction, new Dictionary<long, OptimisationModel>());
 		}
 
 		/// <summary>
@@ -255,7 +255,7 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationConstructor")]
 		public void Constructor()
 		{
-			LinearOptimization linopt = new LinearOptimization(minProduction, maxProduction);
+			LinearOptimization linopt = new LinearOptimization(minProduction, maxProduction, new Dictionary<long, OptimisationModel>());
 			Assert.IsNotNull(linopt);
 		}
 

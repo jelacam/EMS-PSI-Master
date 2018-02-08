@@ -20,7 +20,7 @@ namespace EMS.Services.CalculationEngineService.PubSub
         private ICePubSubCallbackContract callback = null;
         private OptimizationResultEventHandler optimizationResultHandler = null;
 
-        public static OptimizationType OptimizationType = OptimizationType.None;
+        public static OptimizationType OptimizationType = OptimizationType.Linear;
         // public static Action<OptimizationType> ChangeOptimizationTypeAction;
 
         private static List<ICePubSubCallbackContract> clientsToPublish = new List<ICePubSubCallbackContract>(4);
