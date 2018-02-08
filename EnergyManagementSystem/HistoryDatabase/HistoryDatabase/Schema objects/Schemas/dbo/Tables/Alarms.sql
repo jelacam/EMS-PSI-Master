@@ -9,7 +9,7 @@
 	[Severity] int null,
 	[InitiatingValue] float null,
 	[LastChange] datetime null,
-	[CurrentState] VARCHAR(50) NOT null,
+	[CurrentState] ntext NOT null,
 	[AckState] int NOT null,
 	[PubStatus] int null,
 	[AlarmType] int null,

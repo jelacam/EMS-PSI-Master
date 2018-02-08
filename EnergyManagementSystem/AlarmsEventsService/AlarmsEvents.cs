@@ -182,13 +182,13 @@ namespace EMS.Services.AlarmsEventsService
                         cmd.Parameters.Add("@severity", SqlDbType.Int).Value = alarm.Severity;
                         cmd.Parameters.Add("@initiatingValue", SqlDbType.Float).Value = alarm.InitiatingValue;
                         cmd.Parameters.Add("@lastChange", SqlDbType.DateTime).Value = alarm.LastChange.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        cmd.Parameters.Add("@currentState", SqlDbType.VarChar).Value = alarm.CurrentState;
+                        cmd.Parameters.Add("@currentState", SqlDbType.NText, 100).Value = alarm.CurrentState;
                         cmd.Parameters.Add("@ackState", SqlDbType.Int).Value = alarm.AckState;
                         cmd.Parameters.Add("@pubStatus", SqlDbType.Int).Value = alarm.PubStatus;
                         cmd.Parameters.Add("@alarmType", SqlDbType.Int).Value = alarm.Type;
                         cmd.Parameters.Add("@persistent", SqlDbType.Int).Value = alarm.Persistent;
                         cmd.Parameters.Add("@inhibit", SqlDbType.Int).Value = alarm.Inhibit;
-                        cmd.Parameters.Add("@message", SqlDbType.NText).Value = alarm.Message;
+                        cmd.Parameters.Add("@message", SqlDbType.NText, 200).Value = alarm.Message;
 
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
