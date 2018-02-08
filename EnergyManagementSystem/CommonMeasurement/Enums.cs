@@ -8,8 +8,8 @@ namespace EMS.CommonMeasurement
 {
     public enum OptimizationType:int
     {
-        None = 0,
-        Linear,
+        //None = 0,
+        Linear = 0,
         Genetic
     }
 }

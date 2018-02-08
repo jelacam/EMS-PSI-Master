@@ -60,12 +60,13 @@
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
 
-					<chartingToolkit:LineSeries Title="Value"  
+					<chartingToolkit:LineSeries Title="Power"  
 												ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=CurrentValue}" 
 												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
+												Style="{StaticResource LineSeriesStyle}" 
+												>
 						<chartingToolkit:LineSeries.DataPointStyle>
 							<Style TargetType="chartingToolkit:LineDataPoint">
 								<Setter Property="Background" Value="DarkGreen"/>
@@ -79,7 +80,7 @@
 						</chartingToolkit:LineSeries.IndependentAxis>
 
 						<chartingToolkit:LineSeries.DependentRangeAxis>
-							<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+							<chartingToolkit:LinearAxis Orientation="Y" Title="Value" Minimum="0"/>
 						</chartingToolkit:LineSeries.DependentRangeAxis>
 
 					</chartingToolkit:LineSeries>
@@ -95,30 +96,33 @@
 						<Binding Path="Key"></Binding>
 					</MultiBinding>
 				</Grid.Visibility>
-				<chartingToolkit:Chart Name="lineChart" Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
+				<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
 									   Style="{StaticResource DashboardChartStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
+					<chartingToolkit:Chart.Series>
 
-					<chartingToolkit:LineSeries Title="Value"  
+						<chartingToolkit:LineSeries Title="Power"   
 												ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=CurrentValue}" 
 												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
 												IsSelectionEnabled="False"
 												Style="{StaticResource LineSeriesStyle}">
-						<chartingToolkit:LineSeries.DataPointStyle>
-							<Style TargetType="chartingToolkit:LineDataPoint">
-								<Setter Property="Background" Value="DarkOrange"/>
-								<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-							</Style>
-						</chartingToolkit:LineSeries.DataPointStyle>
-						<chartingToolkit:LineSeries.IndependentAxis>
-							<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
-						</chartingToolkit:LineSeries.IndependentAxis>
-						<chartingToolkit:LineSeries.DependentRangeAxis>
-							<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
-						</chartingToolkit:LineSeries.DependentRangeAxis>
-					</chartingToolkit:LineSeries>
+							<chartingToolkit:LineSeries.DataPointStyle>
+								<Style TargetType="chartingToolkit:LineDataPoint">
+									<Setter Property="Background" Value="DarkOrange"/>
+									<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+								</Style>
+							</chartingToolkit:LineSeries.DataPointStyle>
+							<chartingToolkit:LineSeries.IndependentAxis>
+								<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"/>
+							</chartingToolkit:LineSeries.IndependentAxis>
+							<chartingToolkit:LineSeries.DependentRangeAxis>
+								<chartingToolkit:LinearAxis Orientation="Y" Title="Value" Minimum="0"/>
+							</chartingToolkit:LineSeries.DependentRangeAxis>
+						</chartingToolkit:LineSeries>
+						
+					</chartingToolkit:Chart.Series>
 				</chartingToolkit:Chart>
 			</Grid>
 		</DataTemplate>

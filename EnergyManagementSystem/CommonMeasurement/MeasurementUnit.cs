@@ -48,7 +48,7 @@ namespace EMS.CommonMeasurement
 			currentValue = 0;
 			minValue = 0;
 			maxValue = 0;
-            OptimizationType = OptimizationType.None;
+            OptimizationType = OptimizationType.Linear;
             timestamp = DateTime.Now;
         }
 

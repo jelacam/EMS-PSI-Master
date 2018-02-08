@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using UIClient.PubSub;
 
 namespace UIClient.ViewModel
@@ -16,6 +17,7 @@ namespace UIClient.ViewModel
         private AlarmsEventsSubscribeProxy aeSubscribeProxy;
 
         private ObservableCollection<AlarmHelper> alarmSummaryQueue = new ObservableCollection<AlarmHelper>();
+        private ICommand acknowledgeCommand;
 
         public ObservableCollection<AlarmHelper> AlarmSummaryQueue
         {
@@ -51,6 +53,29 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to Alarm Events Service for Integirty update operation! \n {0}", e.Message);
             }
+        }
+
+        public ICommand AcknowledgeCommand => acknowledgeCommand ?? (acknowledgeCommand = new RelayCommand<AlarmHelper>(AcknowledgeCommandExecute));
+
+        private void AcknowledgeCommandExecute(AlarmHelper alarmHelper)
+        {
+            if(alarmHelper == null)
+            {
+                return;
+            }
+
+            if(alarmHelper.AckState == AckState.Acknowledged)
+            {
+                alarmHelper.AckState = AckState.Unacknowledged;
+            }
+            else
+            {
+                alarmHelper.AckState = AckState.Acknowledged;
+            }
+
+            //string str = alarmHelper.CurrentState;
+            //str = str.Substring(0,str.IndexOf(",")+1);
+            //alarmHelper.CurrentState = str + " " + alarmHelper.AckState;
         }
 
         private void CallbackAction(object obj)

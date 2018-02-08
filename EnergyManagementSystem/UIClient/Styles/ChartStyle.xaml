@@ -182,6 +182,7 @@
 							<TextBlock Text="{TemplateBinding Title}" Margin="20,0,0,0"/>
 							<datavis:Legend x:Name="Legend" Grid.Column="1" Canvas.ZIndex="1" VerticalAlignment="Top" 
 											MaxWidth="{Binding ActualWidth, ElementName=ChartArea}" HorizontalAlignment="Right"
+											Title="{TemplateBinding LegendTitle}"
 											Header="{TemplateBinding LegendTitle}" Style="{TemplateBinding LegendStyle}" Margin="20,6,0,0"/>
 							<chartingprimitives:EdgePanel x:Name="ChartArea" Grid.Row="1" Grid.ColumnSpan="2" Style="{TemplateBinding ChartAreaStyle}">
 								<Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}"/>
