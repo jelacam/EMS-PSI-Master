@@ -395,6 +395,8 @@ namespace UIClient.ViewModel
             PieData.Add(new KeyValuePair<string, double>("CO2_Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2_Remaining", TotalCO2));
 
+			TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
+
             OnPropertyChanged(nameof(PieData));
             OnPropertyChanged(nameof(TotalCO2Reduction));
             OnPropertyChanged(nameof(CO2EmissionContainer));
