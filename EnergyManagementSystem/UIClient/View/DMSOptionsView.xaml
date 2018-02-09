@@ -80,14 +80,33 @@
 					</StackPanel>
 
 					<StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
-						<chartingToolkit:Chart Margin="10" Height="400" Width="400" Style="{StaticResource DashboardChartStyle}">
+                        <chartingToolkit:Chart Margin="10" Height="200" Width="200" Style="{StaticResource DashboardChartStyle}">
 							<chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
                                                        IsSelectionEnabled="False"
 													   >
-							</chartingToolkit:PieSeries>
-						</chartingToolkit:Chart>
+                                <chartingToolkit:PieSeries.Palette>
+                                    <dv:ResourceDictionaryCollection>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="green" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="orange" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                    </dv:ResourceDictionaryCollection>
+                                </chartingToolkit:PieSeries.Palette>
+                            </chartingToolkit:PieSeries>
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
+                        </chartingToolkit:Chart>
 					</StackPanel>
 
 				</Grid>
