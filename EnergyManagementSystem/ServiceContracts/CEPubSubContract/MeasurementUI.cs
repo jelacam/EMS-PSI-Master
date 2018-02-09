@@ -10,6 +10,9 @@ namespace EMS.ServiceContracts
     {
         public long Gid { get; set; }
 
+        public long MRid { get; set; }
+
+
         public float CurrentValue { get; set; }
 
         public string AlarmType { get; set; }

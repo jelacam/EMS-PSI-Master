@@ -9,7 +9,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 {
     public class GeneticAlgorithm<T>
     {
-        public List<DNA<T>> Population { get; private set; }
+        public List<DNA<T>> Population { get; set; }
         public int Generation { get; private set; }
         public float BestFitness { get; private set; }
         public T[] BestGenes { get; private set; }
@@ -23,10 +23,10 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         private int dnaSize;
         private Func<int, T> getRandomGene;
         private Func<DNA<T>, float> fitnessFunction;
-        private Func<T,float,T> mutateFunction;
+        private Func<T, float, T> mutateFunction;
 
         public GeneticAlgorithm(int populationSize, int dnaSize, Random random, Func<int, T> getRandomGene, Func<DNA<T>, float> fitnessFunction,
-            Func<T, float, T> mutateFunction, int elitism, float mutationRate = 0.01f)
+            Func<T, float, T> mutateFunction, int elitism, float mutationRate = 0.01f, bool shoudlInitPopulation = true)
         {
             Generation = 1;
             Elitism = elitism;
@@ -41,13 +41,16 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
             BestGenes = new T[dnaSize];
 
-            for (int i = 0; i < populationSize; i++)
+            if (shoudlInitPopulation)
             {
-                Population.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true));
+                for (int i = 0; i < populationSize; i++)
+                {
+                    Population.Add(new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true));
+                }
             }
         }
 
-        internal void Start(int numOfIterations,Action<T[]> callback)
+        internal void Start(int numOfIterations, Action<T[]> callback)
         {
             T[] bestGenes = StartAndReturnBest(numOfIterations);
             callback.Invoke(bestGenes);
@@ -57,14 +60,14 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         {
             for (int i = 0; i < numOfIterations; i++)
             {
-                NewGeneration();
+                NewGeneration(20);
             }
 
             return BestGenes;
         }
 
 
-        public void NewGeneration(int numNewDNA = 0, bool crossoverNewDNA = false)
+        public void NewGeneration(int numNewDNA = 0)
         {
             int finalCount = Population.Count + numNewDNA;
 
@@ -86,7 +89,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 {
                     newPopulation.Add(Population[i]);
                 }
-                else if (i < Population.Count || crossoverNewDNA)
+                else if (i < Population.Count - numNewDNA)
                 {
                     DNA<T> parent1 = ChooseParent();
                     DNA<T> parent2 = ChooseParent();
@@ -95,7 +98,8 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                     if (parent1 == null || parent2 == null)
                     {
                         child = new DNA<T>(dnaSize, random, getRandomGene, fitnessFunction, mutateFunction, shouldInitGenes: true);
-                    }else
+                    }
+                    else
                     {
                         child = parent1.Crossover(parent2);
                     }
@@ -154,19 +158,9 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private DNA<T> ChooseParent()
         {
-            double randomNumber = random.NextDouble() * fitnessSum;
+            int randomNumber = random.Next(0, Elitism);
 
-            for (int i = 0; i < Population.Count; i++)
-            {
-                if (randomNumber < Population[i].Fitness)
-                {
-                    return Population[i];
-                }
-
-                randomNumber -= Population[i].Fitness;
-            }
-
-            return null;
+            return Population[randomNumber];
         }
     }
 }

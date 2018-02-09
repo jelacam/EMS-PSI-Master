@@ -105,13 +105,13 @@
 				</TabItem.ContentTemplate>
 			</TabItem>
 
-			<TabItem Header="Alarm" Style="{StaticResource TabItemStyle}">
+			<!--<TabItem Header="Alarm" Style="{StaticResource TabItemStyle}">
 				<TabItem.ContentTemplate>
 					<DataTemplate>
 						<view:AlarmView ></view:AlarmView>
 					</DataTemplate>
 				</TabItem.ContentTemplate>
-			</TabItem>
+			</TabItem>-->
 		</TabControl>-->
 	</Grid>
 </Window>

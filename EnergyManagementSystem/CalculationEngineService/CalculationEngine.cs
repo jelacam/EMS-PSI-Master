@@ -184,7 +184,8 @@ namespace EMS.Services.CalculationEngineService
                 }
                 else
                 {
-                    return DoNotOptimized(optModelMap, powerOfConsumers);
+                    return null;
+                   // return DoNotOptimized(optModelMap, powerOfConsumers);
                 }
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
@@ -223,7 +224,7 @@ namespace EMS.Services.CalculationEngineService
                     Gid = optModel.GlobalId,
                     MaxValue = optModel.MaxPower,
                     MinValue = optModel.MinPower,
-                    OptimizationType = OptimizationType.None,
+                    //OptimizationType = OptimizationType.None,
                 });
             }
 
