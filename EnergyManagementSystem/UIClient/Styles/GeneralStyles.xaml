@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UIClient.Styles">
+                    xmlns:local="clr-namespace:UIClient.Styles"
+                    xmlns:view="clr-namespace:UIClient.View">
 
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
@@ -32,7 +33,43 @@
 		<Setter Property="BorderThickness" Value="0" ></Setter>
 	</Style>
 
-	<Style TargetType="DataGridRow" x:Key="AlarmDataGridRowStyle">
+    <Style TargetType="view:DashboardView" x:Key="DashboardStyle">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="view:AlarmSummaryView" x:Key="AlarmSummaryStyle">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="view:DMSOptionsView" x:Key="DMSOptions">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="view:HistoryView" x:Key="HistoryStyle">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="view:ImporterView" x:Key="ImporterStyle">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="view:NMSView" x:Key="NMSStyle">
+        <Setter Property="Foreground" Value="White" ></Setter>
+        <Setter Property="Background" Value="{StaticResource DarkBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0" ></Setter>
+    </Style>
+
+    <Style TargetType="DataGridRow" x:Key="AlarmDataGridRowStyle">
 		<Setter Property="Background" Value="Red"></Setter>
 	</Style>
 

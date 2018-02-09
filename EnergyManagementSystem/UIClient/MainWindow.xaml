@@ -7,13 +7,56 @@
 		xmlns:common="clr-namespace:EMS.Common;assembly=EMS.Common"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
 		xmlns:view="clr-namespace:UIClient.View"
+        xmlns:vm="clr-namespace:UIClient.ViewModel"
+        xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:dockctrl="clr-namespace:Xceed.Wpf.AvalonDock.Controls;assembly=Xceed.Wpf.AvalonDock"
         xmlns:converters="clr-namespace:UIClient.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1250"
         Name="mainWin"
 		Style="{StaticResource BasicWindowStyle}">
 	<Grid>
-		<TabControl Style="{StaticResource TabControlStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <dock:DockingManager Grid.Row="1"
+                         DataContext="{Binding DockManagerViewModel}"
+                         DocumentsSource="{Binding Documents}"
+                         AnchorablesSource="{Binding Anchorables}" >
+
+            <dock:DockingManager.Resources>
+                <DataTemplate DataType="{x:Type vm:DashboardViewModel}" >
+                    <view:DashboardView Style="{StaticResource DashboardStyle}" DataContext="{Binding Path=DataContext.DashboardViewModel,RelativeSource={RelativeSource AncestorType=Window}}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:NMSViewModel}">
+                    <view:NMSView Style="{StaticResource NMSStyle}"></view:NMSView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:ImporterViewModel}">
+                    <view:ImporterView Style="{StaticResource ImporterStyle}"></view:ImporterView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+                    <view:HistoryView Style="{StaticResource HistoryStyle}"></view:HistoryView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:DMSOptionsViewModel}">
+                    <view:DMSOptionsView Style="{StaticResource DMSOptions}"></view:DMSOptionsView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:AlarmSummaryViewModel}">
+                    <view:AlarmSummaryView Style="{StaticResource AlarmSummaryStyle}" DataContext="{Binding Path = DataContext.AlarmSummaryViewModel, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                </DataTemplate>
+            </dock:DockingManager.Resources>
+
+            <dock:DockingManager.LayoutItemContainerStyle>
+                <!-- you can add additional bindings from the layoutitem to the DockWindowViewModel -->
+                <Style TargetType="{x:Type dockctrl:LayoutItem}" >
+                    <Setter Property="Title" Value="{Binding Model.Title}" />
+                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
+                    <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                </Style>
+            </dock:DockingManager.LayoutItemContainerStyle>
+
+        </dock:DockingManager>
+        <!--<TabControl Style="{StaticResource TabControlStyle}">
 
 			<TabItem Header="Dashboard" Style="{StaticResource TabItemStyle}">
 				<TabItem.ContentTemplate>
@@ -69,7 +112,7 @@
 					</DataTemplate>
 				</TabItem.ContentTemplate>
 			</TabItem>
-		</TabControl>
+		</TabControl>-->
 	</Grid>
 </Window>
 
