@@ -55,7 +55,6 @@
                     <Setter Property="CloseAllCommand" Value="{x:Null}" />
                     <Setter Property="CloseCommand" Value="{x:Null}" />
                     <Setter Property="CanClose" Value="false" />
-                    <Setter Property="IsEnabled" Value="false" />
                 </Style>
             </dock:DockingManager.LayoutItemContainerStyle>
             <dock:DockingManager.Theme>

@@ -61,8 +61,8 @@ namespace UIClient.ViewModel
         {
             get
             {
-                //if (_CloseCommand == null)
-                //    _CloseCommand = new RelayCommand2(call => Close());
+                if (_CloseCommand == null)
+                    _CloseCommand = new RelayCommand2(call => Close());
                 return _CloseCommand;
             }
         }
@@ -77,7 +77,7 @@ namespace UIClient.ViewModel
             {
                 if (_IsClosed != value)
                 {
-                    _IsClosed = false;
+                    _IsClosed = value;
                     OnPropertyChanged(nameof(IsClosed));
                 }
             }
@@ -93,7 +93,7 @@ namespace UIClient.ViewModel
             {
                 if (_CanClose != value)
                 {
-                    _CanClose = false;
+                    _CanClose = value;
                     OnPropertyChanged(nameof(CanClose));
                 }
             }
@@ -126,7 +126,7 @@ namespace UIClient.ViewModel
 
         public void Close()
         {
-            this.IsClosed = false;
+            this.IsClosed = true;
         }
 
         #endregion 
