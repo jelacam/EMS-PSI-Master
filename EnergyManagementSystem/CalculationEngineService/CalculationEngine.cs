@@ -754,7 +754,7 @@ namespace EMS.Services.CalculationEngineService
         /// <returns></returns>
         public bool InitiateIntegrityUpdate()
         {
-            lock (lockObj)
+            //lock (lockObj)
             {
                 ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
 

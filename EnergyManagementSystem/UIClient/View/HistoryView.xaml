@@ -10,14 +10,16 @@
              xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:uiModel ="clr-namespace:UIClient.Model;assembly=UIClient"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+			 xmlns:root ="clr-namespace:UIClient"
 			 mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="500">
 
     <UserControl.Resources>
         <converters:TestConverter x:Key="TestConvetrer"/>
         <converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
-        <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
-        <converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
+		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
+		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
+		<converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
         <ObjectDataProvider x:Key="dataFromPeriodEnum" MethodName="GetValues"
@@ -28,8 +30,16 @@
         </ObjectDataProvider>
 
         <DataTemplate x:Key="GensVisibilityCheckbox">
-            <CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Converter={StaticResource HexadecimalConverter}}">
-                <CheckBox.IsChecked>
+            <CheckBox Foreground="White" Margin="1,0,0,2" >
+				
+				<CheckBox.Content>
+					<MultiBinding Converter="{StaticResource GidToMridConverter}">
+						<Binding ></Binding>
+						<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+					</MultiBinding>
+				</CheckBox.Content>
+				
+				<CheckBox.IsChecked>
                     <MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
                         <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
                         <Binding Mode="OneWay"></Binding>
@@ -51,12 +61,15 @@
 
         <DataTemplate x:Key="GraphGeneratorTemplate">
             <Grid>
-                <chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-									   Style="{StaticResource DashboardChartStyle}"
-                                       Width="400"
-                                       Height="300"
-									    >
+                <chartingToolkit:Chart Style="{StaticResource DashboardChartStyle}" Width="400" Height="300">
 
+					<chartingToolkit:Chart.Title>
+						<MultiBinding Converter="{StaticResource GidToMridConverter}">
+							<Binding Path="Key"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</chartingToolkit:Chart.Title>
+					
                     <chartingToolkit:LineSeries Title="Value"  
 												ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=Item1}" 

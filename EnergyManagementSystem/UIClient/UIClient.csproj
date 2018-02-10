@@ -124,6 +124,7 @@
     <Compile Include="Converters\EMSTypeToStringConverter.cs" />
     <Compile Include="Converters\GidMapToBoolConverter.cs" />
     <Compile Include="Converters\GidMapToVisibilityConverter.cs" />
+    <Compile Include="Converters\GidToMridConverter.cs" />
     <Compile Include="Converters\GlobalIdToEMSTypeStringConverter.cs" />
     <Compile Include="Converters\HexadecimalConverter.cs" />
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
@@ -306,6 +307,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NetworkModelService\DataModel\DataModel.csproj">
+      <Project>{ADE96497-7C11-40B6-AE82-57F956C9F104}</Project>
+      <Name>DataModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\AESPubSbuContract\AESPubSbuContract.csproj">
       <Project>{d7d1b621-4053-4a57-8a65-b7b3157f12b2}</Project>

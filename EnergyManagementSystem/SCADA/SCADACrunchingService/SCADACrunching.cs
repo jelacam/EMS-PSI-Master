@@ -452,6 +452,7 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns></returns>
         public bool InitiateIntegrityUpdate()
         {
+
             List<ModelCode> properties = new List<ModelCode>(10);
             ModelCode modelCode = ModelCode.ANALOG;
             int iteratorId = 0;
