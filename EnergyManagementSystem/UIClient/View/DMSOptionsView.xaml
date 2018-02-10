@@ -75,12 +75,12 @@
 
 					<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Margin="10" >
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind production in selected period: "></TextBlock>
-						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalWindProduction}"></TextBlock>
+                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalWindProduction}"></TextBlock>
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="kW"></TextBlock>
 					</StackPanel>
 
 					<StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
-                        <chartingToolkit:Chart Margin="10" Height="200" Width="200" Style="{StaticResource DashboardChartStyle}">
+						<chartingToolkit:Chart Margin="10" Height="270" Width="270" Style="{StaticResource DashboardChartStyle}">
 							<chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
@@ -90,12 +90,12 @@
                                     <dv:ResourceDictionaryCollection>
                                         <ResourceDictionary>
                                             <Style x:Key="DataPointStyle" TargetType="Control">
-                                                <Setter Property="Background" Value="green" />
+                                                <Setter Property="Background" Value="Green" />
                                             </Style>
                                         </ResourceDictionary>
                                         <ResourceDictionary>
                                             <Style x:Key="DataPointStyle" TargetType="Control">
-                                                <Setter Property="Background" Value="orange" />
+                                                <Setter Property="Background" Value="DarkOrange" />
                                             </Style>
                                         </ResourceDictionary>
                                     </dv:ResourceDictionaryCollection>
@@ -158,7 +158,7 @@
 
 						<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" >
 							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind farm saving in selected period: "></TextBlock>
-							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalWindSaving}"></TextBlock>
+                            <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalWindSaving}"></TextBlock>
 							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" $"></TextBlock>
 						</StackPanel>
 						<chartingToolkit:Chart Grid.Row="1" Margin="10" Height="300" Width="500" HorizontalAlignment="Left" Style="{StaticResource DashboardChartStyle}" >
@@ -218,12 +218,12 @@
 									<dv:ResourceDictionaryCollection>
 										<ResourceDictionary>
 											<Style x:Key="DataPointStyle" TargetType="Control">
-												<Setter Property="Background" Value="green" />
+												<Setter Property="Background" Value="Green" />
 											</Style>
 										</ResourceDictionary>
 										<ResourceDictionary>
 											<Style x:Key="DataPointStyle" TargetType="Control">
-												<Setter Property="Background" Value="orange" />
+                                                <Setter Property="Background" Value="DarkOrange" />
 											</Style>
 										</ResourceDictionary>
 									</dv:ResourceDictionaryCollection>
@@ -247,9 +247,9 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="*"/>
 						</Grid.RowDefinitions>
-						<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" >
+						<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
 							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period [tonnes]:" Margin="5,0,0,0"/>
-							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
+							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
 						</StackPanel>
 
 						
@@ -266,7 +266,7 @@
 												Style="{StaticResource LineSeriesStyle}">
 									<chartingToolkit:LineSeries.DataPointStyle>
 										<Style TargetType="chartingToolkit:LineDataPoint">
-											<Setter Property="Background" Value="Red"/>
+                                            <Setter Property="Background" Value="DarkOrange"/>
 											<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
 										</Style>
 									</chartingToolkit:LineSeries.DataPointStyle>

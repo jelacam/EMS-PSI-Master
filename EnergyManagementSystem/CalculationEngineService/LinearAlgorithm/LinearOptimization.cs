@@ -201,27 +201,23 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						{
 							help = decisions[optModel.Value.GlobalId];							
 							Term termLimit;
+							termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
 
-							if (old != null && old.Count > 0 && renewable && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind) && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.solar))
+							if (old != null && old.Count > 0 && old.Count.Equals(optModelMap.Count()))
 							{
 								float oldValue = old[optModel.Value.GlobalId].LinearOptimizedValue;
 
-								if (oldValue == optModel.Value.MinPower)
+								if (!optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind) && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.solar))
 								{
-									termLimit = optModel.Value.MinPower <= help <= (float)((0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower)) + optModel.Value.MinPower);
+									if (oldValue == optModel.Value.MinPower)
+									{
+										// termLimit = optModel.Value.MinPower <= help <= (float)((0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower)) + optModel.Value.MinPower);
+									}
+									else if (oldValue == optModel.Value.MaxPower)
+									{
+										// termLimit = (float)(optModel.Value.MaxPower - (0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower))) <= help <= optModel.Value.MaxPower;
+									}
 								}
-								else if (oldValue == optModel.Value.MaxPower)
-								{
-									termLimit = (float)((0.2 * (optModel.Value.MaxPower - optModel.Value.MinPower)) + optModel.Value.MinPower) <= help <= optModel.Value.MaxPower;
-								}
-								else
-								{
-									termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
-								}
-							}
-							else
-							{			
-								termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;								
 							}
 
 							model.AddConstraint(limit + optModel.Value.GlobalId, termLimit);
