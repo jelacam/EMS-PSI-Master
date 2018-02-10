@@ -22,7 +22,7 @@ namespace UIClient.ViewModel
             foreach (var document in dockWindowViewModels)
             {
                 document.PropertyChanged += DockWindowViewModel_PropertyChanged;
-                if (!document.IsClosed)
+                //if (!document.IsClosed)
                     this.Documents.Add(document);
             }
         }
@@ -36,7 +36,7 @@ namespace UIClient.ViewModel
                 if (!document.IsClosed)
                     this.Documents.Add(document);
                 else
-                    this.Documents.Remove(document);
+                    this.Documents.Add(document);
             }
         }
     }

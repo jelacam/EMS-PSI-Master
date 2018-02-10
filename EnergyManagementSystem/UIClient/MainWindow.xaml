@@ -24,8 +24,8 @@
         <dock:DockingManager Grid.Row="1"
                          DataContext="{Binding DockManagerViewModel}"
                          DocumentsSource="{Binding Documents}"
-                         AnchorablesSource="{Binding Anchorables}" >
-
+                         AnchorablesSource="{Binding Anchorables}">
+            
             <dock:DockingManager.Resources>
                 <DataTemplate DataType="{x:Type vm:DashboardViewModel}" >
                     <view:DashboardView Style="{StaticResource DashboardStyle}" DataContext="{Binding Path=DataContext.DashboardViewModel,RelativeSource={RelativeSource AncestorType=Window}}"/>
@@ -48,11 +48,14 @@
             </dock:DockingManager.Resources>
 
             <dock:DockingManager.LayoutItemContainerStyle>
-                <!-- you can add additional bindings from the layoutitem to the DockWindowViewModel -->
+                <!-- trebalo da se sa ovim disejbluje zatvaranje tabova ali i dalje zatvara -->
                 <Style TargetType="{x:Type dockctrl:LayoutItem}" >
                     <Setter Property="Title" Value="{Binding Model.Title}" />
-                    <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}" />
-                    <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
+                    <Setter Property="CloseAllButThisCommand" Value="{x:Null}" />
+                    <Setter Property="CloseAllCommand" Value="{x:Null}" />
+                    <Setter Property="CloseCommand" Value="{x:Null}" />
+                    <Setter Property="CanClose" Value="false" />
+                    <Setter Property="IsEnabled" Value="false" />
                 </Style>
             </dock:DockingManager.LayoutItemContainerStyle>
             <dock:DockingManager.Theme>
