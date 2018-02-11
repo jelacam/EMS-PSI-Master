@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:root ="clr-namespace:UIClient"
              xmlns:local="clr-namespace:UIClient.View"
 			 xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 			 xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
@@ -14,7 +15,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConverter"/>
-		<converters:HexadecimalConverter x:Key="HexadecimalConverter"/>
+		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
 		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
 		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
@@ -27,7 +28,15 @@
 		</ObjectDataProvider>
 
 		<DataTemplate x:Key="VisibilityCheckbox">
-			<CheckBox Foreground="White" Margin="1,0,0,2" Content="{Binding Key,Converter={StaticResource HexadecimalConverter}}">
+			<CheckBox Foreground="White" Margin="1,0,0,2">
+				
+				<CheckBox.Content>
+					<MultiBinding Converter="{StaticResource GidToMridConverter}">
+						<Binding Path="Key"></Binding>
+						<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+					</MultiBinding>
+				</CheckBox.Content>
+				
 				<CheckBox.IsChecked>
 					<MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
 						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
@@ -55,11 +64,20 @@
 						<Binding Path="Key"></Binding>
 					</MultiBinding>
 				</Grid.Visibility>
-				<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-									   Style="{StaticResource DashboardChartStyle}"
+				<chartingToolkit:Chart Style="{StaticResource DashboardChartStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
-
+					<chartingToolkit:Chart.Title>
+						<MultiBinding Converter="{StaticResource GidToMridConverter}">
+							<Binding Path="Key"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</chartingToolkit:Chart.Title>
+					<chartingToolkit:Chart.LegendStyle>
+						<Style TargetType="datavis:Legend">
+							<Setter Property="Width" Value="0" />
+						</Style>
+					</chartingToolkit:Chart.LegendStyle>
 					<chartingToolkit:LineSeries Title="Power"  
 												ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=CurrentValue}" 
@@ -71,7 +89,6 @@
 							<Style TargetType="chartingToolkit:LineDataPoint">
 								<Setter Property="Background" Value="DarkGreen"/>
 								<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-
 							</Style>
 						</chartingToolkit:LineSeries.DataPointStyle>
 
@@ -96,12 +113,25 @@
 						<Binding Path="Key"></Binding>
 					</MultiBinding>
 				</Grid.Visibility>
-				<chartingToolkit:Chart Title="{Binding Path=Key, Converter={StaticResource HexadecimalConverter}}" 
-									   Style="{StaticResource DashboardChartStyle}"
+				<chartingToolkit:Chart Style="{StaticResource DashboardChartStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
-					<chartingToolkit:Chart.Series>
 
+					<chartingToolkit:Chart.Title>
+						<MultiBinding Converter="{StaticResource GidToMridConverter}">
+							<Binding Path="Key"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</chartingToolkit:Chart.Title>
+
+					<chartingToolkit:Chart.LegendStyle>
+						<Style TargetType="datavis:Legend">
+							<Setter Property="Width" Value="0" />
+						</Style>
+					</chartingToolkit:Chart.LegendStyle>
+
+					<chartingToolkit:Chart.Series>
+						
 						<chartingToolkit:LineSeries Title="Power"   
 												ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=CurrentValue}" 
@@ -222,8 +252,8 @@
 				<DockPanel Grid.Row="0">
 
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generators -" />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Current production:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generation:" />
+						<!--<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Current production:" Margin="5,0,0,0"/>-->
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
 					</StackPanel>
 
@@ -240,8 +270,8 @@
 				<DockPanel Grid.Row="1">
 
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Energy Consumers -"  />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>
+						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Demand:"  />
+						<!--<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>-->
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
 					</StackPanel>
 
