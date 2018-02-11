@@ -124,7 +124,7 @@
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2013">
-      <HintPath>C:\Users\dusan\Desktop\958-sve\Xceed.Wpf.AvalonDock.Themes.VS2013.dll</HintPath>
+      <HintPath>..\packages\Xceed.Wpf.AvalonDock.Themes.VS2013.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.DataGrid, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
