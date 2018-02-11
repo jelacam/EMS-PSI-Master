@@ -34,6 +34,7 @@ namespace UIClient.ViewModel
 
         public AlarmSummaryViewModel()
         {
+            Title = "Alarm Summary";
             try
             {
                 aeSubscribeProxy = new AlarmsEventsSubscribeProxy(CallbackAction);

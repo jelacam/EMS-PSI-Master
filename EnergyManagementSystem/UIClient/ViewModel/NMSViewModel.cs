@@ -26,6 +26,7 @@ namespace UIClient.ViewModel
 
         public NMSViewModel(NMSView mainWindow)
         {
+            Title = "NMS";
             this.NMSview = mainWindow;
             this.NMSview.Loaded += View_Loaded;
             ResList = new ObservableCollection<ResourceDescription>();

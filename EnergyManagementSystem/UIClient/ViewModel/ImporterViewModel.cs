@@ -30,6 +30,7 @@ namespace UIClient.ViewModel
 
         public ImporterViewModel()
         {
+            Title = "Importer";
             cimFileLocation = string.Empty;
         }
 

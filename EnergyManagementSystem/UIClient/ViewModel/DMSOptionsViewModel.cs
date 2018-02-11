@@ -48,6 +48,7 @@ namespace UIClient.ViewModel
 
         public DMSOptionsViewModel(DMSOptionsView mainWindow)
         {
+            Title = "DMS";
             StartTime = DateTime.Now;
             EndTime = DateTime.Now;
             StartTimeWind = DateTime.Now;

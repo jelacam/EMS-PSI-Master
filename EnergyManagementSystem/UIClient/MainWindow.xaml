@@ -10,7 +10,6 @@
         xmlns:vm="clr-namespace:UIClient.ViewModel"
         xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:dockctrl="clr-namespace:Xceed.Wpf.AvalonDock.Controls;assembly=Xceed.Wpf.AvalonDock"
-        xmlns:theme="clr-namespace:Xceed.Wpf.Themes.Windows10;assembly=Xceed.Wpf.Themes.Windows10"
         xmlns:converters="clr-namespace:UIClient.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1250"
@@ -24,13 +23,23 @@
         <dock:DockingManager Grid.Row="1"
                          DataContext="{Binding DockManagerViewModel}"
                          DocumentsSource="{Binding Documents}"
-                         AnchorablesSource="{Binding Anchorables}">
-            
+                         AnchorablesSource="{Binding Anchorables}" 
+                         AllowMixedOrientation="True">
+            <dock:DockingManager.DocumentHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Content.Title}" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </DataTemplate>
+            </dock:DockingManager.DocumentHeaderTemplate>
+
+
             <dock:DockingManager.Resources>
-                <DataTemplate DataType="{x:Type vm:DashboardViewModel}" >
+                
+                <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
                     <view:DashboardView Style="{StaticResource DashboardStyle}" DataContext="{Binding Path=DataContext.DashboardViewModel,RelativeSource={RelativeSource AncestorType=Window}}"/>
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:NMSViewModel}">
+                <DataTemplate DataType="{x:Type vm:NMSViewModel }">
                     <view:NMSView Style="{StaticResource NMSStyle}"></view:NMSView>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:ImporterViewModel}">
@@ -48,18 +57,19 @@
             </dock:DockingManager.Resources>
 
             <dock:DockingManager.LayoutItemContainerStyle>
-                <!-- trebalo da se sa ovim disejbluje zatvaranje tabova ali i dalje zatvara -->
-                <Style TargetType="{x:Type dockctrl:LayoutItem}" >
-                    <Setter Property="Title" Value="{Binding Model.Title}" />
-                    <Setter Property="CloseAllButThisCommand" Value="{x:Null}" />
-                    <Setter Property="CloseAllCommand" Value="{x:Null}" />
+                 <!--trebalo da se sa ovim disejbluje zatvaranje tabova ali i dalje zatvara--> 
+                <Style TargetType="{x:Type dock:LayoutItem}" >
+                    <Setter Property="Title" Value="{Binding Title, Mode=TwoWay}" />
                     <Setter Property="CloseCommand" Value="{x:Null}" />
                     <Setter Property="CanClose" Value="false" />
                 </Style>
             </dock:DockingManager.LayoutItemContainerStyle>
             <dock:DockingManager.Theme>
-                <dock:Office2007BlackTheme/>
+                <dock:Vs2013DarkTheme/>
             </dock:DockingManager.Theme>
+            <!--<dock:DockingManager.Theme>
+                <dock:GenericTheme></dock:GenericTheme>
+            </dock:DockingManager.Theme>-->
 
         </dock:DockingManager>
         <!--<TabControl Style="{StaticResource TabControlStyle}">

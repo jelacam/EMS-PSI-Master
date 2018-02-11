@@ -199,6 +199,7 @@ namespace UIClient.ViewModel
 
             GraphWidth = 16 * graphSizeOffset;
             GraphHeight = 9 * graphSizeOffset;
+            Title = "Dashboard";
         }
 
         #region Commands

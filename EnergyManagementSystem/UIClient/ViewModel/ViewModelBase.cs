@@ -120,7 +120,7 @@ namespace UIClient.ViewModel
 
         public ViewModelBase()
         {
-            this.CanClose = false;
+            this.CanClose = true;
             this.IsClosed = false;
         }
 

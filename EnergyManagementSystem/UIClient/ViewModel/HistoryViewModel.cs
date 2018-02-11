@@ -42,6 +42,7 @@ namespace UIClient.ViewModel
 
         public HistoryViewModel(HistoryView mainWindow)
         {
+            Title = "History";
             startTime = DateTime.Now;
             endTime = DateTime.Now;
 
