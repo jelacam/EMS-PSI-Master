@@ -43,8 +43,9 @@ namespace UIClient.ViewModel
         public HistoryViewModel(HistoryView mainWindow)
         {
             Title = "History";
-            startTime = DateTime.Now;
+            startTime = DateTime.Now.AddMinutes(-1);
             endTime = DateTime.Now;
+            selectedPeriod = PeriodValues.None;
 
             internalSynchMachines = new List<ResourceDescription>(5);
             modelResourcesDesc = new ModelResourcesDesc();
@@ -155,6 +156,7 @@ namespace UIClient.ViewModel
             set
             {
                 selectedPeriod = value;
+                OnPropertyChanged(nameof(SelectedPeriod));
             }
         }
 
@@ -281,30 +283,30 @@ namespace UIClient.ViewModel
 
         private void SelectedPeriodCommandExecute(object obj)
         {
-            if (SelectedPeriod == PeriodValues.Last_Hour)
+            switch (SelectedPeriod)
             {
-                StartTime = DateTime.Now.AddHours(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Today)
-            {
-                StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_Year)
-            {
-                StartTime = DateTime.Now.AddYears(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_Month)
-            {
-                StartTime = DateTime.Now.AddMonths(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_4_Month)
-            {
-                StartTime = DateTime.Now.AddMonths(-4);
-                EndTime = DateTime.Now;
+                case PeriodValues.Last_Hour:
+                    StartTime = DateTime.Now.AddHours(-1);
+                    EndTime = DateTime.Now;
+                    break;
+                case PeriodValues.Today:
+                    StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                    EndTime = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Month:
+                    StartTime = DateTime.Now.AddMonths(-1);
+                    EndTime = DateTime.Now;
+                    break;
+                case PeriodValues.Last_4_Month:
+                    StartTime = DateTime.Now.AddMonths(-4);
+                    EndTime = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Year:
+                    StartTime = DateTime.Now.AddYears(-1);
+                    EndTime = DateTime.Now;
+                    break;
+                default:
+                    break;
             }
         }
 
