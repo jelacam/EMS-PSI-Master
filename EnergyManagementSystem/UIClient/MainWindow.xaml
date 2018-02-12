@@ -28,7 +28,7 @@
             <dock:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Content.Title}" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock TextAlignment="Center" Width="100" Text="{Binding Content.Title}" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </DataTemplate>
             </dock:DockingManager.DocumentHeaderTemplate>
@@ -59,7 +59,7 @@
             <dock:DockingManager.LayoutItemContainerStyle>
                  <!--trebalo da se sa ovim disejbluje zatvaranje tabova ali i dalje zatvara--> 
                 <Style TargetType="{x:Type dock:LayoutItem}" >
-                    <Setter Property="Title" Value="{Binding Title, Mode=TwoWay}" />
+                    <Setter Property="Title" Value="{Binding Content.Title, Mode=TwoWay}" />
                     <Setter Property="CloseCommand" Value="{x:Null}" />
                     <Setter Property="CanClose" Value="false" />
                 </Style>
