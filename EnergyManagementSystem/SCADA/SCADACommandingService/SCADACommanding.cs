@@ -413,10 +413,8 @@ namespace EMS.Services.SCADACommandingService
 
                             modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
 
-
                             if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
                             {
-
                                 float[] values = new float[100];
 
                                 values = FirstReadAfterSending((ushort)analogLoc.StartAddress, 2, analogLoc);
@@ -455,6 +453,7 @@ namespace EMS.Services.SCADACommandingService
                                 {
                                     // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
                                     txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + ", EGU = " + measurements[i].CurrentValue);
+                                    txtWriter.Dispose();
                                 }
                             }
                         }
@@ -477,7 +476,6 @@ namespace EMS.Services.SCADACommandingService
             byte[] response = modbusClient.ReadHoldingRegisters(startingAddress, quantity);
             values = ModbusHelper.GetValueFromByteArray<float>(response, analogLoc.LengthInBytes, 2); //skip header
             return values;
-
         }
 
         ///// <summary>

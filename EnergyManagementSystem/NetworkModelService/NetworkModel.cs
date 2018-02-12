@@ -915,7 +915,6 @@ namespace EMS.Services.NetworkModelService
 
                 return result;
 
-
                 #endregion sql_read_all_deltas
             }
             else if (MODE == "FILE")

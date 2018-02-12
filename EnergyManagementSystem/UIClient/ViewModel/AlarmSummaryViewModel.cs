@@ -19,6 +19,8 @@ namespace UIClient.ViewModel
         private ObservableCollection<AlarmHelper> alarmSummaryQueue = new ObservableCollection<AlarmHelper>();
         private ICommand acknowledgeCommand;
 
+        public object alarmSummaryLock = new object();
+
         public ObservableCollection<AlarmHelper> AlarmSummaryQueue
         {
             get
@@ -38,7 +40,7 @@ namespace UIClient.ViewModel
             try
             {
                 aeSubscribeProxy = new AlarmsEventsSubscribeProxy(CallbackAction);
-                aeSubscribeProxy.Subscribe();             
+                aeSubscribeProxy.Subscribe();
             }
             catch (Exception e)
             {
@@ -60,18 +62,31 @@ namespace UIClient.ViewModel
 
         private void AcknowledgeCommandExecute(AlarmHelper alarmHelper)
         {
-            if(alarmHelper == null)
+            if (alarmHelper == null)
             {
                 return;
             }
 
-            if(alarmHelper.AckState == AckState.Acknowledged)
-            {
-                alarmHelper.AckState = AckState.Unacknowledged;
-            }
-            else
+            if (alarmHelper.AckState == AckState.Unacknowledged)
             {
                 alarmHelper.AckState = AckState.Acknowledged;
+
+                lock (alarmSummaryLock)
+                {
+                    foreach (AlarmHelper alarm in AlarmSummaryQueue)
+                    {
+                        if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Nonpersistent))
+                        {
+                            AlarmSummaryQueue.Remove(alarm);
+                            OnPropertyChanged(nameof(AlarmSummaryQueue));
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Non persistent alarm acknowledged and removed from alarm summary collection");
+                        }
+                        else
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Persistent alarm acknowledged");
+                        }
+                    }
+                }
             }
 
             //string str = alarmHelper.CurrentState;
@@ -100,32 +115,49 @@ namespace UIClient.ViewModel
 
         private void AddAlarm(AlarmHelper alarm)
         {
-            foreach (AlarmHelper aHelper in AlarmSummaryQueue)
+            lock (alarmSummaryLock)
             {
-                if (aHelper.Gid.Equals(alarm.Gid))
+                if (!alarm.Type.Equals(AlarmType.NORMAL))
                 {
-                    aHelper.CurrentState = string.Format("{0}, {1}", State.Active, aHelper.AckState);
-                    OnPropertyChanged(nameof(AlarmSummaryQueue));
+                    foreach (AlarmHelper aHelper in AlarmSummaryQueue)
+                    {
+                        if (aHelper.Gid.Equals(alarm.Gid))
+                        {
+                            aHelper.CurrentState = string.Format("{0}, {1}", State.Active, aHelper.AckState);
+                            OnPropertyChanged(nameof(AlarmSummaryQueue));
+                            return;
+                        }
+                    }
                 }
+                try
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        AlarmSummaryQueue.Add(alarm);
+                    });
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceWarning, "AES can not update alarm values on UI becaus UI instance does not exist. Message: {0}", e.Message);
+                }
+                OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
-            App.Current.Dispatcher.Invoke((Action)delegate
-            {
-                AlarmSummaryQueue.Add(alarm);
-            });
-
-            OnPropertyChanged(nameof(AlarmSummaryQueue));
         }
 
         private void UpdateAlarm(AlarmHelper alarm)
         {
-            foreach (AlarmHelper aHelper in AlarmSummaryQueue)
+            lock (alarmSummaryLock)
             {
-                if (aHelper.Gid.Equals(alarm.Gid))
+                foreach (AlarmHelper aHelper in AlarmSummaryQueue)
                 {
-                    aHelper.CurrentState = alarm.CurrentState;
-                    aHelper.Value = alarm.Value;
-                    aHelper.LastChange = alarm.TimeStamp;
-                    OnPropertyChanged(nameof(AlarmSummaryQueue));
+                    if (aHelper.Gid.Equals(alarm.Gid))
+                    {
+                        aHelper.CurrentState = alarm.CurrentState;
+                        aHelper.Severity = alarm.Severity;
+                        aHelper.Value = alarm.Value;
+                        aHelper.Message = alarm.Message;
+                        OnPropertyChanged(nameof(AlarmSummaryQueue));
+                    }
                 }
             }
         }
@@ -134,10 +166,13 @@ namespace UIClient.ViewModel
         {
             List<AlarmHelper> integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
 
-            foreach(AlarmHelper alarm in integirtyResult)
+            lock (alarmSummaryLock)
             {
-                AlarmSummaryQueue.Add(alarm);
-                OnPropertyChanged(nameof(AlarmSummaryQueue));
+                foreach (AlarmHelper alarm in integirtyResult)
+                {
+                    AlarmSummaryQueue.Add(alarm);
+                    OnPropertyChanged(nameof(AlarmSummaryQueue));
+                }
             }
         }
     }
