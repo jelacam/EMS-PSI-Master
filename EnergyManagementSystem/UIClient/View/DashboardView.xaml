@@ -255,7 +255,8 @@
 						<TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generation:" />
 						<!--<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Current production:" Margin="5,0,0,0"/>-->
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
-					</StackPanel>
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text=" kW" Margin="5,0,0,0"/>
+                    </StackPanel>
 
 					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" 
 								   ItemTemplate="{StaticResource GraphGeneratorTemplate}" >
@@ -273,7 +274,8 @@
 						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Demand:"  />
 						<!--<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="Current consumptions:" Margin="5,0,0,0"/>-->
 						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
-					</StackPanel>
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text=" kW" Margin="5,0,0,0"/>
+                    </StackPanel>
 
 					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" 
 								   ItemTemplate="{StaticResource GraphConsumerTemplate}">
