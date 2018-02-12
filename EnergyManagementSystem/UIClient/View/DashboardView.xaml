@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="UIClient.View.DashboardView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:root ="clr-namespace:UIClient"
              xmlns:local="clr-namespace:UIClient.View"
 			 xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
@@ -11,285 +11,281 @@
 			 xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
 			 xmlns:commonMeas ="clr-namespace:EMS.CommonMeasurement;assembly=CommonMeasurement"
-			 mc:Ignorable="d" 
+			 mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-	<UserControl.Resources>
-		<converters:TestConverter x:Key="TestConverter"/>
-		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
-		<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-		<converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter"/>
-		<converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter"/>
-		<converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter"/>
-		<converters:LastValueShowConverter x:Key="LastValueShowConverter"/>
-		
-		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+    <UserControl.Resources>
+        <converters:TestConverter x:Key="TestConverter" />
+        <converters:GidToMridConverter x:Key="GidToMridConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:GidMapToVisibilityConverter x:Key="GidMapToVisibilityConverter" />
+        <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter" />
+        <converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter" />
+        <converters:LastValueShowConverter x:Key="LastValueShowConverter" />
+
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
-			<ObjectDataProvider.MethodParameters>
-				<x:Type TypeName="commonMeas:OptimizationType"/>
-			</ObjectDataProvider.MethodParameters>
-		</ObjectDataProvider>
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="commonMeas:OptimizationType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
 
-		<DataTemplate x:Key="VisibilityCheckbox">
-			<CheckBox Foreground="White" Margin="1,0,0,2">
-				
-				<CheckBox.Content>
-					<MultiBinding Converter="{StaticResource GidToMridConverter}">
-						<Binding Path="Key"></Binding>
-						<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
-					</MultiBinding>
-				</CheckBox.Content>
-				
-				<CheckBox.IsChecked>
-					<MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
-						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
-						<Binding Path="Key" Mode="OneWay"></Binding>
-					</MultiBinding>
-				</CheckBox.IsChecked>
-				<i:Interaction.Triggers>
-					<i:EventTrigger EventName="Checked">
-						<i:InvokeCommandAction Command="{Binding DataContext.VisibilityCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
-											   CommandParameter="{Binding Key}"/>
-					</i:EventTrigger>
-					<i:EventTrigger EventName="Unchecked">
-						<i:InvokeCommandAction Command="{Binding DataContext.VisibilityUncheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
-											   CommandParameter="{Binding Key}"/>
-					</i:EventTrigger>
-				</i:Interaction.Triggers>
-			</CheckBox>
-		</DataTemplate>
+        <DataTemplate x:Key="VisibilityCheckbox">
+            <CheckBox Foreground="White" Margin="1,0,0,2">
 
-		<DataTemplate x:Key="GraphGeneratorTemplate">
-			<Grid>
-				<Grid.Visibility>
-					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
-						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
-						<Binding Path="Key"></Binding>
-					</MultiBinding>
-				</Grid.Visibility>
-				<chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
+                <CheckBox.Content>
+                    <MultiBinding Converter="{StaticResource GidToMridConverter}">
+                        <Binding Path="Key"></Binding>
+                        <Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+                    </MultiBinding>
+                </CheckBox.Content>
+
+                <CheckBox.IsChecked>
+                    <MultiBinding Converter="{StaticResource GidMapToBoolConverter}" Mode="OneWay">
+                        <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                        <Binding Path="Key" Mode="OneWay"></Binding>
+                    </MultiBinding>
+                </CheckBox.IsChecked>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding DataContext.VisibilityCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="Unchecked">
+                        <i:InvokeCommandAction Command="{Binding DataContext.VisibilityUncheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+											   CommandParameter="{Binding Key}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GraphGeneratorTemplate">
+            <Grid>
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
+                        <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                        <Binding Path="Key"></Binding>
+                    </MultiBinding>
+                </Grid.Visibility>
+                <chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
-					<chartingToolkit:Chart.Tag>
-						<MultiBinding Converter="{StaticResource LastValueShowConverter}">
-							<Binding Path="Value"></Binding>
-							<Binding Path="Value[0].CurrentValue"></Binding>
-						</MultiBinding>
-					</chartingToolkit:Chart.Tag>
-					<chartingToolkit:Chart.Title>
-						<MultiBinding Converter="{StaticResource GidToMridConverter}">
-							<Binding Path="Key"></Binding>
-							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
-						</MultiBinding>
-					</chartingToolkit:Chart.Title>
+                    <chartingToolkit:Chart.Tag>
+                        <MultiBinding Converter="{StaticResource LastValueShowConverter}">
+                            <Binding Path="Value"></Binding>
+                            <Binding Path="Value[0].CurrentValue"></Binding>
+                        </MultiBinding>
+                    </chartingToolkit:Chart.Tag>
+                    <chartingToolkit:Chart.Title>
+                        <MultiBinding Converter="{StaticResource GidToMridConverter}">
+                            <Binding Path="Key"></Binding>
+                            <Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+                        </MultiBinding>
+                    </chartingToolkit:Chart.Title>
 
-					<chartingToolkit:LineSeries Title="Power"  
-												ItemsSource="{Binding Path=Value}" 
-												DependentValueBinding="{Binding Path=CurrentValue}" 
-												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
-												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}" 
-												>
-						<chartingToolkit:LineSeries.DataPointStyle>
-							<Style TargetType="chartingToolkit:LineDataPoint">
-								<Setter Property="Background" Value="DarkGreen"/>
-                                <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}"/>
-							</Style>
-						</chartingToolkit:LineSeries.DataPointStyle>
-
-						<chartingToolkit:LineSeries.IndependentAxis>
-							<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"  />
-						</chartingToolkit:LineSeries.IndependentAxis>
-
-						<chartingToolkit:LineSeries.DependentRangeAxis>
-							<chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0"/>
-						</chartingToolkit:LineSeries.DependentRangeAxis>
-
-					</chartingToolkit:LineSeries>
-				</chartingToolkit:Chart>
-			</Grid>
-		</DataTemplate>
-
-		<DataTemplate x:Key="GraphConsumerTemplate">
-			<Grid>
-				<Grid.Visibility>
-					<MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
-						<Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
-						<Binding Path="Key"></Binding>
-					</MultiBinding>
-				</Grid.Visibility>
-				<chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
-									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
-									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
-
-					<chartingToolkit:Chart.Tag>
-						<MultiBinding Converter="{StaticResource LastValueShowConverter}">
-							<Binding Path="Value"></Binding>
-							<Binding Path="Value[0].CurrentValue"></Binding>
-						</MultiBinding>
-					</chartingToolkit:Chart.Tag>
-					
-					<chartingToolkit:Chart.Title>
-						<MultiBinding Converter="{StaticResource GidToMridConverter}">
-							<Binding Path="Key"></Binding>
-							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
-						</MultiBinding>
-					</chartingToolkit:Chart.Title>
-
-					<chartingToolkit:Chart.Series>
-						
-						<chartingToolkit:LineSeries Title="Power"   
-												ItemsSource="{Binding Path=Value}" 
-												DependentValueBinding="{Binding Path=CurrentValue}" 
+                    <chartingToolkit:LineSeries Title="Power"
+												ItemsSource="{Binding Path=Value}"
+												DependentValueBinding="{Binding Path=CurrentValue}"
 												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
 												IsSelectionEnabled="False"
 												Style="{StaticResource LineSeriesStyle}">
-							<chartingToolkit:LineSeries.DataPointStyle>
-								<Style TargetType="chartingToolkit:LineDataPoint">
-									<Setter Property="Background" Value="DarkOrange"/>
-                                    <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}"/>
-								</Style>
-							</chartingToolkit:LineSeries.DataPointStyle>
-							<chartingToolkit:LineSeries.IndependentAxis>
-								<chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)"/>
-							</chartingToolkit:LineSeries.IndependentAxis>
-							<chartingToolkit:LineSeries.DependentRangeAxis>
-								<chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0"/>
-							</chartingToolkit:LineSeries.DependentRangeAxis>
-						</chartingToolkit:LineSeries>
-						
-					</chartingToolkit:Chart.Series>
-				</chartingToolkit:Chart>
-			</Grid>
-		</DataTemplate>
-	</UserControl.Resources>
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition Width="2"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Background" Value="DarkGreen" />
+                                <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
 
-		<Grid Grid.Column="0" Background="Gray" Width="200"
+                        <chartingToolkit:LineSeries.IndependentAxis>
+                            <chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
+                        </chartingToolkit:LineSeries.IndependentAxis>
+
+                        <chartingToolkit:LineSeries.DependentRangeAxis>
+                            <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0" />
+                        </chartingToolkit:LineSeries.DependentRangeAxis>
+                    </chartingToolkit:LineSeries>
+                </chartingToolkit:Chart>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GraphConsumerTemplate">
+            <Grid>
+                <Grid.Visibility>
+                    <MultiBinding Converter="{StaticResource GidMapToVisibilityConverter}">
+                        <Binding Path="DataContext.GidToBoolMap" RelativeSource="{RelativeSource AncestorType=UserControl}"></Binding>
+                        <Binding Path="Key"></Binding>
+                    </MultiBinding>
+                </Grid.Visibility>
+                <chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
+									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
+									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                    <chartingToolkit:Chart.Tag>
+                        <MultiBinding Converter="{StaticResource LastValueShowConverter}">
+                            <Binding Path="Value"></Binding>
+                            <Binding Path="Value[0].CurrentValue"></Binding>
+                        </MultiBinding>
+                    </chartingToolkit:Chart.Tag>
+
+                    <chartingToolkit:Chart.Title>
+                        <MultiBinding Converter="{StaticResource GidToMridConverter}">
+                            <Binding Path="Key"></Binding>
+                            <Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+                        </MultiBinding>
+                    </chartingToolkit:Chart.Title>
+
+                    <chartingToolkit:Chart.Series>
+
+                        <chartingToolkit:LineSeries Title="Power"
+												ItemsSource="{Binding Path=Value}"
+												DependentValueBinding="{Binding Path=CurrentValue}"
+												IndependentValueBinding="{Binding Path=TimeStamp.Second}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
+                            <chartingToolkit:LineSeries.DataPointStyle>
+                                <Style TargetType="chartingToolkit:LineDataPoint">
+                                    <Setter Property="Background" Value="DarkOrange" />
+                                    <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}" />
+                                </Style>
+                            </chartingToolkit:LineSeries.DataPointStyle>
+                            <chartingToolkit:LineSeries.IndependentAxis>
+                                <chartingToolkit:CategoryAxis Orientation="X" Title="Time (s)" />
+                            </chartingToolkit:LineSeries.IndependentAxis>
+                            <chartingToolkit:LineSeries.DependentRangeAxis>
+                                <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0" />
+                            </chartingToolkit:LineSeries.DependentRangeAxis>
+                        </chartingToolkit:LineSeries>
+                    </chartingToolkit:Chart.Series>
+                </chartingToolkit:Chart>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="Gray" Width="200"
 			  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}">
-			<ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-				<StackPanel Margin="5" MinWidth="175" >
-					<TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
-					<GroupBox FontSize="14" Header="Algorithm type"  Foreground="White">
-						<ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedValue="{Binding SelectedOptimizationType}">
-							<i:Interaction.Triggers>
-								<i:EventTrigger EventName="SelectionChanged">
-									<i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}"/>
-								</i:EventTrigger>
-							</i:Interaction.Triggers>
-						</ComboBox>
-					</GroupBox>
-					<GroupBox FontSize="14" Header="Visibility" Foreground="White">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
+                <StackPanel Margin="5" MinWidth="175">
+                    <TextBlock FontSize="16" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="White">Options</TextBlock>
+                    <GroupBox FontSize="14" Header="Algorithm type"  Foreground="White">
+                        <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" SelectedValue="{Binding SelectedOptimizationType}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                    </GroupBox>
+                    <GroupBox FontSize="14" Header="Visibility" Foreground="White">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-							<GroupBox Header="Generators" Foreground="White">
-								<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
-									<ItemsControl ItemsSource="{Binding GeneratorsContainer}"
-										  ItemTemplate="{StaticResource VisibilityCheckbox}"/>
-								</ScrollViewer>
-							</GroupBox>
+                            <GroupBox Header="Generators" Foreground="White">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+                                    <ItemsControl ItemsSource="{Binding GeneratorsContainer}"
+										  ItemTemplate="{StaticResource VisibilityCheckbox}" />
+                                </ScrollViewer>
+                            </GroupBox>
 
-							<GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
-								<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
-									<ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
+                            <GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+                                    <ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}">
-									</ItemsControl>
-								</ScrollViewer>
-							</GroupBox>
-						</Grid>
-					</GroupBox>
-					<GroupBox Header="Size: " Foreground="White">
-						<GroupBox.HeaderTemplate>
-							<DataTemplate>
-								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{Binding}"/>
-									<TextBlock FontWeight="Bold" Text="{Binding ElementName=SizeSlider,Path=Value,Converter={StaticResource NumberToSizeNameConverter}}"/>
-								</StackPanel>
-							</DataTemplate>
-						</GroupBox.HeaderTemplate>
-						<Slider Maximum="3" x:Name="SizeSlider" Interval="1" TickPlacement="BottomRight" 
-								TickFrequency="1" IsSnapToTickEnabled="True" Foreground="White" 
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </GroupBox>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Size: " Foreground="White">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding}" />
+                                    <TextBlock FontWeight="Bold" Text="{Binding ElementName=SizeSlider,Path=Value,Converter={StaticResource NumberToSizeNameConverter}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <Slider Maximum="3" x:Name="SizeSlider" Interval="1" TickPlacement="BottomRight"
+								TickFrequency="1" IsSnapToTickEnabled="True" Foreground="White"
 								Value="{Binding SizeValue}">
-						</Slider>
-					</GroupBox>
-				</StackPanel>
-			</ScrollViewer>
+                        </Slider>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
-		</Grid>
-
-		<!--<GridSplitter x:Name="Splitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2" 
+        <!--<GridSplitter x:Name="Splitter" Grid.Column="1" HorizontalAlignment="Stretch" Width="2"
 					  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}" />-->
 
-		<Button Height="50" Margin="-1,0,-5,0" 
+        <Button Height="50" Margin="-1,0,-5,0"
 						Command="{Binding ExpandCommand}"
 						VerticalAlignment="Center" HorizontalAlignment="Right">
-			<Button.Style>
-				<Style BasedOn="{StaticResource ExpButtonStyle}" TargetType="Button">
-					<Setter Property="Content" Value="&gt;"/>
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsOptionsExpanded}" Value="True">
-							<Setter Property="Content" Value="&lt;"/>
-							<!--&lt; - <   -->
-						</DataTrigger>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter Property="Background" Value="{StaticResource BlueMouseOver}" />
-						</Trigger>
-					</Style.Triggers>
-				</Style>
-			</Button.Style>
-		</Button>
+            <Button.Style>
+                <Style BasedOn="{StaticResource ExpButtonStyle}" TargetType="Button">
+                    <Setter Property="Content" Value="&gt;" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsOptionsExpanded}" Value="True">
+                            <Setter Property="Content" Value="&lt;" />
+                            <!--&lt; - <   -->
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BlueMouseOver}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
-		<ScrollViewer Grid.Column="2">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<DockPanel Grid.Row="0">
+        <ScrollViewer Grid.Column="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0">
 
-					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generation:" />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding CurrentProduction}" Margin="5,0,0,0"/>
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="kW" Margin="5,0,0,0"/>
-					</StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+                        <TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generation:" />
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding CurrentProduction}" Margin="5,0,0,0" />
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="kW" Margin="5,0,0,0" />
+                    </StackPanel>
 
-					<ItemsControl  ItemsSource="{Binding GeneratorsContainer}" 
-								   ItemTemplate="{StaticResource GraphGeneratorTemplate}" >
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</DockPanel>
+                    <ItemsControl  ItemsSource="{Binding GeneratorsContainer}"
+								   ItemTemplate="{StaticResource GraphGeneratorTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </DockPanel>
 
-				<DockPanel Grid.Row="1">
+                <DockPanel Grid.Row="1">
 
-					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
-						<TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Demand:"  />
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0"/>
-						<TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="kW" Margin="5,0,0,0"/>
-					</StackPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+                        <TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Demand:" />
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0" />
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="kW" Margin="5,0,0,0" />
+                    </StackPanel>
 
-					<ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}" 
+                    <ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}"
 								   ItemTemplate="{StaticResource GraphConsumerTemplate}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-					</ItemsControl>
-				</DockPanel>
-			</Grid>
-		</ScrollViewer>
-	</Grid>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </DockPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

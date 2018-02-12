@@ -49,7 +49,7 @@ namespace EMS.Services.AlarmsEventsService
             alarmsFromDatabase = SelectAlarmsFromDatabase();
             if (alarmsFromDatabase != null)
             {
-                this.Alarms = alarmsFromDatabase;
+                //this.Alarms = alarmsFromDatabase;
             }
         }
 
