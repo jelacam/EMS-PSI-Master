@@ -13,7 +13,7 @@
 		<converters:PropertyValueConverter x:Key="propertyValueConverter" />
 		<converters:ModelCodeToStringConverter x:Key="modelCodeConverter" />
 	</Window.Resources>
-	<Grid Background="LightGray">
+	<Grid Background="{StaticResource DarkBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="40"/>
@@ -101,10 +101,6 @@
 			</ItemsControl>
 		</ScrollViewer>
 		<Grid Grid.Row="1">
-			<Button Name="ExportBtn" Grid.Column="1" Margin="5" Width="150"
-                    Content="ExportToXml" IsEnabled="{Binding ElementName=borderHelper,Path=IsEnabled}"
-                    Click="ExportBtn_Click"
-                    />
 			<Border Name="borderHelper" DataContext="{Binding ElementName=mainWin,Path=ResList}" >
 				<Border.Style>
 					<Style TargetType="Border">

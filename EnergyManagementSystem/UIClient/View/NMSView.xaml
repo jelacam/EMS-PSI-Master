@@ -7,6 +7,7 @@
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
 			 xmlns:common="clr-namespace:EMS.Common;assembly=EMS.Common"
 			 xmlns:converters="clr-namespace:UIClient.Converters"
+			 xmlns:root ="clr-namespace:UIClient"
              mc:Ignorable="d" 
 			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="900" d:DesignWidth="1000">
@@ -16,6 +17,7 @@
 		<converters:GlobalIdToEMSTypeStringConverter x:Key="longToTypeConverter" />
 		<converters:PropertyValueConverter x:Key="propertyValueConverter" />
 		<converters:ModelCodeToStringConverter x:Key="modelCodeConverter" />
+		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
 		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
 			<ObjectDataProvider.MethodParameters>
@@ -28,7 +30,7 @@
 	<Grid Background="{StaticResource DarkBrush}" >
 		<Grid.RowDefinitions>
 			<RowDefinition Height="150"/>
-			<RowDefinition Height="40"/>
+			<RowDefinition Height="35"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -48,25 +50,10 @@
 						<TextBox Name="SearchBox" Width="200" Margin="3"/>
 					</StackPanel>
 				</GroupBox>
-				<Grid  Height="40" Grid.Row="1" Margin="5" >
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<Button Name="ResetBtn" Grid.Column="0" Margin="5" Content="Reset"></Button>
+				<Grid Grid.Row="1" Margin="5" >
+					<Button Height="35" VerticalAlignment="Bottom" Content="Find" Margin="5"  Grid.Column="0" Command="{Binding FindCommand}" 
+							CommandParameter="{Binding ElementName=SearchBox,Path=Text}"/>
 
-					<Border Name="borderHelper" DataContext="{Binding ElementName=mainWin,Path=ResList}" >
-						<Border.Style>
-							<Style TargetType="Border">
-								<Setter Property="Visibility" Value="Collapsed"></Setter>
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding Count}" Value="0">
-										<Setter Property="IsEnabled" Value="False"></Setter>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</Border.Style>
-					</Border>
 				</Grid>
 			</Grid>
 
@@ -97,7 +84,7 @@
 												</Style.Triggers>
 											</Style>
 										</CheckBox.Style>
-										
+
 									</CheckBox>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
@@ -138,118 +125,124 @@
 				</GroupBox>
 			</Grid>
 		</Grid>
-		<Grid Grid.Row="1" >
-			<Button Content="Find" Margin="5" Command="{Binding FindCommand}" 
-					CommandParameter="{Binding ElementName=SearchBox,Path=Text}"/>
+		<Grid Grid.Row="1">
+			<Border Height="1" BorderThickness="0,0,0,1" Margin="15,10,15,15" BorderBrush="Gray" ></Border>
 		</Grid>
-		<Grid Grid.Row="2" Background="{StaticResource LigthBrush}">
-		<ScrollViewer Margin="10">
-			<ItemsControl x:Name="ViewBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" ItemsSource="{Binding ResList}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+		<Grid Grid.Row="2" >
+			<ScrollViewer>
+				<ItemsControl x:Name="ViewBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" ItemsSource="{Binding ResList}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<!--ResourceView-->
-						<Border Margin="5" >
-							<Border.Style>
-								<Style TargetType="Border">
-									<Setter Property="BorderBrush" Value="Red"></Setter>
-									<Style.Triggers>
-										<DataTrigger Value="True">
-											<DataTrigger.Binding>
-												<MultiBinding Converter="{StaticResource stringCompareConverter}">
-													<Binding ElementName="GidTextBox"  Path="Text" />
-													<Binding ElementName="SearchBox"  Path="Text" Mode="TwoWay" />
-												</MultiBinding>
-											</DataTrigger.Binding>
-											<Setter Property="BorderThickness" Value="4"></Setter>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Border.Style>
-							<Grid Background="Gray" MinWidth="300" >
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="150"/>
-								</Grid.RowDefinitions>
-								<Grid Grid.Row="0" Margin="5">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<!--ResourceView-->
+							<Border Margin="5" >
+								<Border.Style>
+									<Style TargetType="Border">
+										<Setter Property="BorderBrush" Value="Red"></Setter>
+										<Style.Triggers>
+											<DataTrigger Value="True">
+												<DataTrigger.Binding>
+													<MultiBinding Converter="{StaticResource stringCompareConverter}">
+														<Binding ElementName="GidTextBox"  Path="Text" />
+														<Binding ElementName="SearchBox"  Path="Text" Mode="TwoWay" />
+													</MultiBinding>
+												</DataTrigger.Binding>
+												<Setter Property="BorderThickness" Value="4"></Setter>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Border.Style>
+								<Grid Background="Gray" MinWidth="300" >
 									<Grid.RowDefinitions>
-										<RowDefinition Height="*"/>
-										<RowDefinition Height="*"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="150"/>
 									</Grid.RowDefinitions>
-									<StackPanel Grid.Row="0" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
-										<TextBlock Text="Type: "/>
-										<TextBlock Text="{Binding Id,Converter={StaticResource longToTypeConverter}}"/>
-									</StackPanel>
-									<StackPanel Grid.Row="1" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
-										<TextBlock Text="Global Id: "/>
-										<TextBlock Name="GidTextBox" Text="{Binding Id,StringFormat={}0x{0:X16}}"/>
-									</StackPanel>
-								</Grid>
-								<Grid Grid.Row="1" Margin="5">
-									<ListView Name="PropList" ItemsSource="{Binding Properties}">
-										<ListView.ItemContainerStyle>
-											<Style TargetType="ListViewItem">
-												<Setter Property="IsEnabled" Value="True"/>
-											</Style>
-										</ListView.ItemContainerStyle>
-										<ListView.View>
-											<GridView>
-												<GridViewColumn Header="Type" x:Name="GV_Type" Width="100" DisplayMemberBinding="{Binding Type}" />
-												<GridViewColumn Header="Id" Width="130" DisplayMemberBinding="{Binding Id,Converter={StaticResource modelCodeConverter}}" />
-												<GridViewColumn Header="Value" Width="150">
-													<GridViewColumn.CellTemplate>
-														<DataTemplate>
-															<Grid>
-																<Grid.ColumnDefinitions>
-																	<ColumnDefinition Width="*"/>
-																	<ColumnDefinition Width="Auto"/>
-																</Grid.ColumnDefinitions>
-																<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Converter={StaticResource propertyValueConverter}}"></TextBlock>
-																<Grid Tag="{Binding ElementName=PropList,Path=DataContext}" Grid.Column="1" Width="18" Height="18" Margin="5,2,0,2">
-																	
+									<Grid Grid.Row="0" Margin="5">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="*"/>
+											<RowDefinition Height="*"/>
+										</Grid.RowDefinitions>
+										<StackPanel Grid.Row="0" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
+											<TextBlock Text="Type: "/>
+											<TextBlock Text="{Binding Id,Converter={StaticResource longToTypeConverter}}"/>
+										</StackPanel>
+										<StackPanel Grid.Row="1" Margin="3" HorizontalAlignment="Center" Orientation="Horizontal">
+											<TextBlock Text="MRid: "/>
+											<TextBlock Name="GidTextBox">
+												<TextBlock.Text>
+													<MultiBinding Converter="{StaticResource GidToMridConverter}">
+														<Binding Path="Id"></Binding>
+														<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+													</MultiBinding>
+												</TextBlock.Text>
+											</TextBlock>
+										</StackPanel>
+									</Grid>
+									<Grid Grid.Row="1" Margin="5">
+										<ListView Name="PropList" ItemsSource="{Binding Properties}">
+											<ListView.ItemContainerStyle>
+												<Style TargetType="ListViewItem">
+													<Setter Property="IsEnabled" Value="True"/>
+												</Style>
+											</ListView.ItemContainerStyle>
+											<ListView.View>
+												<GridView>
+													<GridViewColumn Header="Type" x:Name="GV_Type" Width="100" DisplayMemberBinding="{Binding Type}" />
+													<GridViewColumn Header="Id" Width="130" DisplayMemberBinding="{Binding Id,Converter={StaticResource modelCodeConverter}}" />
+													<GridViewColumn Header="Value" Width="150">
+														<GridViewColumn.CellTemplate>
+															<DataTemplate>
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="*"/>
+																		<ColumnDefinition Width="Auto"/>
+																	</Grid.ColumnDefinitions>
+																	<TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Converter={StaticResource propertyValueConverter}}"></TextBlock>
+																	<Grid Tag="{Binding ElementName=PropList,Path=DataContext}" Grid.Column="1" Width="18" Height="18" Margin="5,2,0,2">
+
 																		<i:Interaction.Triggers>
 																			<i:EventTrigger EventName="MouseLeftButtonDown">
 																				<i:InvokeCommandAction Command="{Binding DataContext.GoToReferenceCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" 
 																									   CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Grid}}"/>
 																			</i:EventTrigger>
 																		</i:Interaction.Triggers>
-																	<Image  Source="pack://application:,,,/Resources/search.png" />
-																	<Grid.Style>
-																		<Style TargetType="Grid">
-																			<Setter Property="Visibility" Value="Collapsed"></Setter>
-																			<Style.Triggers>
-																				<DataTrigger Binding="{Binding Path=Type}" Value="Reference">
-																					<Setter Property="Visibility" Value="Visible"></Setter>
-																				</DataTrigger>
-																				<DataTrigger Binding="{Binding Path=Type}" Value="ReferenceVector">
-																					<Setter Property="Visibility" Value="Visible"></Setter>
-																				</DataTrigger>
-																				<Trigger Property="IsMouseOver" Value="True">
-																					<Setter Property="Background" Value="LightBlue"/>
-																				</Trigger>
-																			</Style.Triggers>
-																		</Style>
-																	</Grid.Style>
+																		<Image  Source="pack://application:,,,/Resources/search.png" />
+																		<Grid.Style>
+																			<Style TargetType="Grid">
+																				<Setter Property="Visibility" Value="Collapsed"></Setter>
+																				<Style.Triggers>
+																					<DataTrigger Binding="{Binding Path=Type}" Value="Reference">
+																						<Setter Property="Visibility" Value="Visible"></Setter>
+																					</DataTrigger>
+																					<DataTrigger Binding="{Binding Path=Type}" Value="ReferenceVector">
+																						<Setter Property="Visibility" Value="Visible"></Setter>
+																					</DataTrigger>
+																					<Trigger Property="IsMouseOver" Value="True">
+																						<Setter Property="Background" Value="LightBlue"/>
+																					</Trigger>
+																				</Style.Triggers>
+																			</Style>
+																		</Grid.Style>
+																	</Grid>
 																</Grid>
-															</Grid>
-														</DataTemplate>
-													</GridViewColumn.CellTemplate>
-												</GridViewColumn>
-											</GridView>
-										</ListView.View>
-									</ListView>
+															</DataTemplate>
+														</GridViewColumn.CellTemplate>
+													</GridViewColumn>
+												</GridView>
+											</ListView.View>
+										</ListView>
+									</Grid>
 								</Grid>
-							</Grid>
-						</Border>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
 		</Grid>
 	</Grid>
 </UserControl>
