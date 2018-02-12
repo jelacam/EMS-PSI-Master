@@ -340,4 +340,10 @@
 		
 	</ControlTemplate>
 
+    <ControlTemplate x:Key="LineNoDataPointTemplate" TargetType="charting:LineDataPoint">
+        <Grid x:Name="Root" Background="Transparent">
+            
+        </Grid>
+    </ControlTemplate>
+
 </ResourceDictionary>

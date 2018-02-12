@@ -88,7 +88,7 @@
 						<chartingToolkit:LineSeries.DataPointStyle>
 							<Style TargetType="chartingToolkit:LineDataPoint">
 								<Setter Property="Background" Value="DarkGreen"/>
-								<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+                                <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}"/>
 							</Style>
 						</chartingToolkit:LineSeries.DataPointStyle>
 
@@ -141,7 +141,7 @@
 							<chartingToolkit:LineSeries.DataPointStyle>
 								<Style TargetType="chartingToolkit:LineDataPoint">
 									<Setter Property="Background" Value="DarkOrange"/>
-									<Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+                                    <Setter Property="Template" Value="{StaticResource LineNoDataPointTemplate}"/>
 								</Style>
 							</chartingToolkit:LineSeries.DataPointStyle>
 							<chartingToolkit:LineSeries.IndependentAxis>
