@@ -25,7 +25,7 @@ namespace UIClient.ViewModel
         private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
         private int attemptsCount = 0;
 
-        private readonly double graphSizeOffset = 20;
+        private readonly double graphSizeOffset = 18;
 
         private float currentConsumption;
         private float currentProduction;

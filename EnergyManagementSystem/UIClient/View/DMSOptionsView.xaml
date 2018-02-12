@@ -24,7 +24,7 @@
 			</ObjectDataProvider.MethodParameters>
 		</ObjectDataProvider>
 	</UserControl.Resources>
-	<ScrollViewer  VerticalScrollBarVisibility="Auto">
+	<ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 		<Grid ScrollViewer.CanContentScroll="True">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
@@ -76,7 +76,7 @@
 					<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Margin="10" >
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind production in selected period: "></TextBlock>
                         <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalWindProduction}"></TextBlock>
-						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="kW"></TextBlock>
+						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" kW"></TextBlock>
 					</StackPanel>
 
 					<StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
@@ -181,7 +181,7 @@
 
 					<StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
 						<GroupBox Margin="10" FontSize="14" Header="Period"  Foreground="White">
-							<ComboBox Margin="10" ItemsSource="{Binding Source={StaticResource dataFromPeriodEnum}}" SelectedValue="{Binding SelectedPeriod}">
+                            <ComboBox Margin="10" ItemsSource="{Binding Source={StaticResource dataFromPeriodEnum}}" SelectedValue="{Binding SelectedPeriodCO2}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
 										<TextBlock Text="{Binding Converter={StaticResource PeriodEnumToStringConverter}}"/>
@@ -196,13 +196,13 @@
 						</GroupBox>
 
 						<GroupBox Margin="10" FontSize="14" Header="Start Time"  Foreground="White">
-							<toolkit:DateTimePicker  Margin="10" Value="{Binding StartTime}" 
+                            <toolkit:DateTimePicker  Margin="10" Value="{Binding StartTimeCO2}" 
                                     Width="300">
 							</toolkit:DateTimePicker>
 						</GroupBox>
 
 						<GroupBox Margin="10" FontSize="14" Header="End Time"  Foreground="White">
-							<toolkit:DateTimePicker Margin="10" Value="{Binding EndTime}"
+                            <toolkit:DateTimePicker Margin="10" Value="{Binding EndTimeCO2}"
                                         Width="300">
 							</toolkit:DateTimePicker>
 						</GroupBox>
@@ -248,12 +248,11 @@
 							<RowDefinition Height="*"/>
 						</Grid.RowDefinitions>
 						<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
-							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period [tonnes]:" Margin="5,0,0,0"/>
+							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period:" Margin="5,0,0,0"/>
 							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
-						</StackPanel>
+                            <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text=" tonnes" Margin="5,0,0,0"/>
+                        </StackPanel>
 
-						
-						
 						<Grid Grid.Row="1" Grid.ColumnSpan="2">
 							<chartingToolkit:Chart Margin="10" Title="CO2 Graph" 
 											   Style="{StaticResource DashboardChartStyle}" Height="400">

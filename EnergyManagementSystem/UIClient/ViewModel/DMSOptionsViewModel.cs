@@ -21,13 +21,13 @@ namespace UIClient.ViewModel
         private ObservableCollection<KeyValuePair<string, double>> pieData = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieDataWind = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> barSavingData = new ObservableCollection<KeyValuePair<string, double>>();
-        private DateTime startTime;
-        private DateTime endTime;
+        private DateTime startTimeCO2;
+        private DateTime endTimeCO2;
         private DateTime startTimeWind;
         private DateTime endTimeWind;
         private DateTime startTimeSaving;
         private DateTime endTimeSaving;
-        private PeriodValues selectedPeriod;
+        private PeriodValues selectedPeriodCO2;
         private PeriodValues selectedPeriodWind;
         private PeriodValues selectedPeriodSaving;
         private ICommand viewCO2EmissionDataCommand;
@@ -49,15 +49,18 @@ namespace UIClient.ViewModel
         public DMSOptionsViewModel(DMSOptionsView mainWindow)
         {
             Title = "DMS";
-            StartTime = DateTime.Now;
-            EndTime = DateTime.Now;
-            StartTimeWind = DateTime.Now;
+            StartTimeCO2 = DateTime.Now.AddMinutes(-1);
+            EndTimeCO2 = DateTime.Now;
+            StartTimeWind = DateTime.Now.AddMinutes(-1);
             EndTimeWind = DateTime.Now;
-            StartTimeSaving = DateTime.Now;
+            StartTimeSaving = DateTime.Now.AddMinutes(-1);
             EndTimeSaving = DateTime.Now;
             TotalCO2Reduction = 0;
             TotalCO2 = 0;
             TotalWindSaving = 0;
+            SelectedPeriodCO2 = PeriodValues.None;
+            SelectedPeriodSaving = PeriodValues.None;
+            SelectedPeriodWind = PeriodValues.None;
         }
 
         #region Properties
@@ -219,15 +222,16 @@ namespace UIClient.ViewModel
             }
         }
 
-        public PeriodValues SelectedPeriod
+        public PeriodValues SelectedPeriodCO2
         {
             get
             {
-                return selectedPeriod;
+                return selectedPeriodCO2;
             }
             set
             {
-                selectedPeriod = value;
+                selectedPeriodCO2 = value;
+                OnPropertyChanged(nameof(SelectedPeriodCO2));
             }
         }
 
@@ -240,6 +244,7 @@ namespace UIClient.ViewModel
             set
             {
                 selectedPeriodWind = value;
+                OnPropertyChanged(nameof(SelectedPeriodWind));
             }
         }
 
@@ -252,16 +257,17 @@ namespace UIClient.ViewModel
             set
             {
                 selectedPeriodSaving = value;
+                OnPropertyChanged(nameof(SelectedPeriodSaving));
             }
         }
 
-        public DateTime StartTime
+        public DateTime StartTimeCO2
         {
-            get { return startTime; }
+            get { return startTimeCO2; }
             set
             {
-                startTime = value;
-                OnPropertyChanged(nameof(StartTime));
+                startTimeCO2 = value;
+                OnPropertyChanged(nameof(StartTimeCO2));
             }
         }
 
@@ -288,13 +294,13 @@ namespace UIClient.ViewModel
             }
         }
 
-        public DateTime EndTime
+        public DateTime EndTimeCO2
         {
-            get { return endTime; }
+            get { return endTimeCO2; }
             set
             {
-                endTime = value;
-                OnPropertyChanged(nameof(EndTime));
+                endTimeCO2 = value;
+                OnPropertyChanged(nameof(EndTimeCO2));
             }
         }
 
@@ -359,8 +365,8 @@ namespace UIClient.ViewModel
                     }
                 }
                 BarSavingData.Clear();
-                BarSavingData.Add(new KeyValuePair<string, double>("Total_Cost_Without_Renewable", TotalCostWithoutRenewable));
-                BarSavingData.Add(new KeyValuePair<string, double>("Total_Cost_With_Renewable", TotalCostWithRenewable));
+                BarSavingData.Add(new KeyValuePair<string, double>("Total Cost Without Renewable", TotalCostWithoutRenewable));
+                BarSavingData.Add(new KeyValuePair<string, double>("Total Cost With Renewable", TotalCostWithRenewable));
                 OnPropertyChanged(nameof(BarSavingData));
                 OnPropertyChanged(nameof(TotalWindSaving));
 
@@ -378,7 +384,7 @@ namespace UIClient.ViewModel
             TotalCO2 = 0;
             try
             {
-                CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(CalculationEngineUIProxy.Instance.GetCO2Emission(StartTime, EndTime));
+                CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2));
                 if(CO2EmissionContainer!=null && CO2EmissionContainer.Count > 0)
                 {
                     foreach(Tuple<double,double,DateTime> item in CO2EmissionContainer)
@@ -393,8 +399,8 @@ namespace UIClient.ViewModel
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
             }
             PieData.Clear();
-            PieData.Add(new KeyValuePair<string, double>("CO2_Saved", TotalCO2Reduction));
-            PieData.Add(new KeyValuePair<string, double>("CO2_Remaining", TotalCO2));
+            PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
+            PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));
 
 			TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
 
@@ -436,90 +442,88 @@ namespace UIClient.ViewModel
 
         private void ChangePeriodCO2CommandExecute(object obj)
         {
-            if (SelectedPeriod == PeriodValues.Last_Hour)
+            switch (SelectedPeriodCO2)
             {
-                StartTime = DateTime.Now.AddHours(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Today)
-            {
-                StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_Year)
-            {
-                StartTime = DateTime.Now.AddYears(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_Month)
-            {
-                StartTime = DateTime.Now.AddMonths(-1);
-                EndTime = DateTime.Now;
-            }
-            else if (SelectedPeriod == PeriodValues.Last_4_Month)
-            {
-                StartTime = DateTime.Now.AddMonths(-4);
-                EndTime = DateTime.Now;
+                case PeriodValues.Last_Hour:
+                    StartTimeCO2 = DateTime.Now.AddHours(-1);
+                    EndTimeCO2 = DateTime.Now;
+                    break;
+                case PeriodValues.Today:
+                    StartTimeCO2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                    EndTimeCO2 = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Month:
+                    StartTimeCO2 = DateTime.Now.AddMonths(-1);
+                    EndTimeCO2 = DateTime.Now;
+                    break;
+                case PeriodValues.Last_4_Month:
+                    StartTimeCO2 = DateTime.Now.AddMonths(-4);
+                    EndTimeCO2 = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Year:
+                    StartTimeCO2 = DateTime.Now.AddYears(-1);
+                    EndTimeCO2 = DateTime.Now;
+                    break;
+                default:
+                    break;
             }
         }
 
         private void ChangePeriodSavingCommandExecute(object obj)
         {
-            if (SelectedPeriodSaving == PeriodValues.Last_Hour)
+            switch (SelectedPeriodSaving)
             {
-                StartTimeSaving = DateTime.Now.AddHours(-1);
-                EndTimeSaving = DateTime.Now;
-            }
-            else if (SelectedPeriodSaving == PeriodValues.Today)
-            {
-                StartTimeSaving = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                EndTimeSaving = DateTime.Now;
-            }
-            else if (SelectedPeriodSaving == PeriodValues.Last_Year)
-            {
-                StartTimeSaving = DateTime.Now.AddYears(-1);
-                EndTimeSaving = DateTime.Now;
-            }
-            else if (SelectedPeriodSaving == PeriodValues.Last_Month)
-            {
-                StartTimeSaving = DateTime.Now.AddMonths(-1);
-                EndTimeSaving = DateTime.Now;
-            }
-            else if (SelectedPeriodSaving == PeriodValues.Last_4_Month)
-            {
-                StartTimeSaving = DateTime.Now.AddMonths(-4);
-                EndTimeSaving = DateTime.Now;
+                case PeriodValues.Last_Hour:
+                    StartTimeSaving = DateTime.Now.AddHours(-1);
+                    EndTimeSaving = DateTime.Now;
+                    break;
+                case PeriodValues.Today:
+                    StartTimeSaving = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                    EndTimeSaving = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Month:
+                    StartTimeSaving = DateTime.Now.AddMonths(-1);
+                    EndTimeSaving = DateTime.Now;
+                    break;
+                case PeriodValues.Last_4_Month:
+                    StartTimeSaving = DateTime.Now.AddMonths(-4);
+                    EndTimeSaving = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Year:
+                    StartTimeSaving = DateTime.Now.AddYears(-1);
+                    EndTimeSaving = DateTime.Now;
+                    break;
+                default:
+                    break;
             }
         }
 
-
-
         private void ChangePeriodWindProductionCommandExecute(object obj)
         {
-            if (SelectedPeriodWind == PeriodValues.Last_Hour)
+            switch (SelectedPeriodWind)
             {
-                StartTimeWind = DateTime.Now.AddHours(-1);
-                EndTimeWind = DateTime.Now;
-            }
-            else if (SelectedPeriodWind == PeriodValues.Today)
-            {
-                StartTimeWind = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-                EndTimeWind = DateTime.Now;
-            }
-            else if (SelectedPeriodWind == PeriodValues.Last_Year)
-            {
-                StartTimeWind = DateTime.Now.AddYears(-1);
-                EndTimeWind = DateTime.Now;
-            }
-            else if (SelectedPeriodWind == PeriodValues.Last_Month)
-            {
-                StartTimeWind = DateTime.Now.AddMonths(-1);
-                EndTimeWind = DateTime.Now;
-            }
-            else if (SelectedPeriodWind == PeriodValues.Last_4_Month)
-            {
-                StartTimeWind = DateTime.Now.AddMonths(-4);
-                EndTimeWind = DateTime.Now;
+                case PeriodValues.Last_Hour:
+                    StartTimeWind = DateTime.Now.AddHours(-1);
+                    EndTimeWind = DateTime.Now;
+                    break;
+                case PeriodValues.Today:
+                    StartTimeWind = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+                    EndTimeWind = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Month:
+                    StartTimeWind = DateTime.Now.AddMonths(-1);
+                    EndTimeWind = DateTime.Now;
+                    break;
+                case PeriodValues.Last_4_Month:
+                    StartTimeWind = DateTime.Now.AddMonths(-4);
+                    EndTimeWind = DateTime.Now;
+                    break;
+                case PeriodValues.Last_Year:
+                    StartTimeWind = DateTime.Now.AddYears(-1);
+                    EndTimeWind = DateTime.Now;
+                    break;
+                default:
+                    break;
             }
         }
 

@@ -18,6 +18,8 @@ namespace UIClient.Model
 		[Description("Last four months")]
 		Last_4_Month,
 		[Description("Last Year")]
-		Last_Year
+		Last_Year,
+        [Description("")]
+        None
 	}
 }
