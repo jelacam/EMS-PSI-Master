@@ -2,61 +2,61 @@
 <SynchronousMachineCurveModels xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Curves>
     <SynchronousMachineCurveModel>
-      <MRId>SyncMachine_1</MRId>
+      <MRId>Coal_Power_Plant_1</MRId>
       <A>2</A>
       <B>3</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
     <SynchronousMachineCurveModel>
-      <MRId>SyncMachine_2</MRId>
+      <MRId>Coal_Power_Plant_2</MRId>
       <A>1</A>
       <B>0.5</B>
       <C>10</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_3</MRId>
+      <MRId>Hydro_Power_Plant_3</MRId>
       <A>0.2</A>
       <B>0.5</B>
       <C>10</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_4</MRId>
+      <MRId>Hydro_Power_Plant_4</MRId>
       <A>5</A>
       <B>4</B>
       <C>10</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_5</MRId>
+      <MRId>Wind_Power_Plant_5</MRId>
       <A>2</A>
       <B>3</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_6</MRId>
+      <MRId>Wind_Power_Plant_6</MRId>
       <A>0.1</A>
       <B>2</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_7</MRId>
+      <MRId>Solar_Power_Plant_7</MRId>
       <A>0.4</A>
       <B>0.6</B>
       <C>0.8</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_8</MRId>
+      <MRId>Solar_Power_Plant_8</MRId>
       <A>2</A>
       <B>3</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_9</MRId>
+      <MRId>Oil_Power_Plant_9</MRId>
       <A>2</A>
       <B>3</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>SyncMachine_10</MRId>
+      <MRId>Oil_Power_Plant_10</MRId>
       <A>0.2</A>
       <B>0.3</B>
       <C>10</C>

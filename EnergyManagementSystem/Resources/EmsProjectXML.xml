@@ -7,7 +7,7 @@
 	
 	<cim:EMSFuel rdf:ID="Fuel_1">
 		<cim:EMSFuel.fuelType>coal</cim:EMSFuel.fuelType>
-		<cim:EMSFuel.unitPrice>10</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.unitPrice>5</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_1</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Fuel_1_coal</cim:IdentifiedObject.name>
 	</cim:EMSFuel>
@@ -35,7 +35,7 @@
 	
 	<cim:EMSFuel rdf:ID="Fuel_5">
 		<cim:EMSFuel.fuelType>oil</cim:EMSFuel.fuelType>
-		<cim:EMSFuel.unitPrice>20</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.unitPrice>10</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_5</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>Fuel_5_oil</cim:IdentifiedObject.name>
 	</cim:EMSFuel>	
@@ -473,7 +473,7 @@
 		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Coal SyncMachine 1</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Coal_Power_Plant_1</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_1_coal</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 
@@ -487,7 +487,7 @@
 		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Coal SyncMachine 2</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Coal_Power_Plant_2</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_2_coal</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -501,7 +501,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Hydro SyncMachine 3</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Hydro_Power_Plant_3</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_3_hydro</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -515,7 +515,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Hydro SyncMachine 4</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Hydro_Power_Plant_4</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_4_hydro</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -529,7 +529,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Wind SyncMachine 5</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Wind_Power_Plant_5</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_5_wind</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -543,7 +543,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Wind SyncMachine 6</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Wind_Power_Plant_6</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_6_wind</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -557,7 +557,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Solar SyncMachine 7</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Solar_Power_Plant_7</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_7_solar</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -571,7 +571,7 @@
 		<cim:SynchronousMachine.minQ>0</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Solar SyncMachine 8</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Solar_Power_Plant_8</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_8_solar</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -585,7 +585,7 @@
 		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Oil SyncMachine 9</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Oil_Power_Plant_9</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_9_oli</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
@@ -599,7 +599,7 @@
 		<cim:SynchronousMachine.minQ>100</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
 		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
-		<cim:IdentifiedObject.mRID>Oil SyncMachine 10</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.mRID>Oil_Power_Plant_10</cim:IdentifiedObject.mRID>
 		<cim:IdentifiedObject.name>SynchronousMachine_10_oli</cim:IdentifiedObject.name>
 	</cim:SynchronousMachine>
 	
