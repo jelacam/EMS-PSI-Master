@@ -63,7 +63,7 @@ namespace EMS.Services.SCADACrunchingService
 
         private readonly int START_ADDRESS_GENERATOR = 50;
 
-        private readonly int FLAT_LINE_ALARM_TIMEOUT = 5;
+        private readonly int FLAT_LINE_ALARM_TIMEOUT = 100;
 
         /// Initializes a new instance of the <see cref="SCADACrunching" /> class
         /// </summary>
@@ -325,22 +325,22 @@ namespace EMS.Services.SCADACrunchingService
 
             int arrayLength = value[1];
             int windByteLength = 4;
-			int sunByteLength = 4;
+            int sunByteLength = 4;
             byte[] windData = new byte[windByteLength];
-			byte[] sunData = new byte[sunByteLength];
-			byte[] data = new byte[arrayLength - windByteLength - sunByteLength];
+            byte[] sunData = new byte[sunByteLength];
+            byte[] data = new byte[arrayLength - windByteLength - sunByteLength];
 
             Console.WriteLine("Byte count: {0}", arrayLength);
 
-			Array.Copy(value, 2, data, 0, arrayLength - windByteLength-sunByteLength);
-			Array.Copy(value, 2 + arrayLength - windByteLength - sunByteLength, windData, 0, windByteLength);
-			Array.Copy(value, 2 + arrayLength - sunByteLength, sunData, 0, sunByteLength);
+            Array.Copy(value, 2, data, 0, arrayLength - windByteLength - sunByteLength);
+            Array.Copy(value, 2 + arrayLength - windByteLength - sunByteLength, windData, 0, windByteLength);
+            Array.Copy(value, 2 + arrayLength - sunByteLength, sunData, 0, sunByteLength);
 
-			List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0);
-            List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0);
+            List<MeasurementUnit> enConsumMeasUnits = ParseDataToMeasurementUnit(energyConsumersAnalogs, data, 0, ModelCode.ENERGYCONSUMER);
+            List<MeasurementUnit> generatorMeasUnits = ParseDataToMeasurementUnit(generatorAnalogs, data, 0, ModelCode.SYNCHRONOUSMACHINE);
 
             float windSpeed = GetWindSpeed(windData, windByteLength);
-			float sunlight = GetSunlight(sunData, sunByteLength);
+            float sunlight = GetSunlight(sunData, sunByteLength);
 
             bool isSuccess = false;
             try
@@ -368,41 +368,57 @@ namespace EMS.Services.SCADACrunchingService
             return values[0];
         }
 
-		private float GetSunlight(byte[] sunData, int byteLength)
-		{
-			float[] values = ModbusHelper.GetValueFromByteArray<float>(sunData, byteLength);
-			return values[0];
-		}
+        private float GetSunlight(byte[] sunData, int byteLength)
+        {
+            float[] values = ModbusHelper.GetValueFromByteArray<float>(sunData, byteLength);
+            return values[0];
+        }
 
-		private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress)
+        private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress, ModelCode type)
         {
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (AnalogLocation analogLoc in analogList)
             {
                 float[] values = ModbusHelper.GetValueFromByteArray<float>(value, analogLoc.LengthInBytes, startAddress + analogLoc.StartAddress * 2); // 2 jer su registri od 2 byte-a
-
-                bool alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
                 float eguVal = convertorHelper.ConvertFromRawToEGUValue(values[0], analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue);
-                bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
-
-                if (flatlineAlarm)
+                if (type.Equals(ModelCode.SYNCHRONOUSMACHINE))
                 {
-                    AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
-                    alarmH.Type = AlarmType.FLATLINE;
-                    alarmH.Persistent = PersistentState.Nonpersistent;
-                    alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
-                    AlarmsEventsProxy.Instance.AddAlarm(alarmH);
-                }
+                    bool alarmRaw = this.CheckForRawAlarms(values[0], convertorHelper.MinRaw, convertorHelper.MaxRaw, analogLoc.Analog.PowerSystemResource);
 
-                // na signalu vise nema alarma - update state
-                // sa Active na Cleared
-                if (!alarmRaw && !alarmEGU)
-                {
-                    AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
-                }
+                    bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
+                    bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
+
+                    if (flatlineAlarm)
+                    {
+                        AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
+                        alarmH.Type = AlarmType.FLATLINE;
+                        alarmH.Persistent = PersistentState.Nonpersistent;
+                        alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
+                        AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+                    }
+
+                    // na signalu vise nema alarma - update state
+                    // sa Active na Cleared
+                    if (!alarmRaw && !alarmEGU)
+                    {
+                        AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
+
+                        //AlarmHelper normalAlarm = new AlarmHelper();
+                        //normalAlarm.AckState = AckState.Unacknowledged;
+                        //normalAlarm.CurrentState = string.Format("{0}, {1}", State.Cleared, normalAlarm.AckState);
+                        //normalAlarm.Gid = analogLoc.Analog.PowerSystemResource;
+                        //normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
+                        //normalAlarm.Persistent = PersistentState.Nonpersistent;
+                        //normalAlarm.TimeStamp = DateTime.Now;
+                        //normalAlarm.Severity = SeverityLevel.NONE;
+                        //normalAlarm.Value = eguVal;
+                        //normalAlarm.Type = AlarmType.NORMAL;
+
+                        //AlarmsEventsProxy.Instance.AddAlarm(normalAlarm);
+                    }
+                }
                 // nema alarma - generisi event za promenu vrednosti
                 //if (!alarmRaw && !alarmEGU)
                 //{
@@ -420,6 +436,7 @@ namespace EMS.Services.SCADACrunchingService
                     using (var txtWriter = new StreamWriter("PointsReport.txt", true))
                     {
                         txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " before the conversion was: " + values[0] + ", and after:" + eguVal);
+                        txtWriter.Dispose();
                     }
                 }
 
@@ -452,7 +469,6 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns></returns>
         public bool InitiateIntegrityUpdate()
         {
-
             List<ModelCode> properties = new List<ModelCode>(10);
             ModelCode modelCode = ModelCode.ANALOG;
             int iteratorId = 0;
@@ -560,13 +576,13 @@ namespace EMS.Services.SCADACrunchingService
             AlarmHelper ah = new AlarmHelper(gid, value, minRaw, maxRaw, DateTime.Now);
             if (value < minRaw)
             {
-                ah.Type = AlarmType.RAW_MIN;
-                ah.Severity = SeverityLevel.CRITICAL;
-                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
-                retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0:X}", gid);
-                Console.WriteLine("Alarm on low raw limit on gid: {0:X}", gid);
+                //ah.Type = AlarmType.RAW_MIN;
+                //ah.Severity = SeverityLevel.CRITICAL;
+                //ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //retVal = true;
+                //CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low raw limit on gid: {0:X}", gid);
+                //Console.WriteLine("Alarm on low raw limit on gid: {0:X}", gid);
             }
 
             if (value > maxRaw)
@@ -603,23 +619,23 @@ namespace EMS.Services.SCADACrunchingService
 
             if (value < highMin)
             {
-                ah.Type = AlarmType.EGU_MIN;
-                ah.Severity = SeverityLevel.MEDIUM;
-                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
-                retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
-                Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
+                //ah.Type = AlarmType.EGU_MIN;
+                //ah.Severity = SeverityLevel.MEDIUM;
+                //ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //retVal = true;
+                //CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
+                //Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
             }
             else if (value < alarmMin)
             {
-                ah.Type = AlarmType.EGU_MIN;
-                ah.Severity = SeverityLevel.MINOR;
-                ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
-                retVal = true;
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
-                Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
+                //ah.Type = AlarmType.EGU_MIN;
+                //ah.Severity = SeverityLevel.MINOR;
+                //ah.Message = string.Format("Value on input signal: {0:X} lower than minimum expected value", gid);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //retVal = true;
+                //CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on low egu limit on gid: {0:X}", gid);
+                //Console.WriteLine("Alarm on low egu limit on gid: {0:X}", gid);
             }
 
             if (value > highMax)

@@ -49,7 +49,7 @@ namespace EMS.Services.AlarmsEventsService
             alarmsFromDatabase = SelectAlarmsFromDatabase();
             if (alarmsFromDatabase != null)
             {
-                this.Alarms = alarmsFromDatabase;
+                //this.Alarms = alarmsFromDatabase;
             }
         }
 
@@ -91,36 +91,37 @@ namespace EMS.Services.AlarmsEventsService
         /// <param name="alarm">alarm to add</param>
         public void AddAlarm(AlarmHelper alarm)
         {
+            if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
+            {
+                return;
+            }
+
             PublishingStatus publishingStatus = PublishingStatus.INSERT;
+            bool updated = false;
             try
             {
                 alarm.AckState = AckState.Unacknowledged;
-                alarm.CurrentState = string.Format("{0}, {1}", State.Active, alarm.AckState);
-
-                // deadband check
+                if (string.IsNullOrEmpty(alarm.CurrentState))
+                {
+                    alarm.CurrentState = string.Format("{0}, {1}", State.Active, alarm.AckState);
+                }
+                // cleared status check
                 foreach (AlarmHelper item in Alarms)
                 {
-                    if (item.Gid.Equals(alarm.Gid))
+                    if (item.Gid.Equals(alarm.Gid) && item.AckState.Equals(State.Active))
                     {
-                        if (Math.Abs(alarm.Value - item.Value) < DEADBAND_VALUE)
-                        {
-                            // vrednost na signalu je u granicama deadbanda
-                            publishingStatus = PublishingStatus.UPDATE;
-                            alarm.PubStatus = publishingStatus;
-                            item.Value = alarm.Value;
-                            item.CurrentState = alarm.CurrentState;
-                            item.LastChange = alarm.TimeStamp;
-                            if (UpdateAlarmIntoDb(item))
-                            {
-                                Console.WriteLine("Alarm with GID: {0} updated into database.", item.Gid);
-                            }
-                        }
+                        item.Severity = alarm.Severity;
+                        item.Value = alarm.Value;
+                        item.Message = alarm.Message;
+                        publishingStatus = PublishingStatus.UPDATE;
+                        updated = true;
+                        break;
                     }
                 }
+
                 // ako je insert dodaj u listu - inace je updateovan
-                if (publishingStatus.Equals(PublishingStatus.INSERT))
+                if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated)
                 {
-                    alarm.InitiatingValue = alarm.Value;
                     this.Alarms.Add(alarm);
                     if (InsertAlarmIntoDb(alarm))
                     {
@@ -146,7 +147,7 @@ namespace EMS.Services.AlarmsEventsService
             long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
             foreach (AlarmHelper alarm in this.Alarms)
             {
-                if (alarm.Gid.Equals(powerSystemResGid))
+                if (alarm.Gid.Equals(powerSystemResGid) && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
                     alarm.CurrentState = string.Format("{0}, {1}", state, alarm.AckState);
                     alarm.PubStatus = PublishingStatus.UPDATE;
@@ -154,8 +155,22 @@ namespace EMS.Services.AlarmsEventsService
                     {
                         Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
                     }
+
+                    AlarmHelper normalAlarm = new AlarmHelper();
+                    normalAlarm.AckState = AckState.Unacknowledged;
+                    normalAlarm.CurrentState = string.Format("{0}, {1}", State.Cleared, normalAlarm.AckState);
+                    normalAlarm.Gid = analogLoc.Analog.PowerSystemResource;
+                    normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
+                    normalAlarm.Persistent = PersistentState.Nonpersistent;
+                    normalAlarm.TimeStamp = DateTime.Now;
+                    normalAlarm.Severity = SeverityLevel.NONE;
+                    normalAlarm.Inhibit = InhibitState.Noninhibit;
+
+                    normalAlarm.Type = AlarmType.NORMAL;
+
                     try
                     {
+                        //this.Publisher.PublishAlarmsEvents(normalAlarm, PublishingStatus.INSERT);
                         this.Publisher.PublishStateChange(alarm);
                         string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
                         CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

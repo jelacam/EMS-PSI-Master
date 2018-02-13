@@ -155,6 +155,7 @@
 
                 case PublishingStatus.UPDATE:
                     {
+                        alarm.PubStatus = PublishingStatus.UPDATE;
                         AlarmUpdateEventArgs e = new AlarmUpdateEventArgs()
                         {
                             Alarm = alarm

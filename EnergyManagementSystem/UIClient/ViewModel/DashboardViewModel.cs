@@ -18,13 +18,14 @@ namespace UIClient.ViewModel
     public class DashboardViewModel : ViewModelBase
     {
         #region Fields
+
         private CeSubscribeProxy ceSubscribeProxy;
 
         private int MAX_DISPLAY_NUMBER = 10;
         private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
         private int attemptsCount = 0;
 
-        private readonly double graphSizeOffset = 20;
+        private readonly double graphSizeOffset = 18;
 
         private float currentConsumption;
         private float currentProduction;
@@ -43,8 +44,7 @@ namespace UIClient.ViewModel
         private double graphWidth;
         private double graphHeight;
 
-
-        #endregion
+        #endregion Fields
 
         #region Properties
 
@@ -183,12 +183,10 @@ namespace UIClient.ViewModel
             {
                 graphHeight = value;
                 OnPropertyChanged();
-
             }
         }
 
-
-        #endregion
+        #endregion Properties
 
         public DashboardViewModel()
         {
@@ -203,6 +201,7 @@ namespace UIClient.ViewModel
         }
 
         #region Commands
+
         public ICommand ExpandCommand => expandCommand ?? (expandCommand = new RelayCommand(ExpandCommandExecute));
 
         public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
@@ -211,8 +210,7 @@ namespace UIClient.ViewModel
 
         public ICommand ChangeAlgorithmCommand => changeAlgorithmCommand ?? (changeAlgorithmCommand = new RelayCommand(ChangeAlgorithmCommandExecute));
 
-       
-        #endregion
+        #endregion Commands
 
         #region CommandsExecutions
 
@@ -247,14 +245,13 @@ namespace UIClient.ViewModel
 
         private void UpdateSizeWidget(double sliderValue)
         {
-
             GraphWidth = (sliderValue + 1) * 16 * graphSizeOffset;
             GraphHeight = (sliderValue + 1) * 9 * graphSizeOffset;
             MAX_DISPLAY_NUMBER = 10 * ((int)sliderValue + 1);
 
-            foreach(var keyPair in GeneratorsContainer)
+            foreach (var keyPair in GeneratorsContainer)
             {
-                while(keyPair.Value.Count > MAX_DISPLAY_NUMBER)
+                while (keyPair.Value.Count > MAX_DISPLAY_NUMBER)
                 {
                     keyPair.Value.RemoveAt(0);
                 }
@@ -267,9 +264,9 @@ namespace UIClient.ViewModel
                     keyPair.Value.RemoveAt(0);
                 }
             }
-
         }
-        #endregion
+
+        #endregion CommandsExecutions
 
         private void SubsrcibeToCE()
         {
@@ -306,21 +303,28 @@ namespace UIClient.ViewModel
                 return;
             }
 
-            if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUIs[0].Gid) == EMSType.ENERGYCONSUMER)
+            try
             {
-                App.Current.Dispatcher.Invoke((Action)delegate
+                if ((EMSType)ModelCodeHelper.ExtractTypeFromGlobalId(measUIs[0].Gid) == EMSType.ENERGYCONSUMER)
                 {
-                    AddMeasurmentTo(EnergyConsumersContainer, measUIs);
-                    CurrentConsumption = measUIs.Sum(x => x.CurrentValue);
-                });
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        AddMeasurmentTo(EnergyConsumersContainer, measUIs);
+                        CurrentConsumption = measUIs.Sum(x => x.CurrentValue);
+                    });
+                }
+                else
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        AddMeasurmentTo(GeneratorsContainer, measUIs);
+                        CurrentProduction = measUIs.Sum(x => x.CurrentValue);
+                    });
+                }
             }
-            else
+            catch (Exception e)
             {
-                App.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    AddMeasurmentTo(GeneratorsContainer, measUIs);
-                    CurrentProduction = measUIs.Sum(x => x.CurrentValue);
-                });
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "CES can not update measurement values on UI becaus UI instance does not exist. Message: {0}", e.Message);
             }
         }
 

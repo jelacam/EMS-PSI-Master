@@ -82,7 +82,9 @@ artifacts/
 *.svclog
 *.scc
 **/*.dll
+**/!Xceed.Wpf.AvalonDock.Themes.VS2013.dll
 **/*.exe
+
 
 # Chutzpah Test files
 _Chutzpah*
