@@ -14,7 +14,7 @@
         mc:Ignorable="d"
         Title="EMS" Height="700" Width="1250"
         Name="mainWin"
-		Style="{StaticResource BasicWindowStyle}" Icon="Resources/iconemsds.png_64x64.png" >
+		Style="{StaticResource BasicWindowStyle}" Icon="Resources/emsicon.png.ico" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
