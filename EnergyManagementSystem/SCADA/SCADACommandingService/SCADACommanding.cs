@@ -416,38 +416,25 @@ namespace EMS.Services.SCADACommandingService
                             if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
                             {
                                 float[] values = new float[100];
-
+                                int setPointLimit = 10;
                                 values = FirstReadAfterSending((ushort)analogLoc.StartAddress, 2, analogLoc);
                                 //modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal1);
                                 if (values.Length >= 1)
                                 {
-                                    if (values[0] == rawVal)
+                                    if (!((values[0] - rawVal) > setPointLimit))
                                     {
-                                        //using (var txtWriter = new StreamWriter("FirstReadAfterSending.txt", true))
-                                        //{
-                                        //    // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
-                                        //    txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: " + rawVal + " and then first read after sending: RAW = " + values[0]);
-
-                                        //}
-                                        //CR-1 jel uospte nuzno da se svaki put ovo loguje? Bice nam glavni log fajl pretrpan, vec imamo fajl za to
-                                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su iste!");
+                                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su VALIDNE!");
                                     }
                                     else
                                     {
-                                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
+                                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora su NEVALIDNE!");
                                     }
                                 }
                                 else
                                 {
-                                    //CR-1 zasto ovaj deo ovako? nesto nije dobro procitano ukoliko je values.Length == 0
-                                    if (rawVal != 0)
-                                    {
-                                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Vrednosti koja se poslala i koja se procitala sa simulatora nisu iste!");
-                                    }
-                                    else
-                                    {
-                                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Vrednosti koja se poslala i koja se procitala sa simulatora su iste!");
-                                    }
+
+                                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Doslo je do GRESKE prilikom citanja!");
+
                                 }
                                 using (var txtWriter = new StreamWriter("SentData.txt", true))
                                 {

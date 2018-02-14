@@ -647,8 +647,10 @@ namespace EMS.Services.SCADACrunchingService
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);
+                return retVal;
             }
-            else if (value > alarmMax)
+
+            if (value > alarmMax && value < highMax)
             {
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.MAJOR;
@@ -657,6 +659,7 @@ namespace EMS.Services.SCADACrunchingService
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);
+                return retVal;
             }
 
             return retVal;

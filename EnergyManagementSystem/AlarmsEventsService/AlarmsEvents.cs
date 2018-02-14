@@ -108,7 +108,7 @@ namespace EMS.Services.AlarmsEventsService
                 // cleared status check
                 foreach (AlarmHelper item in Alarms)
                 {
-                    if (item.Gid.Equals(alarm.Gid) && item.AckState.Equals(State.Active))
+                    if (item.Gid.Equals(alarm.Gid) /*&& item.AckState.Equals(State.Active)*/)
                     {
                         item.Severity = alarm.Severity;
                         item.Value = alarm.Value;

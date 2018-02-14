@@ -29,7 +29,7 @@ namespace EMS.Services.SCADACollectingService
         /// <summary>
         /// Time between 2 samples in miliseconds
         /// </summary>
-        private const int SAMPLE_TIME = 500; //miliseconds
+        private const int SAMPLE_TIME = 5000; //miliseconds
 
         //TODO ovo ce trebati da se cita iz konfiguracionog fajla
         private ushort numberOfHoldingRegisters = 104; //how much register will read

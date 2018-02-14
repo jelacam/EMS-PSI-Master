@@ -360,6 +360,29 @@
   <ItemGroup>
     <Resource Include="Resources\search.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconems.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconems.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconems.png_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconems.png_96x96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconemsds.png_48x48.png" />
+    <Resource Include="Resources\iconemsds.png_64x64.png" />
+    <Resource Include="Resources\iconemsds.png_96x96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\emsicon.png.ico" />
+    <Resource Include="Resources\emsicon.png_64x64.png" />
+    <Resource Include="Resources\emsicon.png_96x96 %281%29.png" />
+    <Resource Include="Resources\emsicon.png_96x96.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

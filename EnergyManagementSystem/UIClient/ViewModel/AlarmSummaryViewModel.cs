@@ -123,8 +123,9 @@ namespace UIClient.ViewModel
                     {
                         if (aHelper.Gid.Equals(alarm.Gid))
                         {
-                            aHelper.CurrentState = string.Format("{0}, {1}", State.Active, aHelper.AckState);
-                            OnPropertyChanged(nameof(AlarmSummaryQueue));
+                            //aHelper.CurrentState = string.Format("{0}, {1}", State.Active, aHelper.AckState);
+                            //OnPropertyChanged(nameof(AlarmSummaryQueue));
+                            UpdateAlarm(alarm);
                             return;
                         }
                     }
@@ -156,9 +157,9 @@ namespace UIClient.ViewModel
                         aHelper.Severity = alarm.Severity;
                         aHelper.Value = alarm.Value;
                         aHelper.Message = alarm.Message;
-                        OnPropertyChanged(nameof(AlarmSummaryQueue));
                     }
                 }
+                OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
         }
 
