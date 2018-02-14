@@ -11,7 +11,7 @@ using EMS.Common;
 namespace UIClient.PubSub
 {
     [CallbackBehavior(UseSynchronizationContext = false)]
-    public class AePubSubCallbackService : IAesPubSubCallbackContract
+    public class AePubSubCallbackService : IAesSubscribeCallbackContract
     {
         private Action<object> callbackAction;
 

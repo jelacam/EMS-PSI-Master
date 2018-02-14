@@ -11,7 +11,7 @@
     using CommonMeasurement;
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class PublisherService : IAesPubSubContract
+    public class PublisherService : IAesSubscribeContract
     {
         public delegate void AlarmEventHandler(object sender, AlarmsEventsEventArgs e);
 
@@ -21,11 +21,11 @@
 
         public static event AlarmUpdateHandler AlarmUpdate;
 
-        private IAesPubSubCallbackContract callback = null;
+        private IAesSubscribeCallbackContract callback = null;
         private AlarmEventHandler alarmEventHandler = null;
         private AlarmUpdateHandler alarmUpdateHandler = null;
 
-        private static List<IAesPubSubCallbackContract> clientsToPublish = new List<IAesPubSubCallbackContract>(4);
+        private static List<IAesSubscribeCallbackContract> clientsToPublish = new List<IAesSubscribeCallbackContract>(4);
 
         private object clientsLocker = new object();
 
@@ -46,9 +46,9 @@
         /// <param name="e"></param>
         public void AlarmsEventsHandler(object sender, AlarmsEventsEventArgs e)
         {
-            List<IAesPubSubCallbackContract> faultetClients = new List<IAesPubSubCallbackContract>(4);
+            List<IAesSubscribeCallbackContract> faultetClients = new List<IAesSubscribeCallbackContract>(4);
             //callback.AlarmsEvents(e.Alarm);
-            foreach (IAesPubSubCallbackContract client in clientsToPublish)
+            foreach (IAesSubscribeCallbackContract client in clientsToPublish)
             {
                 if ((client as ICommunicationObject).State.Equals(CommunicationState.Opened))
                 {
@@ -62,7 +62,7 @@
 
             lock (clientsLocker)
             {
-                foreach (IAesPubSubCallbackContract client in faultetClients)
+                foreach (IAesSubscribeCallbackContract client in faultetClients)
                 {
                     clientsToPublish.Remove(client);
                 }
@@ -72,9 +72,9 @@
         public void AlarmUpdateEventsHandler(object sender, AlarmUpdateEventArgs e)
         {
             //callback.UpdateAlarmsEvents(e.Alarm);
-            List<IAesPubSubCallbackContract> faultetClients = new List<IAesPubSubCallbackContract>(4);
+            List<IAesSubscribeCallbackContract> faultetClients = new List<IAesSubscribeCallbackContract>(4);
 
-            foreach (IAesPubSubCallbackContract client in clientsToPublish)
+            foreach (IAesSubscribeCallbackContract client in clientsToPublish)
             {
                 if ((client as ICommunicationObject).State.Equals(CommunicationState.Opened))
                 {
@@ -87,7 +87,7 @@
             }
             lock (clientsLocker)
             {
-                foreach (IAesPubSubCallbackContract client in faultetClients)
+                foreach (IAesSubscribeCallbackContract client in faultetClients)
                 {
                     clientsToPublish.Remove(client);
                 }
@@ -100,7 +100,7 @@
         /// </summary>
         public void Subscribe()
         {
-            callback = OperationContext.Current.GetCallbackChannel<IAesPubSubCallbackContract>();
+            callback = OperationContext.Current.GetCallbackChannel<IAesSubscribeCallbackContract>();
 
             //alarmEventHandler = new AlarmEventHandler(AlarmsEventsHandler);
             //AlarmEvent += alarmEventHandler;
@@ -118,7 +118,7 @@
         {
             //AlarmEvent -= alarmEventHandler;
             //AlarmUpdate -= alarmUpdateHandler;
-            callback = OperationContext.Current.GetCallbackChannel<IAesPubSubCallbackContract>();
+            callback = OperationContext.Current.GetCallbackChannel<IAesSubscribeCallbackContract>();
 
             clientsToPublish.Remove(callback);
         }

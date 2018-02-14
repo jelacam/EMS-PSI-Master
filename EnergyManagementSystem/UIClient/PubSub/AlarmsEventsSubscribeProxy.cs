@@ -9,13 +9,13 @@ using System.ServiceModel;
 
 namespace UIClient.PubSub
 {
-    public class AlarmsEventsSubscribeProxy : IAesPubSubContract, IDisposable
+    public class AlarmsEventsSubscribeProxy : IAesSubscribeContract, IDisposable
     {
-        private static IAesPubSubContract proxy;
-        private static DuplexChannelFactory<IAesPubSubContract> factory;
+        private static IAesSubscribeContract proxy;
+        private static DuplexChannelFactory<IAesSubscribeContract> factory;
         private static InstanceContext context;
 
-        public IAesPubSubContract Proxy
+        public IAesSubscribeContract Proxy
         {
             get
             {
@@ -32,7 +32,7 @@ namespace UIClient.PubSub
             if (Proxy == null)
             {
                 context = new InstanceContext(new AePubSubCallbackService() { CallbackAction = callbackAction });
-                factory = new DuplexChannelFactory<IAesPubSubContract>(context, "AlarmsEventsPubSub");
+                factory = new DuplexChannelFactory<IAesSubscribeContract>(context, "AlarmsEventsPubSub");
                 Proxy = factory.CreateChannel();
             }
         }
