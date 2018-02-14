@@ -816,15 +816,15 @@ namespace UISimulator.ViewModel
             }
             else if (x > 8 && x <= 10)
             {
-                retVal = 1600 - 4 * x / 3 + 14 + 2 / 3;
+                retVal = 1200 - 4 * x / 3 + 14 + 2 / 3;
             }
             else if (x > 10 && x <= 17)
             {
-                retVal = 1600 + 1 + 1 / 3 / 9;
+                retVal = 1200 + 1 + 1 / 3 / 9;
             }
             else if (x > 17 && x <= 19)
             {
-                retVal = 1600 - 21 - 1 / 3 + 4 * x / 3;
+                retVal = 1200 - 21 - 1 / 3 + 4 * x / 3;
             }
             else if (x > 19 && x <= 24)
             {
@@ -852,15 +852,15 @@ namespace UISimulator.ViewModel
             }
             else if (x > 8 && x <= 10)
             {
-                retVal = 1700 - (float)1.3 * x + 14 + 2 / 3;
+                retVal = 1100 - (float)1.3 * x + 14 + 2 / 3;
             }
             else if (x > 10 && x <= 17)
             {
-                retVal = 1700 + 1 + 1 / 3 / 9;
+                retVal = 1100 + 1 + 1 / 3 / 9;
             }
             else if (x > 17 && x <= 19)
             {
-                retVal = 1700 - 21 - 1 / 3 + (float)1.3 * x;
+                retVal = 1100 - 21 - 1 / 3 + (float)1.3 * x;
             }
             else if (x > 19 && x <= 24)
             {
@@ -888,15 +888,15 @@ namespace UISimulator.ViewModel
             }
             else if (x > 8 && x <= 10)
             {
-                retVal = 1800 - (float)1.3 * x + 14 + 2 / 3;
+                retVal = 1300 - (float)1.3 * x + 14 + 2 / 3;
             }
             else if (x > 10 && x <= 17)
             {
-                retVal = 1800 + 1 + 1 / 3 / 9;
+                retVal = 1300 + 1 + 1 / 3 / 9;
             }
             else if (x > 17 && x <= 19)
             {
-                retVal = 1800 - 21 - 1 / 3 + (float)1.3 * x;
+                retVal = 1300 - 21 - 1 / 3 + (float)1.3 * x;
             }
             else if (x > 19 && x <= 24)
             {
@@ -924,15 +924,15 @@ namespace UISimulator.ViewModel
             }
             else if (x > 8 && x <= 10)
             {
-                retVal = 1900 - (float)1.3 * x + 14 + 2 / 3;
+                retVal = 1500 - (float)1.3 * x + 14 + 2 / 3;
             }
             else if (x > 10 && x <= 17)
             {
-                retVal = 1900 + 1 + 1 / 3 / 9;
+                retVal = 1500 + 1 + 1 / 3 / 9;
             }
             else if (x > 17 && x <= 19)
             {
-                retVal = 1900 - 21 - 1 / 3 + (float)1.3 * x;
+                retVal = 1500 - 21 - 1 / 3 + (float)1.3 * x;
             }
             else if (x > 19 && x <= 24)
             {
@@ -960,15 +960,15 @@ namespace UISimulator.ViewModel
             }
             else if (x > 8 && x <= 10)
             {
-                retVal = 2000 - (float)1.3 * x + 14 + 2 / 3;
+                retVal = 1300 - (float)1.3 * x + 14 + 2 / 3;
             }
             else if (x > 10 && x <= 17)
             {
-                retVal = 2000 + 1 + 1 / 3 / 9;
+                retVal = 1300 + 1 + 1 / 3 / 9;
             }
             else if (x > 17 && x <= 19)
             {
-                retVal = 2000 - 21 - 1 / 3 + (float)1.3 * x;
+                retVal = 1300 - 21 - 1 / 3 + (float)1.3 * x;
             }
             else if (x > 19 && x <= 24)
             {
