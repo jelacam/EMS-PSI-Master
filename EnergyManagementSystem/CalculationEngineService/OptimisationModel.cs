@@ -55,7 +55,7 @@ namespace EMS.Services.CalculationEngineService
 		/// <summary>
 		/// Gets or sets managable for OptimisationModel
 		/// </summary>
-		public int Managable { get; set; }
+		public bool Managable { get; set; }
 
 		/// <summary>
 		/// Gets or sets renewable for OptimisationModel
@@ -94,7 +94,7 @@ namespace EMS.Services.CalculationEngineService
 			GenericOptimizedValue = 0;
 			MinPower = 0;
 			MaxPower = 0;
-			Managable = 1;
+			Managable = true;
 			Renewable = false;
 			WindPct = 1;
 			Curve = new SynchronousMachineCurveModel();
@@ -121,14 +121,25 @@ namespace EMS.Services.CalculationEngineService
 			Curve = smcm;
 			EmissionFactor = ChooseEmissionFactor(emsf.FuelType);
 
-			Managable = sm.Active ? 1 : 0;
-			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
-			Price = Renewable ? 1 : CalculatePrice(MeasuredValue);
 			WindPct = emsf.FuelType.Equals(EmsFuelType.wind) ? CalculateWindPct(windSpeed) : 100;
+			Managable = ((emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && (0 >= sunlight || sunlight > 100))) ? false : true; //true=optimizuj
+			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
+			if (!Managable)
+			{
+				Price = 0;
+			}
+			else if (Renewable)
+			{
+				Price = 1;
+			}
+			else
+			{
+				Price = CalculatePrice(MeasuredValue);
+			}
 
-			MinPower = ((Managable == 0) || (Renewable && WindPct == 0) || (Renewable && sunlight <= 0)) ? 0 : sm.MinQ;
+			MinPower = ((!Managable) || (Renewable && WindPct == 0) || (Renewable && (sunlight <= 0 || sunlight > 100))) ? 0 : sm.MinQ;
 
-			if ((Managable == 0) || (emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && sunlight <= 0))
+			if ((!Managable) || (emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && (sunlight <= 0 || sunlight > 100)))
 			{
 				MaxPower = 0;
 			}
@@ -136,7 +147,7 @@ namespace EMS.Services.CalculationEngineService
 			{
 				MaxPower = (sm.MaxQ - sm.MinQ) / 100 * WindPct + sm.MinQ;
 			}
-			else if (emsf.FuelType.Equals(EmsFuelType.solar) && 0 < sunlight && sunlight < 100)
+			else if (emsf.FuelType.Equals(EmsFuelType.solar) && 0 < sunlight && sunlight <= 100)
 			{
 				MaxPower = (sm.MaxQ - sm.MinQ) / 100 * sunlight + sm.MinQ;
 			}

@@ -201,9 +201,11 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						{
 							help = decisions[optModel.Value.GlobalId];
 							Term termLimit;
+
 							termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
 
-							// rad generatora u +/-10% od prethodne vrednosti
+							// rad generatora u +/-20% od prethodne vrednosti
+							// ne radi dobro
 							/*if (!optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind) && !optModel.Value.EmsFuel.FuelType.Equals(EmsFuelType.solar))
 							{
 								if (old != null && old.Count() > 0)
@@ -212,7 +214,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 									{
 										float oldValue = old[optModel.Value.GlobalId].LinearOptimizedValue;
 										float onePct = (optModel.Value.MaxPower - optModel.Value.MinPower) / 100;
-										float pct = 10;
+										float pct = 20;
 										float minBorder = oldValue - onePct * pct;
 										float maxBorder = oldValue + onePct * pct;
 

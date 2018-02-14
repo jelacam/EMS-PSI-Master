@@ -283,7 +283,7 @@ namespace EMS.Services.CalculationEngineService
                         if (generatorCurves[sm.Mrid] != null)
                         {
                             OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, sunlight, generatorCurves[sm.Mrid]);
-                            if (om.Managable != 0)
+                            if (om.Managable)
                             {
                                 maxProduction += om.MaxPower;
                                 minProduction += om.MinPower;
