@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -145,6 +145,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService", "Cloud\GatewayService\GatewayService.csproj", "{80C91CBD-BBAC-443B-8B96-231DD3399717}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudCommon", "Cloud\CloudCommon\CloudCommon.csproj", "{57D99354-6C6D-40CE-BA00-AC8610A435BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationEngineCloudService", "CalculationEngineCloudService\CalculationEngineCloudService.csproj", "{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -720,6 +722,14 @@ Global
 		{57D99354-6C6D-40CE-BA00-AC8610A435BF}.Release|x64.Build.0 = Release|Any CPU
 		{57D99354-6C6D-40CE-BA00-AC8610A435BF}.Release|x86.ActiveCfg = Release|Any CPU
 		{57D99354-6C6D-40CE-BA00-AC8610A435BF}.Release|x86.Build.0 = Release|Any CPU
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Debug|x64.ActiveCfg = Debug|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Debug|x64.Build.0 = Debug|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Debug|x86.ActiveCfg = Debug|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Release|Any CPU.ActiveCfg = Release|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Release|x64.ActiveCfg = Release|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Release|x64.Build.0 = Release|x64
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -777,6 +787,7 @@ Global
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{80C91CBD-BBAC-443B-8B96-231DD3399717} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{57D99354-6C6D-40CE-BA00-AC8610A435BF} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
+		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F2A5C02-A2F4-4021-990E-9A05482EA2E3}
