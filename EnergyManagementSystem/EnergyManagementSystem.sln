@@ -154,6 +154,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScadaKrunchingCloudService"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScadaCommandingCloudService", "ScadaCommandingCloudService\ScadaCommandingCloudService.csproj", "{57EF9398-E909-4BA9-A06F-87DDFBE70072}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkModelCloudService", "NetworkModelCloudService\NetworkModelCloudService.csproj", "{777B543D-DDEC-4002-860A-2F8521DA0752}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -760,6 +762,14 @@ Global
 		{57EF9398-E909-4BA9-A06F-87DDFBE70072}.Release|x64.ActiveCfg = Release|x64
 		{57EF9398-E909-4BA9-A06F-87DDFBE70072}.Release|x64.Build.0 = Release|x64
 		{57EF9398-E909-4BA9-A06F-87DDFBE70072}.Release|x86.ActiveCfg = Release|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Debug|x64.ActiveCfg = Debug|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Debug|x64.Build.0 = Debug|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Debug|x86.ActiveCfg = Debug|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Release|Any CPU.ActiveCfg = Release|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Release|x64.ActiveCfg = Release|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Release|x64.Build.0 = Release|x64
+		{777B543D-DDEC-4002-860A-2F8521DA0752}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -821,6 +831,7 @@ Global
 		{F97547C9-E9EC-47EC-B9BF-8C90040924E4} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{57EF9398-E909-4BA9-A06F-87DDFBE70072} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
+		{777B543D-DDEC-4002-860A-2F8521DA0752} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F2A5C02-A2F4-4021-990E-9A05482EA2E3}

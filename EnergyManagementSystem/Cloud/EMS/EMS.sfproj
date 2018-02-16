@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CalculationEngineCloudService\CalculationEngineCloudService.csproj" />
+    <ProjectReference Include="..\..\NetworkModelCloudService\NetworkModelCloudService.csproj" />
     <ProjectReference Include="..\..\ScadaCollectingCloudService\ScadaCollectingCloudService.csproj" />
     <ProjectReference Include="..\..\ScadaCommandingCloudService\ScadaCommandingCloudService.csproj" />
     <ProjectReference Include="..\..\ScadaKrunchingCloudService\ScadaKrunchingCloudService.csproj" />
