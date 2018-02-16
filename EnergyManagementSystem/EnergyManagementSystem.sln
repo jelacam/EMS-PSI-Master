@@ -150,6 +150,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationEngineCloudServi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScadaCollectingCloudService", "ScadaCollectingCloudService\ScadaCollectingCloudService.csproj", "{F97547C9-E9EC-47EC-B9BF-8C90040924E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScadaKrunchingCloudService", "ScadaKrunchingCloudService\ScadaKrunchingCloudService.csproj", "{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -740,6 +742,14 @@ Global
 		{F97547C9-E9EC-47EC-B9BF-8C90040924E4}.Release|x64.ActiveCfg = Release|x64
 		{F97547C9-E9EC-47EC-B9BF-8C90040924E4}.Release|x64.Build.0 = Release|x64
 		{F97547C9-E9EC-47EC-B9BF-8C90040924E4}.Release|x86.ActiveCfg = Release|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Debug|x64.ActiveCfg = Debug|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Debug|x64.Build.0 = Debug|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Debug|x86.ActiveCfg = Debug|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Release|Any CPU.ActiveCfg = Release|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Release|x64.ActiveCfg = Release|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Release|x64.Build.0 = Release|x64
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -799,6 +809,7 @@ Global
 		{57D99354-6C6D-40CE-BA00-AC8610A435BF} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{7B2C9EE0-2823-4E69-8862-1282BFC64B1F} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 		{F97547C9-E9EC-47EC-B9BF-8C90040924E4} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
+		{BEB048A5-AF0D-42E8-8C48-3D2C42DA2F6D} = {CFC6B51F-B249-42EB-B956-17D515A0CE81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F2A5C02-A2F4-4021-990E-9A05482EA2E3}

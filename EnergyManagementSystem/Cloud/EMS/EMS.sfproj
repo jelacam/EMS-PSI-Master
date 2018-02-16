@@ -34,6 +34,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CalculationEngineCloudService\CalculationEngineCloudService.csproj" />
     <ProjectReference Include="..\..\ScadaCollectingCloudService\ScadaCollectingCloudService.csproj" />
+    <ProjectReference Include="..\..\ScadaKrunchingCloudService\ScadaKrunchingCloudService.csproj" />
     <ProjectReference Include="..\GatewayService\GatewayService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
