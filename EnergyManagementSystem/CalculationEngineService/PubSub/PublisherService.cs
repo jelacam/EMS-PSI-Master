@@ -11,7 +11,7 @@ using EMS.CommonMeasurement;
 namespace EMS.Services.CalculationEngineService.PubSub
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class PublisherService : ICePubSubContract
+    public class PublisherService : ICeSubscribeContract
     {
         public delegate void OptimizationResultEventHandler(object sender, OptimizationEventArgs e);
 

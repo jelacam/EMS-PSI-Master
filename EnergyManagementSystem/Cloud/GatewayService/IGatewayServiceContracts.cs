@@ -10,7 +10,9 @@ namespace GatewayService
     /// <summary>
     /// GatewayService implements thist interface
     /// </summary>
-    internal interface IGatewayServiceContracts : IAesSubscribeContract,
+    internal interface IGatewayServiceContracts : ICeSubscribeContract,
+                                                  ICePublishContract,
+                                                  IAesSubscribeContract,
                                                   IAesPublishContract,
                                                   IAesIntegirtyContract
     {

@@ -39,7 +39,9 @@ namespace GatewayService
             {
                 new ServiceReplicaListener(context => this.CreateAESSubscribeListener(context), "AESSubscribeEndpoint"),
                 new ServiceReplicaListener(context => this.CreateAESPublishListener(context), "AESPublishEndpoint"),
-                new ServiceReplicaListener(context => this.CreateAESIntegirityUpdateListener(context), "AESIntegrityUpdate")
+                new ServiceReplicaListener(context => this.CreateAESIntegirityUpdateListener(context), "AESIntegrityUpdate"),
+                new ServiceReplicaListener(context => this.CreateCESubscribeListener(context), "CESubscribeEndpoint"),
+                new ServiceReplicaListener(context => this.CreateCEPublishListener(context), "CEPublishEndpoint")
             };
         }
 
@@ -130,6 +132,67 @@ namespace GatewayService
 
         #endregion AlarmsEventsService listeners
 
+
+
+        #region CalculationEngineService listener
+
+        /// <summary>
+        ///  Gateway listener for Calculation Engine Service
+        ///  Address: "net.tcp://host:20002/CalculationEngine/SubscribeService"
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateCESubscribeListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("CESubscribeEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/CalculationEngine/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<ICeSubscribeContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           address: new EndpointAddress(uri),
+                           serviceContext: context,
+                           wcfServiceObject: this
+            );
+
+            return listener;
+        }
+
+        /// <summary>
+        ///  Gateway listener for Calculation Engine Service
+        ///  Address: "net.tcp://host:20002/CalculationEngine/PublishService"
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateCEPublishListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("CEPublishEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/CalculationEngine/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<ICePublishContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           address: new EndpointAddress(uri),
+                           serviceContext: context,
+                           wcfServiceObject: this
+            );
+
+            return listener;
+        }
+
+
+        #endregion CalculationEngineService listener
+
         #endregion Listeners
 
         /// <summary>
@@ -148,6 +211,13 @@ namespace GatewayService
             AlarmUpdate += alarmUpdateHandler;
 
             #endregion AlarmsEventsService PubSub initialization
+
+            #region CalculationEngine PubSub initialization
+
+            optimizationResultHandler = new OptimizationResultEventHandler(OptimizationResultHandler);
+            OptimizationResultEvent += optimizationResultHandler;
+
+            #endregion CalculationEngine PubSub initialization
 
             // TODO: Replace the following sample code with your own logic
             //       or remove this RunAsync override if it's not needed in your service.
@@ -175,6 +245,92 @@ namespace GatewayService
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }
+
+        #region ICeSubscribebContract
+
+        public delegate void OptimizationResultEventHandler(object sender, OptimizationEventArgs e);
+
+        public static event OptimizationResultEventHandler OptimizationResultEvent;
+
+        private ICePubSubCallbackContract callbackCE = null;
+        private OptimizationResultEventHandler optimizationResultHandler = null;
+
+        public static OptimizationType OptimizationType = OptimizationType.Linear;
+        // public static Action<OptimizationType> ChangeOptimizationTypeAction;
+
+        private static List<ICePubSubCallbackContract> clientsToPublishCE = new List<ICePubSubCallbackContract>(4);
+
+        private object clientsLockerCE = new object();
+
+        public void OptimizationResultHandler(object sender, OptimizationEventArgs e)
+        {
+            List<ICePubSubCallbackContract> faultetClientsCE = new List<ICePubSubCallbackContract>(4);
+            //callback.OptimizationResults(e.OptimizationResult);
+            foreach (ICePubSubCallbackContract client in clientsToPublishCE)
+            {
+                if ((client as ICommunicationObject).State.Equals(CommunicationState.Opened))
+                {
+                    client.OptimizationResults(e.OptimizationResult);
+                }
+                else
+                {
+                    faultetClientsCE.Add(client);
+                }
+            }
+
+            lock (clientsLocker)
+            {
+                foreach (ICePubSubCallbackContract client in faultetClientsCE)
+                {
+                    clientsToPublishCE.Remove(client);
+                }
+            }
+        }
+
+        void ICeSubscribeContract.Subscribe()
+        {
+            callbackCE = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
+            clientsToPublishCE.Add(callbackCE);
+        }
+
+        void ICeSubscribeContract.Unsubscribe()
+        {
+            callbackCE = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
+            clientsToPublishCE.Remove(callbackCE);
+        }
+        bool ICeSubscribeContract.ChooseOptimization(OptimizationType optimizationType)
+        {
+            OptimizationType = optimizationType;
+            return true;
+        }
+
+        #endregion
+
+        #region ICePublishContract
+        public void PublishOptimizationResults(List<MeasurementUI> result)
+        {
+            OptimizationEventArgs e = new OptimizationEventArgs
+            {
+                OptimizationResult = result,
+                Message = "Optimization result"
+            };
+
+            try
+            {
+                // Ovakav nacin radi na VS 2017. Prethodne verzije nemaju kompajler za C#6
+                // pa ne moze da kompajlira ovakav kod
+                //OptimizationResultEvent?.Invoke(this, e);
+                OptimizationResultEvent(this, e);
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("CES does not have any subscribed clinet for publishing new optimization result. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceVerbose, message);
+                Console.WriteLine(message);
+            }
+        }
+
+        #endregion
 
         #region IAesSubscribeContract implementation
 
@@ -253,7 +409,7 @@ namespace GatewayService
         /// Clients call this service opeartion to subscribe.
         /// A alarms events event handler is registered for this client instance.
         /// </summary>
-        public void Subscribe()
+        void IAesSubscribeContract.Subscribe()
         {
             callback = OperationContext.Current.GetCallbackChannel<IAesSubscribeCallbackContract>();
 
@@ -263,7 +419,7 @@ namespace GatewayService
         /// <summary>
         /// Clients call this service opeartion to unsubscribe.
         /// </summary>
-        public void Unsubscribe()
+        void IAesSubscribeContract.Unsubscribe()
         {
             callback = OperationContext.Current.GetCallbackChannel<IAesSubscribeCallbackContract>();
 

@@ -60,7 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICePubSubContract.cs" />
+    <Compile Include="ICePublishContract.cs" />
+    <Compile Include="ICeSubscribeContract.cs" />
     <Compile Include="MeasurementUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -10,7 +10,7 @@ namespace EMS.ServiceContracts
     /// in this case it will be optimization result
     /// </summary>
     [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ICePubSubCallbackContract))]
-    public interface ICePubSubContract
+    public interface ICeSubscribeContract
     {
         [OperationContract(IsOneWay = false, IsInitiating = true)]
         void Subscribe();

@@ -6,13 +6,13 @@ using EMS.CommonMeasurement;
 
 namespace UIClient.PubSub
 {
-    public class CeSubscribeProxy : ICePubSubContract, IDisposable
+    public class CeSubscribeProxy : ICeSubscribeContract, IDisposable
     {
-        private ICePubSubContract proxy;
-        private DuplexChannelFactory<ICePubSubContract> factory;
+        private ICeSubscribeContract proxy;
+        private DuplexChannelFactory<ICeSubscribeContract> factory;
         private InstanceContext context;
 
-        public ICePubSubContract Proxy
+        public ICeSubscribeContract Proxy
         {
             get
             {
@@ -30,7 +30,7 @@ namespace UIClient.PubSub
             if (Proxy == null)
             {
                 context = new InstanceContext(new CePubSubCallbackService() { CallbackAction = callbackAction });
-                factory = new DuplexChannelFactory<ICePubSubContract>(context, "CalculationEnginePubSub");
+                factory = new DuplexChannelFactory<ICeSubscribeContract>(context, "CalculationEnginePubSub");
                 Proxy = factory.CreateChannel();
             }
         }
