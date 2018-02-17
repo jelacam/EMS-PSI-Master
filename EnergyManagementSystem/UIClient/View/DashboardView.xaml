@@ -21,8 +21,9 @@
         <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter" />
         <converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter" />
         <converters:LastValueShowConverter x:Key="LastValueShowConverter" />
+		<converters:BindableAxisConverter x:Key="BindableAxisConverter" />
 
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="commonMeas:OptimizationType" />
@@ -100,7 +101,30 @@
                         </chartingToolkit:LineSeries.IndependentAxis>
 
                         <chartingToolkit:LineSeries.DependentRangeAxis>
-                            <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0" />
+							<chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)">
+								<chartingToolkit:LinearAxis.Maximum>
+									<MultiBinding Converter="{StaticResource BindableAxisConverter}" ConverterParameter="Max">
+										<Binding Path="DataContext.Key" RelativeSource="{RelativeSource AncestorType={x:Type chartingToolkit:Chart}}"></Binding>
+										<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+									</MultiBinding>
+								</chartingToolkit:LinearAxis.Maximum>
+
+								<chartingToolkit:LinearAxis.Minimum>
+									<MultiBinding Converter="{StaticResource BindableAxisConverter}" ConverterParameter="Min">
+										<Binding Path="DataContext.Key" RelativeSource="{RelativeSource AncestorType={x:Type chartingToolkit:Chart}}"></Binding>
+										<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+									</MultiBinding>
+								</chartingToolkit:LinearAxis.Minimum>
+
+								<chartingToolkit:LinearAxis.Interval>
+									<MultiBinding Converter="{StaticResource BindableAxisConverter}" ConverterParameter="Interval">
+										<Binding Path="DataContext.Key" RelativeSource="{RelativeSource AncestorType={x:Type chartingToolkit:Chart}}"></Binding>
+										<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+									</MultiBinding>
+								</chartingToolkit:LinearAxis.Interval>
+
+							</chartingToolkit:LinearAxis>
+							
                         </chartingToolkit:LineSeries.DependentRangeAxis>
                     </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
