@@ -69,8 +69,7 @@
                         </MultiBinding>
                     </chartingToolkit:Chart.Title>
 
-                    <chartingToolkit:LineSeries Title="Value"  
-												ItemsSource="{Binding Path=Value}" 
+                    <chartingToolkit:LineSeries ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
@@ -88,7 +87,7 @@
                         </chartingToolkit:LineSeries.IndependentAxis>
 
                         <chartingToolkit:LineSeries.DependentRangeAxis>
-                            <chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+                            <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
                         </chartingToolkit:LineSeries.DependentRangeAxis>
 
                     </chartingToolkit:LineSeries>
@@ -188,14 +187,9 @@
                 </Expander>
 
                 <Expander Grid.Row="1" Margin="10" IsExpanded="False" Header="Total Production" Foreground="White">
-                    <chartingToolkit:Chart Margin="10"
-                                        Title="Total Production" 
-									   Style="{StaticResource DashboardChartStyle}"
-                                         Height="600"
-									    >
+                    <chartingToolkit:Chart Margin="10" Title="Total Production" Style="{StaticResource DashboardChartStyle}" Height="600">
 
-                        <chartingToolkit:LineSeries Title="Value"  
-												ItemsSource="{Binding Path=TotalProduction}" 
+                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=TotalProduction}" 
 												DependentValueBinding="{Binding Path=Item1,Converter={StaticResource TestConvetrer}}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
@@ -213,7 +207,7 @@
                             </chartingToolkit:LineSeries.IndependentAxis>
 
                             <chartingToolkit:LineSeries.DependentRangeAxis>
-                                <chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+                                <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
                             </chartingToolkit:LineSeries.DependentRangeAxis>
 
                         </chartingToolkit:LineSeries>
