@@ -13,22 +13,22 @@
 				  RowHeaderWidth="0" AutoGenerateColumns="False" SelectionUnit="FullRow"
 				  GridLinesVisibility="None">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Gid" Binding="{Binding Gid,StringFormat={}0x{0:X8}}" />
+                <DataGridTextColumn Header="Gid" Binding="{Binding Gid,StringFormat={}0x{0:X8}}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" CellStyle="{StaticResource AlarmGridCell}" />
                 <!--<DataGridTextColumn Header="Init Value" Binding="{Binding InitiatingValue}" />-->
-                <DataGridTextColumn Header="Value" Binding="{Binding Value}" />
+				<DataGridTextColumn Header="Value" Binding="{Binding Value}" IsReadOnly="True"/>
                 <!--<DataGridTextColumn Header="MinValue" Binding="{Binding MinValue}" />
 				<DataGridTextColumn Header="MaxValue" Binding="{Binding MaxValue}" /> -->
-                <DataGridTextColumn Header="TimeStamp" Binding="{Binding TimeStamp}" />
+				<DataGridTextColumn Header="TimeStamp" Binding="{Binding TimeStamp}" IsReadOnly="True"/>
                 <!--<DataGridTextColumn Header="LastChange" Binding="{Binding LastChange}" />-->
                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
-                <DataGridTextColumn Header="Current State" Binding="{Binding CurrentState}" />
-                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" />
+				<DataGridTextColumn Header="Current State" Binding="{Binding CurrentState}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Acknowledge" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center"
-								Command="{Binding DataContext.AcknowledgeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+									  Command="{Binding DataContext.AcknowledgeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   CommandParameter="{Binding}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

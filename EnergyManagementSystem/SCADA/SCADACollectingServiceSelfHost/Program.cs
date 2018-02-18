@@ -9,6 +9,7 @@ namespace SCADACollectingServiceSelfHost
     using System;
     using EMS.Common;
     using EMS.Services.SCADACollectingService;
+    using System.Threading;
 
     /// <summary>
     /// Class for Main method
@@ -30,7 +31,7 @@ namespace SCADACollectingServiceSelfHost
                 string message = "Starting SCADA Collecting Service ...";
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                 Console.WriteLine("\n{0}\n", message);
-
+                Thread.Sleep(5000);
                 using (SCADACollectingService scadaCL = new SCADACollectingService())
                 {
                     scadaCL.Start();
