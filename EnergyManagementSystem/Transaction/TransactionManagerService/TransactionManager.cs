@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EMS.Common;
 using System.Threading;
 using System.ServiceModel;
+using EMS.Services.TransactionManagerService.ServiceFabricProxy;
 
 namespace EMS.Services.TransactionManagerService
 {
@@ -18,6 +19,7 @@ namespace EMS.Services.TransactionManagerService
         private static int noRespone = 0;
         private static int toRespond = 1;
         private object obj = new object();
+
 
         public UpdateResult ModelUpdate(Delta delta)
         {
@@ -122,7 +124,15 @@ namespace EMS.Services.TransactionManagerService
             }
 
             // first transaction - send delta to NMS
-            updateResult = TransactionNMSProxy.Instance.Prepare(ref delta);
+            //updateResult = TransactionNMSProxy.Instance.Prepare(ref delta);
+
+            TransactionNMSSfProxy transactionNMSSfProxy = new TransactionNMSSfProxy();
+            TransactionCESfProxy transactionCESfProxy = new TransactionCESfProxy();
+            TransactionCMDSfProxy transactionCMDSfProxy = new TransactionCMDSfProxy();
+            TransactionCRSfProxy transactionCRSfProxy = new TransactionCRSfProxy();
+
+            updateResult = transactionNMSSfProxy.Prepare(ref delta);
+
 
             // create new delta object from delta with gids
             analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
@@ -138,21 +148,28 @@ namespace EMS.Services.TransactionManagerService
             {
                 if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
                 {
-                    TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                    //TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                    transactionCESfProxy.Prepare(ref ceDelta);
                 }
                 else
                 {
-                    TransactionCRProxy.Instance.Prepare(ref analogsDelta);
-                    TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                    //TransactionCRProxy.Instance.Prepare(ref analogsDelta);
+                    //TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+
+                    transactionCRSfProxy.Prepare(ref analogsDelta);
+                    transactionCMDSfProxy.Prepare(ref analogsDelta);
                 }
                     
             }
             else if (toRespond == 3)
             {
                 // second transaction - send ceDelta to CE, analogDelta to SCADA
-                TransactionCEProxy.Instance.Prepare(ref ceDelta);
-                TransactionCRProxy.Instance.Prepare(ref analogsDelta);
-                TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                //TransactionCEProxy.Instance.Prepare(ref ceDelta);
+                //TransactionCRProxy.Instance.Prepare(ref analogsDelta);
+                //TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                transactionCESfProxy.Prepare(ref analogsDelta);
+                transactionCRSfProxy.Prepare(ref analogsDelta);
+                transactionCMDSfProxy.Prepare(ref analogsDelta);
             }
 
             return updateResult;
@@ -201,6 +218,12 @@ namespace EMS.Services.TransactionManagerService
 
         private void Commit(object sender, EventArgs e)
         {
+
+            TransactionNMSSfProxy transactionNMSSfProxy = new TransactionNMSSfProxy();
+            TransactionCESfProxy transactionCESfProxy = new TransactionCESfProxy();
+            TransactionCMDSfProxy transactionCMDSfProxy = new TransactionCMDSfProxy();
+            TransactionCRSfProxy transactionCRSfProxy = new TransactionCRSfProxy();
+
             bool commitResultScadaCR;
             bool commitResultScadaCMD;
 
@@ -210,24 +233,31 @@ namespace EMS.Services.TransactionManagerService
             bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
             if (toRespond == 3)
             {
-                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+                //commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                //commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+                commitResultScadaCR = transactionCRSfProxy.Commit(deltaToApply);
+                commitResultScadaCMD = transactionCMDSfProxy.Commit(deltaToApply);
+
                 commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
 
-                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                //commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                commitResultCE = transactionCESfProxy.Commit(deltaToApply);
             }
             else if (toRespond == 2)
             {
                 if (ceDeltaToApply.InsertOperations.Count != 0 || ceDeltaToApply.UpdateOperations.Count != 0)
                 {
-                    commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                    //commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                    commitResultCE = transactionCESfProxy.Commit(deltaToApply);
                 }
                 else
                 {
-                    commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                    commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+                    //commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                    //commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+                    commitResultScadaCR = transactionCRSfProxy.Commit(deltaToApply);
+                    commitResultScadaCMD = transactionCMDSfProxy.Commit(deltaToApply);
                 }
-                
+
             }
 
             if (commitResultNMS && commitResultSCADA && commitResultCE)
@@ -238,10 +268,15 @@ namespace EMS.Services.TransactionManagerService
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase failed!");
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
-                TransactionNMSProxy.Instance.Rollback();
-                TransactionCRProxy.Instance.Rollback();
-                TransactionCMDProxy.Instance.Rollback();
-                TransactionCEProxy.Instance.Rollback();
+                //TransactionNMSProxy.Instance.Rollback();
+                //TransactionCRProxy.Instance.Rollback();
+                //TransactionCMDProxy.Instance.Rollback();
+                //TransactionCEProxy.Instance.Rollback();
+                transactionNMSSfProxy.Rollback();
+                transactionCRSfProxy.Rollback();
+                transactionCMDSfProxy.Rollback();
+                transactionCESfProxy.Rollback();
+
             }
             toRespond = 1;
             noRespone = 0;
