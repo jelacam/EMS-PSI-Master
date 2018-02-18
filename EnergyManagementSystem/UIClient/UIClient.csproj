@@ -143,6 +143,7 @@
     <Compile Include="Converters\EMSTypeToStringConverter.cs" />
     <Compile Include="Converters\GidMapToBoolConverter.cs" />
     <Compile Include="Converters\GidMapToVisibilityConverter.cs" />
+    <Compile Include="Converters\GidToIdObjectConverter.cs" />
     <Compile Include="Converters\GidToMridConverter.cs" />
     <Compile Include="Converters\GlobalIdToEMSTypeStringConverter.cs" />
     <Compile Include="Converters\HexadecimalConverter.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="PubSub\CeSubscribeProxy.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="RelayCommand2.cs" />
+    <Compile Include="Selector\ToolTipTemplateSelector.cs" />
     <Compile Include="ViewModel\AlarmSummaryViewModel.cs" />
     <Compile Include="ViewModel\AlarmViewModel.cs" />
     <Compile Include="ViewModel\DashboardViewModel.cs" />
@@ -218,6 +220,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\GeneralStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Icons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

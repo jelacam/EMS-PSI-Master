@@ -37,10 +37,10 @@ namespace UIClient.ViewModel
         private int numberOfResources = 2;
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
-
+        private bool isExpandedSeparated = false;
         #endregion
 
-        public HistoryViewModel(HistoryView mainWindow)
+        public HistoryViewModel()
         {
             Title = "History";
             startTime = DateTime.Now.AddMinutes(-1);
@@ -147,6 +147,7 @@ namespace UIClient.ViewModel
             }
         }
     
+        public HistoryView HistoryView { get; set; }
         public PeriodValues SelectedPeriod
         {
             get
@@ -156,6 +157,7 @@ namespace UIClient.ViewModel
             set
             {
                 selectedPeriod = value;
+                UpdatePeriod();
                 OnPropertyChanged(nameof(SelectedPeriod));
             }
         }
@@ -218,6 +220,20 @@ namespace UIClient.ViewModel
             }
         }
 
+        public bool IsExpandedSeparated
+        {
+            get
+            {
+                return isExpandedSeparated;
+            }
+
+            set
+            {
+                isExpandedSeparated = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Command Executions
@@ -252,7 +268,7 @@ namespace UIClient.ViewModel
                 }
             }
             TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
-
+            IsExpandedSeparated = true;
             OnPropertyChanged(nameof(TotalProduction));
             OnPropertyChanged(nameof(GeneratorsContainer));
         }
@@ -282,6 +298,11 @@ namespace UIClient.ViewModel
         }
 
         private void SelectedPeriodCommandExecute(object obj)
+        {
+            UpdatePeriod();
+        }
+
+        private void UpdatePeriod()
         {
             switch (SelectedPeriod)
             {

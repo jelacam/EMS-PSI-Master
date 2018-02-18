@@ -35,12 +35,12 @@ namespace UIClient.Converters
                 if (idObj is SynchronousMachine)
                 {
                     SynchronousMachine syncMach = (SynchronousMachine)idObj;
-                    return DoConversion(syncMach.MinQ, syncMach.MaxQ, parameter.ToString());
+                    //return DoConversion(syncMach.MinQ, syncMach.MaxQ, parameter.ToString());
                 }
 
             }
-
-            return DoConversion(0f, int.MaxValue, parameter.ToString());
+            return 0.0f;
+            //return DoConversion(0f, int.MaxValue, parameter.ToString());
         }
 
         private double DoConversion(float minValue, float maxValue, string param)

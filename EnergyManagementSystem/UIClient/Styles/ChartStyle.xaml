@@ -5,6 +5,9 @@
 					xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 					xmlns:sys="clr-namespace:System;assembly=mscorlib"
 					xmlns:converters="clr-namespace:UIClient.Converters"
+					xmlns:selector="clr-namespace:UIClient.Selector"
+					xmlns:root ="clr-namespace:UIClient"
+					xmlns:view ="clr-namespace:UIClient.View"
                     xmlns:local="clr-namespace:UIClient.Styles">
 
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
@@ -13,7 +16,79 @@
 	<SolidColorBrush x:Key="AxisLineBrush" Color="White"/>
 	<sys:Int32 x:Key="SmallFontSize">24</sys:Int32>
 	<converters:TestConverter x:Key="TestConv"/>
+	<converters:GidToIdObjectConverter x:Key="GidToIdObjectConverter"/>
+	<converters:GidToMridConverter x:Key="GidToMridConverter"/>
 
+	<DataTemplate x:Key="SyncMachineTemplate">
+		<Grid Margin="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<GroupBox Header="Name" Foreground="White" Grid.Column="0" Grid.Row="0" Margin="3">
+				<TextBlock Text="{Binding Name}" Foreground="White"/>
+			</GroupBox>
+			<GroupBox Header="Fuel" Foreground="White" Grid.Column="0" Grid.Row="1" Margin="3">
+				<TextBlock Foreground="White">
+					<TextBlock.Text>
+						<MultiBinding Converter="{StaticResource GidToMridConverter}">
+							<Binding Path="Fuel"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</TextBlock.Text>
+				</TextBlock>
+			</GroupBox>
+			<GroupBox Header="Max Power" Foreground="White" Grid.Column="1" Grid.Row="0" Margin="3">
+				<TextBlock Text="{Binding MaxQ, StringFormat={}{0}kW}" Foreground="White"/>
+			</GroupBox>
+			<GroupBox Header="Min Power" Foreground="White" Grid.Column="1" Grid.Row="1" Margin="3">
+				<TextBlock Text="{Binding MinQ, StringFormat={}{0}kW}" Foreground="White"/>
+			</GroupBox>
+		</Grid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="EnConsumerTemplate">
+		<Grid Margin="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<GroupBox Header="Name" Grid.Column="0" Grid.Row="0" Foreground="White" Margin="3">
+				<TextBlock Text="{Binding Name}" Foreground="White"/>
+			</GroupBox>
+		</Grid>
+	</DataTemplate>
+
+	<selector:ToolTipTemplateSelector x:Key="ToolTipTemplateSelector"
+									  EnConsumerTemplate="{StaticResource EnConsumerTemplate}"
+									  SyncMachineTemplate="{StaticResource SyncMachineTemplate}">
+	</selector:ToolTipTemplateSelector>
+
+	<ControlTemplate x:Key="ToolTipTemplate" TargetType="ToolTip">
+		<Grid  Background="{StaticResource DarkBrush}">
+			<Border BorderThickness="1" BorderBrush="White">
+				<Border.Effect>
+					<DropShadowEffect Color="Black" ShadowDepth="2" />
+				</Border.Effect>
+				<ContentControl ContentTemplateSelector="{StaticResource ToolTipTemplateSelector}">
+					<ContentControl.Content>
+						<MultiBinding Converter="{StaticResource GidToIdObjectConverter}">
+							<Binding Path="Key"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</ContentControl.Content>
+				</ContentControl>
+			</Border>
+		</Grid>
+	</ControlTemplate>
 
 	<!-- LegendStyle-->
 	<Style x:Key="LegendStyle" TargetType="datavis:Legend">
@@ -230,13 +305,23 @@
 							</Grid.RowDefinitions>
 
 							<!--<TextBlock Text="{TemplateBinding Title}" Style="{StaticResource TitleStyle}"/>-->
-							<TextBlock Text="{TemplateBinding Title}" Margin="20,0,0,5"/>
-							<Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" Margin="20,0,0,5" BorderThickness="1">
+							<TextBlock Text="{TemplateBinding Title}" Margin="20,0,0,5">
+								<TextBlock.ToolTip>
+									<ToolTip Background="Transparent" Template="{StaticResource ToolTipTemplate}"/>
+								</TextBlock.ToolTip>
+							</TextBlock>
+							<Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" Margin="20,0,0,5" BorderThickness="0">
 								<StackPanel Orientation="Horizontal" Margin="1">
 									<TextBlock Text="{TemplateBinding Tag}" Foreground="LightGray"  />
 									<TextBlock Text="kW" Foreground="LightGray" />
+									<Button Command="{Binding DataContext.GoToCommand,RelativeSource={RelativeSource AncestorType={x:Type view:DashboardView}}}"
+											CommandParameter="{Binding DataContext.Key,RelativeSource={RelativeSource AncestorType={x:Type charting:Chart}}}"
+											>
+										<Image Source="{StaticResource historyIcon}"></Image>
+									</Button>
 								</StackPanel>
 							</Border>
+
 							<chartingprimitives:EdgePanel x:Name="ChartArea" Grid.Row="1" Grid.ColumnSpan="2" Style="{TemplateBinding ChartAreaStyle}">
 								<Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}"/>
 							</chartingprimitives:EdgePanel>
@@ -246,6 +331,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
 
 	<!--  charting:LineSeries  -->
 	<Style x:Key="LineSeriesStyle" TargetType="charting:LineSeries">
@@ -410,7 +496,7 @@
 		</Grid>
 
 	</ControlTemplate>
-	
+
 	<ControlTemplate x:Key="LineNoDataPointTemplate" TargetType="charting:LineDataPoint">
 		<Grid x:Name="Root" Background="Transparent">
 

@@ -20,7 +20,9 @@ namespace UIClient.ViewModel
 
 		private DashboardViewModel dashboardViewModel;
 		private AlarmSummaryViewModel alarmSummaryViewModel;
-		public DockManagerViewModel DockManagerViewModel { get; private set; }
+        private HistoryViewModel historyViewModel;
+
+        public DockManagerViewModel DockManagerViewModel { get; private set; }
 
 		public MainWindowViewModel()
 		{
@@ -33,10 +35,13 @@ namespace UIClient.ViewModel
 			AlarmSummaryViewModel = new AlarmSummaryViewModel();
 			AlarmSummaryViewModel.Title = "Alarm Summary";
 
-			documents.Add(DashboardViewModel);
+            HistoryViewModel = new HistoryViewModel() { Title = "History" };
+
+
+            documents.Add(DashboardViewModel);
 			documents.Add(new NMSViewModel(new View.NMSView()) { Title = "NMS" });
 			documents.Add(new ImporterViewModel() { Title = "Importer" });
-			documents.Add(new HistoryViewModel(new View.HistoryView()) { Title = "History" });
+			documents.Add(HistoryViewModel);
 			documents.Add(new DMSOptionsViewModel(new View.DMSOptionsView()) { Title = "DMS" });
 			documents.Add(AlarmSummaryViewModel);
 
@@ -284,5 +289,18 @@ namespace UIClient.ViewModel
 				nmsModelMap = value;
 			}
 		}
-	}
+
+        public HistoryViewModel HistoryViewModel
+        {
+            get
+            {
+                return historyViewModel;
+            }
+
+            set
+            {
+                historyViewModel = value;
+            }
+        }
+    }
 }
