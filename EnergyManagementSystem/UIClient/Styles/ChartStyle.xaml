@@ -7,6 +7,7 @@
 					xmlns:converters="clr-namespace:UIClient.Converters"
 					xmlns:selector="clr-namespace:UIClient.Selector"
 					xmlns:root ="clr-namespace:UIClient"
+					xmlns:view ="clr-namespace:UIClient.View"
                     xmlns:local="clr-namespace:UIClient.Styles">
 
 	<SolidColorBrush x:Key="AppBackground" Color="#FF6E6E6E"/>
@@ -17,7 +18,6 @@
 	<converters:TestConverter x:Key="TestConv"/>
 	<converters:GidToIdObjectConverter x:Key="GidToIdObjectConverter"/>
 	<converters:GidToMridConverter x:Key="GidToMridConverter"/>
-
 
 	<DataTemplate x:Key="SyncMachineTemplate">
 		<Grid Margin="2">
@@ -310,12 +310,18 @@
 									<ToolTip Background="Transparent" Template="{StaticResource ToolTipTemplate}"/>
 								</TextBlock.ToolTip>
 							</TextBlock>
-							<Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" Margin="20,0,0,5" BorderThickness="1">
+							<Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" BorderBrush="LightGray" Margin="20,0,0,5" BorderThickness="0">
 								<StackPanel Orientation="Horizontal" Margin="1">
 									<TextBlock Text="{TemplateBinding Tag}" Foreground="LightGray"  />
 									<TextBlock Text="kW" Foreground="LightGray" />
+									<Button Command="{Binding DataContext.GoToCommand,RelativeSource={RelativeSource AncestorType={x:Type view:DashboardView}}}"
+											CommandParameter="{Binding DataContext.Key,RelativeSource={RelativeSource AncestorType={x:Type charting:Chart}}}"
+											>
+										<Image Source="{StaticResource historyIcon}"></Image>
+									</Button>
 								</StackPanel>
 							</Border>
+
 							<chartingprimitives:EdgePanel x:Name="ChartArea" Grid.Row="1" Grid.ColumnSpan="2" Style="{TemplateBinding ChartAreaStyle}">
 								<Grid x:Name="PlotArea" Canvas.ZIndex="-1" Style="{TemplateBinding PlotAreaStyle}"/>
 							</chartingprimitives:EdgePanel>

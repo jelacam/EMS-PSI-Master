@@ -33,8 +33,6 @@ namespace UIClient.ViewModel
             AvaliableProperties = new ObservableCollection<ModelCode>();
         }
 
-
-
         #region Properties
         public ObservableCollection<ResourceDescription> ResList
         {
@@ -62,7 +60,6 @@ namespace UIClient.ViewModel
             }
         }
         #endregion
-
 
         #region Commands
         public ICommand FindCommand => findCommand ?? (findCommand = new RelayCommand<string>(FindCommandExecute));
