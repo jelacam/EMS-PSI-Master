@@ -70,6 +70,7 @@
                 <chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
 									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Template="{StaticResource GeneratorChartTemplate}"
 									   >
                     <chartingToolkit:Chart.Tag>
                         <MultiBinding Converter="{StaticResource LastValueShowConverter}">
@@ -142,7 +143,8 @@
                 </Grid.Visibility>
                 <chartingToolkit:Chart Style="{StaticResource RealTimeDashboardStyle}"
 									   Width="{Binding DataContext.GraphWidth,RelativeSource={RelativeSource AncestorType=UserControl}}"
-									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}">
+									   Height="{Binding DataContext.GraphHeight,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Template="{StaticResource EmConsumerChartTemplate}">
 
                     <chartingToolkit:Chart.Tag>
                         <MultiBinding Converter="{StaticResource LastValueShowConverter}">
