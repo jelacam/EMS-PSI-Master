@@ -14,6 +14,7 @@ using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using EMS.ServiceContracts.ServiceFabricProxy;
 
 namespace GatewayService
 {
@@ -506,12 +507,12 @@ namespace GatewayService
 
         public List<AlarmHelper> InitiateIntegrityUpdate()
         {
-            //AesIntegritySfProxy aesIntegritySfProxy = new AesIntegritySfProxy();
+            AesIntegritySfProxy aesIntegritySfProxy = new AesIntegritySfProxy();
 
-            //List<AlarmHelper> integrityResult = aesIntegritySfProxy.InitiateIntegrityUpdate();
+            List<AlarmHelper> integrityResult = aesIntegritySfProxy.InitiateIntegrityUpdate();
 
-            //return integrityResult;
-            throw new NotImplementedException();
+            return integrityResult;
+           
         }
 
         #endregion IAesIntegirtyContract implementation

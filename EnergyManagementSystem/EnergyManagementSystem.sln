@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceContracts", "ServiceContracts", "{CEFC4CE4-EF4A-4E34-AB3D-251825F77105}"
 EndProject
@@ -647,7 +647,6 @@ Global
 		{BDA45825-200C-4E87-8D5B-4BDAC39A7074}.Release|x86.Build.0 = Release|Any CPU
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|Any CPU.Build.0 = Debug|x64
-		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|x64.ActiveCfg = Debug|x64
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|x64.Build.0 = Debug|x64
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Debug|x64.Deploy.0 = Debug|x64
@@ -665,7 +664,6 @@ Global
 		{2045DA5E-E7E0-4CF9-B6F7-664CAC7AFAFE}.Release|x86.Deploy.0 = Release|Any CPU
 		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|Any CPU.Build.0 = Debug|x64
-		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|x64.ActiveCfg = Debug|x64
 		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|x64.Build.0 = Debug|x64
 		{A5A8D79A-DBB8-4ADA-95DD-B6EB802F962F}.Debug|x64.Deploy.0 = Debug|x64
@@ -695,7 +693,6 @@ Global
 		{ADA53791-5167-4DDD-802C-22AD80CA889B}.Release|x86.Build.0 = Release|Any CPU
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|Any CPU.Build.0 = Debug|x64
-		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|Any CPU.Deploy.0 = Debug|x64
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|x64.ActiveCfg = Debug|x64
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|x64.Build.0 = Debug|x64
 		{7E178B20-F5C9-4872-A6D9-A552A57200B0}.Debug|x64.Deploy.0 = Debug|x64
