@@ -67,9 +67,7 @@ namespace EMS.Services.CalculationEngineService
         {
             get { return generatorCharacteristics; }
             set { generatorCharacteristics = value; }
-        }
-
-        private static Dictionary<long, OptimisationModel> oldOptModelMap;
+        }		
 
         #endregion Fields
 
@@ -94,8 +92,6 @@ namespace EMS.Services.CalculationEngineService
             internalEnergyConsumersCopy = new List<ResourceDescription>(5);
 
             GeneratorCharacteristics = LoadCharacteristics.Load();
-
-            oldOptModelMap = new Dictionary<long, OptimisationModel>();
         }
 
         /// <summary>
@@ -172,7 +168,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 else if (PublisherService.OptimizationType == OptimizationType.Linear)
                 {
-                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction, oldOptModelMap);
+                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
                     totalCost = linearAlgorithm.TotalCostNonRenewable; // ukupna cena linearne optimizacije bez obnovljivih
                     totalCostWithRenewable = linearAlgorithm.TotalCostWithRenewable; //// ukupna cena linearne optimizacije sa obnovljivim
@@ -189,9 +185,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
-                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
-
-                oldOptModelMap = optModelMapOptimizied;
+                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);				
 
                 return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }

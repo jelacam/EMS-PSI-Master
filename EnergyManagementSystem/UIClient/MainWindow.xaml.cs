@@ -40,7 +40,13 @@ namespace UIClient
             //{
             //    CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Could not connect to AlarmsEvents Publisher Service! \n {0}", e.Message);
             //}
+        }
 
+        public void SetActiveDocument(object document)
+        {
+            if (document == null)
+                return;
+            dockingManager.ActiveContent = document;
         }
 		
 	}

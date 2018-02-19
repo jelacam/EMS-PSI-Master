@@ -20,7 +20,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <dock:DockingManager Grid.Row="1"
+        <dock:DockingManager Grid.Row="1" 
+							 Name="dockingManager"
                          DataContext="{Binding DockManagerViewModel}"
                          DocumentsSource="{Binding Documents}"
                          AnchorablesSource="{Binding Anchorables}" 

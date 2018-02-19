@@ -9,6 +9,7 @@ namespace SCADACollectingServiceSelfHost
     using System;
     using EMS.Common;
     using EMS.Services.SCADACollectingService;
+    using System.Threading;
 
     /// <summary>
     /// Class for Main method

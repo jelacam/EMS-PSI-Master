@@ -38,6 +38,7 @@ namespace UIClient.ViewModel
         private ICommand visibilityCheckedCommand;
         private ICommand visibilityUncheckedCommand;
         private ICommand changeAlgorithmCommand;
+        private ICommand goToCommand;
         private OptimizationType selectedOptimizationType = OptimizationType.Linear;
 
         private double sizeValue;
@@ -210,6 +211,8 @@ namespace UIClient.ViewModel
 
         public ICommand ChangeAlgorithmCommand => changeAlgorithmCommand ?? (changeAlgorithmCommand = new RelayCommand(ChangeAlgorithmCommandExecute));
 
+        public ICommand GoToCommand => goToCommand ?? (goToCommand = new RelayCommand<long>(GoToCommandCommandExecute));
+
         #endregion Commands
 
         #region CommandsExecutions
@@ -266,6 +269,22 @@ namespace UIClient.ViewModel
             }
         }
 
+        private void GoToCommandCommandExecute(long gid)
+        {
+            MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            var mainWindVM = mainWindow.DataContext as MainWindowViewModel;
+
+            var historyVm = mainWindVM?.DockManagerViewModel.Documents.FirstOrDefault(x => x is HistoryViewModel) as HistoryViewModel;
+            
+            if (historyVm != null && historyVm.GidToBoolMap.ContainsKey(gid))
+            {
+                mainWindow.SetActiveDocument(historyVm);
+                historyVm.GidToBoolMap[gid] = true;
+                historyVm.SelectedPeriod = Model.PeriodValues.Last_Hour;
+                historyVm.ShowDataCommand.Execute(null);
+                historyVm.OnPropertyChanged("GidToBoolMap");
+            }
+        }
         #endregion CommandsExecutions
 
         private void SubsrcibeToCE()
