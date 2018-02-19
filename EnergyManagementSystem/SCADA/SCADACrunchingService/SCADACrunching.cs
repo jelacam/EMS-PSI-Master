@@ -17,6 +17,7 @@ namespace EMS.Services.SCADACrunchingService
     using System.Xml.Serialization;
     using System.IO;
     using System.Threading;
+    using EMS.ServiceContracts.ServiceFabricProxy;
 
     /// <summary>
     /// SCADACrunching component logic
@@ -376,6 +377,9 @@ namespace EMS.Services.SCADACrunchingService
 
         private List<MeasurementUnit> ParseDataToMeasurementUnit(List<AnalogLocation> analogList, byte[] value, int startAddress, ModelCode type)
         {
+            // Proxy for communication with AlarmsEventsCloudService
+            AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
+
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (AnalogLocation analogLoc in analogList)
             {
@@ -396,15 +400,18 @@ namespace EMS.Services.SCADACrunchingService
                         alarmH.Type = AlarmType.FLATLINE;
                         alarmH.Persistent = PersistentState.Nonpersistent;
                         alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
-                        AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+                        //AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+
+                        alarmsEventsSfProxy.AddAlarm(alarmH);
                     }
 
                     // na signalu vise nema alarma - update state
                     // sa Active na Cleared
                     if (!alarmRaw && !alarmEGU)
                     {
-                        AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
-
+                        //AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
+                        //AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
+                        alarmsEventsSfProxy.UpdateStatus(analogLoc, State.Cleared);
                         //AlarmHelper normalAlarm = new AlarmHelper();
                         //normalAlarm.AckState = AckState.Unacknowledged;
                         //normalAlarm.CurrentState = string.Format("{0}, {1}", State.Cleared, normalAlarm.AckState);
@@ -570,6 +577,7 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns>returns true if alarm exists</returns>
         private bool CheckForRawAlarms(float value, float minRaw, float maxRaw, long gid)
         {
+            AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
             bool retVal = false;
             //float alarmMin = minRaw + (float)Math.Round((20f / 100f) * minRaw);
             //float alarmMax = minRaw - (float)Math.Round((20f / 100f) * minRaw);
@@ -590,7 +598,9 @@ namespace EMS.Services.SCADACrunchingService
                 ah.Type = AlarmType.RAW_MAX;
                 ah.Severity = SeverityLevel.CRITICAL;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                alarmsEventsSfProxy.AddAlarm(ah);
+
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high raw limit on gid: {0:X}", gid);
                 Console.WriteLine("Alarm on high raw limit on gid: {0:X}", gid);
@@ -609,6 +619,7 @@ namespace EMS.Services.SCADACrunchingService
         /// <returns>returns true if alarm exists</returns>
         private bool CheckForEGUAlarms(float value, float minEGU, float maxEGU, long gid)
         {
+            AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
             bool retVal = false;
             float alarmMin = minEGU + (float)Math.Round((20f / 100f) * minEGU);
             float alarmMax = maxEGU - (float)Math.Round((20f / 100f) * maxEGU);
@@ -643,7 +654,9 @@ namespace EMS.Services.SCADACrunchingService
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.HIGH;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                alarmsEventsSfProxy.AddAlarm(ah);
+
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);
@@ -655,7 +668,9 @@ namespace EMS.Services.SCADACrunchingService
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.MAJOR;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
-                AlarmsEventsProxy.Instance.AddAlarm(ah);
+                //AlarmsEventsProxy.Instance.AddAlarm(ah);
+                alarmsEventsSfProxy.AddAlarm(ah);
+
                 retVal = true;
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Alarm on high egu limit on gid: {0:X}", gid);
                 Console.WriteLine("Alarm on high egu limit on gid: {0:X}", gid);

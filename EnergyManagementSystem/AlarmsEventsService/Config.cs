@@ -20,9 +20,7 @@ namespace EMS.Services.AlarmsEventsService
 
         private Config()
         {
-            //connectionString = ConfigurationManager.ConnectionStrings["alarmsEventsconnectionString"].ConnectionString;
-           //connectionString = ConfigurationManager.ConnectionStrings["historyDbConnectionString"].ConnectionString;
-            connectionString = ConfigurationManager.ConnectionStrings["SqlServerHistoryDB"].ConnectionString;
+            connectionString = ConfigurationManager.ConnectionStrings["Azure_History_DB"].ConnectionString;
         }
 
         #region Static members

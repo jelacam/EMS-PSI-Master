@@ -4,7 +4,11 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CloudCommon;
+using EMS.ServiceContracts;
+using EMS.Services.AlarmsEventsService;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace AlarmsEventsCloudService
@@ -14,9 +18,13 @@ namespace AlarmsEventsCloudService
     /// </summary>
     internal sealed class AlarmsEventsCloudService : StatelessService
     {
+        private AlarmsEvents aEvents;
+
         public AlarmsEventsCloudService(StatelessServiceContext context)
             : base(context)
-        { }
+        {
+            aEvents = new AlarmsEvents();
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -24,7 +32,11 @@ namespace AlarmsEventsCloudService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
+            return new List<ServiceInstanceListener>
+            {
+                new ServiceInstanceListener(context => this.CreateAlarmEventsListener(context), "AlarmsEventsEndpoint"),
+                new ServiceInstanceListener(context => this.CreateAlarmsEventsIntegrityListener(context), "AlarmsEventsIntegrityEndpoint")
+            };
         }
 
         /// <summary>
@@ -33,7 +45,7 @@ namespace AlarmsEventsCloudService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following sample code with your own logic 
+            // TODO: Replace the following sample code with your own logic
             //       or remove this RunAsync override if it's not needed in your service.
 
             long iterations = 0;
@@ -42,10 +54,48 @@ namespace AlarmsEventsCloudService
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
+                //ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
 
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }
+
+        #region Listeners
+
+        /// <summary>
+        /// Listener for adding new Alarms for SCADA KR
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateAlarmEventsListener(StatelessServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<IAlarmsEventsContract>(
+                listenerBinding: Binding.CreateCustomNetTcp(),
+                endpointResourceName: "AlarmsEventsEndpoint",
+                serviceContext: context,
+                wcfServiceObject: aEvents
+            );
+
+            return listener;
+        }
+
+        /// <summary>
+        /// Listener for getting all alarms from AES (UI initiate this call)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateAlarmsEventsIntegrityListener(StatelessServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<IAesIntegirtyContract>(
+                listenerBinding: Binding.CreateCustomNetTcp(),
+                endpointResourceName: "AlarmsEventsIntegrityEndpoint",
+                serviceContext: context,
+                wcfServiceObject: aEvents
+            );
+
+            return listener;
+        }
+
+        #endregion Listeners
     }
 }

@@ -34,8 +34,8 @@ namespace EMS.Services.CalculationEngineService
         {
             this.ce = new CalculationEngine();
             CrToCe.CalculationEngine = this.ce;
-			CeToUI.CalculationEngine = this.ce;
-			this.InitializeHosts();
+            CeToUI.CalculationEngine = this.ce;
+            this.InitializeHosts();
         }
 
         /// <summary>
@@ -82,8 +82,8 @@ namespace EMS.Services.CalculationEngineService
         {
             this.hosts = new List<ServiceHost>();
             this.hosts.Add(new ServiceHost(typeof(CrToCe)));
-			this.hosts.Add(new ServiceHost(typeof(CeToUI)));
-            this.hosts.Add(new ServiceHost(typeof(PublisherService)));
+            //this.hosts.Add(new ServiceHost(typeof(CeToUI)));
+            //this.hosts.Add(new ServiceHost(typeof(PublisherService)));
             this.hosts.Add(new ServiceHost(typeof(CalculationEngine)));
         }
 
@@ -125,8 +125,8 @@ namespace EMS.Services.CalculationEngineService
             message = "The Calculation Engine Service is started.";
             Console.WriteLine("\n{0}", message);
             CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-        }   
-        
+        }
+
         /// <summary>
         /// Integrity update for Calculation Engine service
         /// </summary>
@@ -134,6 +134,6 @@ namespace EMS.Services.CalculationEngineService
         public bool IntegrityUpdate()
         {
             return ce.InitiateIntegrityUpdate();
-        }    
+        }
     }
 }

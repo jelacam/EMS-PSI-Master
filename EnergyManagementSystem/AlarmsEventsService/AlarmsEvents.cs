@@ -19,7 +19,7 @@ namespace EMS.Services.AlarmsEventsService
     /// <summary>
     /// Class for ICalculationEngineContract implementation
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class AlarmsEvents : IAlarmsEventsContract, IAesIntegirtyContract
     {
         /// <summary>
@@ -129,8 +129,9 @@ namespace EMS.Services.AlarmsEventsService
                     }
                 }
 
-                this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                 //Console.WriteLine("AlarmsEvents: AddAlarm method");
+                AesPublishProxy.Instance.PublishAlarmsEvents(alarm, publishingStatus);
                 string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             }
@@ -171,7 +172,8 @@ namespace EMS.Services.AlarmsEventsService
                     try
                     {
                         //this.Publisher.PublishAlarmsEvents(normalAlarm, PublishingStatus.INSERT);
-                        this.Publisher.PublishStateChange(alarm);
+                        //this.Publisher.PublishStateChange(alarm);
+                        AesPublishProxy.Instance.PublishStateChange(alarm);
                         string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
                         CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                     }

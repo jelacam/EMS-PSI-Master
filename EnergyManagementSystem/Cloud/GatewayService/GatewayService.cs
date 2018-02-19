@@ -132,8 +132,6 @@ namespace GatewayService
 
         #endregion AlarmsEventsService listeners
 
-
-
         #region CalculationEngineService listener
 
         /// <summary>
@@ -190,7 +188,6 @@ namespace GatewayService
             return listener;
         }
 
-
         #endregion CalculationEngineService listener
 
         #endregion Listeners
@@ -230,12 +227,12 @@ namespace GatewayService
 
                 using (var tx = this.StateManager.CreateTransaction())
                 {
-                    var result = await myDictionary.TryGetValueAsync(tx, "Counter");
+                    //var result = await myDictionary.TryGetValueAsync(tx, "Counter");
 
-                    ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
-                        result.HasValue ? result.Value.ToString() : "Value does not exist.");
+                    //ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
+                    //    result.HasValue ? result.Value.ToString() : "Value does not exist.");
 
-                    await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
+                    //await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
 
                     // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are
                     // discarded, and nothing is saved to the secondary replicas.
@@ -298,15 +295,17 @@ namespace GatewayService
             callbackCE = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
             clientsToPublishCE.Remove(callbackCE);
         }
+
         bool ICeSubscribeContract.ChooseOptimization(OptimizationType optimizationType)
         {
             OptimizationType = optimizationType;
             return true;
         }
 
-        #endregion
+        #endregion ICeSubscribebContract
 
         #region ICePublishContract
+
         public void PublishOptimizationResults(List<MeasurementUI> result)
         {
             OptimizationEventArgs e = new OptimizationEventArgs
@@ -330,7 +329,7 @@ namespace GatewayService
             }
         }
 
-        #endregion
+        #endregion ICePublishContract
 
         #region IAesSubscribeContract implementation
 

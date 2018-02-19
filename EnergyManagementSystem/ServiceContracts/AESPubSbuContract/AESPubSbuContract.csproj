@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAesPublishContract.cs" />
+    <Compile Include="AesPublishProxy.cs" />
     <Compile Include="IAesSubscribeContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
