@@ -8,8 +8,19 @@
 	<SolidColorBrush x:Key="DarkBrush" Color="#FF2D2D30"/>
 	<SolidColorBrush x:Key="LigthBrush" Color="#FF6E6E6E"/>
 	<SolidColorBrush x:Key="BlueMouseOver" Color="#1C97EA"/>
-	
-	<converters:TestConverter x:Key="TestConv"/>
+    <SolidColorBrush x:Key="TextBrush" Color="White" />
+
+    <Color x:Key="AccentColor" >#FF3DCD58</Color>
+
+    <SolidColorBrush x:Key="DefaultedBorderBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="HoverBackgroundBrush"  Color="{StaticResource AccentColor}" Opacity="0.4"/>
+    <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource AccentColor}" Opacity="0.2"/>
+    <SolidColorBrush x:Key="HoverBorderBrush" Color="{StaticResource AccentColor}" Opacity="0.4"/>
+    <SolidColorBrush x:Key="PressedBackgroundBrush" Color="{StaticResource AccentColor}" Opacity="0.8"/>
+    <SolidColorBrush x:Key="PressedBorderBrush" Color="{StaticResource AccentColor}" Opacity="0.1"/>
+    <SolidColorBrush x:Key="SelectBrush" Color="{StaticResource AccentColor}" Opacity="0.6"/>
+    
+    <converters:TestConverter x:Key="TestConv"/>
 	
 	<Style TargetType="Window" x:Key="BasicWindowStyle">
 		<Setter Property="Background" Value="{StaticResource AppBackground}" ></Setter>
@@ -166,4 +177,96 @@
 		<Setter Property="Background" Value="Transparent"></Setter>
 		<Setter Property="Foreground" Value="White"></Setter>
 	</Style>
+
+    <Style x:Key="ButtonBase" TargetType="{x:Type Button}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="0">
+                            <ContentPresenter Name="Content"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <Border x:Name="DefaultedBorder" BorderBrush="{StaticResource DefaultedBorderBrush}" Margin="0" BorderThickness="2" CornerRadius="0" Opacity="0"/>
+                        <Border Name="HoverBorder"
+                                Background="{StaticResource HoverBrush}"
+                                BorderBrush="{StaticResource HoverBorderBrush}"
+                                BorderThickness="1" CornerRadius="0" 
+                                Opacity="1" Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocused" Value="true">
+                            <Setter TargetName="DefaultedBorder" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter TargetName="DefaultedBorder" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="HoverBorder" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBackgroundBrush}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                            <Setter TargetName="HoverBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="DefaultedBorder" Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ButtonIcon" BasedOn="{StaticResource ButtonBase}" TargetType="{x:Type Button}">
+        <Setter Property="MinHeight" Value="22" />
+        <Setter Property="MinWidth" Value="22" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="0">
+                        <Image x:Name="Content" Width="16" Height="16" Source="{TemplateBinding Content}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HoverBorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBackgroundBrush}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
 </ResourceDictionary>
