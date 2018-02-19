@@ -10,6 +10,7 @@ using EMS.Common;
 using EMS.CommonMeasurement;
 using EMS.ServiceContracts;
 using GatewayService.PubSub;
+using GatewayService.Transaction;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
@@ -42,7 +43,8 @@ namespace GatewayService
                 new ServiceReplicaListener(context => this.CreateAESPublishListener(context), "AESPublishEndpoint"),
                 new ServiceReplicaListener(context => this.CreateAESIntegirityUpdateListener(context), "AESIntegrityUpdate"),
                 new ServiceReplicaListener(context => this.CreateCESubscribeListener(context), "CESubscribeEndpoint"),
-                new ServiceReplicaListener(context => this.CreateCEPublishListener(context), "CEPublishEndpoint")
+                new ServiceReplicaListener(context => this.CreateCEPublishListener(context), "CEPublishEndpoint"),
+                new ServiceReplicaListener(context => this.CreateTransactionManagerImporterListener(context), "TransactionManagerImporterEndpoint")
             };
         }
 
@@ -133,7 +135,36 @@ namespace GatewayService
 
         #endregion AlarmsEventsService listeners
 
-        #region CalculationEngineService listener
+        #region TransactionManagerService listener
+        /// <summary>
+        /// Gateway lsitener for Transaction Manager Service
+        /// Address: "net.tcp://host:50000/TransactionManager/Importer"
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateTransactionManagerImporterListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("TransactionManagerImporterEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/TransactionManager/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<IImporterContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           address: new EndpointAddress(uri),
+                           serviceContext: context,
+                           wcfServiceObject: new TMModelUpdate()
+            );
+
+            return listener;
+        }
+
+        #endregion
+
+        #region CalculationEngineService listeners
 
         /// <summary>
         ///  Gateway listener for Calculation Engine Service

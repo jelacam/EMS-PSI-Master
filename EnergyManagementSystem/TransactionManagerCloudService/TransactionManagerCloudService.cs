@@ -4,7 +4,11 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CloudCommon;
+using EMS.ServiceContracts;
+using EMS.Services.TransactionManagerService;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace TransactionManagerCloudService
@@ -24,7 +28,21 @@ namespace TransactionManagerCloudService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
+            return new List<ServiceInstanceListener>
+            {
+                new ServiceInstanceListener(context => this.CreateTransactionManagerListener(context), "TransactionManagerEndpoint")
+            };
+        }
+
+        private ICommunicationListener CreateTransactionManagerListener(StatelessServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<IImporterContract>(
+                    listenerBinding: Binding.CreateCustomNetTcp(),
+                    endpointResourceName: "TransactionManagerEndpoint",
+                    serviceContext: context,
+                    wcfServiceObject: new TransactionManager()
+                );
+            return listener;
         }
 
         /// <summary>

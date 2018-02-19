@@ -33,6 +33,7 @@
       <Endpoint Name="AESIntegrityUpdate" UriScheme="net.tcp" Port="20023" PathSuffix="IntegrityUpdate" />
       <Endpoint Name="CESubscribeEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="SubscribeService" />
       <Endpoint Name="CEPublishEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="PublishService" />
+      <Endpoint Name="TransactionManagerImporterEndpoint" UriScheme="net.tcp" Port="50000" PathSuffix="Importer"/>
 
       <!-- This endpoint is used by the replicator for replicating the state of your service.
            This endpoint is configured through a ReplicatorSettings config section in the Settings.xml

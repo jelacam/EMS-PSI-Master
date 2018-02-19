@@ -102,6 +102,7 @@
     <Compile Include="PubSub\AlarmUpdateEventArgs.cs" />
     <Compile Include="PubSub\OptimizationEventArgs.cs" />
     <Compile Include="ServiceEventSource.cs" />
+    <Compile Include="Transaction\TMModelUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PackageRoot\Config\Settings.xml" />
@@ -131,6 +132,10 @@
     <ProjectReference Include="..\..\ServiceContracts\CEPubSubContract\CEPubSubContract.csproj">
       <Project>{001a5767-0640-4e4e-8ad8-22aebfd8c069}</Project>
       <Name>CEPubSubContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
+      <Name>TransactionContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\CloudCommon\CloudCommon.csproj">
       <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>

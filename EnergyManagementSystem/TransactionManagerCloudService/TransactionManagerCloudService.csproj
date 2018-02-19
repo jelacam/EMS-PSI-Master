@@ -105,6 +105,20 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cloud\CloudCommon\CloudCommon.csproj">
+      <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>
+      <Name>CloudCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6F89B2AE-4EED-479E-AD58-69B8A6865820}</Project>
+      <Name>TransactionContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Transaction\TransactionManagerService\TransactionManagerService.csproj">
+      <Project>{B58C4EBA-AE0A-40E9-85EE-A3ACCA49D7B8}</Project>
+      <Name>TransactionManagerService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
