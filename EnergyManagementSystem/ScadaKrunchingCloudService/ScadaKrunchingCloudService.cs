@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using EMS.Services.SCADACrunchingService;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
+using EMS.ServiceContracts;
 
 namespace ScadaKrunchingCloudService
 {
@@ -14,9 +16,13 @@ namespace ScadaKrunchingCloudService
     /// </summary>
     internal sealed class ScadaKrunchingCloudService : StatelessService
     {
-        public ScadaKrunchingCloudService(StatelessServiceContext context)
+		private SCADACrunching scadaCR;
+
+		public ScadaKrunchingCloudService(StatelessServiceContext context)
             : base(context)
-        { }
+        {
+			scadaCR = new SCADACrunching();
+		}
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -24,14 +30,42 @@ namespace ScadaKrunchingCloudService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
-        }
+			return new List<ServiceInstanceListener>
+			{
+				new ServiceInstanceListener(context => this.CreateScadaCRListener(context), "ScadaCREndpoint"),
+				new ServiceInstanceListener(context => this.CreateTransactionCRListener(context), "TransactionCREndpoint")
+			};
+		}
 
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+		private ICommunicationListener CreateScadaCRListener(StatelessServiceContext context)
+		{
+			var listener = new WcfCommunicationListener<IScadaCRContract>(
+				listenerBinding: CloudCommon.Binding.CreateCustomNetTcp(),
+				endpointResourceName: "ScadaCREndpoint",
+				serviceContext: context,
+				wcfServiceObject: scadaCR
+			);
+
+			return listener;
+		}
+
+		private ICommunicationListener CreateTransactionCRListener(StatelessServiceContext context)
+		{
+			var listener = new WcfCommunicationListener<ITransactionContract>(
+				listenerBinding: CloudCommon.Binding.CreateCustomNetTcp(),
+				endpointResourceName: "TransactionCREndpoint",
+				serviceContext: context,
+				wcfServiceObject: scadaCR
+			);
+
+			return listener;
+		}
+
+		/// <summary>
+		/// This is the main entry point for your service instance.
+		/// </summary>
+		/// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
+		protected override async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following sample code with your own logic 
             //       or remove this RunAsync override if it's not needed in your service.

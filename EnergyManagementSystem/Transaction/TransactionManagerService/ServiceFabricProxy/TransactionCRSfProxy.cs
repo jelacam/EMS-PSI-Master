@@ -29,7 +29,7 @@ namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
             proxy = new ServicePartitionClient<WcfCommunicationClient<ITransactionContract>>(
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/ScadaKrunchingCloudService"),
-                    listenerName: "*");
+                    listenerName: "TransactionCREndpoint");
         }
 
         public bool Commit(Delta delta)

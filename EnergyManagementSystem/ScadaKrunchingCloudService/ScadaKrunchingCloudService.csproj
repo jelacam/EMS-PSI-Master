@@ -105,6 +105,24 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cloud\CloudCommon\CloudCommon.csproj">
+      <Project>{57d99354-6c6d-40ce-ba00-ac8610a435bf}</Project>
+      <Name>CloudCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SCADA\SCADACrunchingService\SCADACrunchingService.csproj">
+      <Project>{9328821b-a2d6-4735-9ca3-ec63d9b36e2d}</Project>
+      <Name>SCADACrunchingService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\ScadaCRContract\ScadaCRContract.csproj">
+      <Project>{fedd8d01-0f4e-421f-9bc8-15e6f4bd9af7}</Project>
+      <Name>ScadaCRContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
+      <Name>TransactionContract</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

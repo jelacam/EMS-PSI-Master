@@ -81,12 +81,12 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <!--<Service Name="ScadaKrunchingCloudService" ServicePackageActivationMode="ExclusiveProcess">
+    <Service Name="ScadaKrunchingCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="ScadaKrunchingCloudServiceType" InstanceCount="[ScadaKrunchingCloudService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <Service Name="ScadaCollectingCloudService" ServicePackageActivationMode="ExclusiveProcess">
+    <!--<Service Name="ScadaCollectingCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="ScadaCollectingCloudServiceType" InstanceCount="[ScadaCollectingCloudService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>

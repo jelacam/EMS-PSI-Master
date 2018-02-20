@@ -6,20 +6,21 @@
 
 namespace EMS.Services.SCADACollectingService
 {
-    using Common;
-    using ServiceContracts;
-    using SmoothModbus;
-    using System;
-    using System.Diagnostics;
-    using System.Net.Sockets;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows;
+	using Common;
+	using ServiceContracts;
+	using ServiceContracts.ServiceFabricProxy;
+	using SmoothModbus;
+	using System;
+	using System.Diagnostics;
+	using System.Net.Sockets;
+	using System.Threading;
+	using System.Threading.Tasks;
+	using System.Windows;
 
-    /// <summary>
-    /// SCADACollecting component logic
-    /// </summary>
-    public class SCADACollecting : IScadaCLContract
+	/// <summary>
+	/// SCADACollecting component logic
+	/// </summary>
+	public class SCADACollecting : IScadaCLContract
     {
         /// <summary>
         /// Instance of ModbusClient
@@ -86,7 +87,9 @@ namespace EMS.Services.SCADACollectingService
             bool isSuccess = false;
             try
             {
-                isSuccess = ScadaCRProxy.Instance.SendValues(values);
+				ScadaCRsfProxy scadaCRsfProxy = new ScadaCRsfProxy();
+				isSuccess = scadaCRsfProxy.SendValues(values);
+				//isSuccess = ScadaCRProxy.Instance.SendValues(values);
             }
             catch (Exception ex)
             {
