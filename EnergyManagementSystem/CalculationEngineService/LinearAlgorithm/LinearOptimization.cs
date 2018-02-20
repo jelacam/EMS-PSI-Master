@@ -219,7 +219,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
 						if (renewable) //sa vetrogeneratorima
 						{
-							//Console.Write("{0}", report);
+							Console.Write("{0}", report);
 
 							string name = string.Empty;
 							foreach (var item in model.Decisions)

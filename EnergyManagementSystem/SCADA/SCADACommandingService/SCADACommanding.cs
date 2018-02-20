@@ -77,7 +77,7 @@ namespace EMS.Services.SCADACommandingService
         {
             try
             {
-                modbusClient = new ModbusClient("localhost", 502);
+				modbusClient = new ModbusClient("localhost", 502);
                 modbusClient.Connect();
             }
             catch (SocketException)

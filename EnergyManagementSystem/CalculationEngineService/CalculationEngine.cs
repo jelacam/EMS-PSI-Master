@@ -6,28 +6,29 @@
 
 namespace EMS.Services.CalculationEngineService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.ServiceModel;
-    using CommonMeasurement;
-    using EMS.Common;
-    using EMS.ServiceContracts;
-    using PubSub;
-    using Microsoft.SolverFoundation.Services;
-    using NetworkModelService.DataModel.Wires;
-    using NetworkModelService.DataModel.Production;
-    using GeneticAlgorithm;
-    using Helpers;
-    using LinearAlgorithm;
-    using System.Threading;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Data;
+	using System.Data.SqlClient;
+	using System.ServiceModel;
+	using CommonMeasurement;
+	using EMS.Common;
+	using EMS.ServiceContracts;
+	using PubSub;
+	using Microsoft.SolverFoundation.Services;
+	using NetworkModelService.DataModel.Wires;
+	using NetworkModelService.DataModel.Production;
+	using GeneticAlgorithm;
+	using Helpers;
+	using LinearAlgorithm;
+	using System.Threading;
+	using System.Linq;
+	using ServiceContracts.ServiceFabricProxy;
 
-    /// <summary>
-    /// Class for CalculationEngine
-    /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	/// <summary>
+	/// Class for CalculationEngine
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -135,7 +136,9 @@ namespace EMS.Services.CalculationEngineService
 
                 try
                 {
-                    if (ScadaCMDProxy.Instance.SendDataToSimulator(measurementsOptimized))
+					ScadaCMDsfProxy scadaCMDsfProxy = new ScadaCMDsfProxy();
+					if(scadaCMDsfProxy.SendDataToSimulator(measurementsOptimized))
+                    //if (ScadaCMDProxy.Instance.SendDataToSimulator(measurementsOptimized))						
                     {
                         CommonTrace.WriteTrace(CommonTrace.TraceInfo, "CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimized.Count);
                         Console.WriteLine("CE sent {0} optimized MeasurementUnit(s) to SCADACommanding.", measurementsOptimized.Count);
