@@ -4,6 +4,7 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EMS.Services.SCADACollectingService;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
@@ -14,9 +15,13 @@ namespace ScadaCollectingCloudService
     /// </summary>
     internal sealed class ScadaCollectingCloudService : StatelessService
     {
+        private SCADACollecting scadaCollecting;
+
         public ScadaCollectingCloudService(StatelessServiceContext context)
             : base(context)
-        { }
+        {
+            scadaCollecting = new SCADACollecting();
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -33,19 +38,21 @@ namespace ScadaCollectingCloudService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following sample code with your own logic 
+            // TODO: Replace the following sample code with your own logic
             //       or remove this RunAsync override if it's not needed in your service.
 
-            long iterations = 0;
+            scadaCollecting.StartCollectingData();
 
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            //long iterations = 0;
 
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
+            //while (true)
+            //{
+            //    cancellationToken.ThrowIfCancellationRequested();
 
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
+            //    ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
+
+            //    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            //}
         }
     }
 }

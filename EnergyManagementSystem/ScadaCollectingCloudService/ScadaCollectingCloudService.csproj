@@ -105,6 +105,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SCADA\SCADACollectingService\SCADACollectingService.csproj">
+      <Project>{2819300E-0523-4CF8-B071-62D604AF02D6}</Project>
+      <Name>SCADACollectingService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
