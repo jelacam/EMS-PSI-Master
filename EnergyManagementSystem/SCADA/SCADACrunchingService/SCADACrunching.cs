@@ -323,7 +323,6 @@ namespace EMS.Services.SCADACrunchingService
         {
             string function = Enum.GetName(typeof(FunctionCode), value[0]);
             Console.WriteLine("Function executed: {0}", function);
-
             int arrayLength = value[1];
             int windByteLength = 4;
             int sunByteLength = 4;
@@ -346,7 +345,7 @@ namespace EMS.Services.SCADACrunchingService
             bool isSuccess = false;
             try
             {
-                isSuccess = CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
+                isSuccess = SendForOptimization(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
             }
             catch (Exception ex)
             {
@@ -361,6 +360,14 @@ namespace EMS.Services.SCADACrunchingService
             }
 
             return isSuccess;
+        }
+
+        private static bool SendForOptimization(List<MeasurementUnit> enConsumMeasUnits, List<MeasurementUnit> generatorMeasUnits, float windSpeed, float sunlight)
+        {
+            CalculationEngineSfProxy calculationEngineSfProxy = new CalculationEngineSfProxy();
+            return calculationEngineSfProxy.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
+
+            //return CalculationEngineProxy.Instance.OptimisationAlgorithm(enConsumMeasUnits, generatorMeasUnits, windSpeed, sunlight);
         }
 
         private float GetWindSpeed(byte[] windData, int byteLength)

@@ -105,6 +105,20 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CalculationEngineService\CalculationEngineService.csproj">
+      <Project>{AE9BD552-B3BA-47D2-A7C2-3E6AA289662D}</Project>
+      <Name>CalculationEngineService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cloud\CloudCommon\CloudCommon.csproj">
+      <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>
+      <Name>CloudCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
+      <Project>{D322124E-3C27-45ED-86BB-84DC5621845A}</Project>
+      <Name>CalculationEngineContract</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

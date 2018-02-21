@@ -68,7 +68,7 @@ namespace EMS.Services.CalculationEngineService
         {
             get { return generatorCharacteristics; }
             set { generatorCharacteristics = value; }
-        }		
+        }
 
         #endregion Fields
 
@@ -188,7 +188,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
-                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);				
+                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
 
                 return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
@@ -333,7 +333,15 @@ namespace EMS.Services.CalculationEngineService
                 measUI.OptimizationType = (int)meas.OptimizationType;
                 measListUI.Add(measUI);
             }
-            publisher.PublishOptimizationResults(measListUI);
+            PublishToUI(measListUI);
+        }
+
+        private void PublishToUI(List<MeasurementUI> measListUI)
+        {
+            CePublishProxy proxy = new CePublishProxy();
+            proxy.PublishOptimizationResults(measListUI);
+
+            ///publisher.PublishOptimizationResults(measListUI);
         }
 
         private void PublishConsumersToUI(List<MeasurementUnit> measurementsFromConsumers)
@@ -347,7 +355,7 @@ namespace EMS.Services.CalculationEngineService
                 measUI.TimeStamp = meas.TimeStamp;
                 measUIList.Add(measUI);
             }
-            publisher.PublishOptimizationResults(measUIList);
+            PublishToUI(measUIList);
         }
 
         #region Database methods
