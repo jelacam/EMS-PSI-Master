@@ -67,7 +67,7 @@ namespace EMS.Services.CalculationEngineService
         {
             get { return generatorCharacteristics; }
             set { generatorCharacteristics = value; }
-        }		
+        }
 
         #endregion Fields
 
@@ -185,7 +185,7 @@ namespace EMS.Services.CalculationEngineService
                 }
                 Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
                 Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
-                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);				
+                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
 
                 return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
