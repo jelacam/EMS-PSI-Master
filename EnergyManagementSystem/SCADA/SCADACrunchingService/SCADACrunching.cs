@@ -463,14 +463,6 @@ namespace EMS.Services.SCADACrunchingService
         }
 
         /// <summary>
-        /// Test method
-        /// </summary>
-        public void Test()
-        {
-            Console.WriteLine("SCADA Crunching: Test method");
-        }
-
-        /// <summary>
         /// Method implements integrity update logic for scada cr component
         /// </summary>
         /// <returns></returns>

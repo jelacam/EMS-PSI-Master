@@ -69,14 +69,6 @@ namespace EMS.ServiceContracts
         }
 
         /// <summary>
-        /// Test method
-        /// </summary>
-        public void Test()
-        {
-            proxy.Test();
-        }
-
-        /// <summary>
         /// SendValues method implementation
         /// </summary>
         /// <param name="value">values to send</param>

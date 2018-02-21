@@ -12,9 +12,6 @@ namespace EMS.ServiceContracts
     public interface IScadaCMDContract
     {
         [OperationContract]
-        void Test();
-
-        [OperationContract]
         bool SendDataToSimulator(List<MeasurementUnit> measurements);
     }
 }

@@ -29,14 +29,7 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
 
 		public bool SendDataToSimulator(List<MeasurementUnit> measurements)
 		{
-			//throw new NotImplementedException();
 			return proxy.InvokeWithRetry(x => x.Channel.SendDataToSimulator(measurements));
-		}
-
-		public void Test()
-		{
-			//throw new NotImplementedException();
-			proxy.InvokeWithRetry(x => x.Channel.Test());
 		}
 	}
 }

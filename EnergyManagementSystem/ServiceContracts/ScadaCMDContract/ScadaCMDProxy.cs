@@ -57,10 +57,5 @@ namespace EMS.ServiceContracts
         {
             return proxy.SendDataToSimulator(measurements);
         }
-
-        public void Test()
-        {
-            proxy.Test();
-        }
     }
 }

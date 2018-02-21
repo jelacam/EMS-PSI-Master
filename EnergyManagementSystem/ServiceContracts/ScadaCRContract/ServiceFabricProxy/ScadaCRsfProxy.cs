@@ -25,11 +25,6 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
 					listenerName: "ScadaCREndpoint");
 		}
 
-		public void Test()
-		{
-			proxy.InvokeWithRetry(x => x.Channel.Test());
-		}
-
 		public bool SendValues(byte[] value)
 		{
 			return proxy.InvokeWithRetry(x => x.Channel.SendValues(value));

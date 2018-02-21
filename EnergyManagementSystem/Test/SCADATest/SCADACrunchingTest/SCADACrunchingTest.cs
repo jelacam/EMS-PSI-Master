@@ -80,15 +80,5 @@ namespace SCADACrunchingServiceTest
 			this.resultT = this.scadaCR.SendValues(val);
 			Assert.IsTrue(this.resultT);
 		}
-
-		/// <summary>
-		/// Unit test for SCADACrunching Test method
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "SCADACrunchingTestMethod")]
-		public void TestMethod()
-		{
-			this.scadaCR.Test();
-		}
 	}
 }

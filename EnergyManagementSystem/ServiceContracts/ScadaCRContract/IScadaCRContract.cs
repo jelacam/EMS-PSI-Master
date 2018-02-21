@@ -15,12 +15,6 @@ namespace EMS.ServiceContracts
     public interface IScadaCRContract
     {
         /// <summary>
-        /// Test method
-        /// </summary>
-        [OperationContract]
-        void Test();
-
-        /// <summary>
         /// SendValues method implementation
         /// </summary>
         /// <param name="value">values to send</param>
