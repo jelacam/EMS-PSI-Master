@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
+using EMS.ServiceContracts;
+using CloudCommon;
+using EMS.Services.CalculationEngineService;
 
 namespace CalculationEngineCloudService
 {
@@ -15,9 +19,17 @@ namespace CalculationEngineCloudService
     /// </summary>
     internal sealed class CalculationEngineCloudService : StatefulService
     {
+        private CrToCe crToCe;
+        private CeToUI ceToUI;
+
         public CalculationEngineCloudService(StatefulServiceContext context)
             : base(context)
-        { }
+        {
+            CalculationEngine ce = new CalculationEngine();
+            crToCe = new CrToCe();
+            ceToUI = new CeToUI();
+            CrToCe.CalculationEngine = ce;
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
@@ -28,7 +40,34 @@ namespace CalculationEngineCloudService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            return new ServiceReplicaListener[0];
+            return new List<ServiceReplicaListener>
+            {
+                new ServiceReplicaListener(context => this.CreateCalculationEngineListener(context), "CalculationEngineEndpoint"),
+              //  new ServiceReplicaListener(context => this.CreateCalculationEngineUIListener(context), "CalculationEngineUIEndpoint"),
+            };
+        }
+
+        private ICommunicationListener CreateCalculationEngineListener(StatefulServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<ICalculationEngineContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           endpointResourceName: "CalculationEngineEndpoint",
+                           serviceContext: context,
+                           wcfServiceObject: crToCe
+            );
+
+            return listener;
+        }
+
+        private ICommunicationListener CreateCalculationEngineUIListener(StatefulServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<ICalculationEngineUIContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           endpointResourceName: "CalculationEngineUIEndpoint",
+                           serviceContext: context,
+                           wcfServiceObject: ceToUI
+            );
+            return listener;
         }
 
         /// <summary>

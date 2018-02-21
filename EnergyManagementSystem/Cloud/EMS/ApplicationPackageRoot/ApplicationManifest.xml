@@ -91,11 +91,12 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
+    -->
     <Service Name="CalculationEngineCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="CalculationEngineCloudServiceType" TargetReplicaSetSize="[CalculationEngineCloudService_TargetReplicaSetSize]" MinReplicaSetSize="[CalculationEngineCloudService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[CalculationEngineCloudService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
-    </Service>-->
+    </Service>
     <Service Name="GatewayService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="GatewayServiceType" TargetReplicaSetSize="[GatewayService_TargetReplicaSetSize]" MinReplicaSetSize="[GatewayService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[GatewayService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />

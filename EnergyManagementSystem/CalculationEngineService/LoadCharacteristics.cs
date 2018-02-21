@@ -15,7 +15,12 @@ namespace EMS.Services.CalculationEngineService
         {
             string message = string.Empty;
             XmlSerializer serializer = new XmlSerializer(typeof(SynchronousMachineCurveModels));
-            StreamReader reader = new StreamReader("../../../../Resources/SynchronousMachinesCurves.xml");
+
+            //cloud
+            StreamReader reader = new StreamReader("../Resources/SynchronousMachinesCurves.xml");
+
+            //regular
+            //StreamReader reader = new StreamReader("../../../../Resources/SynchronousMachinesCurves.xml");
             var value = serializer.Deserialize(reader);
 
             SynchronousMachineCurveModels curveModel = new SynchronousMachineCurveModels();
