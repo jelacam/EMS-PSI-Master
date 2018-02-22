@@ -55,7 +55,7 @@ namespace CalculationEngineCloudService
                            serviceContext: context,
                            wcfServiceObject: crToCe
             );
-
+            ServiceEventSource.Current.ServiceMessage(context, "Created listener for CalculationEngineEndpoint");
             return listener;
         }
 
@@ -67,6 +67,7 @@ namespace CalculationEngineCloudService
                            serviceContext: context,
                            wcfServiceObject: ceToUI
             );
+            ServiceEventSource.Current.ServiceMessage(context, "Created listener for CalculationEngineHistoryDataEndpoint");
             return listener;
         }
 

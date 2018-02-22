@@ -16,21 +16,32 @@ namespace EMS.Services.CalculationEngineService
             string message = string.Empty;
             XmlSerializer serializer = new XmlSerializer(typeof(SynchronousMachineCurveModels));
             StreamReader reader = null;
+            var s = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-            var directories = Directory.GetDirectories("../");
-
-            foreach (var folder in directories)
+            try
             {
-                try
-                {
-                    //cloud
-                    reader = new StreamReader(folder + "/SynchronousMachinesCurves.xml");
-                    break;
-                }
-                catch (Exception)
-                {
-                }
+                reader = new StreamReader(s + "/SynchronousMachinesCurves.xml");
             }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Failed to find SynchronousMachinesCurves.xml file. Message: {0}", e.Message);
+                return null;
+            }
+
+            //var directories = Directory.GetDirectories("../");
+            //reader = new StreamReader(s + "/SynchronousMachinesCurves.xml");
+            //foreach (var folder in directories)
+            //{
+            //    try
+            //    {
+            //        //cloud
+            //        reader = new StreamReader(folder + "/SynchronousMachinesCurves.xml");
+            //        break;
+            //    }
+            //    catch (Exception)
+            //    {
+            //    }
+            //}
 
             //cloud
             //StreamReader reader = new StreamReader("../*/SynchronousMachinesCurves.xml");
