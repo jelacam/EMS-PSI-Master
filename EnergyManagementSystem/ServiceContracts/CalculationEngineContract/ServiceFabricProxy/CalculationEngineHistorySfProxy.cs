@@ -27,7 +27,7 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/CalculationEngineCloudService"),
                     listenerName: "CalculationEngineUIEndpoint",
-                    partitionKey: new ServicePartitionKey(0));
+                    partitionKey: new ServicePartitionKey("HistoryData"));
         }
 
 
