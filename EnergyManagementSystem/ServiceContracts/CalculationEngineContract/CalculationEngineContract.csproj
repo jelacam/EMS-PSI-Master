@@ -155,6 +155,7 @@
     <Compile Include="ICalculationEngineContract.cs" />
     <Compile Include="ICalculationEngineUIContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceFabricProxy\CalculationEngineHistorySfProxy.cs" />
     <Compile Include="ServiceFabricProxy\CalculationEngineSfProxy.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -16,6 +16,8 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using EMS.ServiceContracts.ServiceFabricProxy;
+using GatewayService.CEHistory;
+using GatewayService.NetworkModel;
 
 namespace GatewayService
 {
@@ -44,7 +46,9 @@ namespace GatewayService
                 new ServiceReplicaListener(context => this.CreateAESIntegirityUpdateListener(context), "AESIntegrityUpdate"),
                 new ServiceReplicaListener(context => this.CreateCESubscribeListener(context), "CESubscribeEndpoint"),
                 new ServiceReplicaListener(context => this.CreateCEPublishListener(context), "CEPublishEndpoint"),
-                new ServiceReplicaListener(context => this.CreateTransactionManagerImporterListener(context), "TransactionManagerImporterEndpoint")
+                new ServiceReplicaListener(context => this.CreateTransactionManagerImporterListener(context), "TransactionManagerImporterEndpoint"),
+                new ServiceReplicaListener(context => this.CreateCalculationEngineHistoryListener(context), "CEHistoryEndpoint"),
+                new ServiceReplicaListener(context => this.CreateNetworkModelGDAListener(context), "NetworkModelGDAEndpoint")
             };
         }
 
@@ -221,6 +225,67 @@ namespace GatewayService
         }
 
         #endregion CalculationEngineService listener
+
+        #region CalculationEngineHistory listener
+
+        /// <summary>
+        /// Gateway listener for Calculation Engine History Data
+        /// Address: "net.tcp://host:22002/CalculationEngine/CeToUI" 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateCalculationEngineHistoryListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("CEHistoryEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/CalculationEngine/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<ICalculationEngineUIContract>(
+                            listenerBinding: Binding.CreateCustomNetTcp(),
+                            address: new EndpointAddress(uri),
+                            serviceContext: context,
+                            wcfServiceObject: new CeHistoryData()
+            );
+
+            return listener;
+        }
+
+        #endregion CalculationEngineHistory listener
+
+        #region NetworkModelGDA listener
+
+        /// <summary>
+        /// Gateway listener for NetworkModel GDA interface
+        /// Address: "net.tcp://localhost:10000/NetworkModelService/GDA/"
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private ICommunicationListener CreateNetworkModelGDAListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("NetworkModelGDAEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/NetworkModelService/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<INetworkModelGDAContract>(
+                            listenerBinding: Binding.CreateCustomNetTcp(),
+                            address: new EndpointAddress(uri),
+                            serviceContext: context,
+                            wcfServiceObject: new NetworkModelGDA()
+            );
+
+            return listener;
+        }
+        #endregion NetworkModelGDA listener
 
         #endregion Listeners
 

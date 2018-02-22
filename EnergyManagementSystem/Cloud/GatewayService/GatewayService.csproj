@@ -94,7 +94,9 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CEHistory\CeHistoryData.cs" />
     <Compile Include="IGatewayServiceContracts.cs" />
+    <Compile Include="NetworkModel\NetworkModelGDA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GatewayService.cs" />
     <Compile Include="Program.cs" />
@@ -129,9 +131,17 @@
       <Project>{DC58AA82-434D-4C1B-936A-0AF3E79CBDC5}</Project>
       <Name>AlarmsEventsContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\CalculationEngineContract\CalculationEngineContract.csproj">
+      <Project>{d322124e-3c27-45ed-86bb-84dc5621845a}</Project>
+      <Name>CalculationEngineContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\CEPubSubContract\CEPubSubContract.csproj">
       <Project>{001a5767-0640-4e4e-8ad8-22aebfd8c069}</Project>
       <Name>CEPubSubContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ServiceContracts\NetworkModelQueryContract\NetworkModelGDAContract.csproj">
+      <Project>{b726fb71-d295-41ee-9644-b2b0b1bc8911}</Project>
+      <Name>NetworkModelGDAContract</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ServiceContracts\TransactionContract\TransactionContract.csproj">
       <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
