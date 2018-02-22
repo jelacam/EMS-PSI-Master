@@ -43,7 +43,7 @@ namespace CalculationEngineCloudService
             return new List<ServiceReplicaListener>
             {
                 new ServiceReplicaListener(context => this.CreateCalculationEngineListener(context), "CalculationEngineEndpoint"),
-              //  new ServiceReplicaListener(context => this.CreateCalculationEngineUIListener(context), "CalculationEngineUIEndpoint"),
+                new ServiceReplicaListener(context => this.CreateCalculationEngineUIListener(context), "CalculationEngineUIEndpoint")
             };
         }
 

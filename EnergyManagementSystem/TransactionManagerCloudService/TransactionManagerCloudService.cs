@@ -60,7 +60,7 @@ namespace TransactionManagerCloudService
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
+                //ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
 
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
