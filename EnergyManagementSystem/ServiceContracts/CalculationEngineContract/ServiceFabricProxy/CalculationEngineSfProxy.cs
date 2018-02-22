@@ -29,7 +29,7 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/CalculationEngineCloudService"),
                     listenerName: "CalculationEngineEndpoint",
-                    partitionKey: new ServicePartitionKey(0));
+                    partitionKey: new ServicePartitionKey("Measurements"));
         }
 
         public bool OptimisationAlgorithm(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
