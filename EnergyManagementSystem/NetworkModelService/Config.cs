@@ -15,11 +15,12 @@ namespace EMS.Services.NetworkModelService
         private Config()
         {
             // connection string to nms sql server db
-            connectionString = ConfigurationManager.ConnectionStrings["SqlServer_NM_DB"].ConnectionString;
+            //connectionString = ConfigurationManager.ConnectionStrings["SqlServer_NM_DB"].ConnectionString;
 
             // azure connection string
             //connectionString = ConfigurationManager.ConnectionStrings["Azure_NMS_DB"].ConnectionString;
-            // connection string to nms db file
+            
+			// connection string to nms db file
             // connectionString = ConfigurationManager.ConnectionStrings["networkModelDbConnectionString"].ConnectionString;
 
             // connection string to file

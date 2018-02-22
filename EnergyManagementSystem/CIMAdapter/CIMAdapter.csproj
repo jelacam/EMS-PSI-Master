@@ -111,6 +111,10 @@
       <Project>{b726fb71-d295-41ee-9644-b2b0b1bc8911}</Project>
       <Name>NetworkModelGDAContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\ScadaCMDContract\ScadaCMDContract.csproj">
+      <Project>{E5EB974E-55E9-4C8C-9DBF-DB4530F4904E}</Project>
+      <Name>ScadaCMDContract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
       <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
       <Name>TransactionContract</Name>

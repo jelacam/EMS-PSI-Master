@@ -29,7 +29,7 @@ namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
             proxy = new ServicePartitionClient<WcfCommunicationClient<ITransactionContract>>(
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/NetworkModelCloudService"),
-                    listenerName: "*");
+                    listenerName: "NMSTranscationEndpoint");
         }
 
         public bool Commit(Delta delta)

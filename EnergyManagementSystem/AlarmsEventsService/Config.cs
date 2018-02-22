@@ -21,12 +21,14 @@ namespace EMS.Services.AlarmsEventsService
         private Config()
         {
             connectionString = ConfigurationManager.ConnectionStrings["Azure_History_DB"].ConnectionString;
-           // connectionString = ConfigurationManager.ConnectionStrings["SqlServerHistoryDB"].ConnectionString;
-        }
+			//connectionString = ConfigurationManager.ConnectionStrings["SqlServerHistoryDB"].ConnectionString;
+			//connectionString = ConfigurationManager.ConnectionStrings["historyDbConnectionString"].ConnectionString;
 
-        #region Static members
+		}
 
-        private static Config instance = null;
+		#region Static members
+
+		private static Config instance = null;
 
         public static Config Instance
         {

@@ -65,13 +65,11 @@
         <SingletonPartition />
       </StatelessService>
     </Service>
-    <!--
     <Service Name="NetworkModelCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="NetworkModelCloudServiceType" InstanceCount="[NetworkModelCloudService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
-    -->
     <Service Name="ScadaCommandingCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="ScadaCommandingCloudServiceType" InstanceCount="[ScadaCommandingCloudService_InstanceCount]">
         <SingletonPartition />

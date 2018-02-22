@@ -6,32 +6,50 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using EMS.Services.NetworkModelService;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
+using EMS.ServiceContracts;
+using CloudCommon;
 
 namespace NetworkModelCloudService
 {
-    /// <summary>
-    /// An instance of this class is created for each service instance by the Service Fabric runtime.
-    /// </summary>
-    internal sealed class NetworkModelCloudService : StatelessService
-    {
-        public NetworkModelCloudService(StatelessServiceContext context)
-            : base(context)
-        { }
+	/// <summary>
+	/// An instance of this class is created for each service instance by the Service Fabric runtime.
+	/// </summary>
+	internal sealed class NetworkModelCloudService : StatelessService
+	{
+		private NetworkModel nm = null;
+		private GenericDataAccess gda = null;
 
-        /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
-        /// </summary>
-        /// <returns>A collection of listeners.</returns>
-        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
-        {
-            return new ServiceInstanceListener[0];
-        }
+		public NetworkModelCloudService(StatelessServiceContext context)
+			: base(context)
+		{
+			gda = new GenericDataAccess();
+			nm = new NetworkModel();
+			GenericDataAccess.NetworkModel = nm;
+			ResourceIterator.NetworkModel = nm;
 
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+		}
+
+		/// <summary>
+		/// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
+		/// </summary>
+		/// <returns>A collection of listeners.</returns>
+		protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+		{
+			return new List<ServiceInstanceListener>
+			{
+				new ServiceInstanceListener(context=>this.CreateNetworkModelGDAListener(context), "NetworkModelGDAEndpoint"),
+				new ServiceInstanceListener(context=>this.CreateNMSTransactionListener(context), "NMSTranscationEndpoint")
+			};
+		}
+
+		
+		/// <summary>
+		/// This is the main entry point for your service instance.
+		/// </summary>
+		/// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
+		protected override async Task RunAsync(CancellationToken cancellationToken)
         {
             // TODO: Replace the following sample code with your own logic 
             //       or remove this RunAsync override if it's not needed in your service.
@@ -42,10 +60,48 @@ namespace NetworkModelCloudService
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
+                //ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
 
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }
-    }
+
+		#region Listeners
+		
+		/// <summary>
+		/// Listener for GDA
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
+		private ICommunicationListener CreateNetworkModelGDAListener(StatelessServiceContext context)
+		{
+			var listener = new WcfCommunicationListener<INetworkModelGDAContract>(
+				listenerBinding: Binding.CreateCustomNetTcp(),
+				endpointResourceName: "NetworkModelGDAEndpoint",
+				serviceContext: context,
+				wcfServiceObject: gda
+			);
+
+			return listener;
+		}
+
+		/// <summary>
+		/// Listener for transaction
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
+		private ICommunicationListener CreateNMSTransactionListener(StatelessServiceContext context)
+		{
+			var listener = new WcfCommunicationListener<ITransactionContract>(
+				listenerBinding: Binding.CreateCustomNetTcp(),
+				endpointResourceName: "NMSTranscationEndpoint",
+				serviceContext: context,
+				wcfServiceObject: nm
+			);
+
+			return listener;
+		}
+
+		#endregion Listeners
+	}
 }

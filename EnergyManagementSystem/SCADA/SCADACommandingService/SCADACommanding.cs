@@ -6,27 +6,28 @@
 
 namespace EMS.Services.SCADACommandingService
 {
-    using Common;
-    using CommonMeasurement;
-    using ServiceContracts;
-    using NetworkModelService.DataModel.Meas;
-    using SmoothModbus;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.ServiceModel;
-    using System.Net.Sockets;
-    using System.Windows;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Runtime.InteropServices;
-    using System.IO;
-    using System.Xml.Serialization;
+	using Common;
+	using CommonMeasurement;
+	using ServiceContracts;
+	using NetworkModelService.DataModel.Meas;
+	using SmoothModbus;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.ServiceModel;
+	using System.Net.Sockets;
+	using System.Windows;
+	using System.Diagnostics;
+	using System.Threading;
+	using System.Runtime.InteropServices;
+	using System.IO;
+	using System.Xml.Serialization;
+	using ServiceContracts.ServiceFabricProxy;
 
-    /// <summary>
-    /// SCADACommanding class for accept data from CE and put data to simulator
-    /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+	/// <summary>
+	/// SCADACommanding class for accept data from CE and put data to simulator
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class SCADACommanding : IScadaCMDContract, ITransactionContract
     {
         /// <summary>
@@ -312,21 +313,28 @@ namespace EMS.Services.SCADACommandingService
             int numberOfResources = 2;
 
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
-            try
+			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+
+			try
             {
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCode);
 
-                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
-                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
+				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
+				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                while (resourcesLeft > 0)
+				while (resourcesLeft > 0)
                 {
-                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                    retList.AddRange(rds);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                }
-                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
-            }
+					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+					retList.AddRange(rds);
+					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+				}
+				networkModelGDASfProxy.IteratorClose(iteratorId);
+				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+			}
             catch (Exception e)
             {
                 message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);
@@ -335,7 +343,7 @@ namespace EMS.Services.SCADACommandingService
 
                 Console.WriteLine("Trying again...");
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
-                NetworkModelGDAProxy.Instance = null;
+                //NetworkModelGDAProxy.Instance = null;
                 Thread.Sleep(1000);
                 InitiateIntegrityUpdate();
                 return false;
