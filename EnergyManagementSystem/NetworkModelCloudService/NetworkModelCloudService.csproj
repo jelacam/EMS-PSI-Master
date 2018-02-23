@@ -105,6 +105,24 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cloud\CloudCommon\CloudCommon.csproj">
+      <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>
+      <Name>CloudCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NetworkModelService\NetworkModelService.csproj">
+      <Project>{2630D180-1B68-4E84-AEAC-42EE8C88B50F}</Project>
+      <Name>NetworkModelService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\NetworkModelQueryContract\NetworkModelGDAContract.csproj">
+      <Project>{B726FB71-D295-41EE-9644-B2B0B1BC8911}</Project>
+      <Name>NetworkModelGDAContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
+      <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
+      <Name>TransactionContract</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

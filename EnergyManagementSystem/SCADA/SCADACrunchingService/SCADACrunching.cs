@@ -482,21 +482,28 @@ namespace EMS.Services.SCADACrunchingService
             int numberOfResources = 2;
 
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
-            try
+			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+
+			try
             {
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCode);
 
-                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
-                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
+				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
+				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                while (resourcesLeft > 0)
+				while (resourcesLeft > 0)
                 {
-                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                    retList.AddRange(rds);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                }
-                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
-            }
+					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+					retList.AddRange(rds);
+					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+				}
+				networkModelGDASfProxy.IteratorClose(iteratorId);
+				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+			}
             catch (Exception e)
             {
                 message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);
@@ -505,7 +512,7 @@ namespace EMS.Services.SCADACrunchingService
 
                 Console.WriteLine("Trying again...");
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Trying again...");
-                NetworkModelGDAProxy.Instance = null;
+                //NetworkModelGDAProxy.Instance = null;
                 Thread.Sleep(1000);
                 InitiateIntegrityUpdate();
 
