@@ -21,14 +21,16 @@ namespace CalculationEngineCloudService
     {
         private CrToCe crToCe;
         private CeToUI ceToUI;
+        private CalculationEngine ce;
 
         public CalculationEngineCloudService(StatefulServiceContext context)
             : base(context)
         {
-            CalculationEngine ce = new CalculationEngine();
+            ce = new CalculationEngine();
             crToCe = new CrToCe();
             ceToUI = new CeToUI();
             CrToCe.CalculationEngine = ce;
+            CeToUI.CalculationEngine = ce;
         }
 
         /// <summary>
@@ -43,7 +45,8 @@ namespace CalculationEngineCloudService
             return new List<ServiceReplicaListener>
             {
                 new ServiceReplicaListener(context => this.CreateCalculationEngineListener(context), "CalculationEngineEndpoint"),
-                new ServiceReplicaListener(context => this.CreateCalculationEngineUIListener(context), "CalculationEngineUIEndpoint")
+                new ServiceReplicaListener(context => this.CreateCalculationEngineUIListener(context), "CalculationEngineUIEndpoint"),
+                new ServiceReplicaListener(context => this.CreateCalculationEngineTransactionListener(context), "CalculationEngineTransactionEndpoint")
             };
         }
 
@@ -71,6 +74,18 @@ namespace CalculationEngineCloudService
             return listener;
         }
 
+        private ICommunicationListener CreateCalculationEngineTransactionListener(StatefulServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<ITransactionContract>(
+                           listenerBinding: Binding.CreateCustomNetTcp(),
+                           endpointResourceName: "CalculationEngineTransactionEndpoint",
+                           serviceContext: context,
+                           wcfServiceObject: ce
+            );
+            ServiceEventSource.Current.ServiceMessage(context, "Created listener for CalculationEngineListenerEndpoint");
+            return listener;
+        }
+
         /// <summary>
         /// This is the main entry point for your service replica.
         /// This method executes when this replica of your service becomes primary and has write status.
@@ -78,29 +93,24 @@ namespace CalculationEngineCloudService
         /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            // TODO: Replace the following sample code with your own logic
-            //       or remove this RunAsync override if it's not needed in your service.
+            #region CalculationEngine instantiation
 
-            var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
+            bool integrityState = ce.InitiateIntegrityUpdate();
+
+            if (!integrityState)
+            {
+                ServiceEventSource.Current.ServiceMessage(this.Context, "CalculationEngine integrity update failed");
+            }
+            else
+            {
+                ServiceEventSource.Current.ServiceMessage(this.Context, "CalculationEngine integrity update succeeded.");
+            }
+
+            #endregion CalculationEngine instantiation
 
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                using (var tx = this.StateManager.CreateTransaction())
-                {
-                    var result = await myDictionary.TryGetValueAsync(tx, "Counter");
-
-                    //ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
-                    //    result.HasValue ? result.Value.ToString() : "Value does not exist.");
-
-                    await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
-
-                    // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are
-                    // discarded, and nothing is saved to the secondary replicas.
-                    await tx.CommitAsync();
-                }
-
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }

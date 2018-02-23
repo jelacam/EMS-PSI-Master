@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EMS.Common;
+using EMS.ServiceContracts.ServiceFabricProxy;
 
 namespace GatewayService.NetworkModel
 {
@@ -12,56 +13,65 @@ namespace GatewayService.NetworkModel
     {
         public UpdateResult ApplyUpdate(Delta delta)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - ApplyUpdate");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.ApplyUpdate(delta);
         }
 
         public int GetExtentValues(ModelCode entityType, List<ModelCode> propIds)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - GetExtentValues");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.GetExtentValues(entityType, propIds);
         }
 
         public int GetRelatedValues(long source, List<ModelCode> propIds, Association association)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - GetRelatedValues");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.GetRelatedValues(source, propIds, association);
         }
 
         public ResourceDescription GetValues(long resourceId, List<ModelCode> propIds)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - GetValues");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.GetValues(resourceId, propIds);
         }
 
         public bool IteratorClose(int id)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - IteratorClose");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.IteratorClose(id);
         }
 
         public List<ResourceDescription> IteratorNext(int n, int id)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - IteratorNext");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.IteratorNext(n, id);
         }
 
         public int IteratorResourcesLeft(int id)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - IteratorResourcesLeft");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.IteratorResourcesLeft(id);
         }
 
         public int IteratorResourcesTotal(int id)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - IteratorResourcesTotal");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.IteratorResourcesTotal(id);
         }
 
         public bool IteratorRewind(int id)
         {
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
             ServiceEventSource.Current.Message("NetworkModel GDA - IteratorRewind");
-            throw new NotImplementedException();
+            return networkModelGDASfProxy.IteratorRewind(id);
         }
     }
 }
