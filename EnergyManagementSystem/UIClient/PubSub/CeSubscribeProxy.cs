@@ -80,10 +80,5 @@ namespace UIClient.PubSub
         {
             Proxy.Unsubscribe();
         }
-
-        public bool ChooseOptimization(OptimizationType optimizationType)
-        {
-            return Proxy.ChooseOptimization(optimizationType);
-        }
     }
 }

@@ -94,7 +94,8 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CEHistory\CeHistoryData.cs" />
+    <Compile Include="CalculationEngine\CeHistoryData.cs" />
+    <Compile Include="CalculationEngine\OptimizationAlgorithm.cs" />
     <Compile Include="IGatewayServiceContracts.cs" />
     <Compile Include="NetworkModel\NetworkModelGDA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

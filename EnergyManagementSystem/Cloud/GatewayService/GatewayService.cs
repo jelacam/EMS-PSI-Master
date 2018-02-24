@@ -18,6 +18,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using EMS.ServiceContracts.ServiceFabricProxy;
 using GatewayService.CEHistory;
 using GatewayService.NetworkModel;
+using GatewayService.CalculationEngine;
 
 namespace GatewayService
 {
@@ -48,7 +49,8 @@ namespace GatewayService
                 new ServiceReplicaListener(context => this.CreateCEPublishListener(context), "CEPublishEndpoint"),
                 new ServiceReplicaListener(context => this.CreateTransactionManagerImporterListener(context), "TransactionManagerImporterEndpoint"),
                 new ServiceReplicaListener(context => this.CreateCalculationEngineHistoryListener(context), "CEHistoryEndpoint"),
-                new ServiceReplicaListener(context => this.CreateNetworkModelGDAListener(context), "NetworkModelGDAEndpoint")
+                new ServiceReplicaListener(context => this.CreateNetworkModelGDAListener(context), "NetworkModelGDAEndpoint"),
+                new ServiceReplicaListener(context => this.CreateOptimizationAlgorithmListener(context), "OptimizationAlgorithmEndpoint")
             };
         }
 
@@ -140,6 +142,7 @@ namespace GatewayService
         #endregion AlarmsEventsService listeners
 
         #region TransactionManagerService listener
+
         /// <summary>
         /// Gateway lsitener for Transaction Manager Service
         /// Address: "net.tcp://host:50000/TransactionManager/Importer"
@@ -166,7 +169,7 @@ namespace GatewayService
             return listener;
         }
 
-        #endregion
+        #endregion TransactionManagerService listener
 
         #region CalculationEngineService listeners
 
@@ -224,13 +227,33 @@ namespace GatewayService
             return listener;
         }
 
-        #endregion CalculationEngineService listener
+        private ICommunicationListener CreateOptimizationAlgorithmListener(StatefulServiceContext context)
+        {
+            string host = context.NodeContext.IPAddressOrFQDN;
+
+            var endpointConfig = context.CodePackageActivationContext.GetEndpoint("OptimizationAlgorithmEndpoint");
+            int port = endpointConfig.Port;
+            var scheme = endpointConfig.UriScheme.ToString();
+            var pathSufix = endpointConfig.PathSuffix.ToString();
+
+            string uri = string.Format(CultureInfo.InvariantCulture, "{0}://{1}:{2}/CalculationEngine/{3}", scheme, host, port, pathSufix);
+
+            var listener = new WcfCommunicationListener<IOptimizationAlgorithmContract>(
+                            listenerBinding: Binding.CreateCustomNetTcp(),
+                           address: new EndpointAddress(uri),
+                           serviceContext: context,
+                           wcfServiceObject: new OptimizationAlgorithm()
+            );
+            return listener;
+        }
+
+        #endregion CalculationEngineService listeners
 
         #region CalculationEngineHistory listener
 
         /// <summary>
         /// Gateway listener for Calculation Engine History Data
-        /// Address: "net.tcp://host:22002/CalculationEngine/CeToUI" 
+        /// Address: "net.tcp://host:22002/CalculationEngine/CeToUI"
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -285,6 +308,7 @@ namespace GatewayService
 
             return listener;
         }
+
         #endregion NetworkModelGDA listener
 
         #endregion Listeners
@@ -313,29 +337,9 @@ namespace GatewayService
 
             #endregion CalculationEngine PubSub initialization
 
-            // TODO: Replace the following sample code with your own logic
-            //       or remove this RunAsync override if it's not needed in your service.
-
-            var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
-
             while (true)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                using (var tx = this.StateManager.CreateTransaction())
-                {
-                    //var result = await myDictionary.TryGetValueAsync(tx, "Counter");
-
-                    //ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
-                    //    result.HasValue ? result.Value.ToString() : "Value does not exist.");
-
-                    //await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
-
-                    // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are
-                    // discarded, and nothing is saved to the secondary replicas.
-                    await tx.CommitAsync();
-                }
-
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }
@@ -391,12 +395,6 @@ namespace GatewayService
         {
             callbackCE = OperationContext.Current.GetCallbackChannel<ICePubSubCallbackContract>();
             clientsToPublishCE.Remove(callbackCE);
-        }
-
-        bool ICeSubscribeContract.ChooseOptimization(OptimizationType optimizationType)
-        {
-            OptimizationType = optimizationType;
-            return true;
         }
 
         #endregion ICeSubscribebContract
@@ -608,7 +606,6 @@ namespace GatewayService
             List<AlarmHelper> integrityResult = aesIntegritySfProxy.InitiateIntegrityUpdate();
 
             return integrityResult;
-           
         }
 
         #endregion IAesIntegirtyContract implementation

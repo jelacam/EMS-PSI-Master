@@ -10,7 +10,6 @@ namespace EMS.Services.AlarmsEventsService
     using System.Collections.Generic;
     using System.ServiceModel;
     using EMS.Common;
-    using PubSub;
 
     /// <summary>
     /// Class for AlarmsEventsService
@@ -80,7 +79,6 @@ namespace EMS.Services.AlarmsEventsService
         {
             this.hosts = new List<ServiceHost>();
             this.hosts.Add(new ServiceHost(typeof(AlarmsEvents)));
-            this.hosts.Add(new ServiceHost(typeof(PublisherService)));
         }
 
         /// <summary>

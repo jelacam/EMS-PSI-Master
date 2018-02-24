@@ -15,8 +15,8 @@ namespace EMS.ServiceContracts
         [OperationContract(IsOneWay = false, IsInitiating = true)]
         void Subscribe();
 
-        [OperationContract(IsOneWay = false, IsInitiating = true)]
-        bool ChooseOptimization(OptimizationType optimizationType);
+        //[OperationContract(IsOneWay = false, IsInitiating = true)]
+        //bool ChooseOptimization(OptimizationType optimizationType);
 
         [OperationContract(IsOneWay = false, IsTerminating = true)]
         void Unsubscribe();

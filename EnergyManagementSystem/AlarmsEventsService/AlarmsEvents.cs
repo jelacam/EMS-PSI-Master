@@ -9,7 +9,6 @@ namespace EMS.Services.AlarmsEventsService
     using System;
     using Common;
     using ServiceContracts;
-    using PubSub;
     using System.Collections.Generic;
     using CommonMeasurement;
     using System.ServiceModel;
@@ -22,11 +21,6 @@ namespace EMS.Services.AlarmsEventsService
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class AlarmsEvents : IAlarmsEventsContract, IAesIntegirtyContract
     {
-        /// <summary>
-        /// entity for storing PublisherService instance
-        /// </summary>
-        private PublisherService publisher;
-
         /// <summary>
         /// list for storing AlarmHelper entities
         /// </summary>
@@ -44,7 +38,6 @@ namespace EMS.Services.AlarmsEventsService
         /// </summary>
         public AlarmsEvents()
         {
-            this.Publisher = new PublisherService();
             this.Alarms = new List<AlarmHelper>();
             alarmsFromDatabase = SelectAlarmsFromDatabase();
             if (alarmsFromDatabase != null)
@@ -66,22 +59,6 @@ namespace EMS.Services.AlarmsEventsService
             set
             {
                 this.alarms = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets Publisher of the entity
-        /// </summary>
-        public PublisherService Publisher
-        {
-            get
-            {
-                return this.publisher;
-            }
-
-            set
-            {
-                this.publisher = value;
             }
         }
 

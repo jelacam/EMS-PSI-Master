@@ -116,8 +116,6 @@
     <Compile Include="LoadCharacteristics.cs" />
     <Compile Include="OptimisationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PubSub\OptimizationEventArgs.cs" />
-    <Compile Include="PubSub\PublisherService.cs" />
     <Compile Include="SynchronousMachineCurveModels.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -173,9 +171,8 @@
       <DependentUpon>HistoryDatabase.mdf</DependentUpon>
     </Content>
     <Content Include="SynchronousMachinesCurves.xml">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</Content>
-	
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -185,5 +182,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  
 </Project>

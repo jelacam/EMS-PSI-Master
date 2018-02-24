@@ -10,7 +10,6 @@ namespace EMS.Services.CalculationEngineService
     using System.Collections.Generic;
     using System.ServiceModel;
     using EMS.Common;
-    using PubSub;
 
     /// <summary>
     /// Class for CalculationEngineService

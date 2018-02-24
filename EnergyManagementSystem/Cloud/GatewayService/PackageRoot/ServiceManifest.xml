@@ -35,14 +35,14 @@
       <!-- CES -->
       <Endpoint Name="CESubscribeEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="SubscribeService" />
       <Endpoint Name="CEPublishEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="PublishService" />
-      <Endpoint Name="CEHistoryEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="CeToUI"/> 
+      <Endpoint Name="CEHistoryEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="CeToUI" />
+      <Endpoint Name="OptimizationAlgorithmEndpoint" UriScheme="net.tcp" Port="22002" PathSuffix="OptimizationAlgorithm" />
       <!-- TMS -->
-      <Endpoint Name="TransactionManagerImporterEndpoint" UriScheme="net.tcp" Port="55000" PathSuffix="Importer"/>
+      <Endpoint Name="TransactionManagerImporterEndpoint" UriScheme="net.tcp" Port="55000" PathSuffix="Importer" />
       <!--NMS-->
-      <Endpoint Name="NetworkModelGDAEndpoint" UriScheme="net.tcp" Port="10000" PathSuffix="GDA"/> <!--*-->
-      
+      <Endpoint Name="NetworkModelGDAEndpoint" UriScheme="net.tcp" Port="10000" PathSuffix="GDA" />
+      <!--*-->
 
-      
       <!-- This endpoint is used by the replicator for replicating the state of your service.
            This endpoint is configured through a ReplicatorSettings config section in the Settings.xml
            file under the ConfigPackage. -->

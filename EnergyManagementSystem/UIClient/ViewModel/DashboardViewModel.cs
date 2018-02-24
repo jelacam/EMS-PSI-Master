@@ -192,7 +192,8 @@ namespace UIClient.ViewModel
         public DashboardViewModel()
         {
             SubsrcibeToCE();
-            ceSubscribeProxy.ChooseOptimization(selectedOptimizationType);
+            //ceSubscribeProxy.ChooseOptimization(selectedOptimizationType);
+            CeOptimizationProxy.Instance.ChooseOptimization(selectedOptimizationType);
 
             SizeValue = 0;
 
@@ -243,7 +244,8 @@ namespace UIClient.ViewModel
 
         private void ChangeAlgorithmCommandExecute(object obj)
         {
-            ceSubscribeProxy.ChooseOptimization(SelectedOptimizationType);
+            //ceSubscribeProxy.ChooseOptimization(SelectedOptimizationType);
+            CeOptimizationProxy.Instance.ChooseOptimization(SelectedOptimizationType);
         }
 
         private void UpdateSizeWidget(double sliderValue)
@@ -275,7 +277,7 @@ namespace UIClient.ViewModel
             var mainWindVM = mainWindow.DataContext as MainWindowViewModel;
 
             var historyVm = mainWindVM?.DockManagerViewModel.Documents.FirstOrDefault(x => x is HistoryViewModel) as HistoryViewModel;
-            
+
             if (historyVm != null && historyVm.GidToBoolMap.ContainsKey(gid))
             {
                 mainWindow.SetActiveDocument(historyVm);
@@ -285,6 +287,7 @@ namespace UIClient.ViewModel
                 historyVm.OnPropertyChanged("GidToBoolMap");
             }
         }
+
         #endregion CommandsExecutions
 
         private void SubsrcibeToCE()
