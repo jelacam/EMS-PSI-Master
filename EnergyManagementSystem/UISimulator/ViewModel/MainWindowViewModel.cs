@@ -47,6 +47,8 @@ namespace UISimulator.ViewModel
 
         #endregion Fields
 
+
+
         public MainWindowViewModel()
         {
             ConnectToSimulator();

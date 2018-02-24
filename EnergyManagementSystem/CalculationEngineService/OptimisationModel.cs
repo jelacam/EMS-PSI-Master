@@ -197,6 +197,11 @@ namespace EMS.Services.CalculationEngineService
 		/// <returns>price of power</returns>
 		public float CalculatePrice(float measuredValue)
 		{
+            if (Renewable)
+            {
+                return 1;
+            }
+
 			float price = 0;
 			float amount = (float)Curve.A * measuredValue * measuredValue + (float)Curve.B * measuredValue + (float)Curve.C;
 			price = amount * EmsFuel.UnitPrice;

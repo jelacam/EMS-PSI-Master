@@ -172,9 +172,7 @@ namespace EMS.Services.CalculationEngineService
                 totalCostWithRenewable = -1;
                 if (OptimizationType == OptimizationType.Genetic)
                 {
-                    GAOptimization gao = new GAOptimization(powerOfConsumers, optModelMap);
-                    optModelMapOptimizied = gao.StartAlgorithmWithReturn();
-                    totalCost = gao.TotalCost;
+                    optModelMapOptimizied = CalculateWithGeneticAlgorithm(optModelMap, powerOfConsumers);
                 }
                 else if (OptimizationType == OptimizationType.Linear)
                 {
@@ -203,6 +201,50 @@ namespace EMS.Services.CalculationEngineService
             {
                 throw new Exception("[Mehtod = DoOptimization] Exception = " + e.Message);
             }
+        }
+
+        private Dictionary<long, OptimisationModel> CalculateWithGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
+        {
+            Dictionary<long, OptimisationModel> optModelMapOptimizied;
+            float powerOfConsumersNonRenewable = powerOfConsumers;
+            Dictionary<long, OptimisationModel> optModelMapNonRenewable = new Dictionary<long, OptimisationModel>();
+            windProductionkW = 0;
+            foreach (var item in optModelMap)
+            {
+                if (item.Value.Renewable)
+                {
+                    item.Value.GenericOptimizedValue = item.Value.MaxPower; 
+                    powerOfConsumersNonRenewable -= item.Value.MaxPower;
+                    if (item.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind))
+                    {
+                        windProductionkW += item.Value.MaxPower;
+                    }
+                }
+                else
+                {
+                    optModelMapNonRenewable.Add(item.Key, item.Value);
+                }
+            }
+
+            GAOptimization gaoNonRenewable = new GAOptimization(powerOfConsumers, optModelMapNonRenewable);
+            var optModelMapOptimiziedNonRenewable = gaoNonRenewable.StartAlgorithmWithReturn();
+
+            GAOptimization gaoRenewable = new GAOptimization(powerOfConsumersNonRenewable, optModelMapNonRenewable);
+            optModelMapOptimizied = gaoRenewable.StartAlgorithmWithReturn();
+
+
+            totalCost = gaoNonRenewable.TotalCost;
+            totalCostWithRenewable = gaoRenewable.TotalCost;
+            profit = totalCost - totalCostWithRenewable;
+            windProductionPct = 100 * windProductionkW / (gaoRenewable.GeneratedPower + windProductionkW);
+            emissionCO2Renewable = gaoRenewable.EmissionCO2;
+            emissionCO2NonRenewable = gaoNonRenewable.EmissionCO2;
+
+            //foreach(var item in optModelMapOptimizied)
+            //{
+            //    optModelMap[item.Key].GenericOptimizedValue = item.Value.GenericOptimizedValue;
+            //}
+            return optModelMap;
         }
 
         private List<MeasurementUnit> DoNotOptimized(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)

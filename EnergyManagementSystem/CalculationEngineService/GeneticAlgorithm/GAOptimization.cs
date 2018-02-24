@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.Common;
+using System;
 using System.Collections.Generic;
 
 namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
@@ -6,11 +7,12 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
     public class GAOptimization
     {
         private readonly int ELITIMS_PERCENTAGE = 5;
-        private readonly int NUMBER_OF_ITERATION = 1000;
+        private readonly int NUMBER_OF_ITERATION = 20000;
         private readonly int NUMBER_OF_POPULATION = 100;
 
-        private readonly float mutationRate = 0.3f;
-        private readonly float penaltyRate = 10000;
+        private readonly float mutationRate = 1f;
+        private readonly float penaltyRate = 1000;
+        private readonly float costRate = 10;
 
         private float necessaryEnergy;
         private Random random;
@@ -19,6 +21,8 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         private Dictionary<int, long> indexToGid;
 
         public float TotalCost { get; private set; }
+        public float EmissionCO2 { get; private set; }
+        public float GeneratedPower { get; private set; }
 
         public GAOptimization(float necessaryEnergy, Dictionary<long, OptimisationModel> optModelMap)
         {
@@ -46,7 +50,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         public Dictionary<long, OptimisationModel> StartAlgorithmWithReturn()
         {
             random = new Random();
-            ga = new GeneticAlgorithm<Tuple<long, float>>(NUMBER_OF_POPULATION, optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, ELITIMS_PERCENTAGE, mutationRate,false);
+            ga = new GeneticAlgorithm<Tuple<long, float>>(NUMBER_OF_POPULATION, optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, ELITIMS_PERCENTAGE, mutationRate, false);
             ga.Population = PopulateFirstPopulation();
             Tuple<long, float>[] bestGenes = ga.StartAndReturnBest(NUMBER_OF_ITERATION);
 
@@ -55,19 +59,36 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 optModelMap[indexToGid[i]].GenericOptimizedValue = bestGenes[i].Item2;
             }
 
+            float sumOptimized = 0;
+            float emCO2 = 0;
+            foreach (var optModel in optModelMap.Values)
+            {
+                sumOptimized += optModel.GenericOptimizedValue;
+                emCO2 += optModel.GenericOptimizedValue * optModel.EmissionFactor;
+
+                if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
+                {
+                    //Ne bi trebalo da udje ovde
+                }
+            }
+
+
+            EmissionCO2 = emCO2;
+
             TotalCost = CalculateCost(bestGenes);
+            GeneratedPower = CalculateEnergy(bestGenes);
 
             return optModelMap;
         }
 
         private List<DNA<Tuple<long, float>>> PopulateFirstPopulation()
         {
-            List<DNA<Tuple<long, float>>> firstPopulation = new List<DNA<Tuple<long, float>>> ();
+            List<DNA<Tuple<long, float>>> firstPopulation = new List<DNA<Tuple<long, float>>>();
 
             DNA<Tuple<long, float>> previousBest = new DNA<Tuple<long, float>>(optModelMap.Count, random, GetRandomGene, FitnessFunction, MutateFunction, shouldInitGenes: false);
             previousBest.Genes = new Tuple<long, float>[optModelMap.Count];
 
-            for(int i = 0; i < optModelMap.Count; i++)
+            for (int i = 0; i < optModelMap.Count; i++)
             {
                 long gid = indexToGid[i];
                 previousBest.Genes[i] = new Tuple<long, float>(gid, optModelMap[gid].MeasuredValue);
@@ -89,18 +110,18 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private float FitnessFunction(DNA<Tuple<long, float>> dna)
         {
-            float penalty = penaltyRate * (necessaryEnergy - CalculateEnergy(dna));
+            float penalty = penaltyRate * (necessaryEnergy - CalculateEnergy(dna.Genes));
 
             penalty = Math.Abs(penalty); //we need a value closer to the desired one
 
-            return 1000 - (CalculateCost(dna.Genes) + penalty); // we need the smallest cost
+            return 1000 - (costRate * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
         }
 
-        private float CalculateEnergy(DNA<Tuple<long, float>> dna)
+        private float CalculateEnergy(Tuple<long, float>[] genes)
         {
             float energySum = 0;
 
-            foreach (var gene in dna.Genes)
+            foreach (var gene in genes)
             {
                 energySum += gene.Item2;
             }
@@ -116,7 +137,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             if (optModelMap[gid].Renewable)
             {
                 //TODO ispraviti kad se napravi griva na osnovu vetra
-                return new Tuple<long, float>(gid, optModelMap[gid].MaxPower); 
+                return new Tuple<long, float>(gid, optModelMap[gid].MaxPower);
             }
             else
             {
