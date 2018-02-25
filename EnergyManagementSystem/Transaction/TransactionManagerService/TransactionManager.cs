@@ -20,7 +20,6 @@ namespace EMS.Services.TransactionManagerService
         private static int toRespond = 1;
         private object obj = new object();
 
-
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
@@ -37,7 +36,7 @@ namespace EMS.Services.TransactionManagerService
             int analogProperty = 0;
             int ceProperty = 0;
 
-            #endregion odlDeclarations
+            #endregion oldDeclarations
 
             Delta analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
             Delta emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
@@ -133,7 +132,6 @@ namespace EMS.Services.TransactionManagerService
 
             updateResult = transactionNMSSfProxy.Prepare(ref delta);
 
-
             // create new delta object from delta with gids
             analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
             emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
@@ -159,7 +157,6 @@ namespace EMS.Services.TransactionManagerService
                     transactionCRSfProxy.Prepare(ref analogsDelta);
                     transactionCMDSfProxy.Prepare(ref analogsDelta);
                 }
-                    
             }
             else if (toRespond == 3)
             {
@@ -218,7 +215,6 @@ namespace EMS.Services.TransactionManagerService
 
         private void Commit(object sender, EventArgs e)
         {
-
             TransactionNMSSfProxy transactionNMSSfProxy = new TransactionNMSSfProxy();
             TransactionCESfProxy transactionCESfProxy = new TransactionCESfProxy();
             TransactionCMDSfProxy transactionCMDSfProxy = new TransactionCMDSfProxy();
@@ -230,7 +226,8 @@ namespace EMS.Services.TransactionManagerService
             bool commitResultSCADA = true;
             bool commitResultCE = true;
 
-            bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
+            //bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
+            bool commitResultNMS = transactionNMSSfProxy.Commit(deltaToApply);
             if (toRespond == 3)
             {
                 //commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
@@ -257,7 +254,6 @@ namespace EMS.Services.TransactionManagerService
                     commitResultScadaCR = transactionCRSfProxy.Commit(deltaToApply);
                     commitResultScadaCMD = transactionCMDSfProxy.Commit(deltaToApply);
                 }
-
             }
 
             if (commitResultNMS && commitResultSCADA && commitResultCE)
@@ -276,7 +272,6 @@ namespace EMS.Services.TransactionManagerService
                 transactionCRSfProxy.Rollback();
                 transactionCMDSfProxy.Rollback();
                 transactionCESfProxy.Rollback();
-
             }
             toRespond = 1;
             noRespone = 0;

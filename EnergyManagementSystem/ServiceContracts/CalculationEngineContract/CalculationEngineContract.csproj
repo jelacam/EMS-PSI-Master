@@ -170,6 +170,10 @@
       <Project>{94842C81-93DE-4490-A3D0-BC420C97B850}</Project>
       <Name>CommonMeasurement</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

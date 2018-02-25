@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EMS.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -7,79 +8,95 @@ using System.Threading.Tasks;
 
 namespace EMS.ServiceContracts
 {
-	public class CalculationEngineUIProxy : ICalculationEngineUIContract, IDisposable
-	{
-		/// <summary>
-		/// proxy object
-		/// </summary>
-		private static ICalculationEngineUIContract proxy;
+    public class CalculationEngineUIProxy : ICalculationEngineUIContract, IDisposable
+    {
+        /// <summary>
+        /// proxy object
+        /// </summary>
+        private static ICalculationEngineUIContract proxy;
 
-		/// <summary>
-		/// ChannelFactory object
-		/// </summary>
-		private static ChannelFactory<ICalculationEngineUIContract> factory;
+        /// <summary>
+        /// ChannelFactory object
+        /// </summary>
+        private static ChannelFactory<ICalculationEngineUIContract> factory;
 
-		/// <summary>
-		/// Gets or sets instance of ICalculationEngineContract
-		/// </summary>
-		public static ICalculationEngineUIContract Instance
-		{
-			get
-			{
-				if (proxy == null)
-				{
-					factory = new ChannelFactory<ICalculationEngineUIContract>("*");
-					proxy = factory.CreateChannel();
-					IContextChannel cc = proxy as IContextChannel;
-				}
+        /// <summary>
+        /// Gets or sets instance of ICalculationEngineContract
+        /// </summary>
+        public static ICalculationEngineUIContract Instance
+        {
+            get
+            {
+                if (proxy == null)
+                {
+                    factory = new ChannelFactory<ICalculationEngineUIContract>("*");
+                    proxy = factory.CreateChannel();
+                    IContextChannel cc = proxy as IContextChannel;
+                }
 
-				return proxy;
-			}
+                return proxy;
+            }
 
-			set
-			{
-				if (proxy == null)
-				{
-					proxy = value;
-				}
-			}
-		}
+            set
+            {
+                if (proxy == null)
+                {
+                    proxy = value;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Dispose method
-		/// </summary>
-		public void Dispose()
-		{
-			try
-			{
-				if (factory != null)
-				{
-					factory = null;
-				}
-			}
-			catch (CommunicationException ce)
-			{
-				Console.WriteLine("Communication exception: {0}", ce.Message);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("CE proxy exception: {0}", e.Message);
-			}
-		}
+        /// <summary>
+        /// Dispose method
+        /// </summary>
+        public void Dispose()
+        {
+            try
+            {
+                if (factory != null)
+                {
+                    factory = null;
+                }
+            }
+            catch (CommunicationException ce)
+            {
+                Console.WriteLine("Communication exception: {0}", ce.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("CE proxy exception: {0}", e.Message);
+            }
+        }
 
-		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
-		{
-			return proxy.GetHistoryMeasurements(gid, startTime, endTime);
-		}
+        public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
+        {
+            return proxy.GetHistoryMeasurements(gid, startTime, endTime);
+        }
 
-        public List<Tuple<double,DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
         {
             return proxy.GetTotalProduction(startTime, endTime);
         }
 
         public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
         {
-            return proxy.GetCO2Emission(startTime, endTime);
+            List<Tuple<double, double, DateTime>> co2Emission = new List<Tuple<double, double, DateTime>>();
+            try
+            {
+                co2Emission = proxy.GetCO2Emission(startTime, endTime);
+            }
+            catch (CommunicationException ce)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Communication exception for CalculationEngineUIProxy. Message: {0}", ce.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new connection and retry");
+                if (((ICommunicationObject)proxy).State.Equals(CommunicationState.Faulted))
+                {
+                    proxy = null;
+                    co2Emission = Instance.GetCO2Emission(startTime, endTime);
+                }
+            }
+
+            return co2Emission;
         }
 
         public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)

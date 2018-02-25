@@ -1,9 +1,9 @@
-﻿
-using EMS.Common;
+﻿using EMS.Common;
 using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ServiceModel;
 using System.Windows.Input;
 using UIClient.Model;
 using UIClient.View;
@@ -12,7 +12,6 @@ namespace UIClient.ViewModel
 {
     public class DMSOptionsViewModel : ViewModelBase
     {
-
         #region Fields
 
         private ObservableCollection<Tuple<double, double, DateTime>> cO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
@@ -44,7 +43,7 @@ namespace UIClient.ViewModel
         private double totalCostWithoutRenewable;
         private double totalCostWithRenewable;
 
-        #endregion
+        #endregion Fields
 
         public DMSOptionsViewModel(DMSOptionsView mainWindow)
         {
@@ -153,7 +152,7 @@ namespace UIClient.ViewModel
         {
             get
             {
-                return totalCO2;   
+                return totalCO2;
             }
             set
             {
@@ -327,7 +326,7 @@ namespace UIClient.ViewModel
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Commands
 
@@ -342,10 +341,10 @@ namespace UIClient.ViewModel
         public ICommand ChangePeriodSavingCommand => changePeriodSavingCommand ?? (changePeriodSavingCommand = new RelayCommand(ChangePeriodSavingCommandExecute));
 
         public ICommand ViewSavingnDataCommand => viewSavingnDataCommand ?? (viewSavingnDataCommand = new RelayCommand(ViewSavingnDataCommandExecute));
-        #endregion
+
+        #endregion Commands
 
         #region Command Executions
-
 
         private void ViewSavingnDataCommandExecute(object obj)
         {
@@ -354,10 +353,10 @@ namespace UIClient.ViewModel
             TotalCostWithRenewable = 0;
             try
             {
-                SavingContainer= new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
+                SavingContainer = new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
                 if (SavingContainer != null)
                 {
-                    foreach(Tuple<double, double, double> tuple in SavingContainer)
+                    foreach (Tuple<double, double, double> tuple in SavingContainer)
                     {
                         TotalCostWithoutRenewable += tuple.Item1;
                         TotalCostWithRenewable += tuple.Item2;
@@ -369,13 +368,11 @@ namespace UIClient.ViewModel
                 BarSavingData.Add(new KeyValuePair<string, double>("Total Cost With Renewable", TotalCostWithRenewable));
                 OnPropertyChanged(nameof(BarSavingData));
                 OnPropertyChanged(nameof(TotalWindSaving));
-
             }
             catch (Exception ex)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}", ex.Message);
             }
-
         }
 
         private void ViewCO2EmissionDataCommandExecute(object obj)
@@ -384,17 +381,18 @@ namespace UIClient.ViewModel
             TotalCO2 = 0;
             try
             {
-                CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2));
-                if(CO2EmissionContainer!=null && CO2EmissionContainer.Count > 0)
+                List<Tuple<double, double, DateTime>> co2Emission = CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2);
+                CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(co2Emission);
+                if (CO2EmissionContainer != null && CO2EmissionContainer.Count > 0)
                 {
-                    foreach(Tuple<double,double,DateTime> item in CO2EmissionContainer)
+                    foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
                     {
                         TotalCO2 += item.Item1;
                         TotalCO2Reduction += (item.Item1 - item.Item2);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
             }
@@ -402,7 +400,7 @@ namespace UIClient.ViewModel
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));
 
-			TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
+            TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
 
             OnPropertyChanged(nameof(PieData));
             OnPropertyChanged(nameof(TotalCO2Reduction));
@@ -448,22 +446,27 @@ namespace UIClient.ViewModel
                     StartTimeCO2 = DateTime.Now.AddHours(-1);
                     EndTimeCO2 = DateTime.Now;
                     break;
+
                 case PeriodValues.Today:
                     StartTimeCO2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTimeCO2 = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Month:
                     StartTimeCO2 = DateTime.Now.AddMonths(-1);
                     EndTimeCO2 = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_4_Month:
                     StartTimeCO2 = DateTime.Now.AddMonths(-4);
                     EndTimeCO2 = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Year:
                     StartTimeCO2 = DateTime.Now.AddYears(-1);
                     EndTimeCO2 = DateTime.Now;
                     break;
+
                 default:
                     break;
             }
@@ -477,22 +480,27 @@ namespace UIClient.ViewModel
                     StartTimeSaving = DateTime.Now.AddHours(-1);
                     EndTimeSaving = DateTime.Now;
                     break;
+
                 case PeriodValues.Today:
                     StartTimeSaving = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTimeSaving = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Month:
                     StartTimeSaving = DateTime.Now.AddMonths(-1);
                     EndTimeSaving = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_4_Month:
                     StartTimeSaving = DateTime.Now.AddMonths(-4);
                     EndTimeSaving = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Year:
                     StartTimeSaving = DateTime.Now.AddYears(-1);
                     EndTimeSaving = DateTime.Now;
                     break;
+
                 default:
                     break;
             }
@@ -506,27 +514,32 @@ namespace UIClient.ViewModel
                     StartTimeWind = DateTime.Now.AddHours(-1);
                     EndTimeWind = DateTime.Now;
                     break;
+
                 case PeriodValues.Today:
                     StartTimeWind = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTimeWind = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Month:
                     StartTimeWind = DateTime.Now.AddMonths(-1);
                     EndTimeWind = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_4_Month:
                     StartTimeWind = DateTime.Now.AddMonths(-4);
                     EndTimeWind = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Year:
                     StartTimeWind = DateTime.Now.AddYears(-1);
                     EndTimeWind = DateTime.Now;
                     break;
+
                 default:
                     break;
             }
         }
 
-        #endregion
+        #endregion Command Executions
     }
 }

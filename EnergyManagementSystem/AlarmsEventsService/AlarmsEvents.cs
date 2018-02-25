@@ -108,7 +108,9 @@ namespace EMS.Services.AlarmsEventsService
 
                 //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                 //Console.WriteLine("AlarmsEvents: AddAlarm method");
-                AesPublishProxy.Instance.PublishAlarmsEvents(alarm, publishingStatus);
+                //AesPublishSfProxy.Instance.PublishAlarmsEvents(alarm, publishingStatus);
+                AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
+                aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                 string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             }
@@ -150,7 +152,9 @@ namespace EMS.Services.AlarmsEventsService
                     {
                         //this.Publisher.PublishAlarmsEvents(normalAlarm, PublishingStatus.INSERT);
                         //this.Publisher.PublishStateChange(alarm);
-                        AesPublishProxy.Instance.PublishStateChange(alarm);
+                        //AesPublishSfProxy.Instance.PublishStateChange(alarm);
+                        AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
+                        aesPublishSfProxy.PublishStateChange(alarm);
                         string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
                         CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
                     }

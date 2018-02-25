@@ -6,28 +6,28 @@
 
 namespace EMS.Services.SCADACommandingService
 {
-	using Common;
-	using CommonMeasurement;
-	using ServiceContracts;
-	using NetworkModelService.DataModel.Meas;
-	using SmoothModbus;
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.ServiceModel;
-	using System.Net.Sockets;
-	using System.Windows;
-	using System.Diagnostics;
-	using System.Threading;
-	using System.Runtime.InteropServices;
-	using System.IO;
-	using System.Xml.Serialization;
-	using ServiceContracts.ServiceFabricProxy;
+    using Common;
+    using CommonMeasurement;
+    using ServiceContracts;
+    using NetworkModelService.DataModel.Meas;
+    using SmoothModbus;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.Net.Sockets;
+    using System.Windows;
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Runtime.InteropServices;
+    using System.IO;
+    using System.Xml.Serialization;
+    using ServiceContracts.ServiceFabricProxy;
 
-	/// <summary>
-	/// SCADACommanding class for accept data from CE and put data to simulator
-	/// </summary>
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    /// <summary>
+    /// SCADACommanding class for accept data from CE and put data to simulator
+    /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class SCADACommanding : IScadaCMDContract, ITransactionContract
     {
         /// <summary>
@@ -78,20 +78,22 @@ namespace EMS.Services.SCADACommandingService
         {
             try
             {
-				modbusClient = new ModbusClient("localhost", 502);
+                modbusClient = new ModbusClient("109.92.167.138", 502);
                 modbusClient.Connect();
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, e.ToString());
                 //Start simulator EasyModbusServerSimulator.exe
-                string appPath = Path.GetFullPath("..\\..\\..\\..\\..\\");
-                Process.Start(appPath + "EasyModbusServerSimulator.exe");
+                //string appPath = Path.GetFullPath("..\\..\\..\\..\\..\\");
+                //Process.Start(appPath + "EasyModbusServerSimulator.exe");
 
                 Thread.Sleep(2000);
                 ConnectToSimulator();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, e.ToString());
                 throw;
             }
         }
@@ -313,28 +315,28 @@ namespace EMS.Services.SCADACommandingService
             int numberOfResources = 2;
 
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			try
+            try
             {
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCode);
 
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
+                //iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
+                resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                //resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
-			}
+                    List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    //List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    //resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                networkModelGDASfProxy.IteratorClose(iteratorId);
+                //NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+            }
             catch (Exception e)
             {
                 message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);
@@ -440,9 +442,7 @@ namespace EMS.Services.SCADACommandingService
                                 }
                                 else
                                 {
-
                                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Doslo je do GRESKE prilikom citanja!");
-
                                 }
                                 using (var txtWriter = new StreamWriter("SentData.txt", true))
                                 {

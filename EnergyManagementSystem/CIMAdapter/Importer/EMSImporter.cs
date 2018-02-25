@@ -110,7 +110,7 @@ namespace EMS.CIMAdapter.Importer
             LogManager.Log("Loading elements and creating delta...", LogLevel.Info);
 
             //// import all concrete model types (DMSType enum)
-            
+
             ImportEnergyConsumer();
             ImportEMSFuel();
             ImportSynchronousMachine();
@@ -120,7 +120,6 @@ namespace EMS.CIMAdapter.Importer
         }
 
         #region Import
-
 
         private void ImportEMSFuel()
         {
@@ -135,8 +134,7 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-
-                        if (ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id) > 0 )
+                        if (ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id) > 0)
                         {
                             delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
                             report.Report.Append("EMSFuel ID = ").Append(emsFuel.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
@@ -158,9 +156,9 @@ namespace EMS.CIMAdapter.Importer
         private ResourceDescription CreateEMSFuel(EMSFuel emsFuel)
         {
             ResourceDescription rd = null;
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            //NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			if (emsFuel != null)
+            if (emsFuel != null)
             {
                 long gid = 0;
 
@@ -176,23 +174,23 @@ namespace EMS.CIMAdapter.Importer
                 List<ResourceDescription> retList = new List<ResourceDescription>();
 
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEMSFuel);
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeEMSFuel, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEMSFuel, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                //iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeEMSFuel, properties);
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEMSFuel, properties);
+                //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+                    //List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                //networkModelGDASfProxy.IteratorClose(iteratorId);
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-				foreach (ResourceDescription res in retList)
+                foreach (ResourceDescription res in retList)
                 {
                     foreach (Property pr in res.Properties)
                     {
@@ -204,7 +202,7 @@ namespace EMS.CIMAdapter.Importer
                     }
                 }
 
-                if(!contains)
+                if (!contains)
                 {
                     gid = ModelCodeHelper.CreateGlobalId(0, (short)EMSType.EMSFUEL, importHelper.CheckOutIndexForDMSType(EMSType.EMSFUEL));
                 }
@@ -216,7 +214,6 @@ namespace EMS.CIMAdapter.Importer
             }
             return rd;
         }
-
 
         /// <summary>
         /// Method import EnergyConsumer objects into delta
@@ -234,7 +231,6 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-
                         if (ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id) > 0)
                         {
                             delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
@@ -245,7 +241,6 @@ namespace EMS.CIMAdapter.Importer
                             delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
                             report.Report.Append("EnergyConsumer ID = ").Append(energyConsumer.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
                         }
-                        
                     }
                     else
                     {
@@ -263,9 +258,9 @@ namespace EMS.CIMAdapter.Importer
         private ResourceDescription CreateEnergyConsumer(EMS.EnergyConsumer energyConsumer)
         {
             ResourceDescription rd = null;
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            //NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			if (energyConsumer != null)
+            if (energyConsumer != null)
             {
                 long gid = 0;
 
@@ -281,23 +276,23 @@ namespace EMS.CIMAdapter.Importer
                 List<ResourceDescription> retList = new List<ResourceDescription>();
 
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCodeEnergyConsumer);
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeEnergyConsumer, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEnergyConsumer, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                //iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeEnergyConsumer, properties);
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeEnergyConsumer, properties);
+                //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+                    //List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                //networkModelGDASfProxy.IteratorClose(iteratorId);
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-				foreach (ResourceDescription res in retList)
+                foreach (ResourceDescription res in retList)
                 {
                     foreach (Property pr in res.Properties)
                     {
@@ -337,8 +332,6 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-                        
-
                         if (ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id) > 0)
                         {
                             delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
@@ -349,7 +342,6 @@ namespace EMS.CIMAdapter.Importer
                             delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
                             report.Report.Append("SynchronousMachine ID = ").Append(synchronousMachine.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
                         }
-                       
                     }
                     else
                     {
@@ -367,9 +359,9 @@ namespace EMS.CIMAdapter.Importer
         private ResourceDescription CreateSynchronousMachine(EMS.SynchronousMachine synchronousMachine)
         {
             ResourceDescription rd = null;
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            //NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			if (synchronousMachine != null)
+            if (synchronousMachine != null)
             {
                 long gid = 0;
 
@@ -385,23 +377,23 @@ namespace EMS.CIMAdapter.Importer
                 List<ResourceDescription> retList = new List<ResourceDescription>();
 
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronusMachine);
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeSynchronusMachine, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronusMachine, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                //iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeSynchronusMachine, properties);
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronusMachine, properties);
+                //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+                    //List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                //networkModelGDASfProxy.IteratorClose(iteratorId);
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-				foreach (ResourceDescription res in retList)
+                foreach (ResourceDescription res in retList)
                 {
                     foreach (Property pr in res.Properties)
                     {
@@ -441,7 +433,6 @@ namespace EMS.CIMAdapter.Importer
 
                     if (rd != null)
                     {
-
                         if (ModelCodeHelper.ExtractEntityIdFromGlobalId(rd.Id) > 0)
                         {
                             delta.AddDeltaOperation(DeltaOpType.Update, rd, true);
@@ -452,7 +443,6 @@ namespace EMS.CIMAdapter.Importer
                             delta.AddDeltaOperation(DeltaOpType.Insert, rd, true);
                             report.Report.Append("Analog ID = ").Append(analog.ID).Append(" SUCCESSFULLY converted to GID = ").AppendLine(rd.Id.ToString());
                         }
-                        
                     }
                     else
                     {
@@ -470,9 +460,9 @@ namespace EMS.CIMAdapter.Importer
         private ResourceDescription CreateAnalog(EMS.Analog analog)
         {
             ResourceDescription rd = null;
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            //NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			if (analog != null)
+            if (analog != null)
             {
                 long gid = 0;
 
@@ -488,23 +478,23 @@ namespace EMS.CIMAdapter.Importer
                 List<ResourceDescription> retList = new List<ResourceDescription>();
 
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCodeAnalog);
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeAnalog, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeAnalog, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                //iteratorId = networkModelGDASfProxy.GetExtentValues(modelCodeAnalog, properties);
+                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeAnalog, properties);
+                //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+                    //List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    //resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                //networkModelGDASfProxy.IteratorClose(iteratorId);
+                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-				foreach (ResourceDescription res in retList)
+                foreach (ResourceDescription res in retList)
                 {
                     foreach (Property pr in res.Properties)
                     {
