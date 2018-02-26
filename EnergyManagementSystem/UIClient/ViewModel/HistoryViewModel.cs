@@ -24,10 +24,12 @@ namespace UIClient.ViewModel
         private ICommand allGeneratorsUnheckedCommand;
         private ICommand selectedPeriodCommand;
         private PeriodValues selectedPeriod;
+        private GraphSample graphSampling;
         private List<long> generatorsFromNms = new List<long>();
         private List<Tuple<double, DateTime>> measurements;
         private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
         private ObservableCollection<Tuple<double, DateTime>> totalProduction = new ObservableCollection<Tuple<double, DateTime>>();
+        private ObservableCollection<Tuple<double, DateTime>> graphTotalProduction = new ObservableCollection<Tuple<double, DateTime>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>>();
 
         private ModelResourcesDesc modelResourcesDesc;
@@ -45,6 +47,7 @@ namespace UIClient.ViewModel
             Title = "History";
             startTime = DateTime.Now.AddMinutes(-1);
             endTime = DateTime.Now;
+            graphSampling = GraphSample.None;
             selectedPeriod = PeriodValues.None;
 
             internalSynchMachines = new List<ResourceDescription>(5);
@@ -146,7 +149,19 @@ namespace UIClient.ViewModel
                 totalProduction = value;
             }
         }
-    
+
+        public ObservableCollection<Tuple<double, DateTime>> GraphTotalProduction
+        {
+            get
+            {
+                return graphTotalProduction;
+            }
+            set
+            {
+                graphTotalProduction = value;
+            }
+        }
+
         public HistoryView HistoryView { get; set; }
         public PeriodValues SelectedPeriod
         {
@@ -241,7 +256,10 @@ namespace UIClient.ViewModel
         private void ShowDataCommandExecute(object obj)
         {
             ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
+            ObservableCollection<Tuple<double, DateTime>> tempData;
+            GraphTotalProduction.Clear();
             GeneratorsContainer.Clear();
+
             foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
             {
                 if (keyPair.Value == true)
@@ -268,9 +286,74 @@ namespace UIClient.ViewModel
                 }
             }
             TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
+            GraphTotalProduction = new ObservableCollection<Tuple<double, DateTime>>();
+
+            if (graphSampling != GraphSample.None)
+            {
+                DateTime tempStartTime = startTime;
+                DateTime tempEndTime = IncrementTime(tempStartTime);
+
+                double averageProduction = 0;
+                int numOfSamples = GetNumOfSamples();
+
+                for (int i = 0; i < numOfSamples; i++)
+                {
+                    tempData = new ObservableCollection<Tuple<double, DateTime>>(TotalProduction.Where(x => x.Item2 > tempStartTime && x.Item2 < tempEndTime));
+                    if (tempData != null && tempData.Count != 0)
+                    {
+                        averageProduction = tempData.Average(x => x.Item1);
+                    }
+                    else
+                    {
+                        averageProduction = 0;
+                    }
+
+                    tempStartTime = IncrementTime(tempStartTime);
+                    tempEndTime = IncrementTime(tempEndTime);
+                    GraphTotalProduction.Add(new Tuple<double, DateTime>(averageProduction, tempStartTime));
+                }
+            }
+            else
+            {
+                GraphTotalProduction = TotalProduction;
+            }
             IsExpandedSeparated = true;
-            OnPropertyChanged(nameof(TotalProduction));
+
+            OnPropertyChanged(nameof(GraphTotalProduction));
             OnPropertyChanged(nameof(GeneratorsContainer));
+        }
+
+        private int GetNumOfSamples()
+        {
+            switch (graphSampling)
+            {
+                case GraphSample.HourSample:
+                    return 12;
+                case GraphSample.TodaySample:
+                    return 24;
+                case GraphSample.YearSample:
+                    return 12;
+                default:
+                    return 0;
+            }
+        }
+
+        private DateTime IncrementTime(DateTime pointTime)
+        {
+            switch (graphSampling)
+            {
+                case GraphSample.HourSample:
+                    pointTime = pointTime.AddMinutes(5);
+                    return pointTime;
+                case GraphSample.TodaySample:
+                    pointTime = pointTime.AddHours(1);
+                    return pointTime;
+                case GraphSample.YearSample:
+                    pointTime = pointTime.AddMonths(1);
+                    return pointTime;
+                default:
+                    return pointTime;
+            }
         }
 
         private void VisibilityCheckedCommandExecute(long gid)
@@ -309,10 +392,12 @@ namespace UIClient.ViewModel
                 case PeriodValues.Last_Hour:
                     StartTime = DateTime.Now.AddHours(-1);
                     EndTime = DateTime.Now;
+                    graphSampling = GraphSample.HourSample;
                     break;
                 case PeriodValues.Today:
                     StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTime = DateTime.Now;
+                    graphSampling = GraphSample.TodaySample;
                     break;
                 case PeriodValues.Last_Month:
                     StartTime = DateTime.Now.AddMonths(-1);
@@ -325,6 +410,7 @@ namespace UIClient.ViewModel
                 case PeriodValues.Last_Year:
                     StartTime = DateTime.Now.AddYears(-1);
                     EndTime = DateTime.Now;
+                    graphSampling = GraphSample.YearSample;
                     break;
                 default:
                     break;

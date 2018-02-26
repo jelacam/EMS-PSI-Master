@@ -73,7 +73,8 @@
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
+												Style="{StaticResource LineSeriesStyle}"
+                                                >
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
                                 <Setter Property="Background" Value="DarkGreen"/>
@@ -189,11 +190,12 @@
                 <Expander Grid.Row="1" Margin="10" IsExpanded="False" Header="Total Production" Foreground="White">
                     <chartingToolkit:Chart Margin="10" Title="Total Production" Style="{StaticResource DashboardChartStyle}" Height="600">
 
-                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=TotalProduction}" 
-												DependentValueBinding="{Binding Path=Item1,Converter={StaticResource TestConvetrer}}" 
+                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProduction}" 
+												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
+												Style="{StaticResource LineSeriesStyle}"
+                                                Title="Power [kW]">
                             <chartingToolkit:LineSeries.DataPointStyle>
                                 <Style TargetType="chartingToolkit:LineDataPoint">
                                     <Setter Property="Background" Value="DarkGreen"/>
