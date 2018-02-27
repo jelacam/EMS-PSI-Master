@@ -516,7 +516,7 @@
 										ContentStringFormat="Time : {0}"/>
                         <ContentControl Content="{TemplateBinding DependentValue}" 
 										Foreground="{TemplateBinding Foreground}" 
-										ContentStringFormat="Mass : {0:0.##} t"/>
+										ContentStringFormat="Mass : {0:0.####} t"/>
                     </StackPanel>
                 </Grid>
             </ToolTipService.ToolTip>
@@ -544,7 +544,7 @@
                 </Grid>
             </ToolTipService.ToolTip>
             <ToolTipService.BetweenShowDelay>0</ToolTipService.BetweenShowDelay>
-            <Ellipse Name="Marker" Fill="{TemplateBinding BorderBrush}" Width="6" Height="6" 
+            <Ellipse Name="Marker" Fill="Transparent" Width="6" Height="6" 
 					 Opacity="1"
 					 VerticalAlignment="Center" HorizontalAlignment="Center">
             </Ellipse>
