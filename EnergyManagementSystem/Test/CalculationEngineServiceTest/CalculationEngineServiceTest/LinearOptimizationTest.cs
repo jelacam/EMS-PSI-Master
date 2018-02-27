@@ -277,8 +277,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationWindOptimizedLinearProperty")]
 		public void WindOptimizedLinearProperty()
 		{
-			lo.WindOptimizedLinear = windOptimizedLinear;
-			Assert.AreEqual(lo.WindOptimizedLinear, windOptimizedLinear);
+			lo.LAWind = windOptimizedLinear;
+			Assert.AreEqual(lo.LAWind, windOptimizedLinear);
 		}
 
 		/// <summary>
@@ -288,8 +288,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationWindOptimizedPctLinearProperty")]
 		public void WindOptimizedPctLinearProperty()
 		{
-			lo.WindOptimizedPctLinear = windOptimizedPctLinear;
-			Assert.AreEqual(lo.WindOptimizedPctLinear, windOptimizedPctLinear);
+			lo.LAWindPct = windOptimizedPctLinear;
+			Assert.AreEqual(lo.LAWindPct, windOptimizedPctLinear);
 		}
 
 		/// <summary>
@@ -299,8 +299,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationProfitProperty")]
 		public void ProfitProperty()
 		{
-			lo.Profit = profit;
-			Assert.AreEqual(lo.Profit, profit);
+			lo.LAProfit = profit;
+			Assert.AreEqual(lo.LAProfit, profit);
 		}
 
 		/// <summary>
@@ -310,8 +310,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationCO2EmissionNonRenewableProperty")]
 		public void CO2EmissionNonRenewableProperty()
 		{
-			lo.CO2EmissionNonRenewable = co2EmissionNonRenewable;
-			Assert.AreEqual(lo.CO2EmissionNonRenewable, co2EmissionNonRenewable);
+			lo.LACO2WithoutRenewable = co2EmissionNonRenewable;
+			Assert.AreEqual(lo.LACO2WithoutRenewable, co2EmissionNonRenewable);
 		}
 
 		/// <summary>
@@ -321,8 +321,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationCO2EmmissionRenewableProperty")]
 		public void CO2EmmissionRenewableProperty()
 		{
-			lo.CO2EmmissionRenewable = co2EmmissionRenewable;
-			Assert.AreEqual(lo.CO2EmmissionRenewable, co2EmmissionRenewable);
+			lo.LACO2Renewable = co2EmmissionRenewable;
+			Assert.AreEqual(lo.LACO2Renewable, co2EmmissionRenewable);
 		}
 
 		/// <summary>
@@ -332,8 +332,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationTotalCostWithRenewableProperty")]
 		public void TotalCostWithRenewableProperty()
 		{
-			lo.TotalCostWithRenewable = totalCostWithRenewable;
-			Assert.AreEqual(lo.TotalCostWithRenewable, totalCostWithRenewable);
+			lo.LACostRenewable = totalCostWithRenewable;
+			Assert.AreEqual(lo.LACostRenewable, totalCostWithRenewable);
 		}
 
 		/// <summary>
@@ -343,8 +343,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationTotalCostNonRenewableProperty")]
 		public void TotalCostNonRenewableProperty()
 		{
-			lo.TotalCostNonRenewable = totalCostNonRenewable;
-			Assert.AreEqual(lo.TotalCostNonRenewable, totalCostNonRenewable);
+			lo.LACostWithoutRenewable = totalCostNonRenewable;
+			Assert.AreEqual(lo.LACostWithoutRenewable, totalCostNonRenewable);
 		}
 
 		/// <summary>

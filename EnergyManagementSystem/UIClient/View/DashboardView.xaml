@@ -21,9 +21,9 @@
         <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter" />
         <converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter" />
         <converters:LastValueShowConverter x:Key="LastValueShowConverter" />
-		<converters:BindableAxisConverter x:Key="BindableAxisConverter" />
+        <converters:BindableAxisConverter x:Key="BindableAxisConverter" />
 
-		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="commonMeas:OptimizationType" />
@@ -103,8 +103,8 @@
                         </chartingToolkit:LineSeries.IndependentAxis>
 
                         <chartingToolkit:LineSeries.DependentRangeAxis>
-							<chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0">
-								<!--<chartingToolkit:LinearAxis.Maximum>
+                            <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)" Minimum="0">
+                                <!--<chartingToolkit:LinearAxis.Maximum>
 									<MultiBinding Converter="{StaticResource BindableAxisConverter}" ConverterParameter="Max">
 										<Binding Path="DataContext.Key" RelativeSource="{RelativeSource AncestorType={x:Type chartingToolkit:Chart}}"></Binding>
 										<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
@@ -125,8 +125,8 @@
 									</MultiBinding>
 								</chartingToolkit:LinearAxis.Interval>-->
 
-							</chartingToolkit:LinearAxis>
-							
+                            </chartingToolkit:LinearAxis>
+
                         </chartingToolkit:LineSeries.DependentRangeAxis>
                     </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
@@ -276,41 +276,93 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0">
 
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+                <DockPanel Grid.Row="0">
+                    <Expander IsExpanded="True" Header="Total Generation/Demand graph" Foreground="White" Margin="10,5">
+                        <Grid>
+                            <chartingToolkit:Chart Title="Total Generation/Demand" 
+											   Style="{StaticResource DashboardChartStyle}" Height="400">
+
+                                <chartingToolkit:LineSeries Title="Total Generation"  
+												ItemsSource="{Binding Path=GenerationList}" 
+												DependentValueBinding="{Binding Path=Value}" 
+												IndependentValueBinding="{Binding Path=Key}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
+                                            <Setter Property="Background" Value="DarkGreen"/>
+                                            <Setter Property="Template" Value="{StaticResource LineDataPointPowerTemplate}"/>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+                                </chartingToolkit:LineSeries>
+
+                                <chartingToolkit:LineSeries Title="Total Demand"  
+												ItemsSource="{Binding Path=DemandList}" 
+												DependentValueBinding="{Binding Path=Value}" 
+												IndependentValueBinding="{Binding Path=Key}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}">
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
+                                            <Setter Property="Background" Value="DarkOrange"/>
+                                            <Setter Property="Template" Value="{StaticResource LineDataPointPowerTemplate}"/>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+
+                                    <chartingToolkit:LineSeries.IndependentAxis>
+                                        <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"/>
+                                    </chartingToolkit:LineSeries.IndependentAxis>
+
+                                    <chartingToolkit:LineSeries.DependentRangeAxis>
+                                        <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
+                                    </chartingToolkit:LineSeries.DependentRangeAxis>
+
+                                </chartingToolkit:LineSeries>
+                            </chartingToolkit:Chart>
+                        </Grid>
+                    </Expander>
+                </DockPanel>
+                <DockPanel Grid.Row="1">
+
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10,10,10,0">
                         <TextBlock  Style="{StaticResource Title}" Foreground="Green" Text="Generation:" />
                         <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="{Binding CurrentProduction}" Margin="5,0,0,0" />
                         <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="kW" Margin="5,0,0,0" />
                     </StackPanel>
-
-                    <ItemsControl  ItemsSource="{Binding GeneratorsContainer}"
+                    <Expander IsExpanded="True" Header="Generation graphs" Foreground="White" Margin="10,5">
+                        <ItemsControl  ItemsSource="{Binding GeneratorsContainer}"
 								   ItemTemplate="{StaticResource GraphGeneratorTemplate}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Expander>
                 </DockPanel>
 
-                <DockPanel Grid.Row="1">
+                <DockPanel Grid.Row="2">
 
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="20,20,10,0">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10,10,10,0">
                         <TextBlock  Style="{StaticResource Title}" Foreground="DarkOrange" Text="Demand:" />
                         <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="{Binding CurrentConsumption}" Margin="5,0,0,0" />
                         <TextBlock  Style="{StaticResource SubTitle}" Foreground="DarkOrange" Text="kW" Margin="5,0,0,0" />
                     </StackPanel>
 
-                    <ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}"
+                    <Expander IsExpanded="False" Header="Demand graphs" Foreground="White" Margin="10,5">
+                        <ItemsControl  ItemsSource="{Binding EnergyConsumersContainer}"
 								   ItemTemplate="{StaticResource GraphConsumerTemplate}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Expander>
+               
                 </DockPanel>
             </Grid>
         </ScrollViewer>
