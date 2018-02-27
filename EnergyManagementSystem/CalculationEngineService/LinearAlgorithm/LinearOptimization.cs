@@ -212,8 +212,8 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 									OptimizedLinear += optModel.LinearOptimizedValue;
-									LACO2Renewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;						
-									LACostRenewable += optModel.CalculatePrice(float.Parse(item.ToDouble().ToString()));
+									LACO2Renewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+									LACostRenewable += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
 
 									if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
 									{
@@ -240,7 +240,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 									LACO2WithoutRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
-									LACostWithoutRenewable += optModel.CalculatePrice(float.Parse(item.ToDouble().ToString()));
+									LACostWithoutRenewable += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
 								}
 							}
 
