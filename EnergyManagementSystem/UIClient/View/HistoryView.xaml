@@ -60,7 +60,7 @@
 
         <DataTemplate x:Key="GraphGeneratorTemplate">
             <Grid>
-                <chartingToolkit:Chart Style="{StaticResource DashboardChartStyle}" Width="400" Height="300">
+                <chartingToolkit:Chart Style="{StaticResource DashboardChartStyle}" Width="500" Height="300">
 
                     <chartingToolkit:Chart.Title>
                         <MultiBinding Converter="{StaticResource GidToMridConverter}">
@@ -79,7 +79,6 @@
                             <Style TargetType="chartingToolkit:LineDataPoint">
                                 <Setter Property="Background" Value="DarkGreen"/>
                                 <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-
                             </Style>
                         </chartingToolkit:LineSeries.DataPointStyle>
 
@@ -97,7 +96,7 @@
         </DataTemplate>
 
     </UserControl.Resources>
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid ScrollViewer.CanContentScroll="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -195,7 +194,7 @@
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
 												Style="{StaticResource LineSeriesStyle}"
-                                                Title="Power [kW]">
+                                                Title="Generation [kW]">
                             <chartingToolkit:LineSeries.DataPointStyle>
                                 <Style TargetType="chartingToolkit:LineDataPoint">
                                     <Setter Property="Background" Value="DarkGreen"/>

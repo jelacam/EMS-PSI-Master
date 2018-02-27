@@ -4,6 +4,7 @@ using EMS.ServiceContracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using UIClient.Model;
 using UIClient.View;
@@ -16,6 +17,7 @@ namespace UIClient.ViewModel
         #region Fields
 
         private ObservableCollection<Tuple<double, double, DateTime>> cO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
+        private ObservableCollection<Tuple<double, double, DateTime>> graphCO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
         private ObservableCollection<Tuple<double, double>> windContainer = new ObservableCollection<Tuple<double, double>>();
         private ObservableCollection<Tuple<double, double, double>> savingContainer = new ObservableCollection<Tuple<double, double, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieData = new ObservableCollection<KeyValuePair<string, double>>();
@@ -43,6 +45,7 @@ namespace UIClient.ViewModel
         private double totalWindSaving;
         private double totalCostWithoutRenewable;
         private double totalCostWithRenewable;
+        private GraphSample graphSampling;
 
         #endregion
 
@@ -61,6 +64,7 @@ namespace UIClient.ViewModel
             SelectedPeriodCO2 = PeriodValues.None;
             SelectedPeriodSaving = PeriodValues.None;
             SelectedPeriodWind = PeriodValues.None;
+            graphSampling = GraphSample.None;
         }
 
         #region Properties
@@ -210,6 +214,18 @@ namespace UIClient.ViewModel
             }
         }
 
+        public ObservableCollection<Tuple<double, double, DateTime>> GraphCO2EmissionContainer
+        {
+            get
+            {
+                return graphCO2EmissionContainer;
+            }
+            set
+            {
+                graphCO2EmissionContainer = value;
+            }
+        }
+
         public ObservableCollection<Tuple<double, double>> WindContainer
         {
             get
@@ -267,6 +283,7 @@ namespace UIClient.ViewModel
             set
             {
                 startTimeCO2 = value;
+                graphSampling = GraphSample.None;
                 OnPropertyChanged(nameof(StartTimeCO2));
             }
         }
@@ -300,6 +317,7 @@ namespace UIClient.ViewModel
             set
             {
                 endTimeCO2 = value;
+                graphSampling = GraphSample.None;
                 OnPropertyChanged(nameof(EndTimeCO2));
             }
         }
@@ -382,6 +400,11 @@ namespace UIClient.ViewModel
         {
             TotalCO2Reduction = 0;
             TotalCO2 = 0;
+            double averageEmissionWithoutRenewable;
+            double averageEmiisionWithRenewable;
+            ObservableCollection<Tuple<double, double, DateTime>> tempData;
+            GraphCO2EmissionContainer.Clear();
+
             try
             {
                 CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2));
@@ -392,12 +415,45 @@ namespace UIClient.ViewModel
                         TotalCO2 += item.Item1;
                         TotalCO2Reduction += (item.Item1 - item.Item2);
                     }
+
+                    if (graphSampling != GraphSample.None)
+                    {
+                        DateTime tempStartTime = StartTimeCO2;
+                        DateTime tempEndTime = IncrementTime(tempStartTime);
+
+                        averageEmissionWithoutRenewable = 0;
+                        averageEmiisionWithRenewable = 0;
+
+                        while (tempEndTime <= EndTimeCO2)
+                        {
+                            tempData = new ObservableCollection<Tuple<double,double, DateTime>>(CO2EmissionContainer.Where(x => x.Item3 > tempStartTime && x.Item3 < tempEndTime));
+                            if (tempData != null && tempData.Count != 0)
+                            {
+                                averageEmissionWithoutRenewable = tempData.Average(x => x.Item1);
+                                averageEmiisionWithRenewable = tempData.Average(x => x.Item2);
+                            }
+                            else
+                            {
+                                averageEmissionWithoutRenewable = 0;
+                                averageEmiisionWithRenewable = 0;
+                            }
+
+                            tempStartTime = IncrementTime(tempStartTime);
+                            tempEndTime = IncrementTime(tempEndTime);
+                            GraphCO2EmissionContainer.Add(new Tuple<double,double, DateTime>(averageEmissionWithoutRenewable, averageEmiisionWithRenewable, tempStartTime));
+                        }
+                    }
+                    else
+                    {
+                        GraphCO2EmissionContainer = CO2EmissionContainer;
+                    }
                 }
             }
             catch(Exception ex)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
             }
+
             PieData.Clear();
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));
@@ -406,7 +462,7 @@ namespace UIClient.ViewModel
 
             OnPropertyChanged(nameof(PieData));
             OnPropertyChanged(nameof(TotalCO2Reduction));
-            OnPropertyChanged(nameof(CO2EmissionContainer));
+            OnPropertyChanged(nameof(GraphCO2EmissionContainer));
         }
 
         private void ViewWindProductionDataCommandExecute(Object obj)
@@ -447,22 +503,27 @@ namespace UIClient.ViewModel
                 case PeriodValues.Last_Hour:
                     StartTimeCO2 = DateTime.Now.AddHours(-1);
                     EndTimeCO2 = DateTime.Now;
+                    graphSampling = GraphSample.HourSample;
                     break;
                 case PeriodValues.Today:
                     StartTimeCO2 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTimeCO2 = DateTime.Now;
+                    graphSampling = GraphSample.TodaySample;
                     break;
                 case PeriodValues.Last_Month:
                     StartTimeCO2 = DateTime.Now.AddMonths(-1);
                     EndTimeCO2 = DateTime.Now;
+                    graphSampling = GraphSample.LastMonthSample;
                     break;
                 case PeriodValues.Last_4_Month:
                     StartTimeCO2 = DateTime.Now.AddMonths(-4);
                     EndTimeCO2 = DateTime.Now;
+                    graphSampling = GraphSample.Last4MonthSample;
                     break;
                 case PeriodValues.Last_Year:
                     StartTimeCO2 = DateTime.Now.AddYears(-1);
                     EndTimeCO2 = DateTime.Now;
+                    graphSampling = GraphSample.YearSample;
                     break;
                 default:
                     break;
@@ -528,5 +589,34 @@ namespace UIClient.ViewModel
         }
 
         #endregion
+
+        #region Private Methods
+
+        private DateTime IncrementTime(DateTime pointTime)
+        {
+            switch (graphSampling)
+            {
+                case GraphSample.HourSample:
+                    pointTime = pointTime.AddMinutes(5);
+                    return pointTime;
+                case GraphSample.TodaySample:
+                    pointTime = pointTime.AddHours(1);
+                    return pointTime;
+                case GraphSample.YearSample:
+                    pointTime = pointTime.AddMonths(1);
+                    return pointTime;
+                case GraphSample.LastMonthSample:
+                    pointTime = pointTime.AddDays(1);
+                    return pointTime;
+                case GraphSample.Last4MonthSample:
+                    pointTime = pointTime.AddDays(7);
+                    return pointTime;
+                default:
+                    return pointTime;
+            }
+        }
+
+        #endregion
+
     }
 }

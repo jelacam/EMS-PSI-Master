@@ -164,7 +164,7 @@ namespace UIClient.ViewModel
 
         public HistoryView HistoryView { get; set; }
 
-		public PeriodValues SelectedPeriod
+        public PeriodValues SelectedPeriod
         {
             get
             {
@@ -209,7 +209,7 @@ namespace UIClient.ViewModel
             set
             {
                 startTime = value;
-				graphSampling = GraphSample.None;
+                graphSampling = GraphSample.None;
                 OnPropertyChanged(nameof(StartTime));
             }
         }
@@ -220,8 +220,8 @@ namespace UIClient.ViewModel
             set
             {
                 endTime = value;
-				graphSampling = GraphSample.None;
-				OnPropertyChanged(nameof(EndTime));
+                graphSampling = GraphSample.None;
+                OnPropertyChanged(nameof(EndTime));
             }
         }
 
@@ -260,6 +260,7 @@ namespace UIClient.ViewModel
         {
             ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
             ObservableCollection<Tuple<double, DateTime>> tempData;
+            ObservableCollection<Tuple<double, DateTime>> tempContainer = new ObservableCollection<Tuple<double, DateTime>>();
             GraphTotalProduction.Clear();
             GeneratorsContainer.Clear();
 
@@ -276,45 +277,74 @@ namespace UIClient.ViewModel
                             continue;
                         }
 
-                        GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb)));
+                        if (graphSampling != GraphSample.None)
+                        {
+                            DateTime tempStartTime = startTime;
+                            DateTime tempEndTime = IncrementTime(tempStartTime);
+
+                            double averageProduction;
+
+                            while (tempEndTime <= endTime)
+                            {
+                                tempData = new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb.Where(x => x.Item2 > tempStartTime && x.Item2 < tempEndTime));
+                                if (tempData != null && tempData.Count != 0)
+                                {
+                                    averageProduction = tempData.Average(x => x.Item1);
+                                }
+                                else
+                                {
+                                    averageProduction = 0;
+                                }
+
+                                tempStartTime = IncrementTime(tempStartTime);
+                                tempEndTime = IncrementTime(tempEndTime);
+
+                                tempContainer.Add(new Tuple<double, DateTime>(averageProduction, tempStartTime));
+                            }
+                            GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(tempContainer)));
+                        }
+                        else
+                        {
+                            GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb)));
+                        }
 
                         measurementsFromDb.Clear();
                         measurementsFromDb = null;
+                        tempContainer.Clear();
                     }
                     catch (Exception ex)
                     {
                         CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
                     }
-
                 }
             }
 
             TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
             GraphTotalProduction = new ObservableCollection<Tuple<double, DateTime>>();
 
-			if (graphSampling != GraphSample.None)
-			{
-				DateTime tempStartTime = startTime;
-				DateTime tempEndTime = IncrementTime(tempStartTime);
+            if (graphSampling != GraphSample.None)
+            {
+                DateTime tempStartTime = startTime;
+                DateTime tempEndTime = IncrementTime(tempStartTime);
 
-				double averageProduction;
+                double averageProduction;
 
-				while (tempEndTime <= endTime)
-				{
-					tempData = new ObservableCollection<Tuple<double, DateTime>>(TotalProduction.Where(x => x.Item2 > tempStartTime && x.Item2 < tempEndTime));
-					if (tempData != null && tempData.Count != 0)
-					{
-						averageProduction = tempData.Average(x => x.Item1);
-					}
-					else
-					{
-						averageProduction = 0;
-					}
+                while (tempEndTime <= endTime)
+                {
+                    tempData = new ObservableCollection<Tuple<double, DateTime>>(TotalProduction.Where(x => x.Item2 > tempStartTime && x.Item2 < tempEndTime));
+                    if (tempData != null && tempData.Count != 0)
+                    {
+                        averageProduction = tempData.Average(x => x.Item1);
+                    }
+                    else
+                    {
+                        averageProduction = 0;
+                    }
 
-					tempStartTime = IncrementTime(tempStartTime);
-					tempEndTime = IncrementTime(tempEndTime);
-					GraphTotalProduction.Add(new Tuple<double, DateTime>(averageProduction, tempStartTime));
-				}
+                    tempStartTime = IncrementTime(tempStartTime);
+                    tempEndTime = IncrementTime(tempEndTime);
+                    GraphTotalProduction.Add(new Tuple<double, DateTime>(averageProduction, tempStartTime));
+                }
             }
             else
             {
@@ -339,12 +369,12 @@ namespace UIClient.ViewModel
                 case GraphSample.YearSample:
                     pointTime = pointTime.AddMonths(1);
                     return pointTime;
-				case GraphSample.LastMonthSample:
-					pointTime = pointTime.AddDays(1);
-					return pointTime;
-				case GraphSample.Last4MonthSample:
-					pointTime = pointTime.AddDays(7);
-					return pointTime;
+                case GraphSample.LastMonthSample:
+                    pointTime = pointTime.AddDays(1);
+                    return pointTime;
+                case GraphSample.Last4MonthSample:
+                    pointTime = pointTime.AddDays(7);
+                    return pointTime;
                 default:
                     return pointTime;
             }
@@ -396,12 +426,12 @@ namespace UIClient.ViewModel
                 case PeriodValues.Last_Month:
                     StartTime = DateTime.Now.AddMonths(-1);
                     EndTime = DateTime.Now;
-					graphSampling = GraphSample.LastMonthSample;
+                    graphSampling = GraphSample.LastMonthSample;
                     break;
                 case PeriodValues.Last_4_Month:
                     StartTime = DateTime.Now.AddMonths(-4);
                     EndTime = DateTime.Now;
-					graphSampling = GraphSample.Last4MonthSample;
+                    graphSampling = GraphSample.Last4MonthSample;
                     break;
                 case PeriodValues.Last_Year:
                     StartTime = DateTime.Now.AddYears(-1);
