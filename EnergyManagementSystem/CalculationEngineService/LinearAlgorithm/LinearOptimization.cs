@@ -48,7 +48,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// maximal production of generators
 		/// </summary>
 		private float maxProduction = 0;
-		
+
 		#endregion
 
 		#region Properties
@@ -56,50 +56,15 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// <summary>
 		/// Gets or sets total production
 		/// </summary>
-		public float OptimizedLinear { get; set; }
+		public float OptimizedLinear { get; set; }		
 
-		/// <summary>
-		/// Gets or sets total production of wind generators
-		/// </summary>
-		public float WindOptimizedLinear { get; set; }
-
-		/// <summary>
-		/// Gets or sets percentage of wind production
-		/// </summary>
-		public float WindOptimizedPctLinear { get; set; }
-
-		/// <summary>
-		/// Gets or sets profit ($) of using wind generators
-		/// </summary>
-		public float Profit { get; set; }
-
-		/// <summary>
-		/// Gets or sets emission of CO2 non renewable generator
-		/// </summary>
-		public float CO2EmissionNonRenewable { get; set; }
-
-		/// <summary>
-		/// Gets or sets emission of CO2 with renewable generator
-		/// </summary>
-		public float CO2EmmissionRenewable { get; set; }
-
-		/// <summary>
-		/// Gets or sets total cost for optimization with renewable generators
-		/// </summary>
-		public float TotalCostWithRenewable
-		{
-			get { return totalCostWithRenewable; }
-			set { totalCostWithRenewable = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets total cost for optimization without renewable generators
-		/// </summary>
-		public float TotalCostNonRenewable
-		{
-			get { return totalCostNonRenewable; }
-			set { totalCostNonRenewable = value; }
-		}
+		public float LACostRenewable { get; set; }
+		public float LACostWithoutRenewable { get; set; }
+		public float LAProfit { get; set; }
+		public float LACO2Renewable { get; set; }
+		public float LACO2WithoutRenewable { get; set; }
+		public float LAWind { get; set; }
+		public float LAWindPct { get; set; }
 
 		#endregion
 
@@ -110,14 +75,15 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// <param name="maxProduction">maximal production of generators</param>
 		public LinearOptimization(float minProduction, float maxProduction)
 		{
-			totalCostWithRenewable = 0;
-			totalCostNonRenewable = 0;
+			LACostRenewable = 0;
+			LACostWithoutRenewable = 0;
+			LAProfit = 0;
+			LACO2Renewable = 0;
+			LACO2WithoutRenewable = 0;
+			LAWind = 0;
+			LAWindPct = 0;
+			
 			OptimizedLinear = 0;
-			WindOptimizedLinear = 0;
-			WindOptimizedPctLinear = 0;
-			Profit = 0;
-			CO2EmissionNonRenewable = 0;
-			CO2EmmissionRenewable = 0;
 
 			this.minProduction = minProduction;
 			this.maxProduction = maxProduction;
@@ -153,11 +119,10 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						}
 					}
 
-					//mora prvo optimizacija bez vetrogeneratora
 					optModelMapNonRenewable = StartLinearOptimization(optModelMapNonRenewable, consumption, false, maxProduction);
 					optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
 
-					Profit = totalCostNonRenewable - totalCostWithRenewable;
+					LAProfit = LACostWithoutRenewable - LACostRenewable;
 				}
 
 				return optModelMap;
@@ -192,6 +157,8 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 					{
 						Decision help;
 						string goal = string.Empty;
+						string goalRenewable = string.Empty;
+						string goalNonRenewable = string.Empty;
 						string limit = "limit";
 						string production = consumption.ToString() + "<=";
 						Term termLimit;
@@ -199,27 +166,42 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						foreach (var optModel in optModelMap)
 						{
 							help = decisions[optModel.Value.GlobalId];
-							
+
 							termLimit = optModel.Value.MinPower <= help <= optModel.Value.MaxPower;
 							model.AddConstraint(limit + optModel.Value.GlobalId, termLimit);
 
 							production += help.ToString() + "+";
-							goal += help.ToString() + "*" + optModel.Value.Price.ToString() + "+";					
+							goal += "(" + optModel.Value.Curve.A.ToString() + "*" + help.ToString() + "+" + optModel.Value.Curve.B.ToString() + ")*" + optModel.Value.EmsFuel.UnitPrice.ToString() + "+";
+
+							if (optModel.Value.Renewable)
+							{
+								goalRenewable += help.ToString() + "+";
+							}
+							else
+							{
+								goalNonRenewable += help.ToString() + "+";
+							}
 						}
 
 						production = production.Substring(0, production.Length - 1);
 						production += "<=" + maxProductionLimit.ToString();
-						model.AddConstraint("production", production);						
+						model.AddConstraint("production", production);
 
 						goal = goal.Substring(0, goal.Length - 1);
 						model.AddGoal("cost", GoalKind.Minimize, goal);
+
+						goalRenewable = goalRenewable.Substring(0, goalRenewable.Length - 1);
+						model.AddGoal("renewableMax", GoalKind.Maximize, goalRenewable);
+
+						goalNonRenewable = goalNonRenewable.Substring(0, goalNonRenewable.Length - 1);
+						model.AddGoal("nonRenewableMin", GoalKind.Minimize, goalNonRenewable);
 
 						Solution solution = context.Solve(new SimplexDirective());
 						Report report = solution.GetReport();
 
 						if (renewable) //sa vetrogeneratorima
 						{
-							//Console.Write("{0}", report);
+							Console.Write("{0}", report);
 
 							string name = string.Empty;
 							foreach (var item in model.Decisions)
@@ -230,27 +212,25 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 									OptimizedLinear += optModel.LinearOptimizedValue;
-									CO2EmmissionRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+									LACO2Renewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;						
+									LACostRenewable += optModel.CalculatePrice(float.Parse(item.ToDouble().ToString()));
+
 									if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
 									{
-										WindOptimizedLinear += optModel.LinearOptimizedValue;
+										LAWind += optModel.LinearOptimizedValue;
 									}
 								}
 							}
 
-							totalCostWithRenewable = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
+							LAWindPct = 100 * LAWind / OptimizedLinear;
 
-							WindOptimizedPctLinear = 100 * WindOptimizedLinear / OptimizedLinear;
-
-							Console.WriteLine("Linear optimization: {0}kW", OptimizedLinear);
-							Console.WriteLine("Linear optimization wind: {0}kW ({1}%)", WindOptimizedLinear, WindOptimizedPctLinear);
-							Console.WriteLine("Linear optimization CO2: {0}", CO2EmmissionRenewable);
+							//Console.WriteLine("Linear optimization: {0}kW", OptimizedLinear);
+							//Console.WriteLine("Linear optimization wind: {0}kW ({1}%)", LAWind, LAWindPct);
+							//Console.WriteLine("Linear optimization with renewable CO2: {0}", LACO2Renewable);
 
 						}
 						else //bez vetrogeneratora
 						{
-							totalCostNonRenewable = float.Parse(model.Goals.FirstOrDefault().ToDouble().ToString());
-
 							string name = string.Empty;
 							foreach (var item in model.Decisions)
 							{
@@ -259,9 +239,12 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								if (optModelMap.TryGetValue(long.Parse(name), out optModel))
 								{
 									optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
-									CO2EmissionNonRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+									LACO2WithoutRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+									LACostWithoutRenewable += optModel.CalculatePrice(float.Parse(item.ToDouble().ToString()));
 								}
 							}
+
+							//Console.WriteLine("Linear optimization without renewable CO2: {0}", LACO2WithoutRenewable);
 						}
 					}
 
