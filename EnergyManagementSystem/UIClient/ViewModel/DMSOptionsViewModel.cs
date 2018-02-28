@@ -392,10 +392,34 @@ namespace UIClient.ViewModel
                     }
                 }
             }
-            catch (Exception ex)
+            catch (TimeoutException tex)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", tex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for CO2 Emission");
+
+                try
+                {
+                    List<Tuple<double, double, DateTime>> co2Emission = CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2);
+                    CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(co2Emission);
+                    if (CO2EmissionContainer != null && CO2EmissionContainer.Count > 0)
+                    {
+                        foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                        {
+                            TotalCO2 += item.Item1;
+                            TotalCO2Reduction += (item.Item1 - item.Item2);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", e.Message);
+                }
             }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", e.Message);
+            }
+
             PieData.Clear();
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));

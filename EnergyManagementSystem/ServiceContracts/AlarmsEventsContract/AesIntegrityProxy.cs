@@ -1,4 +1,5 @@
-﻿using EMS.CommonMeasurement;
+﻿using EMS.Common;
+using EMS.CommonMeasurement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,19 @@ namespace EMS.ServiceContracts
         private static IAesIntegirtyContract proxy = null;
         private static ChannelFactory<IAesIntegirtyContract> factory = null;
 
-
         public static IAesIntegirtyContract Instance
         {
             get
             {
+                if (proxy != null)
+                {
+                    if (!((ICommunicationObject)proxy).State.Equals(CommunicationState.Opened))
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for AesIntegrityProxy");
+                        factory = new ChannelFactory<IAesIntegirtyContract>("AesIntegrityEndpoint");
+                        proxy = factory.CreateChannel();
+                    }
+                }
                 if (proxy == null)
                 {
                     factory = new ChannelFactory<IAesIntegirtyContract>("AesIntegrityEndpoint");
@@ -34,7 +43,6 @@ namespace EMS.ServiceContracts
                 }
             }
         }
-
 
         public List<AlarmHelper> InitiateIntegrityUpdate()
         {

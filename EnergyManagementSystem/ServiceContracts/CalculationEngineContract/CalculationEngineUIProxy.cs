@@ -27,11 +27,20 @@ namespace EMS.ServiceContracts
         {
             get
             {
+                if (proxy != null)
+                {
+                    if (!((ICommunicationObject)proxy).State.Equals(CommunicationState.Opened))
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for CalculationEngineUIProxy");
+                        factory = new ChannelFactory<ICalculationEngineUIContract>("*");
+                        proxy = factory.CreateChannel();
+                    }
+                }
                 if (proxy == null)
                 {
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for CalculationEngineUIProxy");
                     factory = new ChannelFactory<ICalculationEngineUIContract>("*");
                     proxy = factory.CreateChannel();
-                    IContextChannel cc = proxy as IContextChannel;
                 }
 
                 return proxy;
@@ -80,20 +89,16 @@ namespace EMS.ServiceContracts
 
         public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
         {
+            System.Diagnostics.Debugger.Launch();
             List<Tuple<double, double, DateTime>> co2Emission = new List<Tuple<double, double, DateTime>>();
             try
             {
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Client request for CO2 emission for time period: {0} - {1}", startTime.ToString(), endTime.ToString());
                 co2Emission = proxy.GetCO2Emission(startTime, endTime);
             }
-            catch (CommunicationException ce)
+            catch (Exception e)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Communication exception for CalculationEngineUIProxy. Message: {0}", ce.Message);
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new connection and retry");
-                if (((ICommunicationObject)proxy).State.Equals(CommunicationState.Faulted))
-                {
-                    proxy = null;
-                    co2Emission = Instance.GetCO2Emission(startTime, endTime);
-                }
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Timeout Exception for CalculationEngineUIProxy. Message: {0}", e.Message);
             }
 
             return co2Emission;

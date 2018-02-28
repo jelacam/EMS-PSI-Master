@@ -4,9 +4,9 @@
     <Parameter Name="TransactionManagerCloudService_InstanceCount" Value="1" />
     <Parameter Name="AlarmsEventsCloudService_InstanceCount" Value="1" />
     <Parameter Name="NetworkModelCloudService_InstanceCount" Value="1" />
-    <Parameter Name="ScadaCommandingCloudService_InstanceCount" Value="1" />
-    <Parameter Name="ScadaKrunchingCloudService_InstanceCount" Value="1" />
-    <Parameter Name="ScadaCollectingCloudService_InstanceCount" Value="1" />
+    <Parameter Name="ScadaCommandingCloudService_InstanceCount" Value="2" />
+    <Parameter Name="ScadaKrunchingCloudService_InstanceCount" Value="2" />
+    <Parameter Name="ScadaCollectingCloudService_InstanceCount" Value="2" />
     <Parameter Name="CalculationEngineCloudService_PartitionCount" Value="2" />
     <Parameter Name="CalculationEngineCloudService_MinReplicaSetSize" Value="3" />
     <Parameter Name="CalculationEngineCloudService_TargetReplicaSetSize" Value="3" />

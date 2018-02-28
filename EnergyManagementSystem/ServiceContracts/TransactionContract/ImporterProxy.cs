@@ -17,6 +17,15 @@ namespace EMS.ServiceContracts
         {
             get
             {
+                if (proxy != null)
+                {
+                    if (!((ICommunicationObject)proxy).State.Equals(CommunicationState.Opened))
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for ImporterProxy");
+                        factory = new ChannelFactory<IImporterContract>("ImporterTransaction");
+                        proxy = factory.CreateChannel();
+                    }
+                }
                 if (proxy == null)
                 {
                     factory = new ChannelFactory<IImporterContract>("ImporterTransaction");

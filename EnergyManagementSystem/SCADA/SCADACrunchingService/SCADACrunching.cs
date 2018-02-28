@@ -399,18 +399,18 @@ namespace EMS.Services.SCADACrunchingService
 
                     bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                    bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
+                    //bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
 
-                    if (flatlineAlarm)
-                    {
-                        AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
-                        alarmH.Type = AlarmType.FLATLINE;
-                        alarmH.Persistent = PersistentState.Nonpersistent;
-                        alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
-                        //AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+                    //if (flatlineAlarm)
+                    //{
+                    //    AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
+                    //    alarmH.Type = AlarmType.FLATLINE;
+                    //    alarmH.Persistent = PersistentState.Nonpersistent;
+                    //    alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
+                    //    //AlarmsEventsProxy.Instance.AddAlarm(alarmH);
 
-                        alarmsEventsSfProxy.AddAlarm(alarmH);
-                    }
+                    //    alarmsEventsSfProxy.AddAlarm(alarmH);
+                    //}
 
                     // na signalu vise nema alarma - update state
                     // sa Active na Cleared
@@ -482,28 +482,28 @@ namespace EMS.Services.SCADACrunchingService
             int numberOfResources = 2;
 
             List<ResourceDescription> retList = new List<ResourceDescription>(5);
-			NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
+            NetworkModelGDASfProxy networkModelGDASfProxy = new NetworkModelGDASfProxy();
 
-			try
+            try
             {
                 properties = modelResourcesDesc.GetAllPropertyIds(modelCode);
 
-				iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
-				//iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
-				resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-				//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                iteratorId = networkModelGDASfProxy.GetExtentValues(modelCode, properties);
+                //iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCode, properties);
+                resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                //resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-				while (resourcesLeft > 0)
+                while (resourcesLeft > 0)
                 {
-					List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
-					//List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-					retList.AddRange(rds);
-					resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
-					//resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-				}
-				networkModelGDASfProxy.IteratorClose(iteratorId);
-				//NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
-			}
+                    List<ResourceDescription> rds = networkModelGDASfProxy.IteratorNext(numberOfResources, iteratorId);
+                    //List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+                    retList.AddRange(rds);
+                    resourcesLeft = networkModelGDASfProxy.IteratorResourcesLeft(iteratorId);
+                    //resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+                }
+                networkModelGDASfProxy.IteratorClose(iteratorId);
+                //NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+            }
             catch (Exception e)
             {
                 message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCode, e.Message);

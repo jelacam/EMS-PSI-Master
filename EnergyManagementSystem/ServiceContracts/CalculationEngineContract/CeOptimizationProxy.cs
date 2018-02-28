@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using EMS.Common;
 using EMS.CommonMeasurement;
 
 namespace EMS.ServiceContracts
@@ -17,6 +18,15 @@ namespace EMS.ServiceContracts
         {
             get
             {
+                if (proxy != null)
+                {
+                    if (!((ICommunicationObject)proxy).State.Equals(CommunicationState.Opened))
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for CeOptimizationProxy");
+                        factory = new ChannelFactory<IOptimizationAlgorithmContract>("OptimizationAlgEndpoint");
+                        proxy = factory.CreateChannel();
+                    }
+                }
                 if (proxy == null)
                 {
                     factory = new ChannelFactory<IOptimizationAlgorithmContract>("OptimizationAlgEndpoint");

@@ -36,6 +36,15 @@ namespace EMS.ServiceContracts
         {
             get
             {
+                if (proxy != null)
+                {
+                    if (!((ICommunicationObject)proxy).State.Equals(CommunicationState.Opened))
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Creating new channel for NetworkModelGDAProxy");
+                        factory = new ChannelFactory<INetworkModelGDAContract>("*");
+                        proxy = factory.CreateChannel();
+                    }
+                }
 
                 if (proxy == null)
                 {

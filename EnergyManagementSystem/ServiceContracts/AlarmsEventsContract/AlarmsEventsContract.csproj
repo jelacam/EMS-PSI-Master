@@ -144,12 +144,17 @@
       <Project>{94842c81-93de-4490-a3d0-bc420c97b850}</Project>
       <Name>CommonMeasurement</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NetworkModelService\NetworkModelService.csproj">
       <Project>{2630d180-1b68-4e84-aeac-42ee8c88b50f}</Project>
       <Name>NetworkModelService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
