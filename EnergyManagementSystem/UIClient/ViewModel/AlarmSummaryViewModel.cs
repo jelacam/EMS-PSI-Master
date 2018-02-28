@@ -62,6 +62,7 @@ namespace UIClient.ViewModel
 
         private void AcknowledgeCommandExecute(AlarmHelper alarmHelper)
         {
+            AlarmHelper alarmToRemove = new AlarmHelper();
             if (alarmHelper == null)
             {
                 return;
@@ -69,22 +70,28 @@ namespace UIClient.ViewModel
 
             if (alarmHelper.AckState == AckState.Unacknowledged)
             {
-                alarmHelper.AckState = AckState.Acknowledged;
-
                 lock (alarmSummaryLock)
                 {
                     foreach (AlarmHelper alarm in AlarmSummaryQueue)
                     {
                         if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Nonpersistent))
                         {
-                            AlarmSummaryQueue.Remove(alarm);
-                            OnPropertyChanged(nameof(AlarmSummaryQueue));
-                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Non persistent alarm acknowledged and removed from alarm summary collection");
+                            alarmToRemove = alarm;
+                            break;
                         }
-                        else
+                        else if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Persistent))
                         {
+                            alarm.AckState = AckState.Acknowledged;
+                            alarm.CurrentState = string.Format("{0} | {1}", alarm.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString(), alarm.AckState.ToString());
+                            OnPropertyChanged(nameof(AlarmSummaryQueue));
                             CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Persistent alarm acknowledged");
                         }
+                    }
+                    if (alarmToRemove != null)
+                    {
+                        AlarmSummaryQueue.Remove(alarmToRemove);
+                        OnPropertyChanged(nameof(AlarmSummaryQueue));
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Non persistent alarm acknowledged and removed from alarm summary collection");
                     }
                 }
             }
@@ -121,7 +128,7 @@ namespace UIClient.ViewModel
                 {
                     foreach (AlarmHelper aHelper in AlarmSummaryQueue)
                     {
-                        if (aHelper.Gid.Equals(alarm.Gid))
+                        if (aHelper.Gid.Equals(alarm.Gid) && aHelper.CurrentState.Contains(State.Active.ToString()))
                         {
                             //aHelper.CurrentState = string.Format("{0}, {1}", State.Active, aHelper.AckState);
                             //OnPropertyChanged(nameof(AlarmSummaryQueue));
@@ -130,6 +137,15 @@ namespace UIClient.ViewModel
                         }
                     }
                 }
+                else //ako je tip NORMAL
+                {
+                    foreach (AlarmHelper aHelper in AlarmSummaryQueue)
+                    {
+                        if (aHelper.Gid.Equals(alarm.Gid) && aHelper.TimeStamp.Equals(alarm.TimeStamp))
+                            return;
+                    }
+                }
+
                 try
                 {
                     App.Current.Dispatcher.Invoke((Action)delegate
@@ -151,9 +167,12 @@ namespace UIClient.ViewModel
             {
                 foreach (AlarmHelper aHelper in AlarmSummaryQueue)
                 {
-                    if (aHelper.Gid.Equals(alarm.Gid))
+                    if (aHelper.Gid.Equals(alarm.Gid) && aHelper.CurrentState.Contains(State.Active.ToString()))
                     {
-                        aHelper.CurrentState = alarm.CurrentState;
+                        if (!aHelper.CurrentState.Contains(AckState.Acknowledged.ToString()))
+                        {
+                            aHelper.CurrentState = alarm.CurrentState;
+                        }
                         aHelper.Severity = alarm.Severity;
                         aHelper.Value = alarm.Value;
                         aHelper.Message = alarm.Message;
