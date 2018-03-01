@@ -501,7 +501,7 @@
 		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_02"/>
 		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>2000</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.maxQ>500</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
 		<cim:SynchronousMachine.minQ>20</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
@@ -515,7 +515,7 @@
 		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_02"/>
 		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>1500</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.maxQ>1000</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
 		<cim:SynchronousMachine.minQ>20</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
@@ -557,7 +557,7 @@
 		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_04"/>
 		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>150</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.maxQ>100</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
 		<cim:SynchronousMachine.minQ>20</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
@@ -571,7 +571,7 @@
 		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_04"/>
 		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
 		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
-		<cim:SynchronousMachine.maxQ>150</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.maxQ>100</cim:SynchronousMachine.maxQ>
 		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
 		<cim:SynchronousMachine.minQ>20</cim:SynchronousMachine.minQ>
 		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
@@ -634,7 +634,7 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_sm_03">
-		<cim:Analog.maxValue>2000</cim:Analog.maxValue>
+		<cim:Analog.maxValue>500</cim:Analog.maxValue>
 		<cim:Analog.minValue>20</cim:Analog.minValue>
 		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
@@ -646,7 +646,7 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_sm_04">
-		<cim:Analog.maxValue>1500</cim:Analog.maxValue>
+		<cim:Analog.maxValue>1000</cim:Analog.maxValue>
 		<cim:Analog.minValue>20</cim:Analog.minValue>
 		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
@@ -682,7 +682,7 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_sm_07">
-		<cim:Analog.maxValue>150</cim:Analog.maxValue>
+		<cim:Analog.maxValue>100</cim:Analog.maxValue>
 		<cim:Analog.minValue>20</cim:Analog.minValue>
 		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
@@ -694,7 +694,7 @@
 	</cim:Analog>
 	
 	<cim:Analog rdf:ID="Analog_sm_08">
-		<cim:Analog.maxValue>150</cim:Analog.maxValue>
+		<cim:Analog.maxValue>100</cim:Analog.maxValue>
 		<cim:Analog.minValue>20</cim:Analog.minValue>
 		<cim:Analog.normalValue>55</cim:Analog.normalValue>
 		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>

@@ -178,13 +178,13 @@ namespace EMS.Services.CalculationEngineService
                 {
                     LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
-                    totalCost = linearAlgorithm.TotalCostNonRenewable; // ukupna cena linearne optimizacije bez obnovljivih
-                    totalCostWithRenewable = linearAlgorithm.TotalCostWithRenewable; //// ukupna cena linearne optimizacije sa obnovljivim
-                    profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
-                    windProductionPct = linearAlgorithm.WindOptimizedPctLinear; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
-                    windProductionkW = linearAlgorithm.WindOptimizedLinear; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
-                    emissionCO2Renewable = linearAlgorithm.CO2EmmissionRenewable; // CO2 emisija sa obnovljivim izrazeno u tonama
-                    emissionCO2NonRenewable = linearAlgorithm.CO2EmissionNonRenewable; //CO2 emisija bez obnovljivih izrazena u tonama
+                    totalCost = linearAlgorithm.LACostWithoutRenewable; // ukupna cena linearne optimizacije bez vetrogeneratora
+                    totalCostWithRenewable = linearAlgorithm.LACostRenewable; // ukupna cena linearne optimizacije sa vetrogeneratorima
+                    profit = linearAlgorithm.LAProfit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
+                    windProductionPct = linearAlgorithm.LAWindPct; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
+                    windProductionkW = linearAlgorithm.LAWind; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
+                    emissionCO2Renewable = linearAlgorithm.LACO2Renewable; // CO2 emisija sa obnovljivim izvorima izrazena u tonama
+                    emissionCO2NonRenewable = linearAlgorithm.LACO2WithoutRenewable; //CO2 emisija bez obnovljivih izvora izrazena u tonama
                 }
                 else
                 {
@@ -522,8 +522,9 @@ namespace EMS.Services.CalculationEngineService
                         cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
                         cmd.Parameters.Add("@windProduction", SqlDbType.Float).Value = windProduction;
                         cmd.Parameters.Add("@windProductionPercent", SqlDbType.Float).Value = windProductionPercent;
-                        cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
-                        cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
+						//cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
+						cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCost;
+						cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
                         cmd.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
                         cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = time.ToString("yyyy-MM-dd HH:mm:ss.fff");
                         cmd.ExecuteNonQuery();

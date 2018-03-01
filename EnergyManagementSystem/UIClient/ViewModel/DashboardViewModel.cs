@@ -5,24 +5,22 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using UIClient.PubSub;
 
 namespace UIClient.ViewModel
 {
-    public class DashboardViewModel : ViewModelBase
+	public class DashboardViewModel : ViewModelBase
     {
         #region Fields
 
         private CeSubscribeProxy ceSubscribeProxy;
 
         private int MAX_DISPLAY_NUMBER = 10;
-        private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
+        private int MAX_DISPLAY_TOTAL_NUMBER = 20;
+		private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
         private int attemptsCount = 0;
 
         private readonly double graphSizeOffset = 18;
@@ -33,7 +31,11 @@ namespace UIClient.ViewModel
 
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> energyConsumersContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
-        private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
+
+		private ObservableCollection<KeyValuePair<DateTime, float>> generationList= new ObservableCollection<KeyValuePair<DateTime, float>>();
+		private ObservableCollection<KeyValuePair<DateTime, float>> demandList= new ObservableCollection<KeyValuePair<DateTime, float>>();
+
+		private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
         private ICommand expandCommand;
         private ICommand visibilityCheckedCommand;
         private ICommand visibilityUncheckedCommand;
@@ -75,7 +77,34 @@ namespace UIClient.ViewModel
             }
         }
 
-        public float CurrentConsumption
+		public ObservableCollection<KeyValuePair<DateTime, float>> DemandList
+		{
+			get
+			{
+				return demandList;
+			}
+
+			set
+			{
+				demandList = value;
+			}
+		}
+
+		public ObservableCollection<KeyValuePair<DateTime, float>> GenerationList
+		{
+			get
+			{
+				return generationList;
+			}
+
+			set
+			{
+				generationList = value;
+			}
+		}
+
+
+		public float CurrentConsumption
         {
             get
             {
@@ -214,11 +243,13 @@ namespace UIClient.ViewModel
 
         public ICommand GoToCommand => goToCommand ?? (goToCommand = new RelayCommand<long>(GoToCommandCommandExecute));
 
-        #endregion Commands
+		
 
-        #region CommandsExecutions
+		#endregion Commands
 
-        private void ExpandCommandExecute(object obj)
+		#region CommandsExecutions
+
+		private void ExpandCommandExecute(object obj)
         {
             if (IsOptionsExpanded)
             {
@@ -333,6 +364,11 @@ namespace UIClient.ViewModel
                     {
                         AddMeasurmentTo(EnergyConsumersContainer, measUIs);
                         CurrentConsumption = measUIs.Sum(x => x.CurrentValue);
+						DemandList.Add(new KeyValuePair<DateTime, float>(measUIs.Last().TimeStamp,CurrentConsumption));
+						if(DemandList.Count > MAX_DISPLAY_TOTAL_NUMBER)
+						{
+							DemandList.RemoveAt(0);
+						}
                     });
                 }
                 else
@@ -340,8 +376,13 @@ namespace UIClient.ViewModel
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
                         AddMeasurmentTo(GeneratorsContainer, measUIs);
-                        CurrentProduction = measUIs.Sum(x => x.CurrentValue);
-                    });
+						CurrentProduction = measUIs.Sum(x => x.CurrentValue);
+						GenerationList.Add(new KeyValuePair<DateTime, float>(measUIs.Last().TimeStamp, CurrentProduction));
+						if (GenerationList.Count > MAX_DISPLAY_TOTAL_NUMBER)
+						{
+							GenerationList.RemoveAt(0);
+						}
+					});
                 }
             }
             catch (Exception e)

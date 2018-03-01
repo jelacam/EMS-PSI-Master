@@ -418,19 +418,18 @@ namespace EMS.Services.SCADACrunchingService
                     {
                         //AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
                         //AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
-                        alarmsEventsSfProxy.UpdateStatus(analogLoc, State.Cleared);
-                        //AlarmHelper normalAlarm = new AlarmHelper();
-                        //normalAlarm.AckState = AckState.Unacknowledged;
-                        //normalAlarm.CurrentState = string.Format("{0}, {1}", State.Cleared, normalAlarm.AckState);
-                        //normalAlarm.Gid = analogLoc.Analog.PowerSystemResource;
-                        //normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
-                        //normalAlarm.Persistent = PersistentState.Nonpersistent;
-                        //normalAlarm.TimeStamp = DateTime.Now;
-                        //normalAlarm.Severity = SeverityLevel.NONE;
-                        //normalAlarm.Value = eguVal;
-                        //normalAlarm.Type = AlarmType.NORMAL;
+                        AlarmHelper normalAlarm = new AlarmHelper();
+                        normalAlarm.AckState = AckState.Unacknowledged;
+                        normalAlarm.CurrentState = string.Format("{0}", normalAlarm.AckState);
+                        normalAlarm.Gid = analogLoc.Analog.PowerSystemResource;
+                        normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
+                        normalAlarm.Persistent = PersistentState.Nonpersistent;
+                        normalAlarm.TimeStamp = DateTime.Now;
+                        normalAlarm.Severity = SeverityLevel.NONE;
+                        normalAlarm.Value = eguVal;
+                        normalAlarm.Type = AlarmType.NORMAL;
 
-                        //AlarmsEventsProxy.Instance.AddAlarm(normalAlarm);
+                        AlarmsEventsProxy.Instance.AddAlarm(normalAlarm);
                     }
                 }
                 // nema alarma - generisi event za promenu vrednosti
