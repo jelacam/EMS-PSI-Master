@@ -20,6 +20,11 @@ namespace EMS.CommonMeasurement
         private long gid;
 
         /// <summary>
+        /// Id to identify alarme object in table on UI
+        /// </summary>
+        private int id;
+
+        /// <summary>
         ///  represents alarm severity level - coloring
         /// </summary>
         private SeverityLevel severity;
@@ -124,6 +129,11 @@ namespace EMS.CommonMeasurement
             {
                 this.gid = value;
             }
+        }
+
+        public int ID
+        {
+            get; set;
         }
 
         public SeverityLevel Severity

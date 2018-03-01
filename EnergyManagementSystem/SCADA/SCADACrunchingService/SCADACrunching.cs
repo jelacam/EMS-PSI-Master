@@ -416,6 +416,7 @@ namespace EMS.Services.SCADACrunchingService
                     // sa Active na Cleared
                     if (!alarmRaw && !alarmEGU)
                     {
+                        alarmsEventsSfProxy.UpdateStatus(analogLoc, State.Cleared);
                         //AlarmsEventsProxy.Instance.UpdateStatus(analogLoc, State.Cleared);
                         //AlarmsEventsSfProxy alarmsEventsSfProxy = new AlarmsEventsSfProxy();
                         AlarmHelper normalAlarm = new AlarmHelper();
@@ -429,7 +430,8 @@ namespace EMS.Services.SCADACrunchingService
                         normalAlarm.Value = eguVal;
                         normalAlarm.Type = AlarmType.NORMAL;
 
-                        AlarmsEventsProxy.Instance.AddAlarm(normalAlarm);
+                        alarmsEventsSfProxy.AddAlarm(normalAlarm);
+                        //AlarmsEventsProxy.Instance.AddAlarm(normalAlarm);
                     }
                 }
                 // nema alarma - generisi event za promenu vrednosti

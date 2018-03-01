@@ -41,11 +41,11 @@ namespace EMS.Services.AlarmsEventsService
         public AlarmsEvents()
         {
             this.Alarms = new List<AlarmHelper>();
-            alarmsFromDatabase = SelectAlarmsFromDatabase();
-            if (alarmsFromDatabase != null)
-            {
-                //this.Alarms = alarmsFromDatabase;
-            }
+            //alarmsFromDatabase = SelectAlarmsFromDatabase();
+            //if (alarmsFromDatabase != null)
+            //{
+            //    //this.Alarms = alarmsFromDatabase;
+            //}
         }
 
         /// <summary>
@@ -70,6 +70,7 @@ namespace EMS.Services.AlarmsEventsService
         /// <param name="alarm">alarm to add</param>
         public void AddAlarm(AlarmHelper alarm)
         {
+            AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
             bool normalAlarm = false;
             if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
             {
@@ -119,6 +120,7 @@ namespace EMS.Services.AlarmsEventsService
                 // ako je insert dodaj u listu - inace je updateovan
                 if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
+                    alarm.ID = this.Alarms.Count + 1;
                     this.Alarms.Add(alarm);
                     if (InsertAlarmIntoDb(alarm))
                     {
@@ -128,19 +130,22 @@ namespace EMS.Services.AlarmsEventsService
                 }
                 if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                 {
+                    alarm.ID = this.Alarms.Count + 1;
                     this.Alarms.Add(alarm);
-                    this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                    //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                    aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                     this.isNormalCreated[alarm.Gid] = true;
                 }
                 else if (!alarm.Type.Equals(AlarmType.NORMAL))
                 {
-                    this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                    //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                    aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                 }
 
                 //Console.WriteLine("AlarmsEvents: AddAlarm method");
                 //AesPublishSfProxy.Instance.PublishAlarmsEvents(alarm, publishingStatus);
-                AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
-                aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
+
+                //aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                 string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             }
