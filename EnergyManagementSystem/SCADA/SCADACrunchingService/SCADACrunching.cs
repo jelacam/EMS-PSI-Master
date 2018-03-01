@@ -114,12 +114,14 @@ namespace EMS.Services.SCADACrunchingService
                 XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfigECA.xml");
                 serializer.Serialize(writer, scECA);
+                writer.Dispose();
 
                 ScadaConfiguration scGA = new ScadaConfiguration();
                 scGA.AnalogsList = generatorAnalogs;
                 XmlSerializer serializer2 = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer2 = new StreamWriter("ScadaConfigGA.xml");
                 serializer2.Serialize(writer2, scGA);
+                writer2.Dispose();
 
                 return true;
             }

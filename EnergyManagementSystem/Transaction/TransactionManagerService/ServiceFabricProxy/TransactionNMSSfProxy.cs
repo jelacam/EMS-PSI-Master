@@ -39,8 +39,11 @@ namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
 
         public UpdateResult Prepare(ref Delta delta)
         {
+            UpdateResult result = new UpdateResult();
             Delta temp = delta;
-            return proxy.InvokeWithRetry(x => x.Channel.Prepare(ref temp)); //PROVERITI ZA SVAKI SLUCAJ
+            result = proxy.InvokeWithRetry(x => x.Channel.Prepare(ref temp)); //PROVERITI ZA SVAKI SLUCAJ
+            delta = temp;
+            return result;
         }
 
         public bool Rollback()

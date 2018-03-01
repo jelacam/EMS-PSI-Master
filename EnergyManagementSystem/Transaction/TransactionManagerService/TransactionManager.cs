@@ -164,7 +164,7 @@ namespace EMS.Services.TransactionManagerService
                 //TransactionCEProxy.Instance.Prepare(ref ceDelta);
                 //TransactionCRProxy.Instance.Prepare(ref analogsDelta);
                 //TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
-                transactionCESfProxy.Prepare(ref analogsDelta);
+                transactionCESfProxy.Prepare(ref ceDelta);
                 transactionCRSfProxy.Prepare(ref analogsDelta);
                 transactionCMDSfProxy.Prepare(ref analogsDelta);
             }
