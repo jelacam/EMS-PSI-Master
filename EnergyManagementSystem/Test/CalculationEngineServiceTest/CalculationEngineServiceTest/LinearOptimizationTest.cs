@@ -266,8 +266,8 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationOptimizedLinearProperty")]
 		public void OptimizedLinearProperty()
 		{
-			lo.OptimizedLinear = optimizedLinear;
-			Assert.AreEqual(lo.OptimizedLinear, optimizedLinear);
+			lo.OptimizedRenewable = optimizedLinear;
+			Assert.AreEqual(lo.OptimizedRenewable, optimizedLinear);
 		}
 
 		/// <summary>
