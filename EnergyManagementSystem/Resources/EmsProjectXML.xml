@@ -10,7 +10,7 @@
 		<cim:EMSFuel.fuelType>coal</cim:EMSFuel.fuelType>
 		<cim:EMSFuel.unitPrice>10</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_01_Coal</cim:IdentifiedObject.mRID>
-		<cim:IdentifiedObject.name>Fuel_1_Coal</cim:IdentifiedObject.name>
+		<cim:IdentifiedObject.name>Fuel_01_Coal</cim:IdentifiedObject.name>
 	</cim:EMSFuel>
 	
 	<cim:EMSFuel rdf:ID="Fuel_02">
