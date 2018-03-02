@@ -6,16 +6,16 @@
 
 namespace EMS.Services.CalculationEngineService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ServiceModel;
-    using EMS.Common;
-    using PubSub;
+	using EMS.Common;
+	using PubSub;
+	using System;
+	using System.Collections.Generic;
+	using System.ServiceModel;
 
-    /// <summary>
-    /// Class for CalculationEngineService
-    /// </summary>
-    public class CalculationEngineService : IDisposable
+	/// <summary>
+	/// Class for CalculationEngineService
+	/// </summary>
+	public class CalculationEngineService : IDisposable
     {
         /// <summary>
         /// CalculationEngine instance
@@ -135,5 +135,10 @@ namespace EMS.Services.CalculationEngineService
         {
             return ce.InitiateIntegrityUpdate();
         }    
+
+		public void Populate()
+		{
+			ce.PopulateDatabase();
+		}
     }
 }

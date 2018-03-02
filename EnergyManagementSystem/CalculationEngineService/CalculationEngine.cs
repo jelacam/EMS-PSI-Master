@@ -6,28 +6,28 @@
 
 namespace EMS.Services.CalculationEngineService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.ServiceModel;
-    using CommonMeasurement;
-    using EMS.Common;
-    using EMS.ServiceContracts;
-    using PubSub;
-    using Microsoft.SolverFoundation.Services;
-    using NetworkModelService.DataModel.Wires;
-    using NetworkModelService.DataModel.Production;
-    using GeneticAlgorithm;
-    using Helpers;
-    using LinearAlgorithm;
-    using System.Threading;
-    using System.Linq;
+	using CommonMeasurement;
+	using EMS.Common;
+	using EMS.ServiceContracts;
+	using GeneticAlgorithm;
+	using Helpers;
+	using LinearAlgorithm;
+	using NetworkModelService.DataModel.Production;
+	using NetworkModelService.DataModel.Wires;
+	using PubSub;
+	using Simulation;
+	using System;
+	using System.Collections.Generic;
+	using System.Data;
+	using System.Data.SqlClient;
+	using System.Linq;
+	using System.ServiceModel;
+	using System.Threading;
 
-    /// <summary>
-    /// Class for CalculationEngine
-    /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	/// <summary>
+	/// Class for CalculationEngine
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -153,7 +153,32 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
+		public void PopulateDatabase()
+		{
+			List<MeasurementUnit> measGenerators = new List<MeasurementUnit>();
+			ConvertorHelper convHelper = new ConvertorHelper();
+			foreach (var syncMach in synchronousMachines)
+			{
+				measGenerators.Add(new MeasurementUnit()
+				{
+					CurrentValue = 0,
+					MaxValue = syncMach.Value.MaxQ,
+					MinValue = syncMach.Value.MinQ,
+					Gid = syncMach.Key,
+				});
+			}
+
+			foreach (var enCons in energyConsumers)
+			{
+
+			}
+
+			DummySimulation simulation = new DummySimulation(measGenerators);
+			simulation.Start();
+		
+		}
+
+		private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
         {
             try
             {
