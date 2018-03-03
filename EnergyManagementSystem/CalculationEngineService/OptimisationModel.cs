@@ -280,5 +280,25 @@ namespace EMS.Services.CalculationEngineService
 
 			return pct;
 		}
+
+        public OptimisationModel Clone()
+        {
+            return new OptimisationModel()
+            {
+                Curve = Curve,
+                EmissionFactor = EmissionFactor,
+                EmsFuel = EmsFuel,
+                GenericOptimizedValue = GenericOptimizedValue,
+                GlobalId = GlobalId,
+                LinearOptimizedValue = LinearOptimizedValue,
+                Managable = Managable,
+                MaxPower = MaxPower,
+                MeasuredValue = MeasuredValue,
+                MinPower = MinPower,
+                Price = Price,
+                Renewable = Renewable,
+                WindPct = WindPct
+            };
+        }
 	}
 }

@@ -11,7 +11,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
         private readonly int NUMBER_OF_POPULATION = 100;
 
         private readonly float mutationRate = 1f;
-        private readonly float penaltyRate = 1000;
+        private readonly float penaltyRate = 1500;
         private readonly float costRate = 10;
 
         private float necessaryEnergy;
@@ -59,19 +59,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
                 optModelMap[indexToGid[i]].GenericOptimizedValue = bestGenes[i].Item2;
             }
 
-            float sumOptimized = 0;
-            float emCO2 = 0;
-            foreach (var optModel in optModelMap.Values)
-            {
-                sumOptimized += optModel.GenericOptimizedValue;
-                emCO2 += optModel.GenericOptimizedValue * optModel.EmissionFactor;
-
-                if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
-                {
-                    //Ne bi trebalo da udje ovde
-                }
-            }
-
+            float emCO2 = CalculationEngine.CalculateCO2(optModelMap);
 
             EmissionCO2 = emCO2;
 
@@ -110,11 +98,12 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private float FitnessFunction(DNA<Tuple<long, float>> dna)
         {
-            float penalty = penaltyRate * (necessaryEnergy - CalculateEnergy(dna.Genes));
+            float penaltyOffset = 0;
+            float penalty = (penaltyRate + penaltyOffset) * (necessaryEnergy - CalculateEnergy(dna.Genes));
 
             penalty = Math.Abs(penalty); //we need a value closer to the desired one
-
-            return 1000 - (costRate * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
+            float offset = 1;
+            return 1000 - ((costRate + offset) * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
         }
 
         private float CalculateEnergy(Tuple<long, float>[] genes)
