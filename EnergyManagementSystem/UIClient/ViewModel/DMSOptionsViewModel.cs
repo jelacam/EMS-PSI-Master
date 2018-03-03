@@ -364,7 +364,6 @@ namespace UIClient.ViewModel
 
         #region Command Executions
 
-
         private void ViewSavingnDataCommandExecute(object obj)
         {
             TotalWindSaving = 0;

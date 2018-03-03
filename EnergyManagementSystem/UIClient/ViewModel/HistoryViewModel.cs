@@ -31,7 +31,7 @@ namespace UIClient.ViewModel
         private ObservableCollection<Tuple<double, DateTime>> totalProduction = new ObservableCollection<Tuple<double, DateTime>>();
         private ObservableCollection<Tuple<double, DateTime>> graphTotalProduction = new ObservableCollection<Tuple<double, DateTime>>();
         private ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>>();
-
+        private ObservableCollection<Tuple<double, DateTime>> graphTotalProductionForSelected = new ObservableCollection<Tuple<double, DateTime>>();
         private ModelResourcesDesc modelResourcesDesc;
         private List<ModelCode> properties;
         private int iteratorId;
@@ -162,6 +162,18 @@ namespace UIClient.ViewModel
             }
         }
 
+        public ObservableCollection<Tuple<double, DateTime>> GraphTotalProductionForSelected
+        {
+            get
+            {
+                return graphTotalProductionForSelected;
+            }
+            set
+            {
+                graphTotalProductionForSelected = value;
+            }
+        }
+
         public HistoryView HistoryView { get; set; }
 
         public PeriodValues SelectedPeriod
@@ -261,8 +273,11 @@ namespace UIClient.ViewModel
             ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
             ObservableCollection<Tuple<double, DateTime>> tempData;
             ObservableCollection<Tuple<double, DateTime>> tempContainer = new ObservableCollection<Tuple<double, DateTime>>();
+            ObservableCollection<Tuple<double, DateTime>> tempContainterForProductionSelected = new ObservableCollection<Tuple<double, DateTime>>();
+
             GraphTotalProduction.Clear();
             GeneratorsContainer.Clear();
+            GraphTotalProductionForSelected.Clear();
 
             foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
             {
@@ -282,7 +297,7 @@ namespace UIClient.ViewModel
                             DateTime tempStartTime = startTime;
                             DateTime tempEndTime = IncrementTime(tempStartTime);
 
-                            double averageProduction;
+                            double averageProduction = 0;
 
                             while (tempEndTime <= endTime)
                             {
@@ -319,6 +334,32 @@ namespace UIClient.ViewModel
                 }
             }
 
+            List<Tuple<double, DateTime>> allProductionValues = new List<Tuple<double, DateTime>>();
+            List<DateTime> timestamps = new List<DateTime>();
+
+            foreach (var keyPair in GeneratorsContainer)
+            {
+                allProductionValues.AddRange(keyPair.Value.ToList());
+            }
+
+            foreach(Tuple<double,DateTime> tuple in allProductionValues)
+            {
+                timestamps.Add(tuple.Item2);
+            }
+            timestamps = timestamps.Distinct().ToList();
+
+            foreach (DateTime measTime in timestamps)
+            {
+                double production = 0;
+                List<Tuple<double, DateTime>> tuples = allProductionValues.Where(x => x.Item2 == measTime).ToList();
+                if (tuples != null)
+                {
+                    production = tuples.Sum(x => x.Item1);
+                }
+                tuples = null;
+                GraphTotalProductionForSelected.Add(new Tuple<double, DateTime>(production, measTime));
+            }
+
             TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
             GraphTotalProduction = new ObservableCollection<Tuple<double, DateTime>>();
 
@@ -352,6 +393,7 @@ namespace UIClient.ViewModel
             }
             IsExpandedSeparated = true;
 
+            OnPropertyChanged(nameof(GraphTotalProductionForSelected));
             OnPropertyChanged(nameof(GraphTotalProduction));
             OnPropertyChanged(nameof(GeneratorsContainer));
         }

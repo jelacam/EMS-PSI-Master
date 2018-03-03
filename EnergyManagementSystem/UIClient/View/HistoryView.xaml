@@ -69,7 +69,8 @@
                         </MultiBinding>
                     </chartingToolkit:Chart.Title>
 
-                    <chartingToolkit:LineSeries ItemsSource="{Binding Path=Value}" 
+                    <chartingToolkit:LineSeries Title="Generation [kW]"
+                                                ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
@@ -194,7 +195,7 @@
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
 												Style="{StaticResource LineSeriesStyle}"
-                                                Title="Generation [kW]">
+                                                Title="Total Generation [kW]">
                             <chartingToolkit:LineSeries.DataPointStyle>
                                 <Style TargetType="chartingToolkit:LineDataPoint">
                                     <Setter Property="Background" Value="DarkGreen"/>
@@ -211,6 +212,21 @@
                             </chartingToolkit:LineSeries.DependentRangeAxis>
 
                         </chartingToolkit:LineSeries>
+
+                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProductionForSelected}" 
+												DependentValueBinding="{Binding Path=Item1}" 
+												IndependentValueBinding="{Binding Path=Item2}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}"
+                                                Title="Generation for selected generators [kW]">
+                            <chartingToolkit:LineSeries.DataPointStyle>
+                                <Style TargetType="chartingToolkit:LineDataPoint">
+                                    <Setter Property="Background" Value="DarkOrange"/>
+                                    <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+                                </Style>
+                            </chartingToolkit:LineSeries.DataPointStyle>
+                        </chartingToolkit:LineSeries>
+                        
                     </chartingToolkit:Chart>
                 </Expander>
             </Grid>

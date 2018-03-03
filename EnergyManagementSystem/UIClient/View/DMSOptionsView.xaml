@@ -164,7 +164,8 @@
 							<chartingToolkit:ColumnSeries ItemsSource="{Binding BarSavingData}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
-                                                       IsSelectionEnabled="False">
+                                                       IsSelectionEnabled="False"
+                                                          Title="Cost [$]">
 							</chartingToolkit:ColumnSeries>
 						</chartingToolkit:Chart>
 					</Grid>
