@@ -23,6 +23,10 @@ namespace UIClient.ViewModel
         private ICommand allGeneratorsCheckedCommand;
         private ICommand allGeneratorsUnheckedCommand;
         private ICommand selectedPeriodCommand;
+        private ICommand productionForSelectedCheckedCommand;
+        private ICommand productionForSelectedUnCheckedCommand;
+        private ICommand totalProductionGraphCheckedCommand;
+        private ICommand totalProductionGraphUnCheckedCommand;
         private PeriodValues selectedPeriod;
         private GraphSample graphSampling;
         private List<long> generatorsFromNms = new List<long>();
@@ -40,6 +44,9 @@ namespace UIClient.ViewModel
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
         private bool isExpandedSeparated = false;
+        private bool isExpandedTotalProduction = false;
+        private bool totalProductionForSelectedVisible = false;
+        private bool totalProductionGraphVisible = true;
         #endregion
 
         public HistoryViewModel()
@@ -115,6 +122,14 @@ namespace UIClient.ViewModel
         public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
 
         public ICommand VisibilityUncheckedCommand => visibilityUncheckedCommand ?? (visibilityUncheckedCommand = new RelayCommand<long>(VisibilityUncheckedCommandExecute));
+
+        public ICommand ProductionForSelectedCheckedCommand => productionForSelectedCheckedCommand ?? (productionForSelectedCheckedCommand = new RelayCommand(ProductionForSelectedCheckedExecute));
+
+        public ICommand ProductionForSelectedUnCheckedCommand => productionForSelectedUnCheckedCommand ?? (productionForSelectedUnCheckedCommand = new RelayCommand(ProductionForSelectedUnCheckedExecute));
+
+        public ICommand TotalProductionGraphCheckedCommand => totalProductionGraphCheckedCommand ?? (totalProductionGraphCheckedCommand = new RelayCommand(TotalProductionGraphCheckedExecute));
+
+        public ICommand TotalProductionGraphUnCheckedCommand => totalProductionGraphUnCheckedCommand ?? (totalProductionGraphUnCheckedCommand = new RelayCommand(TotalProductionGraphUnCheckedExecute));
 
         public ICommand AllGeneratorsCheckedCommand => allGeneratorsCheckedCommand ?? (allGeneratorsCheckedCommand = new RelayCommand(AllGeneratorsCheckedCommandExecute));
 
@@ -264,6 +279,46 @@ namespace UIClient.ViewModel
             }
         }
 
+        public bool IsExpandedTotalProduction
+        {
+            get
+            {
+                return isExpandedTotalProduction;
+            }
+
+            set
+            {
+                isExpandedTotalProduction = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool TotalProductionForSelectedVisible
+        {
+            get
+            {
+                return totalProductionForSelectedVisible;
+            }
+            set
+            {
+                totalProductionForSelectedVisible = value;
+                OnPropertyChanged(nameof(TotalProductionForSelectedVisible));
+            }
+        }
+
+        public bool TotalProductionGraphVisible
+        {
+            get
+            {
+                return totalProductionGraphVisible;
+            }
+            set
+            {
+                totalProductionGraphVisible = value;
+                OnPropertyChanged(nameof(TotalProductionGraphVisible));
+            }
+        }
+
         #endregion
 
         #region Command Executions
@@ -273,7 +328,6 @@ namespace UIClient.ViewModel
             ObservableCollection<Tuple<double, DateTime>> measurementsFromDb;
             ObservableCollection<Tuple<double, DateTime>> tempData;
             ObservableCollection<Tuple<double, DateTime>> tempContainer = new ObservableCollection<Tuple<double, DateTime>>();
-            ObservableCollection<Tuple<double, DateTime>> tempContainterForProductionSelected = new ObservableCollection<Tuple<double, DateTime>>();
 
             GraphTotalProduction.Clear();
             GeneratorsContainer.Clear();
@@ -392,10 +446,31 @@ namespace UIClient.ViewModel
                 GraphTotalProduction = TotalProduction;
             }
             IsExpandedSeparated = true;
+            IsExpandedTotalProduction = true;
 
             OnPropertyChanged(nameof(GraphTotalProductionForSelected));
             OnPropertyChanged(nameof(GraphTotalProduction));
             OnPropertyChanged(nameof(GeneratorsContainer));
+        }
+
+        private void ProductionForSelectedCheckedExecute(object obj)
+        {
+            TotalProductionForSelectedVisible = true;
+        }
+
+        private void ProductionForSelectedUnCheckedExecute(object obj)
+        {
+            TotalProductionForSelectedVisible = false;
+        }
+
+        private void TotalProductionGraphCheckedExecute(object obj)
+        {
+            TotalProductionGraphVisible = true;
+        }
+
+        private void TotalProductionGraphUnCheckedExecute(object obj)
+        {
+            TotalProductionGraphVisible = false;
         }
 
         private DateTime IncrementTime(DateTime pointTime)

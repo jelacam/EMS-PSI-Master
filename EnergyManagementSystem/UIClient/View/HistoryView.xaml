@@ -187,47 +187,79 @@
                     </ItemsControl>
                 </Expander>
 
-                <Expander Grid.Row="1" Margin="10" IsExpanded="False" Header="Total Production" Foreground="White">
-                    <chartingToolkit:Chart Margin="10" Title="Total Production" Style="{StaticResource DashboardChartStyle}" Height="600">
+                <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding IsExpandedTotalProduction}" Header="Total Production" Foreground="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProduction}" 
-												DependentValueBinding="{Binding Path=Item1}" 
-												IndependentValueBinding="{Binding Path=Item2}"
-												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}"
-                                                Title="Total Generation [kW]">
-                            <chartingToolkit:LineSeries.DataPointStyle>
-                                <Style TargetType="chartingToolkit:LineDataPoint">
-                                    <Setter Property="Background" Value="DarkGreen"/>
-                                    <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-                                </Style>
-                            </chartingToolkit:LineSeries.DataPointStyle>
-
-                            <chartingToolkit:LineSeries.IndependentAxis>
-                                <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"  />
-                            </chartingToolkit:LineSeries.IndependentAxis>
-
-                            <chartingToolkit:LineSeries.DependentRangeAxis>
-                                <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
-                            </chartingToolkit:LineSeries.DependentRangeAxis>
-
-                        </chartingToolkit:LineSeries>
-
-                        <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProductionForSelected}" 
-												DependentValueBinding="{Binding Path=Item1}" 
-												IndependentValueBinding="{Binding Path=Item2}"
-												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}"
-                                                Title="Generation for selected generators [kW]">
-                            <chartingToolkit:LineSeries.DataPointStyle>
-                                <Style TargetType="chartingToolkit:LineDataPoint">
-                                    <Setter Property="Background" Value="DarkOrange"/>
-                                    <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
-                                </Style>
-                            </chartingToolkit:LineSeries.DataPointStyle>
-                        </chartingToolkit:LineSeries>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                            <CheckBox Content="All Generators" Margin="10" Foreground="White" IsChecked="True">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.TotalProductionGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.TotalProductionGraphUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox Content="Selected Generators" Margin="10" Foreground="White">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.ProductionForSelectedCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.ProductionForSelectedUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                        </StackPanel>
                         
-                    </chartingToolkit:Chart>
+                        <chartingToolkit:Chart Grid.Row="1" Margin="10" Title="Total Production" Style="{StaticResource DashboardChartStyle}" Height="600">
+
+                            <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProduction}" 
+												DependentValueBinding="{Binding Path=Item1}" 
+												IndependentValueBinding="{Binding Path=Item2}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}"
+                                                Title="Total Generation [kW]"
+                                                Visibility="{Binding Path=TotalProductionGraphVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:LineDataPoint">
+                                        <Setter Property="Background" Value="DarkGreen"/>
+                                        <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+
+                                <chartingToolkit:LineSeries.IndependentAxis>
+                                    <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"  />
+                                </chartingToolkit:LineSeries.IndependentAxis>
+
+                                <chartingToolkit:LineSeries.DependentRangeAxis>
+                                    <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
+                                </chartingToolkit:LineSeries.DependentRangeAxis>
+
+                            </chartingToolkit:LineSeries>
+
+                            <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProductionForSelected}" 
+												DependentValueBinding="{Binding Path=Item1}" 
+												IndependentValueBinding="{Binding Path=Item2}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}"
+                                                Title="Generation for selected generators [kW]"
+                                                Visibility="{Binding Path=TotalProductionForSelectedVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:LineDataPoint">
+                                        <Setter Property="Background" Value="DarkOrange"/>
+                                        <Setter Property="Template" Value="{StaticResource LineDataPointTemplate}"/>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+                            </chartingToolkit:LineSeries>
+
+                        </chartingToolkit:Chart>
+                    </Grid>
                 </Expander>
             </Grid>
         </Grid>

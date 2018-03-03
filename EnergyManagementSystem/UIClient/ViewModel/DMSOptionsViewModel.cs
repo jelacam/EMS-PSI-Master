@@ -38,6 +38,10 @@ namespace UIClient.ViewModel
         private ICommand changePeriodCo2Command;
         private ICommand changePeriodWindProductionCommand;
         private ICommand changePeriodSavingCommand;
+        private ICommand cO2EmissionGraphCheckedCommand;
+        private ICommand cO2EmissionGraphUnCheckedCommand;
+        private ICommand cO2EmissionWithoutRenewablesGraphCheckedCommand;
+        private ICommand cO2EmissionWithoutRenewablesGraphUnCheckedCommand;
         private double totalCO2Reduction;
         private double totalCO2;
         private double totalWindProductionPercentage;
@@ -46,6 +50,8 @@ namespace UIClient.ViewModel
         private double totalCostWithoutRenewable;
         private double totalCostWithRenewable;
         private GraphSample graphSampling;
+        private bool cO2EmissionWithoutRenewableGraphVisibility = false;
+        private bool cO2EmissionGraphVisibility = true;
 
         #endregion
 
@@ -68,6 +74,32 @@ namespace UIClient.ViewModel
         }
 
         #region Properties
+
+        public bool CO2EmissionWithoutRenewableGraphVisibility
+        {
+            get
+            {
+                return cO2EmissionWithoutRenewableGraphVisibility;
+            }
+            set
+            {
+                cO2EmissionWithoutRenewableGraphVisibility = value;
+                OnPropertyChanged(nameof(CO2EmissionWithoutRenewableGraphVisibility));
+            }
+        }
+
+        public bool CO2EmissionGraphVisibility
+        {
+            get
+            {
+                return cO2EmissionGraphVisibility;
+            }
+            set
+            {
+                cO2EmissionGraphVisibility = value;
+                OnPropertyChanged(nameof(CO2EmissionGraphVisibility));
+            }
+        }
 
         public ObservableCollection<Tuple<double, double, double>> SavingContainer
         {
@@ -360,6 +392,15 @@ namespace UIClient.ViewModel
         public ICommand ChangePeriodSavingCommand => changePeriodSavingCommand ?? (changePeriodSavingCommand = new RelayCommand(ChangePeriodSavingCommandExecute));
 
         public ICommand ViewSavingnDataCommand => viewSavingnDataCommand ?? (viewSavingnDataCommand = new RelayCommand(ViewSavingnDataCommandExecute));
+
+        public ICommand CO2EmissionGraphCheckedCommand => cO2EmissionGraphCheckedCommand ?? (cO2EmissionGraphCheckedCommand = new RelayCommand(CO2EmissionGraphCheckedCommandExecute));
+
+        public ICommand CO2EmissionGraphUnCheckedCommand => cO2EmissionGraphUnCheckedCommand ?? (cO2EmissionGraphUnCheckedCommand = new RelayCommand(CO2EmissionGraphUnCheckedCommandExecute));
+
+        public ICommand CO2EmissionWithoutRenewablesGraphCheckedCommand => cO2EmissionWithoutRenewablesGraphCheckedCommand ?? (cO2EmissionWithoutRenewablesGraphCheckedCommand = new RelayCommand(CO2EmissionWithoutRenewablesGraphCheckedCommandExecute));
+
+        public ICommand CO2EmissionWithoutRenewablesGraphUnCheckedCommand => cO2EmissionWithoutRenewablesGraphUnCheckedCommand ?? (cO2EmissionWithoutRenewablesGraphUnCheckedCommand = new RelayCommand(CO2EmissionWithoutRenewablesGraphUnCheckedCommandExecute));
+
         #endregion
 
         #region Command Executions
@@ -585,6 +626,26 @@ namespace UIClient.ViewModel
                 default:
                     break;
             }
+        }
+
+        private void CO2EmissionWithoutRenewablesGraphCheckedCommandExecute(object obj)
+        {
+            CO2EmissionWithoutRenewableGraphVisibility = true;
+        }
+
+        private void CO2EmissionWithoutRenewablesGraphUnCheckedCommandExecute(object obj)
+        {
+            CO2EmissionWithoutRenewableGraphVisibility = false;
+        }
+
+        private void CO2EmissionGraphCheckedCommandExecute(object obj)
+        {
+            CO2EmissionGraphVisibility = true;
+        }
+
+        private void CO2EmissionGraphUnCheckedCommandExecute(object obj)
+        {
+            CO2EmissionGraphVisibility = false;
         }
 
         #endregion

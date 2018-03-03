@@ -15,7 +15,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConvetrer"/>
-		<converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
+        <converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
 		<ObjectDataProvider x:Key="dataFromPeriodEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
@@ -245,24 +246,49 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
+                        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Margin="10">
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period:" Margin="5,0,0,0"/>
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text=" tonnes" Margin="5,0,0,0"/>
                         </StackPanel>
 
-                        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
+                            <CheckBox Content="CO2 emission real" Margin="10" Foreground="White" IsChecked="True">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionGraphUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox Content="CO2 emission without renewables in system" Margin="10" Foreground="White">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionWithoutRenewablesGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionWithoutRenewablesGraphUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                        </StackPanel>
+
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2">
                             <chartingToolkit:Chart Margin="10" Title="CO2 Graph" 
 											   Style="{StaticResource DashboardChartStyle}" Height="400">
 
-                                <chartingToolkit:LineSeries Title="CO2 Emission without renewable"  
+                                <chartingToolkit:LineSeries Title="CO2 Emission Without Renewables [t]"  
 												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item3}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
+												Style="{StaticResource LineSeriesStyle}"
+                                                Visibility="{Binding Path=CO2EmissionWithoutRenewableGraphVisibility, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <chartingToolkit:LineSeries.DataPointStyle>
                                         <Style TargetType="chartingToolkit:LineDataPoint">
                                             <Setter Property="Background" Value="DarkOrange"/>
@@ -280,12 +306,13 @@
 
                                 </chartingToolkit:LineSeries>
 
-                                <chartingToolkit:LineSeries Title="CO2 Emission with renewable"  
+                                <chartingToolkit:LineSeries Title="CO2 Emission Real [t]"  
 												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
 												DependentValueBinding="{Binding Path=Item2}" 
 												IndependentValueBinding="{Binding Path=Item3}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
+												Style="{StaticResource LineSeriesStyle}"
+                                                Visibility="{Binding Path=CO2EmissionGraphVisibility, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <chartingToolkit:LineSeries.DataPointStyle>
                                         <Style TargetType="chartingToolkit:LineDataPoint">
                                             <Setter Property="Background" Value="DarkGreen"/>
