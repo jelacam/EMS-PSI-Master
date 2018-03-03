@@ -295,15 +295,6 @@
                                             <Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
                                         </Style>
                                     </chartingToolkit:LineSeries.DataPointStyle>
-
-                                    <chartingToolkit:LineSeries.IndependentAxis>
-                                        <chartingToolkit:DateTimeAxis Orientation="X" Title="Time"/>
-                                    </chartingToolkit:LineSeries.IndependentAxis>
-
-                                    <chartingToolkit:LineSeries.DependentRangeAxis>
-                                        <chartingToolkit:LinearAxis Orientation="Y" Title="Mass (t)"/>
-                                    </chartingToolkit:LineSeries.DependentRangeAxis>
-
                                 </chartingToolkit:LineSeries>
 
                                 <chartingToolkit:LineSeries Title="CO2 Emission Real [t]"  
@@ -319,7 +310,16 @@
                                             <Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
                                         </Style>
                                     </chartingToolkit:LineSeries.DataPointStyle>
-                                </chartingToolkit:LineSeries>
+									
+									<chartingToolkit:LineSeries.IndependentAxis>
+										<chartingToolkit:DateTimeAxis Orientation="X" Title="Time"/>
+									</chartingToolkit:LineSeries.IndependentAxis>
+
+									<chartingToolkit:LineSeries.DependentRangeAxis>
+										<chartingToolkit:LinearAxis Orientation="Y" Title="Mass (t)"/>
+									</chartingToolkit:LineSeries.DependentRangeAxis>
+
+								</chartingToolkit:LineSeries>
                             </chartingToolkit:Chart>
                         </Grid>
                     </Grid>

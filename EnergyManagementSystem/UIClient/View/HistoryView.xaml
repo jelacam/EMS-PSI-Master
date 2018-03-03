@@ -219,7 +219,7 @@
                         
                         <chartingToolkit:Chart Grid.Row="1" Margin="10" Title="Total Production" Style="{StaticResource DashboardChartStyle}" Height="600">
 
-                            <chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProduction}" 
+							<chartingToolkit:LineSeries ItemsSource="{Binding Path=GraphTotalProduction}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
