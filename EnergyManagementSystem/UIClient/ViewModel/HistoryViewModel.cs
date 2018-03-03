@@ -38,7 +38,8 @@ namespace UIClient.ViewModel
         private List<ResourceDescription> retList;
         private static List<ResourceDescription> internalSynchMachines;
         private bool isExpandedSeparated = false;
-        #endregion
+
+        #endregion Fields
 
         public HistoryViewModel()
         {
@@ -56,7 +57,6 @@ namespace UIClient.ViewModel
             resourcesLeft = 0;
             numberOfResources = 2;
             string message = string.Empty;
-
 
             // getting SynchronousMachine
             try
@@ -91,7 +91,6 @@ namespace UIClient.ViewModel
                     }
                 }
                 OnPropertyChanged(nameof(GeneratorsFromNms));
-
             }
             catch (Exception e)
             {
@@ -119,7 +118,7 @@ namespace UIClient.ViewModel
 
         public ICommand ChangePeriodCommand => selectedPeriodCommand ?? (selectedPeriodCommand = new RelayCommand(SelectedPeriodCommandExecute));
 
-        #endregion
+        #endregion Commands
 
         #region Properties
 
@@ -146,8 +145,9 @@ namespace UIClient.ViewModel
                 totalProduction = value;
             }
         }
-    
+
         public HistoryView HistoryView { get; set; }
+
         public PeriodValues SelectedPeriod
         {
             get
@@ -234,7 +234,7 @@ namespace UIClient.ViewModel
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Command Executions
 
@@ -260,14 +260,59 @@ namespace UIClient.ViewModel
                         measurementsFromDb.Clear();
                         measurementsFromDb = null;
                     }
+                    catch (TimeoutException te)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}; Exception type: {1}", te.Message, te.GetType());
+                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for data");
+
+                        try
+                        {
+                            measurementsFromDb = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetHistoryMeasurements(keyPair.Key, startTime, endTime));
+
+                            if (measurementsFromDb == null)
+                            {
+                                continue;
+                            }
+
+                            GeneratorsContainer.Add(new KeyValuePair<long, ObservableCollection<Tuple<double, DateTime>>>(keyPair.Key, new ObservableCollection<Tuple<double, DateTime>>(measurementsFromDb)));
+
+                            measurementsFromDb.Clear();
+                            measurementsFromDb = null;
+                        }
+                        catch (Exception e)
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}; Exception type: {1}", e.Message, e.GetType());
+                        }
+                    }
                     catch (Exception ex)
                     {
                         CommonTrace.WriteTrace(CommonTrace.TraceError, "[HistoryViewModel] Error ShowDataCommandExecute {0}", ex.Message);
                     }
-
                 }
             }
-            TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
+
+            try
+            {
+                TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
+            }
+            catch (TimeoutException te)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Timeout exception while trying to get total production for period. Message: {0}", te.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for total production");
+                try
+                {
+                    TotalProduction = new ObservableCollection<Tuple<double, DateTime>>(CalculationEngineUIProxy.Instance.GetTotalProduction(StartTime, EndTime));
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Exception while trying to get total production for period. Message: {0}", te.Message);
+                }
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Exception while trying to get total production for period. Message: {0}", e.Message);
+            }
+
             IsExpandedSeparated = true;
             OnPropertyChanged(nameof(TotalProduction));
             OnPropertyChanged(nameof(GeneratorsContainer));
@@ -310,28 +355,32 @@ namespace UIClient.ViewModel
                     StartTime = DateTime.Now.AddHours(-1);
                     EndTime = DateTime.Now;
                     break;
+
                 case PeriodValues.Today:
                     StartTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
                     EndTime = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Month:
                     StartTime = DateTime.Now.AddMonths(-1);
                     EndTime = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_4_Month:
                     StartTime = DateTime.Now.AddMonths(-4);
                     EndTime = DateTime.Now;
                     break;
+
                 case PeriodValues.Last_Year:
                     StartTime = DateTime.Now.AddYears(-1);
                     EndTime = DateTime.Now;
                     break;
+
                 default:
                     break;
             }
         }
 
-        #endregion
-
+        #endregion Command Executions
     }
 }

@@ -369,9 +369,37 @@ namespace UIClient.ViewModel
                 OnPropertyChanged(nameof(BarSavingData));
                 OnPropertyChanged(nameof(TotalWindSaving));
             }
-            catch (Exception ex)
+            catch (TimeoutException ex)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}; Exception type: {1}", ex.Message, ex.GetType());
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for Saving data");
+
+                try
+                {
+                    SavingContainer = new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
+                    if (SavingContainer != null)
+                    {
+                        foreach (Tuple<double, double, double> tuple in SavingContainer)
+                        {
+                            TotalCostWithoutRenewable += tuple.Item1;
+                            TotalCostWithRenewable += tuple.Item2;
+                            TotalWindSaving += tuple.Item3;
+                        }
+                    }
+                    BarSavingData.Clear();
+                    BarSavingData.Add(new KeyValuePair<string, double>("Total Cost Without Renewable", TotalCostWithoutRenewable));
+                    BarSavingData.Add(new KeyValuePair<string, double>("Total Cost With Renewable", TotalCostWithRenewable));
+                    OnPropertyChanged(nameof(BarSavingData));
+                    OnPropertyChanged(nameof(TotalWindSaving));
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}; Exception type: {1}", e.Message, e.GetType());
+                }
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}; Exception type: {1}", e.Message, e.GetType());
             }
         }
 
@@ -394,7 +422,7 @@ namespace UIClient.ViewModel
             }
             catch (TimeoutException tex)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", tex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}; Exception type: {1}", tex.Message, tex.GetType());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for CO2 Emission");
 
                 try
@@ -451,9 +479,34 @@ namespace UIClient.ViewModel
                     rest = rest - TotalWindProductionPercentage;
                 }
             }
-            catch (Exception ex)
+            catch (TimeoutException ex)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", ex.Message, ex.GetType());
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for Wind Production");
+
+                try
+                {
+                    WindContainer = new ObservableCollection<Tuple<double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
+                    if (WindContainer != null && WindContainer.Count > 0)
+                    {
+                        foreach (Tuple<double, double> item in WindContainer)
+                        {
+                            i++;
+                            TotalWindProduction += item.Item1;
+                            TotalWindProductionPercentage += item.Item2;
+                        }
+                        TotalWindProductionPercentage = TotalWindProductionPercentage / i;
+                        rest = rest - TotalWindProductionPercentage;
+                    }
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", e.Message, e.GetType());
+                }
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", e.Message, e.GetType());
             }
             PieDataWind.Clear();
             PieDataWind.Add(new KeyValuePair<string, double>("Wind Production", TotalWindProductionPercentage));

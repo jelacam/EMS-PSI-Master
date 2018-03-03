@@ -79,18 +79,33 @@ namespace EMS.ServiceContracts
 
         public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
         {
-            return proxy.GetHistoryMeasurements(gid, startTime, endTime);
+            List<Tuple<double, DateTime>> historyMeasurements = new List<Tuple<double, DateTime>>(10);
+            try
+            {
+                historyMeasurements = proxy.GetHistoryMeasurements(gid, startTime, endTime);
+            }
+            catch (Exception e)
+            {
+            }
+            return historyMeasurements;
         }
 
         public List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
         {
-            return proxy.GetTotalProduction(startTime, endTime);
+            List<Tuple<double, DateTime>> totalProduction = new List<Tuple<double, DateTime>>();
+            try
+            {
+                totalProduction = proxy.GetTotalProduction(startTime, endTime);
+            }
+            catch (Exception e)
+            {
+            }
+            return totalProduction;
         }
 
         public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
         {
-            System.Diagnostics.Debugger.Launch();
-            List<Tuple<double, double, DateTime>> co2Emission = new List<Tuple<double, double, DateTime>>();
+            List<Tuple<double, double, DateTime>> co2Emission = new List<Tuple<double, double, DateTime>>(10);
             try
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Client request for CO2 emission for time period: {0} - {1}", startTime.ToString(), endTime.ToString());
@@ -106,12 +121,29 @@ namespace EMS.ServiceContracts
 
         public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
-            return proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
+            List<Tuple<double, double, double>> windFarmSaving = new List<Tuple<double, double, double>>();
+            try
+            {
+                windFarmSaving = proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
+            }
+            catch (Exception e)
+            {
+            }
+
+            return windFarmSaving;
         }
 
         public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
-            return proxy.ReadWindFarmProductionDataFromDb(startTime, endTime);
+            List<Tuple<double, double>> windFarmProduction = new List<Tuple<double, double>>();
+            try
+            {
+                windFarmProduction = proxy.ReadWindFarmProductionDataFromDb(startTime, endTime);
+            }
+            catch (Exception e)
+            {
+            }
+            return windFarmProduction;
         }
     }
 }

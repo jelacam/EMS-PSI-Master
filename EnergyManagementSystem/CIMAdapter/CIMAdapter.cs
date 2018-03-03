@@ -64,7 +64,28 @@ namespace EMS.CIMAdapter
                 //// NetworkModelService->ApplyUpdates
                 //updateResult = GdaQueryProxy.ApplyUpdate(delta).ToString();
                 //updateResult = NetworkModelGDAProxy.Instance.ApplyUpdate(delta).ToString();
-                updateResult = ImporterProxy.Instance.ModelUpdate(delta).ToString();
+                try
+                {
+                    updateResult = ImporterProxy.Instance.ModelUpdate(delta).ToString();
+                }
+                catch (TimeoutException te)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Error - CIM Adapter - Apply update. Message: {0}; Exception type: {1}", te.Message, te.GetType());
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for CIM Adapter Apply Updates");
+
+                    try
+                    {
+                        updateResult = ImporterProxy.Instance.ModelUpdate(delta).ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Error - CIM Adapter - Apply update. Message: {0}; Exception type: {1}", e.Message, e.GetType());
+                    }
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Error - CIM Adapter - Apply update. Message: {0}; Exception type: {1}", e.Message, e.GetType());
+                }
             }
 
             Thread.CurrentThread.CurrentCulture = culture;

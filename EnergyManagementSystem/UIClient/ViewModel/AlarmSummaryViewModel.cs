@@ -220,7 +220,30 @@ namespace UIClient.ViewModel
 
         private void IntegirtyUpdate()
         {
-            List<AlarmHelper> integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
+            List<AlarmHelper> integirtyResult = new List<AlarmHelper>();
+            try
+            {
+                integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "AES integrity update finished successfully.");
+            }
+            catch (TimeoutException te)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "AES Integrity update failed. Message: {0}; Exception type: {1}", te.Message, te.GetType());
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for AES integirty update.");
+                try
+                {
+                    integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "AES integrity update finished successfully.");
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "AES Integrity update failed. Message: {0}; Exception type: {1}", e.Message, e.GetType());
+                }
+            }
+            catch (Exception e)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "AES Integrity update failed. Message: {0}; Exception type: {1}", e.Message, e.GetType());
+            }
 
             lock (alarmSummaryLock)
             {
