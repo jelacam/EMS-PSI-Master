@@ -39,6 +39,8 @@ namespace EMS.Services.AlarmsEventsService
 
         private readonly int DEADBAND_VALUE = 20;
 
+        private Dictionary<long, bool> isNormalCreated = new Dictionary<long, bool>(10);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AlarmsEvents" /> class
         /// </summary>
@@ -91,6 +93,7 @@ namespace EMS.Services.AlarmsEventsService
         /// <param name="alarm">alarm to add</param>
         public void AddAlarm(AlarmHelper alarm)
         {
+            bool normalAlarm = false;
             if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
             {
                 return;
@@ -103,12 +106,13 @@ namespace EMS.Services.AlarmsEventsService
                 alarm.AckState = AckState.Unacknowledged;
                 if (string.IsNullOrEmpty(alarm.CurrentState))
                 {
-                    alarm.CurrentState = string.Format("{0}, {1}", State.Active, alarm.AckState);
+                    alarm.CurrentState = string.Format("{0} | {1}", State.Active, alarm.AckState);
                 }
+
                 // cleared status check
                 foreach (AlarmHelper item in Alarms)
                 {
-                    if (item.Gid.Equals(alarm.Gid) /*&& item.AckState.Equals(State.Active)*/)
+                    if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Active.ToString()))
                     {
                         item.Severity = alarm.Severity;
                         item.Value = alarm.Value;
@@ -117,19 +121,45 @@ namespace EMS.Services.AlarmsEventsService
                         updated = true;
                         break;
                     }
+                    else if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Cleared.ToString()))
+                    {
+                        if (alarm.Type.Equals(AlarmType.NORMAL) && !item.Type.Equals(AlarmType.NORMAL.ToString()))
+                        {
+                            bool normalCreated = false;
+                            if (this.isNormalCreated.TryGetValue(alarm.Gid, out normalCreated))
+                            {
+                                if (!normalCreated)
+                                {
+                                    normalAlarm = true;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
                 }
 
                 // ako je insert dodaj u listu - inace je updateovan
-                if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated)
+                if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
                     this.Alarms.Add(alarm);
                     if (InsertAlarmIntoDb(alarm))
                     {
                         Console.WriteLine("Alarm with GID:{0} recorded into alarms database.", alarm.Gid);
                     }
+                    this.isNormalCreated[alarm.Gid] = false;
+                }
+                if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
+                {
+                    this.Alarms.Add(alarm);
+                    this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
+                    this.isNormalCreated[alarm.Gid] = true;
+                }
+                else if (!alarm.Type.Equals(AlarmType.NORMAL))
+                {
+                    this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                 }
 
-                this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                 //Console.WriteLine("AlarmsEvents: AddAlarm method");
                 string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
@@ -145,32 +175,20 @@ namespace EMS.Services.AlarmsEventsService
         public void UpdateStatus(AnalogLocation analogLoc, State state)
         {
             long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
+            List<AlarmHelper> alarmsToAdd = new List<AlarmHelper>(2);
             foreach (AlarmHelper alarm in this.Alarms)
             {
-                if (alarm.Gid.Equals(powerSystemResGid) && !alarm.Type.Equals(AlarmType.NORMAL))
+                if (alarm.Gid.Equals(powerSystemResGid) && alarm.CurrentState.Contains(State.Active.ToString()))
                 {
-                    alarm.CurrentState = string.Format("{0}, {1}", state, alarm.AckState);
+                    alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
                     alarm.PubStatus = PublishingStatus.UPDATE;
                     if (UpdateAlarmStatusIntoDb(alarm))
                     {
                         Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
                     }
 
-                    AlarmHelper normalAlarm = new AlarmHelper();
-                    normalAlarm.AckState = AckState.Unacknowledged;
-                    normalAlarm.CurrentState = string.Format("{0}, {1}", State.Cleared, normalAlarm.AckState);
-                    normalAlarm.Gid = analogLoc.Analog.PowerSystemResource;
-                    normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
-                    normalAlarm.Persistent = PersistentState.Nonpersistent;
-                    normalAlarm.TimeStamp = DateTime.Now;
-                    normalAlarm.Severity = SeverityLevel.NONE;
-                    normalAlarm.Inhibit = InhibitState.Noninhibit;
-
-                    normalAlarm.Type = AlarmType.NORMAL;
-
                     try
                     {
-                        //this.Publisher.PublishAlarmsEvents(normalAlarm, PublishingStatus.INSERT);
                         this.Publisher.PublishStateChange(alarm);
                         string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
                         CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);

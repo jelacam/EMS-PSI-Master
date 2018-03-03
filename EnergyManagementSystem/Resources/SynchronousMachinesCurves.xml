@@ -3,63 +3,69 @@
   <Curves> 
 	<SynchronousMachineCurveModel>
       <MRId>Wind_Power_Plant_05</MRId>
-      <A>0</A>
-      <B>0.1</B>
+      <A>0.0001</A>
+      <B>0.0001</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
       <MRId>Wind_Power_Plant_06</MRId>
-      <A>0</A>
-      <B>0.2</B>
-      <C>1</C>
+      <A>0.0002</A>
+      <B>0.0002</B>
+      <C>2</C>
     </SynchronousMachineCurveModel>	
 	<SynchronousMachineCurveModel>
       <MRId>Solar_Power_Plant_07</MRId>
-      <A>0</A>
-      <B>0.1</B>
-      <C>2</C>
+      <A>0.001</A>
+      <B>0.001</B>
+      <C>1</C>
     </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
       <MRId>Solar_Power_Plant_08</MRId>
-      <A>0</A>
-      <B>0.2</B>
+      <A>0.002</A>
+      <B>0.002</B>
       <C>2</C>
     </SynchronousMachineCurveModel>	
 	<SynchronousMachineCurveModel>
-      <MRId>Hydro_Power_Plant_03</MRId>
-      <A>0</A>
-      <B>0.2</B>
-      <C>2</C>
-    </SynchronousMachineCurveModel>
-	<SynchronousMachineCurveModel>
       <MRId>Hydro_Power_Plant_04</MRId>
-      <A>0</A>
-      <B>0.1</B>
-      <C>1</C>
-    </SynchronousMachineCurveModel>		
-    <SynchronousMachineCurveModel>
-      <MRId>Coal_Power_Plant_01</MRId>
-      <A>0.02</A>
-      <B>0.02</B>
-      <C>2</C>
-    </SynchronousMachineCurveModel>
-    <SynchronousMachineCurveModel>
-      <MRId>Coal_Power_Plant_02</MRId>
       <A>0.01</A>
       <B>0.01</B>
       <C>1</C>
-    </SynchronousMachineCurveModel>	
+    </SynchronousMachineCurveModel>
 	<SynchronousMachineCurveModel>
-      <MRId>Oil_Power_Plant_09</MRId>
+      <MRId>Hydro_Power_Plant_03</MRId>
+      <A>0.02</A>
+      <B>0.02</B>
+      <C>2</C>
+    </SynchronousMachineCurveModel>		
+    <SynchronousMachineCurveModel>
+      <MRId>Coal_Power_Plant_02</MRId>
       <A>0.1</A>
       <B>0.1</B>
       <C>1</C>
     </SynchronousMachineCurveModel>
-	<SynchronousMachineCurveModel>
-      <MRId>Oil_Power_Plant_10</MRId>
+    <SynchronousMachineCurveModel>
+      <MRId>Coal_Power_Plant_01</MRId>
       <A>0.2</A>
       <B>0.2</B>
       <C>2</C>
+    </SynchronousMachineCurveModel>	
+	<SynchronousMachineCurveModel>
+      <MRId>Oil_Power_Plant_09</MRId>
+      <A>1</A>
+      <B>1</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>Oil_Power_Plant_10</MRId>
+      <A>2</A>
+      <B>2</B>
+      <C>2</C>
+    </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>Hydro_Power_Plant_11</MRId>
+      <A>0.01</A>
+      <B>0.01</B>
+      <C>1</C>
     </SynchronousMachineCurveModel>
   </Curves>
 </SynchronousMachineCurveModels>
