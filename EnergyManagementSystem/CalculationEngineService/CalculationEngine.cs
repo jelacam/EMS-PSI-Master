@@ -176,6 +176,8 @@ namespace EMS.Services.CalculationEngineService
                 }
                 else if (OptimizationType == OptimizationType.Linear)
                 {
+                    //optModelMapOptimizied = CalculateWithGeneticAlgorithm(optModelMap, powerOfConsumers);
+
                     LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
                     optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
                     totalCost = linearAlgorithm.LACostWithoutRenewable; // ukupna cena linearne optimizacije bez vetrogeneratora
@@ -206,15 +208,17 @@ namespace EMS.Services.CalculationEngineService
         private Dictionary<long, OptimisationModel> CalculateWithGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
         {
             Dictionary<long, OptimisationModel> optModelMapOptimizied;
-            float powerOfConsumersNonRenewable = powerOfConsumers;
+            float powerOfConsumersWithoutRenewable = powerOfConsumers;
+
             Dictionary<long, OptimisationModel> optModelMapNonRenewable = new Dictionary<long, OptimisationModel>();
+            Dictionary<long, OptimisationModel> optModelMapNonRenewableClone = new Dictionary<long, OptimisationModel>();
             windProductionkW = 0;
             foreach (var item in optModelMap)
             {
                 if (item.Value.Renewable)
                 {
-                    item.Value.GenericOptimizedValue = item.Value.MaxPower; 
-                    powerOfConsumersNonRenewable -= item.Value.MaxPower;
+                    item.Value.GenericOptimizedValue = item.Value.MaxPower;
+                    powerOfConsumersWithoutRenewable -= item.Value.MaxPower;
                     if (item.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind))
                     {
                         windProductionkW += item.Value.MaxPower;
@@ -225,26 +229,64 @@ namespace EMS.Services.CalculationEngineService
                     optModelMapNonRenewable.Add(item.Key, item.Value);
                 }
             }
+            float powerOfRenewable = powerOfConsumers - powerOfConsumersWithoutRenewable;
 
-            GAOptimization gaoNonRenewable = new GAOptimization(powerOfConsumers, optModelMapNonRenewable);
-            var optModelMapOptimiziedNonRenewable = gaoNonRenewable.StartAlgorithmWithReturn();
+            //GAOptimization gaoNonRenewable = new GAOptimization(powerOfConsumers, optModelMapNonRenewable);
+            //var optModelMapOptimiziedNonRenewable = gaoNonRenewable.StartAlgorithmWithReturn();
 
-            GAOptimization gaoRenewable = new GAOptimization(powerOfConsumersNonRenewable, optModelMapNonRenewable);
+            GAOptimization gaoRenewable = new GAOptimization(powerOfConsumersWithoutRenewable, optModelMapNonRenewable);
             optModelMapOptimizied = gaoRenewable.StartAlgorithmWithReturn();
 
+            
 
-            totalCost = gaoNonRenewable.TotalCost;
+            foreach(var optModel in optModelMapNonRenewable)
+            {
+                optModelMapNonRenewableClone.Add(optModel.Key, optModel.Value.Clone());
+            }
+
+            if (optModelMapNonRenewableClone.Count == 0)
+            {
+                return optModelMap;
+            }
+
+            var coalModel = optModelMapNonRenewableClone.FirstOrDefault(x => x.Value.EmsFuel.FuelType == EmsFuelType.coal);
+            coalModel.Value.GenericOptimizedValue = optModelMapOptimizied[coalModel.Key].GenericOptimizedValue + windProductionkW;
+            totalCost = CalculateCost(optModelMapNonRenewableClone, OptimizationType.Genetic);
             totalCostWithRenewable = gaoRenewable.TotalCost;
             profit = totalCost - totalCostWithRenewable;
-            windProductionPct = 100 * windProductionkW / (gaoRenewable.GeneratedPower + windProductionkW);
+            windProductionPct = 100 * windProductionkW / powerOfConsumers;
             emissionCO2Renewable = gaoRenewable.EmissionCO2;
-            emissionCO2NonRenewable = gaoNonRenewable.EmissionCO2;
+            emissionCO2NonRenewable = CalculateCO2(optModelMapNonRenewableClone);
 
             //foreach(var item in optModelMapOptimizied)
             //{
             //    optModelMap[item.Key].GenericOptimizedValue = item.Value.GenericOptimizedValue;
             //}
             return optModelMap;
+        }
+
+        private static float CalculateCost(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optimizationType)
+        {
+            float cost = 0;
+            foreach (var optModel in optModelMap.Values)
+            {
+                float price = optimizationType == OptimizationType.Genetic ?
+                    optModel.CalculatePrice(optModel.GenericOptimizedValue) : optModel.CalculatePrice(optModel.LinearOptimizedValue);
+                cost += price;
+            }
+
+            return cost;
+        }
+
+        public static float CalculateCO2(Dictionary<long, OptimisationModel> optModelMap)
+        {
+            float emCO2 = 0;
+            foreach (var optModel in optModelMap.Values)
+            {
+                emCO2 += optModel.GenericOptimizedValue * optModel.EmissionFactor;
+            }
+
+            return emCO2;
         }
 
         private List<MeasurementUnit> DoNotOptimized(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
@@ -522,9 +564,9 @@ namespace EMS.Services.CalculationEngineService
                         cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
                         cmd.Parameters.Add("@windProduction", SqlDbType.Float).Value = windProduction;
                         cmd.Parameters.Add("@windProductionPercent", SqlDbType.Float).Value = windProductionPercent;
-						//cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
-						cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCost;
-						cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
+                        //cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
+                        cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCost;
+                        cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
                         cmd.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
                         cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = time.ToString("yyyy-MM-dd HH:mm:ss.fff");
                         cmd.ExecuteNonQuery();
