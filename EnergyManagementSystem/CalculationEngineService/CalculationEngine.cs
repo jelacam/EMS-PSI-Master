@@ -168,14 +168,37 @@ namespace EMS.Services.CalculationEngineService
 				});
 			}
 
-			foreach (var enCons in energyConsumers)
-			{
+			DateTime dateTime = new DateTime(2017, 1, 1);
+			int index = 0;
+			DummySimulation simulation = new DummySimulation();
 
+			while (dateTime < DateTime.Now)
+			{
+				Console.WriteLine("Completed: {0} %", ((float)index / 10300f) * 100);
+				float currentConsumption = simulation.GetCurrentConsumption(index % 24);
+				float windSpeed = simulation.GetWindSpeed(index % 24);
+				float sunLight = simulation.GetSunLight(index % 24);
+
+				Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed, sunLight);
+				
+				var measurementsOptimized = DoOptimization(optModelMap, currentConsumption, windSpeed, sunLight);
+
+				if (InsertMeasurementsIntoDb(measurementsOptimized, dateTime))
+				{
+					//Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
+				}
+
+				if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, dateTime))
+				{
+					//Console.WriteLine("The CO2 emission is recorded into history database.");
+				}
+
+				dateTime = dateTime.AddHours(1);
+				index++;
 			}
 
-			DummySimulation simulation = new DummySimulation(measGenerators);
-			simulation.Start();
-		
+			Console.WriteLine("Completed: 100 %");
+
 		}
 
 		private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
@@ -421,7 +444,7 @@ namespace EMS.Services.CalculationEngineService
         /// </summary>
         /// <param name="measurements">List of measurements</param>
         /// <returns>Success</returns>
-        private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
+        public bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
         {
             bool success = true;
 
@@ -458,11 +481,54 @@ namespace EMS.Services.CalculationEngineService
             return success;
         }
 
-        /// <summary>
-        /// Read measurements from history database
-        /// </summary>
-        /// <param name="gid">Global identifikator of object</param>
-        public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
+		/// <summary>
+		/// Insert data into history db
+		/// </summary>
+		/// <param name="measurements">List of measurements</param>
+		/// <param name="timeStamp">TimeStamp of measurements</param>
+		/// <returns>Success</returns>
+		public bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements,DateTime timeStamp)
+		{
+			bool success = true;
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("InsertMeasurement", connection))
+					{
+						cmd.CommandType = CommandType.StoredProcedure;
+						foreach (MeasurementUnit mu in measurements)
+						{
+							cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
+							cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = timeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff");
+							cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
+							cmd.ExecuteNonQuery();
+							cmd.Parameters.Clear();
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					success = false;
+					string message = string.Format("Failed to insert new Measurement into database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return success;
+		}
+
+		/// <summary>
+		/// Read measurements from history database
+		/// </summary>
+		/// <param name="gid">Global identifikator of object</param>
+		public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
         {
             List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
 

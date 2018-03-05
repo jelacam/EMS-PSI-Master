@@ -4,7 +4,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 {
 	public static class SimulationHelper
 	{
-		public static double SimulationFunction1(int x)
+		public static double SimulationFunction1(float x)
 		{
 			// y = -1.628408 + 4.600775 * x - 1.466326 * x ^ 2 + 0.1952566 * x ^ 3 - 0.00915698 * x ^ 4
 
@@ -24,7 +24,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return v;
 		}
 
-		public static float SimulationFunction2(int x)
+		public static float SimulationFunction2(float x)
 		{
 			double retVal = 0;
 			retVal = 200 + 20 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -40,7 +40,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction3(int x)
+		public static float SimulationFunction3(float x)
 		{
 			double retVal = 0;
 			retVal = 300 + 30 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -56,7 +56,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction4(int x)
+		public static float SimulationFunction4(float x)
 		{
 			double retVal = 0;
 			retVal = 400 + 40 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -72,7 +72,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction5(int x)
+		public static float SimulationFunction5(float x)
 		{
 			double retVal = 0;
 			retVal = 500 + 50 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -88,7 +88,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction6(int x)
+		public static float SimulationFunction6(float x)
 		{
 			double retVal = 0;
 			retVal = 600 + 60 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -104,7 +104,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction7(int x)
+		public static float SimulationFunction7(float x)
 		{
 			double retVal = 0;
 			retVal = 700 + 70 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -120,7 +120,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction8(int x)
+		public static float SimulationFunction8(float x)
 		{
 			double retVal = 0;
 			retVal = 800 + 80 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -136,7 +136,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction9(int x)
+		public static float SimulationFunction9(float x)
 		{
 			double retVal = 0;
 			retVal = 900 + 90 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -152,7 +152,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction10(int x)
+		public static float SimulationFunction10(float x)
 		{
 			double retVal = 0;
 			retVal = 1000 + 100 * (-9.924232 * x + 3.095262 * Math.Pow(x, 2) - 0.3209949 * Math.Pow(x, 3) + 0.01411989 * Math.Pow(x, 4) - 0.0002267766 * Math.Pow(x, 5));
@@ -168,7 +168,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return (float)retVal;
 		}
 
-		public static float SimulationFunction11(int x)
+		public static float SimulationFunction11(float x)
 		{
 			float retVal = 0;
 
@@ -200,7 +200,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction12(int x)
+		public static float SimulationFunction12(float x)
 		{
 			float retVal = 0;
 
@@ -232,7 +232,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction13(int x)
+		public static float SimulationFunction13(float x)
 		{
 			float retVal = 0;
 
@@ -264,7 +264,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction14(int x)
+		public static float SimulationFunction14(float x)
 		{
 			float retVal = 0;
 
@@ -296,7 +296,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction15(int x)
+		public static float SimulationFunction15(float x)
 		{
 			float retVal = 0;
 
@@ -328,7 +328,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction16(int x)
+		public static float SimulationFunction16(float x)
 		{
 			float retVal = 0;
 
@@ -364,7 +364,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction17(int x)
+		public static float SimulationFunction17(float x)
 		{
 			float retVal = 0;
 
@@ -400,7 +400,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction18(int x)
+		public static float SimulationFunction18(float x)
 		{
 			float retVal = 0;
 
@@ -436,7 +436,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction19(int x)
+		public static float SimulationFunction19(float x)
 		{
 			float retVal = 0;
 
@@ -472,7 +472,7 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static float SimulationFunction20(int x)
+		public static float SimulationFunction20(float x)
 		{
 			float retVal = 0;
 
@@ -508,12 +508,12 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			return retVal;
 		}
 
-		public static double SimulateWind(int x)
+		public static double SimulateWind(float x)
 		{
 			return (float)Math.Sin(x / 10f) * 13.5f + 13.5f;
 		}
 
-		public static double SimulateSun(int x)
+		public static double SimulateSun(float x)
 		{
 			return (float)Math.Sin(x / 10f) * 50f + 50f;
 		}

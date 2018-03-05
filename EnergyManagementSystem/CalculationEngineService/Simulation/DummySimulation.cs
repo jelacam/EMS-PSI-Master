@@ -1,24 +1,16 @@
 ﻿using EMS.CommonMeasurement;
-using System;
 using System.Collections.Generic;
 
 namespace EMS.Services.CalculationEngineService.Simulation
 {
 	public class DummySimulation
 	{
-		private List<MeasurementUnit> measGenerators;
 		private List<SimulationData> simulationDataList;
 		private readonly long DURATION = 24;
 
-
 		public DummySimulation()
 		{
-			
-		}
-
-		public DummySimulation(List<MeasurementUnit> measGenerators)
-		{
-			this.measGenerators = measGenerators;
+			PopulateSimulationData();
 		}
 
 		public List<SimulationData> SimulationDataList
@@ -34,32 +26,25 @@ namespace EMS.Services.CalculationEngineService.Simulation
 			}
 		}
 
-		public void Start()
+		public float GetCurrentConsumption(int hour)
 		{
-			DateTime dateTime = new DateTime(2017, 1, 1);
-			int index = 0;
-			while (dateTime < DateTime.Now)
+			float totalConsumption = 0;
+			for (int i = 0; i < 20; i++)
 			{
-				Console.WriteLine("Complete: {0}", index++);
-				dateTime = dateTime.AddHours(1);
+				totalConsumption += SimulationDataList[i].Data[hour].Value;
 			}
 
-			//for (int i = 0; i < 10000; i++)
-			//{
-			//	Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, 4, 16);
+			return totalConsumption;
+		}
 
-			//	var measurementsOptimized = DoOptimization(optModelMap, i, 4, 16);
+		public float GetWindSpeed(int hour)
+		{
+			return SimulationDataList[20].Data[hour].Value;
+		}
 
-			//	if (InsertMeasurementsIntoDb(measurementsOptimized))
-			//	{
-			//		Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
-			//	}
-
-			//	if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, DateTime.Now))
-			//	{
-			//		Console.WriteLine("The CO2 emission is recorded into history database.");
-			//	}
-			//}
+		public float GetSunLight(int hour)
+		{
+			return SimulationDataList[21].Data[hour].Value;
 		}
 
 		private void PopulateSimulationData()
