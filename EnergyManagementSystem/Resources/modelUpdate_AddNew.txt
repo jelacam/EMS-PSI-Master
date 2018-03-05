@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:cim="http://iec.ch/TC57/2010/CIM-schema-cim15#"
+	xmlns:ftn="http://www.ftnydro.com/CIM15/2010/extension#">	
+
+<cim:SynchronousMachine rdf:ID="SyncMachine_11">
+		<cim:SynchronousMachine.active>true</cim:SynchronousMachine.active>
+		<cim:SynchronousMachine.fuel rdf:resource="#Fuel_06"/>
+		<cim:SynchronousMachine.loadPct>100</cim:SynchronousMachine.loadPct>
+		<cim:SynchronousMachine.maxCosPhi>0.8</cim:SynchronousMachine.maxCosPhi>
+		<cim:SynchronousMachine.maxQ>200</cim:SynchronousMachine.maxQ>
+		<cim:SynchronousMachine.minCosPhi>-0.8</cim:SynchronousMachine.minCosPhi>
+		<cim:SynchronousMachine.minQ>20</cim:SynchronousMachine.minQ>
+		<cim:SynchronousMachine.operatingMode>generator</cim:SynchronousMachine.operatingMode>
+		<cim:RotatingMachine.ratedS>1000</cim:RotatingMachine.ratedS>
+		<cim:IdentifiedObject.mRID>Hydro_Power_Plant_11</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Hydro_Power_Plant_11</cim:IdentifiedObject.name>
+	</cim:SynchronousMachine>
+
+	<cim:Analog rdf:ID="Analog_sm_11">
+		<cim:Analog.maxValue>200</cim:Analog.maxValue>
+		<cim:Analog.minValue>20</cim:Analog.minValue>
+		<cim:Analog.normalValue>55</cim:Analog.normalValue>
+		<cim:Analog.signalDirection>ReadWrite</cim:Analog.signalDirection>
+		<cim:Measurement.measurementType>PowerPerHour</cim:Measurement.measurementType>
+		<cim:Measurement.PowerSystemResource rdf:resource="#SyncMachine_11"/>
+		<cim:Measurement.unitSymbol>W</cim:Measurement.unitSymbol>
+		<cim:IdentifiedObject.mRID>Analog_sm_11</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Analog_sm_11</cim:IdentifiedObject.name>
+	</cim:Analog>
+	
+	<cim:EMSFuel rdf:ID="Fuel_06">
+		<cim:EMSFuel.fuelType>hydro</cim:EMSFuel.fuelType>
+		<cim:EMSFuel.unitPrice>1.5</cim:EMSFuel.unitPrice>
+		<cim:IdentifiedObject.mRID>Fuel_06_Hydro</cim:IdentifiedObject.mRID>
+		<cim:IdentifiedObject.name>Fuel_06_Hydro</cim:IdentifiedObject.name>
+	</cim:EMSFuel>
+	
+</rdf:RDF>

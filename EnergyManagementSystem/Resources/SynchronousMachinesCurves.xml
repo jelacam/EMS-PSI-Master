@@ -61,5 +61,11 @@
       <B>2</B>
       <C>2</C>
     </SynchronousMachineCurveModel>
+	<SynchronousMachineCurveModel>
+      <MRId>Hydro_Power_Plant_11</MRId>
+      <A>0.01</A>
+      <B>0.01</B>
+      <C>1</C>
+    </SynchronousMachineCurveModel>
   </Curves>
 </SynchronousMachineCurveModels>

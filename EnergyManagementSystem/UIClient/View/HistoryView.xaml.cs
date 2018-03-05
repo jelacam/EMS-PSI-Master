@@ -11,5 +11,5 @@ namespace UIClient.View
 		{
 			InitializeComponent();
 		}
-	}
+    }
 }

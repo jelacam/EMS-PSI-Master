@@ -154,6 +154,7 @@
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
     <Compile Include="Converters\TestConverter.cs" />
+    <Compile Include="Model\GraphSample.cs" />
     <Compile Include="Model\PeriodValues.cs" />
     <Compile Include="Model\PieChart.cs" />
     <Compile Include="PubSub\CallbackEventArgs.cs" />

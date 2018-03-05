@@ -15,7 +15,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:TestConverter x:Key="TestConvetrer"/>
-		<converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
+        <converters:PeriodEnumToStringConverter x:Key="PeriodEnumToStringConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
 		<ObjectDataProvider x:Key="dataFromPeriodEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
@@ -79,9 +80,9 @@
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" kW"></TextBlock>
 					</StackPanel>
 
-					<StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
-						<chartingToolkit:Chart Margin="10" Height="270" Width="270" Style="{StaticResource DashboardChartStyle}">
-							<chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
+                        <chartingToolkit:Chart Margin="10" Height="270" Width="270" Style="{StaticResource DashboardChartStyle}">
+                            <chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
                                                        IsSelectionEnabled="False"
@@ -107,9 +108,8 @@
                                 </Style>
                             </chartingToolkit:Chart.PlotAreaStyle>
                         </chartingToolkit:Chart>
-					</StackPanel>
-
-				</Grid>
+                    </StackPanel>
+                </Grid>
 			</Expander>
 
 			<Expander Grid.Row="1" IsExpanded="False" Header="Wind Farm Saving" Foreground="White" Margin="10">
@@ -165,111 +165,152 @@
 							<chartingToolkit:ColumnSeries ItemsSource="{Binding BarSavingData}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
-                                                       IsSelectionEnabled="False">
+                                                       IsSelectionEnabled="False"
+                                                          Title="Cost [$]">
 							</chartingToolkit:ColumnSeries>
 						</chartingToolkit:Chart>
 					</Grid>
 				</Grid>
 			</Expander>
 
-			<Expander Grid.Row="2" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
-				<Grid >
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"></ColumnDefinition>
-						<ColumnDefinition Width="*"></ColumnDefinition>
-					</Grid.ColumnDefinitions>
+            <Expander Grid.Row="2" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
 
-					<StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
-						<GroupBox Margin="10" FontSize="14" Header="Period"  Foreground="White">
+                    <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+                        <GroupBox Margin="10" FontSize="14" Header="Period"  Foreground="White">
                             <ComboBox Margin="10" ItemsSource="{Binding Source={StaticResource dataFromPeriodEnum}}" SelectedValue="{Binding SelectedPeriodCO2}">
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding Converter={StaticResource PeriodEnumToStringConverter}}"/>
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-								<i:Interaction.Triggers>
-									<i:EventTrigger EventName="SelectionChanged">
-										<i:InvokeCommandAction Command="{Binding ChangePeriodCO2Command}"/>
-									</i:EventTrigger>
-								</i:Interaction.Triggers>
-							</ComboBox>
-						</GroupBox>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource PeriodEnumToStringConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ChangePeriodCO2Command}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </GroupBox>
 
-						<GroupBox Margin="10" FontSize="14" Header="Start Time"  Foreground="White">
+                        <GroupBox Margin="10" FontSize="14" Header="Start Time"  Foreground="White">
                             <toolkit:DateTimePicker  Margin="10" Value="{Binding StartTimeCO2}" 
                                     Width="300">
-							</toolkit:DateTimePicker>
-						</GroupBox>
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
 
-						<GroupBox Margin="10" FontSize="14" Header="End Time"  Foreground="White">
+                        <GroupBox Margin="10" FontSize="14" Header="End Time"  Foreground="White">
                             <toolkit:DateTimePicker Margin="10" Value="{Binding EndTimeCO2}"
                                         Width="300">
-							</toolkit:DateTimePicker>
-						</GroupBox>
+                            </toolkit:DateTimePicker>
+                        </GroupBox>
 
-						<Button Content="View Data" Margin="10" Command="{Binding ViewCO2EmissionDataCommand}"/>
+                        <Button Content="View Data" Margin="10" Command="{Binding ViewCO2EmissionDataCommand}"/>
 
-						<chartingToolkit:Chart Margin="10" Height="200" Width="200" Style="{StaticResource DashboardChartStyle}">
-							<chartingToolkit:PieSeries ItemsSource="{Binding PieData}" 
+                        <chartingToolkit:Chart Margin="10" Height="200" Width="200" Style="{StaticResource DashboardChartStyle}">
+                            <chartingToolkit:PieSeries ItemsSource="{Binding PieData}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
                                                        IsSelectionEnabled="False">
-								<chartingToolkit:PieSeries.Palette>
-									<dv:ResourceDictionaryCollection>
-										<ResourceDictionary>
-											<Style x:Key="DataPointStyle" TargetType="Control">
-												<Setter Property="Background" Value="Green" />
-											</Style>
-										</ResourceDictionary>
-										<ResourceDictionary>
-											<Style x:Key="DataPointStyle" TargetType="Control">
+                                <chartingToolkit:PieSeries.Palette>
+                                    <dv:ResourceDictionaryCollection>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="Green" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
                                                 <Setter Property="Background" Value="DarkOrange" />
-											</Style>
-										</ResourceDictionary>
-									</dv:ResourceDictionaryCollection>
-								</chartingToolkit:PieSeries.Palette>
-							</chartingToolkit:PieSeries>
-							<chartingToolkit:Chart.PlotAreaStyle>
-								<Style TargetType="Grid">
-									<Setter Property="Background" Value="Transparent"/>
-								</Style>
-							</chartingToolkit:Chart.PlotAreaStyle>
-						</chartingToolkit:Chart>
+                                            </Style>
+                                        </ResourceDictionary>
+                                    </dv:ResourceDictionaryCollection>
+                                </chartingToolkit:PieSeries.Palette>
+                            </chartingToolkit:PieSeries>
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
+                        </chartingToolkit:Chart>
 
-					</StackPanel >
+                    </StackPanel >
 
-					<Grid Grid.Column="1" Margin="10">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="*"/>
-						</Grid.RowDefinitions>
-						<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
-							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period:" Margin="5,0,0,0"/>
-							<TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
+                    <Grid Grid.Column="1" Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Margin="10">
+                            <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period:" Margin="5,0,0,0"/>
+                            <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text=" tonnes" Margin="5,0,0,0"/>
                         </StackPanel>
 
-						<Grid Grid.Row="1" Grid.ColumnSpan="2">
-							<chartingToolkit:Chart Margin="10" Title="CO2 Graph" 
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
+                            <CheckBox Content="CO2 emission real" Margin="10" Foreground="White" IsChecked="True">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionGraphUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                            <CheckBox Content="CO2 emission without renewables in system" Margin="10" Foreground="White">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionWithoutRenewablesGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionWithoutRenewablesGraphUnCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </CheckBox>
+                        </StackPanel>
+
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                            <chartingToolkit:Chart Margin="10" Title="CO2 Graph" 
 											   Style="{StaticResource DashboardChartStyle}" Height="400">
 
-								<chartingToolkit:LineSeries Title="CO2 Emission with NonRenewable"  
-												ItemsSource="{Binding Path=CO2EmissionContainer}" 
+                                <chartingToolkit:LineSeries Title="CO2 Emission Without Renewables [t]"  
+												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item3}"
 												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
-									<chartingToolkit:LineSeries.DataPointStyle>
-										<Style TargetType="chartingToolkit:LineDataPoint">
+												Style="{StaticResource LineSeriesStyle}"
+                                                Visibility="{Binding Path=CO2EmissionWithoutRenewableGraphVisibility, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
                                             <Setter Property="Background" Value="DarkOrange"/>
-											<Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
-										</Style>
-									</chartingToolkit:LineSeries.DataPointStyle>
+                                            <Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+                                </chartingToolkit:LineSeries>
 
+                                <chartingToolkit:LineSeries Title="CO2 Emission Real [t]"  
+												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
+												DependentValueBinding="{Binding Path=Item2}" 
+												IndependentValueBinding="{Binding Path=Item3}"
+												IsSelectionEnabled="False"
+												Style="{StaticResource LineSeriesStyle}"
+                                                Visibility="{Binding Path=CO2EmissionGraphVisibility, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <chartingToolkit:LineSeries.DataPointStyle>
+                                        <Style TargetType="chartingToolkit:LineDataPoint">
+                                            <Setter Property="Background" Value="DarkGreen"/>
+                                            <Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
+                                        </Style>
+                                    </chartingToolkit:LineSeries.DataPointStyle>
+									
 									<chartingToolkit:LineSeries.IndependentAxis>
 										<chartingToolkit:DateTimeAxis Orientation="X" Title="Time"/>
 									</chartingToolkit:LineSeries.IndependentAxis>
@@ -279,29 +320,11 @@
 									</chartingToolkit:LineSeries.DependentRangeAxis>
 
 								</chartingToolkit:LineSeries>
-
-								<chartingToolkit:LineSeries Title="CO2 Emission with Renewable"  
-												ItemsSource="{Binding Path=CO2EmissionContainer}" 
-												DependentValueBinding="{Binding Path=Item2}" 
-												IndependentValueBinding="{Binding Path=Item3}"
-												IsSelectionEnabled="False"
-												Style="{StaticResource LineSeriesStyle}">
-									<chartingToolkit:LineSeries.DataPointStyle>
-										<Style TargetType="chartingToolkit:LineDataPoint">
-											<Setter Property="Background" Value="DarkGreen"/>
-											<Setter Property="Template" Value="{StaticResource LineDataPointCO2Template}"/>
-										</Style>
-									</chartingToolkit:LineSeries.DataPointStyle>
-								</chartingToolkit:LineSeries>
-							</chartingToolkit:Chart>
-						</Grid>
-						
-
-					</Grid>
-
-				</Grid>
-			</Expander>
-
-		</Grid>
+                            </chartingToolkit:Chart>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Expander>
+        </Grid>
 	</ScrollViewer>
 </UserControl>
