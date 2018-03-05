@@ -508,7 +508,8 @@ namespace UIClient.ViewModel
         private void ViewWindProductionDataCommandExecute(Object obj)
         {
             int i = 0;
-            double rest = 100;
+            double rest = 0;
+            double sum = 0;
             TotalWindProduction = 0;
             try
             {
@@ -522,7 +523,9 @@ namespace UIClient.ViewModel
                         TotalWindProductionPercentage += item.Item2;
                     }
                     TotalWindProductionPercentage = TotalWindProductionPercentage / i;
-                    rest = rest - TotalWindProductionPercentage;
+                    //rest = rest - TotalWindProductionPercentage;
+                    sum = (1 * TotalWindProduction) / (TotalWindProductionPercentage/100);
+                    rest = sum - TotalWindProduction;
                 }
             }
             catch (Exception ex)
@@ -530,7 +533,7 @@ namespace UIClient.ViewModel
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", ex.Message);
             }
             PieDataWind.Clear();
-            PieDataWind.Add(new KeyValuePair<string, double>("Wind Production", TotalWindProductionPercentage));
+            PieDataWind.Add(new KeyValuePair<string, double>("Wind Production", TotalWindProduction));
             PieDataWind.Add(new KeyValuePair<string, double>("Other", rest));
 
             OnPropertyChanged(nameof(PieDataWind));
