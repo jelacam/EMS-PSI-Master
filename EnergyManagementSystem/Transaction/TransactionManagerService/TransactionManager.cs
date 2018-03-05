@@ -114,7 +114,8 @@ namespace EMS.Services.TransactionManagerService
 
             if (analogsDelta.InsertOperations.Count != 0 || analogsDelta.UpdateOperations.Count != 0)
             {
-                toRespond++;
+                toRespond+=2;
+                
             }
             if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
             {
@@ -127,7 +128,7 @@ namespace EMS.Services.TransactionManagerService
                 {
                     updateResult = TransactionNMSProxy.Instance.Prepare(ref delta);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: NMS Prepare phase failed; Message: {0}", e.Message);
                     updateResult.Message = "Transaction: Failed to apply delta on Network Model Service";
@@ -149,7 +150,7 @@ namespace EMS.Services.TransactionManagerService
                     if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
                     {
                         try
-                        { 
+                        {
                             TransactionCEProxy.Instance.Prepare(ref ceDelta);
                         }
                         catch (Exception e)
@@ -163,7 +164,7 @@ namespace EMS.Services.TransactionManagerService
                     else
                     {
                         try
-                        { 
+                        {
                             TransactionCRProxy.Instance.Prepare(ref analogsDelta);
                             TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
                         }
@@ -182,6 +183,22 @@ namespace EMS.Services.TransactionManagerService
                     // second transaction - send ceDelta to CE, analogDelta to SCADA
                     try
                     {
+
+                        TransactionCRProxy.Instance.Prepare(ref analogsDelta);
+                        TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                    }
+                    catch (Exception e)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: Prepare phase failed for SCADA Services; Message: {0}", e.Message);
+                        updateResult.Message = "Transaction: Failed to apply delta on SCADA Services";
+                        updateResult.Result = ResultType.Failed;
+                        return updateResult;
+                    }
+                }
+                else if (toRespond == 4)
+                {
+                    try
+                    { 
                         TransactionCEProxy.Instance.Prepare(ref ceDelta);
                         TransactionCRProxy.Instance.Prepare(ref analogsDelta);
                         TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
@@ -260,7 +277,7 @@ namespace EMS.Services.TransactionManagerService
             bool commitResultCE = true;
 
             bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
-            if (toRespond == 3)
+            if (toRespond == 4)
             {
                 commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
                 commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
@@ -283,8 +300,7 @@ namespace EMS.Services.TransactionManagerService
             }
             else if (toRespond == 2)
             {
-                if (ceDeltaToApply.InsertOperations.Count != 0 || ceDeltaToApply.UpdateOperations.Count != 0)
-                {
+                
                     commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
 
                     if (!commitResultCE)
@@ -292,24 +308,25 @@ namespace EMS.Services.TransactionManagerService
                         updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
                     }
 
-                }
-                else
-                {
-                    commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                    commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-
-                    if (!commitResultScadaCR)
-                    {
-                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
-                    }
-
-                    if (!commitResultScadaCMD)
-                    {
-                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
-                    }
-                }
-                
             }
+            else if (toRespond == 3)
+            { 
+                
+                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+
+                if (!commitResultScadaCR)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                }
+
+                if (!commitResultScadaCMD)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                }
+            }
+
+        
 
             if (commitResultNMS && commitResultSCADA && commitResultCE)
             {

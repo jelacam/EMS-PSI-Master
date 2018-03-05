@@ -787,38 +787,35 @@ namespace EMS.Common
 
             foreach (ResourceDescription rd_item in this.InsertOperations)
             {
-                foreach (Property pr_item in rd_item.Properties)
-                {
-                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+                
+                    if (ModelCodeHelper.ExtractTypeFromGlobalId(rd_item.Id).Equals((short)emsType))
                     {
+                        
                         newDelta.AddDeltaOperation(DeltaOpType.Insert, rd_item.Clone() as ResourceDescription, true);
                         break;
                     }
-                }
+
             }
 
             foreach (ResourceDescription rd_item in this.UpdateOperations)
             {
-                foreach (Property pr_item in rd_item.Properties)
-                {
-                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+
+                    if (ModelCodeHelper.ExtractTypeFromGlobalId(rd_item.Id).Equals((short)emsType))
                     {
                         newDelta.AddDeltaOperation(DeltaOpType.Update, rd_item.Clone() as ResourceDescription, true);
                         break;
                     }
-                }
+
             }
 
             foreach (ResourceDescription rd_item in this.DeleteOperations)
             {
-                foreach (Property pr_item in rd_item.Properties)
-                {
-                    if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(emsType))
+
+                    if (ModelCodeHelper.ExtractTypeFromGlobalId(rd_item.Id).Equals((short)emsType))
                     {
                         newDelta.AddDeltaOperation(DeltaOpType.Delete, rd_item.Clone() as ResourceDescription, true);
                         break;
                     }
-                }
             }
 
             return newDelta;

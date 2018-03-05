@@ -7,7 +7,7 @@
 	
 	<!-- Fuels -->
 	<cim:EMSFuel rdf:ID="Fuel_01">
-		<cim:EMSFuel.unitPrice>13</cim:EMSFuel.unitPrice>
+		<cim:EMSFuel.unitPrice>16</cim:EMSFuel.unitPrice>
 		<cim:IdentifiedObject.mRID>Fuel_01_Coal</cim:IdentifiedObject.mRID>
 	</cim:EMSFuel>
 </rdf:RDF>
