@@ -229,7 +229,7 @@ namespace EMS.Services.NetworkModelService
             Dictionary<long, IdentifiedObject> copy = new Dictionary<long, IdentifiedObject>();
             foreach (KeyValuePair<long, IdentifiedObject> pair in this.Entities)
             {
-                copy[pair.Key] = pair.Value;
+                copy[pair.Key] = pair.Value.Clone() as IdentifiedObject;
             }
 
             Container container = new Container();

@@ -109,6 +109,22 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            Analog io = new Analog();
+            io.MaxValue = this.MaxValue;
+            io.MeasurementType = this.MeasurementType;
+            io.MinValue = this.MinValue;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.NormalValue = this.NormalValue;
+            io.PowerSystemResource = this.PowerSystemResource;
+            io.SignalDirection = this.SignalDirection;
+            io.UnitSymbol = this.UnitSymbol;
+
+            return io;
+        }
+
         #region IAccess implementation
         /// <summary>
         /// Checks if the entity has a property

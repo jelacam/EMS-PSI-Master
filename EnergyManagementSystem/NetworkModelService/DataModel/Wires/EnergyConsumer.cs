@@ -105,6 +105,21 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            EnergyConsumer io = new EnergyConsumer(base.GlobalId);
+            io.Measurements = this.Measurements;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.PFixed = this.PFixed;
+            io.PFixedPct = this.PFixedPct;
+            io.QFixed = this.QFixed;
+            io.QFixedPct = this.QFixedPct;
+
+            return io;
+
+        }
+
         #region IAccess implementation
 
         /// <summary>

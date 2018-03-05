@@ -58,6 +58,18 @@ namespace EMS.Services.NetworkModelService.DataModel.Production
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            EMSFuel io = new EMSFuel(base.GlobalId);
+            io.FuelType = this.FuelType;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.SynchronousMachines = this.SynchronousMachines;
+            io.UnitPrice = this.UnitPrice;
+
+            return io;
+        }
+
         #region IAccess Implementation
 
         public override bool HasProperty(ModelCode t)

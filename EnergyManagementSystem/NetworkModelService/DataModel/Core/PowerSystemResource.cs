@@ -64,6 +64,13 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            PowerSystemResource io = new PowerSystemResource(base.GlobalId);
+            io.Measurements = this.Measurements;
+            return io;
+        }
+
         #region IAccess implementation
 
         /// <summary>
