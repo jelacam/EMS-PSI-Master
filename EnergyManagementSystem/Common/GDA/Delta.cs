@@ -792,7 +792,7 @@ namespace EMS.Common
                     {
                         
                         newDelta.AddDeltaOperation(DeltaOpType.Insert, rd_item.Clone() as ResourceDescription, true);
-                        break;
+                        //break;
                     }
 
             }
@@ -803,7 +803,7 @@ namespace EMS.Common
                     if (ModelCodeHelper.ExtractTypeFromGlobalId(rd_item.Id).Equals((short)emsType))
                     {
                         newDelta.AddDeltaOperation(DeltaOpType.Update, rd_item.Clone() as ResourceDescription, true);
-                        break;
+                        //break;
                     }
 
             }
@@ -814,7 +814,7 @@ namespace EMS.Common
                     if (ModelCodeHelper.ExtractTypeFromGlobalId(rd_item.Id).Equals((short)emsType))
                     {
                         newDelta.AddDeltaOperation(DeltaOpType.Delete, rd_item.Clone() as ResourceDescription, true);
-                        break;
+                        //break;
                     }
             }
 

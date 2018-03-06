@@ -22,7 +22,8 @@ namespace EMS.Services.TransactionManagerService
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
-
+            noRespone = 0;
+            toRespond = 1;
             // delta object for caclculation engine - contains EMSFuels and SynchronousMachines
             Delta ceDelta = new Delta();
 
@@ -223,7 +224,7 @@ namespace EMS.Services.TransactionManagerService
                 TransactionCEProxy.Instance.Rollback();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback finished!");
             }
-            Thread.Sleep(10000);
+            Thread.Sleep(5000);
             return updateResult;
         }
 
@@ -289,13 +290,25 @@ namespace EMS.Services.TransactionManagerService
                 {
                     updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
                 }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                }
                 if (!commitResultScadaCMD)
                 {
                     updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
                 }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
+                }
                 if (!commitResultCE)
                 {
                     updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
                 }
             }
             else if (toRespond == 2)
@@ -306,6 +319,10 @@ namespace EMS.Services.TransactionManagerService
                     if (!commitResultCE)
                     {
                         updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
                     }
 
             }
@@ -319,10 +336,19 @@ namespace EMS.Services.TransactionManagerService
                 {
                     updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
                 }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                }
+
 
                 if (!commitResultScadaCMD)
                 {
                     updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
                 }
             }
 
@@ -341,7 +367,7 @@ namespace EMS.Services.TransactionManagerService
                 TransactionCMDProxy.Instance.Rollback();
                 TransactionCEProxy.Instance.Rollback();
             }
-            updateResult.Message += String.Format("\nCommit phase successfully finished");
+            updateResult.Message += String.Format("\n\nApply successfully finished");
             toRespond = 1;
             noRespone = 0;
         }
