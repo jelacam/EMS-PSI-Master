@@ -389,16 +389,16 @@ namespace EMS.Services.SCADACrunchingService
 
                     bool alarmEGU = this.CheckForEGUAlarms(eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, analogLoc.Analog.PowerSystemResource);
 
-                    bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
+                    //bool flatlineAlarm = CheckForFlatlineAlarm(analogLoc, eguVal);
 
-                    if (flatlineAlarm)
-                    {
-                        AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
-                        alarmH.Type = AlarmType.FLATLINE;
-                        alarmH.Persistent = PersistentState.Nonpersistent;
-                        alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
-                        AlarmsEventsProxy.Instance.AddAlarm(alarmH);
-                    }
+                    //if (flatlineAlarm)
+                    //{
+                    //    AlarmHelper alarmH = new AlarmHelper(analogLoc.Analog.PowerSystemResource, eguVal, analogLoc.Analog.MinValue, analogLoc.Analog.MaxValue, DateTime.Now);
+                    //    alarmH.Type = AlarmType.FLATLINE;
+                    //    alarmH.Persistent = PersistentState.Nonpersistent;
+                    //    alarmH.Message = string.Format("{0:X} in Flatline state for {1} iteration. Value = {2}", analogLoc.Analog.PowerSystemResource, FLAT_LINE_ALARM_TIMEOUT, eguVal);
+                    //    AlarmsEventsProxy.Instance.AddAlarm(alarmH);
+                    //}
 
                     // na signalu vise nema alarma - update state
                     // sa Active na Cleared
@@ -413,7 +413,7 @@ namespace EMS.Services.SCADACrunchingService
                         normalAlarm.Message = string.Format("Value on gid {0} returned to normal state", normalAlarm.Gid);
                         normalAlarm.Persistent = PersistentState.Nonpersistent;
                         normalAlarm.TimeStamp = DateTime.Now;
-                        normalAlarm.Severity = SeverityLevel.NONE;
+                        normalAlarm.Severity = SeverityLevel.NORMAL;
                         normalAlarm.Value = eguVal;
                         normalAlarm.Type = AlarmType.NORMAL;
 
@@ -590,6 +590,7 @@ namespace EMS.Services.SCADACrunchingService
             {
                 ah.Type = AlarmType.RAW_MAX;
                 ah.Severity = SeverityLevel.CRITICAL;
+                ah.TimeStamp = DateTime.Now;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
@@ -643,6 +644,7 @@ namespace EMS.Services.SCADACrunchingService
             {
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.HIGH;
+                ah.TimeStamp = DateTime.Now;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;
@@ -655,6 +657,7 @@ namespace EMS.Services.SCADACrunchingService
             {
                 ah.Type = AlarmType.EGU_MAX;
                 ah.Severity = SeverityLevel.MAJOR;
+                ah.TimeStamp = DateTime.Now;
                 ah.Message = string.Format("Value on input signal: {0:X} higher than maximum expected value", gid);
                 AlarmsEventsProxy.Instance.AddAlarm(ah);
                 retVal = true;

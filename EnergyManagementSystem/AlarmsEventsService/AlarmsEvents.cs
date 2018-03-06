@@ -38,7 +38,7 @@ namespace EMS.Services.AlarmsEventsService
         private List<AlarmHelper> alarmsFromDatabase;
 
         private readonly int DEADBAND_VALUE = 20;
-
+        public object alarmLock = new object();
         private Dictionary<long, bool> isNormalCreated = new Dictionary<long, bool>(10);
 
         /// <summary>
@@ -117,6 +117,7 @@ namespace EMS.Services.AlarmsEventsService
                         item.Severity = alarm.Severity;
                         item.Value = alarm.Value;
                         item.Message = alarm.Message;
+                        item.TimeStamp = alarm.TimeStamp;
                         publishingStatus = PublishingStatus.UPDATE;
                         updated = true;
                         break;
@@ -142,6 +143,7 @@ namespace EMS.Services.AlarmsEventsService
                 // ako je insert dodaj u listu - inace je updateovan
                 if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
+                    RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
                     if (InsertAlarmIntoDb(alarm))
                     {
@@ -151,9 +153,11 @@ namespace EMS.Services.AlarmsEventsService
                 }
                 if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                 {
+                    RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
                     this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                     this.isNormalCreated[alarm.Gid] = true;
+                    
                 }
                 else if (!alarm.Type.Equals(AlarmType.NORMAL))
                 {
@@ -171,6 +175,30 @@ namespace EMS.Services.AlarmsEventsService
                 //throw new Exception(message);
             }
         }
+
+
+        private void RemoveFromAlarms(long gid)
+        {
+            
+            lock(alarmLock)
+            {
+                List<AlarmHelper> alarmsToRemove = new List<AlarmHelper>(1);
+                foreach (AlarmHelper ah in Alarms)
+                {
+                    if (ah.Gid == gid)
+                    {
+                        alarmsToRemove.Add(ah);
+                    }
+                }
+
+                foreach(AlarmHelper ah in alarmsToRemove)
+                {
+                    Alarms.Remove(ah);
+                }
+            }
+        }
+
+
 
         public void UpdateStatus(AnalogLocation analogLoc, State state)
         {

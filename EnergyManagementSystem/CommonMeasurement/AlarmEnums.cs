@@ -24,7 +24,7 @@ namespace EMS.CommonMeasurement
 
     public enum SeverityLevel : int
     {
-        NONE = 0,
+        NORMAL = 0,
         MINOR = 1,       // cyan
         LOW = 2,           // green
         MEDIUM = 3,          // yellow
