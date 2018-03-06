@@ -67,8 +67,9 @@ namespace EMS.Services.CalculationEngineService
         private float totalProduction = 0;
         private float totalCost = 0;
         private float totalCostWithRenewable = 0;
+		private float totalCostWithoutWindAndSolar = 0;
 
-        private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
+		private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
         private Dictionary<string, SynchronousMachineCurveModel> generatorCurves;
 
         public SynchronousMachineCurveModels GeneratorCharacteristics
@@ -130,10 +131,10 @@ namespace EMS.Services.CalculationEngineService
             {
                 totalProduction = measurementsOptimized.Sum(x => x.CurrentValue);
 
-                if (WriteTotalProductionIntoDb(totalProduction, windProductionkW, windProductionPct, totalCost, totalCostWithRenewable, profit, DateTime.Now))
-                {
-                    Console.WriteLine("The total production is recorded into history database.");
-                }
+				if (WriteTotalProductionIntoDb(totalProduction, totalCost, totalCostWithoutWindAndSolar, profit, DateTime.Now, windProductionkW, windProductionPct, solarProductionkW, solarProductionPct, hydroProductionkW, hydroProductionPct, coalProductionkW, coalProductionPct, oilProductionkW, oilProductionPct))
+				{
+					Console.WriteLine("The total production is recorded into history database.");
+				}
 
                 if (InsertMeasurementsIntoDb(measurementsOptimized))
                 {
@@ -173,7 +174,7 @@ namespace EMS.Services.CalculationEngineService
             {
                 Dictionary<long, OptimisationModel> optModelMapOptimizied = null;
                 totalCost = 0;
-                totalCostWithRenewable = 0;
+				totalCostWithoutWindAndSolar = 0;
 				profit = 0;
 				windProductionkW = 0;
 				windProductionPct = 0;
@@ -202,8 +203,8 @@ namespace EMS.Services.CalculationEngineService
 				Console.WriteLine("\n--------------------------------------------------");
 				Console.WriteLine("CE report: {0}", algorithm);
                 Console.WriteLine("\tOptimized: {0}kW", powerOfConsumers);
-                Console.WriteLine("\tCost without wind and solar generators: {0}$", totalCost);
-                Console.WriteLine("\tCost: {0}$", totalCostWithRenewable);
+				Console.WriteLine("\tCost: {0}$", totalCost);
+				Console.WriteLine("\tCost without wind and solar generators: {0}$", totalCostWithoutWindAndSolar);               
 				Console.WriteLine("\tProfit: {0}$", profit);
 				Console.WriteLine("\tCO2 production without wind and solar generators: {0}t", emissionCO2NonRenewable);
 				Console.WriteLine("\tCO2 production: {0}t", emissionCO2Renewable);
@@ -226,8 +227,8 @@ namespace EMS.Services.CalculationEngineService
 		{
 			LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
 			Dictionary<long,OptimisationModel> optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
-			totalCost = linearAlgorithm.CostWithoutWindAndSolar; // ukupna cena linearne optimizacije bez wind i solar
-			totalCostWithRenewable = linearAlgorithm.Cost; // ukupna cena linearne optimizacije sa wind i solar
+			totalCost = linearAlgorithm.Cost; // ukupna cena linearne optimizacije
+			totalCostWithoutWindAndSolar = linearAlgorithm.CostWithoutWindAndSolar; // ukupna cena linearne optimizacije bez wind i solar
 			profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem wind i solar
 			windProductionPct = linearAlgorithm.PowerOfWindPct; // procenat proizvodnje wind u odnosu na ukupnu proizvodnju
 			windProductionkW = linearAlgorithm.PowerOfWind; // kW proizvodnje wind u ukupnoj proizvodnji
@@ -291,9 +292,9 @@ namespace EMS.Services.CalculationEngineService
 
             var coalModel = optModelMapNonRenewableClone.FirstOrDefault(x => x.Value.EmsFuel.FuelType == EmsFuelType.coal);
             coalModel.Value.GenericOptimizedValue = optModelMapOptimizied[coalModel.Key].GenericOptimizedValue + windProductionkW;
-            totalCost = CalculateCost(optModelMapNonRenewableClone, OptimizationType.Genetic);
-            totalCostWithRenewable = gaoRenewable.TotalCost;
-            profit = totalCost - totalCostWithRenewable;
+            totalCostWithoutWindAndSolar = CalculateCost(optModelMapNonRenewableClone, OptimizationType.Genetic);
+            totalCost = gaoRenewable.TotalCost;
+			profit = totalCostWithoutWindAndSolar - totalCost;
             windProductionPct = 100 * windProductionkW / powerOfConsumers;
             emissionCO2Renewable = gaoRenewable.EmissionCO2;
             emissionCO2NonRenewable = CalculateCO2(optModelMapNonRenewableClone);
@@ -496,100 +497,102 @@ namespace EMS.Services.CalculationEngineService
             return success;
         }
 
-        /// <summary>
-        /// Read measurements from history database
-        /// </summary>
-        /// <param name="gid">Global identifikator of object</param>
-        public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
-        {
-            List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
+		/// <summary>
+		/// Read measurements from history database
+		/// </summary>
+		/// <param name="gid">Global identifikator of object</param>
+		public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
 
-            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("SELECT * FROM HistoryMeasurement WHERE (GID=@gid) AND (MeasurementTime BETWEEN @startTime AND @endTime)", connection))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = gid;
-                        cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        SqlDataReader reader = cmd.ExecuteReader();
+					using (SqlCommand cmd = new SqlCommand("SELECT * FROM HistoryMeasurement WHERE (GID=@gid) AND (MeasurementTime BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@gid", SqlDbType.BigInt).Value = gid;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
 
-                        while (reader.Read())
-                        {
-                            retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[3]), Convert.ToDateTime(reader[2])));
-                        }
-                    }
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, DateTime>(Convert.ToDouble(reader[3]), Convert.ToDateTime(reader[2])));
+						}
+					}
 
-                    connection.Close();
-                }
-                catch (Exception e)
-                {
-                    string message = string.Format("Failed read Measurements from database. {0}", e.Message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    Console.WriteLine(message);
-                }
-            }
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read Measurements from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
 
-            return retVal;
-        }
+			return retVal;
+		}
 
-        /// <summary>
-        /// Write total production into database
-        /// </summary>
-        /// <param name="totalProduction">Float value of total production</param>
-        /// <param name="time">Time of calculation</param>
-        /// <returns>Return true if success</returns>
-        public bool WriteTotalProductionIntoDb(float totalProduction, float windProduction, float windProductionPercent, float totalCostWithoutRenewable, float totalCostWithRenewable, float profit, DateTime time)
-        {
-            bool success = true;
+		public bool WriteTotalProductionIntoDb(float totalProduction, float totalCost, float totalCostWithoutWindAndSolar, float profit, DateTime timeOfCalculation, float windProduction, float windProductionPercent, float solarProduction, float solarProductionPercent, float hydroProduction, float hydroProductionPercent, float coalProduction, float coalProductionPercent, float oilProduction, float oilProductionPercent)
+		{
+			bool success = true;
 
-            using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
-            {
-                try
-                {
-                    connection.Open();
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("InsertTotalProduction", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
+					using (SqlCommand cmd = new SqlCommand("InsertTotalProduction", connection))
+					{
+						cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
-                        cmd.Parameters.Add("@windProduction", SqlDbType.Float).Value = windProduction;
-                        cmd.Parameters.Add("@windProductionPercent", SqlDbType.Float).Value = windProductionPercent;
-                        //cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCostWithoutRenewable;
-                        cmd.Parameters.Add("@totalCostWithoutRenewable", SqlDbType.Float).Value = totalCost;
-                        cmd.Parameters.Add("@totalCostWithRenewable", SqlDbType.Float).Value = totalCostWithRenewable;
-                        cmd.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
-                        cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = time.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
-                    }
+						cmd.Parameters.Add("@totalProduction", SqlDbType.Float).Value = totalProduction;
+						cmd.Parameters.Add("@totalCost", SqlDbType.Float).Value = totalCost;
+						cmd.Parameters.Add("@totalCostWithoutWindAndSolar", SqlDbType.Float).Value = totalCostWithoutWindAndSolar;
+						cmd.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
+						cmd.Parameters.Add("@timeOfCalculation", SqlDbType.DateTime).Value = timeOfCalculation.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@windProduction", SqlDbType.Float).Value = windProduction;
+						cmd.Parameters.Add("@windProductionPercent", SqlDbType.Float).Value = windProductionPercent;
+						cmd.Parameters.Add("@solarProduction", SqlDbType.Float).Value = solarProduction;
+						cmd.Parameters.Add("@solarProductionPercent", SqlDbType.Float).Value = solarProductionPercent;
+						cmd.Parameters.Add("@hydroProduction", SqlDbType.Float).Value = hydroProduction;
+						cmd.Parameters.Add("@hydroProductionPercent", SqlDbType.Float).Value = hydroProductionPercent;
+						cmd.Parameters.Add("@coalProduction", SqlDbType.Float).Value = coalProduction;
+						cmd.Parameters.Add("@coalProductionPercent", SqlDbType.Float).Value = coalProductionPercent;
+						cmd.Parameters.Add("@oilProduction", SqlDbType.Float).Value = oilProduction;
+						cmd.Parameters.Add("@oilProductionPercent", SqlDbType.Float).Value = oilProductionPercent;
 
-                    connection.Close();
-                }
-                catch (Exception e)
-                {
-                    success = false;
-                    string message = string.Format("Failed to insert total production into database. {0}", e.Message);
-                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                    Console.WriteLine(message);
-                }
-            }
+						cmd.ExecuteNonQuery();
+						cmd.Parameters.Clear();
+					}
 
-            return success;
-        }
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					success = false;
+					string message = string.Format("Failed to insert total production into database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
 
-        /// <summary>
-        /// Read total production from database
-        /// </summary>
-        /// <param name="startTime">Start time for period</param>
-        /// <param name="endTime">End time for period</param>
-        /// <returns>Tuple list od pair double and datetime for period</returns>
-        public List<Tuple<double, DateTime>> ReadTotalProductionsFromDb(DateTime startTime, DateTime endTime)
+			return success;
+		}
+
+		/// <summary>
+		/// Read total production from database
+		/// </summary>
+		/// <param name="startTime">Start time for period</param>
+		/// <param name="endTime">End time for period</param>
+		/// <returns>Tuple list od pair double and datetime for period</returns>
+		public List<Tuple<double, DateTime>> ReadTotalProductionsFromDb(DateTime startTime, DateTime endTime)
         {
             List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
 
@@ -626,7 +629,7 @@ namespace EMS.Services.CalculationEngineService
         }
 
         /// <summary>
-        /// Read wind farm savin data from database (total cost without wind farm, total cost with wind farm and profit)
+        /// Read wind farm saving data from database (total cost without wind farm, total cost with wind farm and profit)
         /// </summary>
         /// <param name="startTime">start time of period</param>
         /// <param name="endTime">end time of period</param>
