@@ -268,8 +268,21 @@
         </Setter>
     </Style>
 
-	<!--<Style x:Key="AlarmSummary" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-		<Setter Property="Background" Value="Blue" />
-	</Style>-->
+	<Style x:Key="AlarmDataGridColumnHeaderStyle" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+		<Setter Property="Background" Value="Gray" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Padding" Value="3,2,4,2" />
+		<Setter Property="BorderThickness" Value="1,0,0,0"/>
+		<Setter Property="BorderBrush" Value="DarkGray"/>
+		<!--<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid>
+						<TextBlock HorizontalAlignment="Left" Margin="3,0,0,0"></TextBlock>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>-->
+	</Style>
 
 </ResourceDictionary>

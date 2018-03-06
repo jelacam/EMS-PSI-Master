@@ -4,16 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:UIClient.View"
+			 xmlns:converters ="clr-namespace:UIClient.Converters"
+			 xmlns:root ="clr-namespace:UIClient"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+	<UserControl.Resources>
+		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
+	</UserControl.Resources>
     <Grid>
 		<DataGrid x:Name="AlarmSummaryDataGrid"
+				  Margin="5"
+				  ColumnHeaderStyle="{StaticResource AlarmDataGridColumnHeaderStyle}"
 				  ItemsSource="{Binding Path = AlarmSummaryQueue }"
 				  CanUserDeleteRows="False" CanUserAddRows="False" RowStyle="{StaticResource AlarmSummaryDataGridRowStyle}" ClipToBounds="True"
 				  RowHeaderWidth="0" AutoGenerateColumns="False" SelectionUnit="FullRow"
 				  GridLinesVisibility="None">
 			<DataGrid.Columns>
-                <DataGridTextColumn Header="Gid" Binding="{Binding Gid,StringFormat={}0x{0:X8}}" IsReadOnly="True" />
+				<DataGridTextColumn Header="MRID" IsReadOnly="True" >
+					<DataGridTextColumn.Binding>
+						<MultiBinding Converter="{StaticResource GidToMridConverter}">
+							<Binding Path="Gid"></Binding>
+							<Binding Path="DataContext.NmsModelMap" RelativeSource="{RelativeSource AncestorType={x:Type root:MainWindow}}"></Binding>
+						</MultiBinding>
+					</DataGridTextColumn.Binding>
+				</DataGridTextColumn>
                 <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" CellStyle="{StaticResource AlarmGridCell}" />
                 <!--<DataGridTextColumn Header="Init Value" Binding="{Binding InitiatingValue}" />-->
 				<DataGridTextColumn Header="Value" Binding="{Binding Value}" IsReadOnly="True"/>
