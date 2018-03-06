@@ -73,11 +73,11 @@ namespace UISimulator.ViewModel
                 {
 					for(int j = 0; j < 20; j++)
 					{
-						modbusClient.WriteSingleRegister(0, SimulationDataList[j].Data[i].Value);
+						modbusClient.WriteSingleRegister((ushort)(j * 2), SimulationDataList[j].Data[i].Value);
 					}
 
-					modbusClient.WriteSingleRegister(0, SimulationDataList[20].Data[i].Value); //SimulationWindData
-					modbusClient.WriteSingleRegister(0, SimulationDataList[21].Data[i].Value); //SimulationSunData
+					modbusClient.WriteSingleRegister(100, SimulationDataList[20].Data[i].Value); //SimulationWindData
+					modbusClient.WriteSingleRegister(102, SimulationDataList[21].Data[i].Value); //SimulationSunData
                     Thread.Sleep(5000);
                 }
             }
