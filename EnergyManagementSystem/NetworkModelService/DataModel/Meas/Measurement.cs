@@ -97,6 +97,18 @@ namespace EMS.Services.NetworkModelService.DataModel.Meas
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            Measurement io = new Measurement();
+            io.MeasurementType = this.MeasurementType;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.PowerSystemResource = this.PowerSystemResource;
+            io.UnitSymbol = this.UnitSymbol;
+
+            return io;
+        }
+
         #region IAccess implementation
 
         /// <summary>

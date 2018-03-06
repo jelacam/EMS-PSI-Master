@@ -215,6 +215,26 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            SynchronousMachine io = new SynchronousMachine(base.GlobalId);
+            io.Active = this.Active;
+            io.Fuel = this.Fuel;
+            io.LoadPct = this.LoadPct;
+            io.MaxCosPhi = this.MaxCosPhi;
+            io.MaxQ = this.MaxQ;
+            io.Measurements = this.Measurements;
+            io.MinCosPhi = this.MinCosPhi;
+            io.MinQ = this.MinQ;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.OperatingMode = this.OperatingMode;
+            io.RatedS = this.RatedS;
+
+            return io;
+
+        }
+
         #region IAccess implementation
         /// <summary>
         /// Checks if the entity has a property
