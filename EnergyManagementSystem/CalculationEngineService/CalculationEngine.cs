@@ -12,8 +12,8 @@ namespace EMS.Services.CalculationEngineService
     using System.Data.SqlClient;
     using System.ServiceModel;
     using CommonMeasurement;
-    using EMS.Common;
-    using EMS.ServiceContracts;
+    using Common;
+    using ServiceContracts;
     using PubSub;
     using Microsoft.SolverFoundation.Services;
     using NetworkModelService.DataModel.Wires;
@@ -54,7 +54,15 @@ namespace EMS.Services.CalculationEngineService
         private float profit = 0;
         private float windProductionPct = 0;
         private float windProductionkW = 0;
-        private float emissionCO2Renewable = 0;
+		private float solarProductionPct = 0;
+		private float solarProductionkW = 0;
+		private float hydroProductionPct = 0;
+		private float hydroProductionkW = 0;
+		private float coalProductionPct = 0;
+		private float coalProductionkW = 0;
+		private float oilProductionPct = 0;
+		private float oilProductionkW = 0;
+		private float emissionCO2Renewable = 0;
         private float emissionCO2NonRenewable = 0;
         private float totalProduction = 0;
         private float totalCost = 0;
@@ -69,12 +77,14 @@ namespace EMS.Services.CalculationEngineService
             set { generatorCharacteristics = value; }
         }
 
-        #endregion Fields
+		#endregion Fields
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CalculationEngine" /> class
-        /// </summary>
-        public CalculationEngine()
+		#region Constructor
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CalculationEngine" /> class
+		/// </summary>
+		public CalculationEngine()
         {
             publisher = new PublisherService();
             generatorCurves = new Dictionary<string, SynchronousMachineCurveModel>();
@@ -94,13 +104,17 @@ namespace EMS.Services.CalculationEngineService
             GeneratorCharacteristics = LoadCharacteristics.Load();
         }
 
-        /// <summary>
-        /// Optimization algorithm
-        /// </summary>
-        /// <param name="measEnergyConsumers">list of measurements for Energy Consumers</param>
-        /// <param name="measGenerators">list of measurements for Generators</param>
-        /// <returns>returns true if optimization was successful</returns>
-        public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
+		#endregion Constructor
+
+		#region Optimization methods
+
+		/// <summary>
+		/// Optimization algorithm
+		/// </summary>
+		/// <param name="measEnergyConsumers">list of measurements for Energy Consumers</param>
+		/// <param name="measGenerators">list of measurements for Generators</param>
+		/// <returns>returns true if optimization was successful</returns>
+		public bool Optimize(List<MeasurementUnit> measEnergyConsumers, List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
         {
             bool result = false;
             totalProduction = 0;
@@ -158,36 +172,49 @@ namespace EMS.Services.CalculationEngineService
             try
             {
                 Dictionary<long, OptimisationModel> optModelMapOptimizied = null;
-                totalCost = -1;
-                totalCostWithRenewable = -1;
-                if (PublisherService.OptimizationType == OptimizationType.Genetic)
+                totalCost = 0;
+                totalCostWithRenewable = 0;
+				profit = 0;
+				windProductionkW = 0;
+				windProductionPct = 0;
+				solarProductionkW = 0;
+				solarProductionPct = 0;
+				hydroProductionkW = 0;
+				hydroProductionPct = 0;
+				coalProductionkW = 0;
+				coalProductionPct = 0;
+				oilProductionkW = 0;
+				oilProductionPct = 0;
+				emissionCO2Renewable = 0;
+				emissionCO2NonRenewable = 0;
+
+                if (PublisherService.OptimizationType.Equals(OptimizationType.Genetic))
                 {
                     optModelMapOptimizied = CalculateWithGeneticAlgorithm(optModelMap, powerOfConsumers);
                 }
-                else if (PublisherService.OptimizationType == OptimizationType.Linear)
-                {
-                    //optModelMapOptimizied = CalculateWithGeneticAlgorithm(optModelMap, powerOfConsumers);
-
-                    LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
-                    optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
-                    totalCost = linearAlgorithm.LACostWithoutRenewable; // ukupna cena linearne optimizacije bez vetrogeneratora
-                    totalCostWithRenewable = linearAlgorithm.LACostRenewable; // ukupna cena linearne optimizacije sa vetrogeneratorima
-                    profit = linearAlgorithm.LAProfit; // koliko je $ ustedjeno koriscenjem vetrogeneratora
-                    windProductionPct = linearAlgorithm.LAWindPct; // procenat proizvodnje vetrogeneratora u odnosu na ukupnu proizvodnju
-                    windProductionkW = linearAlgorithm.LAWind; // kW proizvodnje vetrogeneratora u ukupnoj proizvodnji
-                    emissionCO2Renewable = linearAlgorithm.LACO2Renewable; // CO2 emisija sa obnovljivim izvorima izrazena u tonama
-                    emissionCO2NonRenewable = linearAlgorithm.LACO2WithoutRenewable; //CO2 emisija bez obnovljivih izvora izrazena u tonama
-                }
                 else
                 {
-                    return null;
-                    // return DoNotOptimized(optModelMap, powerOfConsumers);
+					optModelMapOptimizied = CalculateWithLinearAlgorithm(optModelMap, powerOfConsumers);
                 }
-                Console.WriteLine("CE: Optimize {0}kW", powerOfConsumers);
-                Console.WriteLine("CE: TotalCost without renewable generators: {0}$\n", totalCost);
-                Console.WriteLine("CE: TotalCost with renewable generators: {0}$\n", totalCostWithRenewable);
 
-                return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
+				string algorithm = PublisherService.OptimizationType.Equals(OptimizationType.Genetic) ? "GENETIC" : "LINEAR";
+
+				Console.WriteLine("\n--------------------------------------------------");
+				Console.WriteLine("CE report: {0}", algorithm);
+                Console.WriteLine("\tOptimized: {0}kW", powerOfConsumers);
+                Console.WriteLine("\tCost without wind and solar generators: {0}$", totalCost);
+                Console.WriteLine("\tCost: {0}$", totalCostWithRenewable);
+				Console.WriteLine("\tProfit: {0}$", profit);
+				Console.WriteLine("\tCO2 production without wind and solar generators: {0}t", emissionCO2NonRenewable);
+				Console.WriteLine("\tCO2 production: {0}t", emissionCO2Renewable);
+				Console.WriteLine("\tWind production: {0}kW ({1}%)", windProductionkW, windProductionPct);
+				Console.WriteLine("\tSolar production: {0}kW ({1}%)", solarProductionkW, solarProductionPct);
+				Console.WriteLine("\tHydro production: {0}kW ({1}%)", hydroProductionkW, hydroProductionPct);
+				Console.WriteLine("\tCoal production: {0}kW ({1}%)", coalProductionkW, coalProductionPct);
+				Console.WriteLine("\tOil production: {0}kW ({1}%)", oilProductionkW, oilProductionPct);
+				Console.WriteLine("--------------------------------------------------\n");
+
+				return OptModelMapToListMeasUI(optModelMapOptimizied, PublisherService.OptimizationType);
             }
             catch (Exception e)
             {
@@ -195,7 +222,30 @@ namespace EMS.Services.CalculationEngineService
             }
         }
 
-        private Dictionary<long, OptimisationModel> CalculateWithGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
+		private Dictionary<long, OptimisationModel> CalculateWithLinearAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
+		{
+			LinearOptimization linearAlgorithm = new LinearOptimization(minProduction, maxProduction);
+			Dictionary<long,OptimisationModel> optModelMapOptimizied = linearAlgorithm.Start(optModelMap, powerOfConsumers);
+			totalCost = linearAlgorithm.CostWithoutWindAndSolar; // ukupna cena linearne optimizacije bez wind i solar
+			totalCostWithRenewable = linearAlgorithm.Cost; // ukupna cena linearne optimizacije sa wind i solar
+			profit = linearAlgorithm.Profit; // koliko je $ ustedjeno koriscenjem wind i solar
+			windProductionPct = linearAlgorithm.PowerOfWindPct; // procenat proizvodnje wind u odnosu na ukupnu proizvodnju
+			windProductionkW = linearAlgorithm.PowerOfWind; // kW proizvodnje wind u ukupnoj proizvodnji
+			solarProductionPct = linearAlgorithm.PowerOfSolarPct;
+			solarProductionkW = linearAlgorithm.PowerOfSolar;
+			hydroProductionPct = linearAlgorithm.PowerOfHydroPct;
+			hydroProductionkW = linearAlgorithm.PowerOfHydro;
+			coalProductionPct = linearAlgorithm.PowerOfCoalPct;
+			coalProductionkW = linearAlgorithm.PowerOfCoal;
+			oilProductionPct = linearAlgorithm.PowerOfOilPct;
+			oilProductionkW = linearAlgorithm.PowerOfOil;
+			emissionCO2Renewable = linearAlgorithm.CO2; // CO2 emisija sa wind i solar izrazena u tonama
+			emissionCO2NonRenewable = linearAlgorithm.CO2WithoutWindAndSolar; //CO2 emisija bez wind i solar izrazena u tonama
+
+			return optModelMapOptimizied;
+		}
+
+		private Dictionary<long, OptimisationModel> CalculateWithGeneticAlgorithm(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
         {
             Dictionary<long, OptimisationModel> optModelMapOptimizied;
             float powerOfConsumersWithoutRenewable = powerOfConsumers;
@@ -279,42 +329,70 @@ namespace EMS.Services.CalculationEngineService
             return emCO2;
         }
 
-        private List<MeasurementUnit> DoNotOptimized(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers)
-        {
-            List<MeasurementUnit> retList = new List<MeasurementUnit>();
-            foreach (OptimisationModel optModel in optModelMap.Values)
-            {
-                float power = 0;
-                if (powerOfConsumers >= optModel.MaxPower)
-                {
-                    power = optModel.MaxPower;
-                    powerOfConsumers -= power;
-                }
-                else
-                {
-                    power = powerOfConsumers;
-                    powerOfConsumers = 0;
-                }
+		private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
+		{
+			lock (lockObj)
+			{
+				Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
+				minProduction = 0;
+				maxProduction = 0;
+				FillGeneratorCurves();
 
-                retList.Add(new MeasurementUnit()
-                {
-                    CurrentValue = power,
-                    Gid = optModel.GlobalId,
-                    MaxValue = optModel.MaxPower,
-                    MinValue = optModel.MinPower,
-                    //OptimizationType = OptimizationType.None,
-                });
-            }
+				foreach (var measUnit in measGenerators)
+				{
+					if (synchronousMachines.ContainsKey(measUnit.Gid))
+					{
+						SynchronousMachine sm = synchronousMachines[measUnit.Gid];
+						EMSFuel emsf = fuels[sm.Fuel];
+						if (generatorCurves[sm.Mrid] != null)
+						{
+							OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, sunlight, generatorCurves[sm.Mrid]);
+							if (om.Managable)
+							{
+								maxProduction += om.MaxPower;
+								minProduction += om.MinPower;
+							}
 
-            if (powerOfConsumers > 0)
-            {
-                Console.WriteLine("[Method = DoNotOptimized] Nesto ne valja ovde");
-            }
+							optModelMap.Add(om.GlobalId, om);
+						}
+					}
+				}
 
-            return retList;
-        }
+				return optModelMap;
+			}
+		}
 
-        private List<MeasurementUnit> OptModelMapToListMeasUI(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optType)
+		private void FillGeneratorCurves()
+		{
+			lock (lockObj)
+			{
+				if (synchronousMachines.Count > 0)
+				{
+					generatorCurves.Clear();
+
+					foreach (SynchronousMachine item in synchronousMachines.Values)
+					{
+						generatorCurves.Add(item.Mrid.ToString(), null);
+					}
+
+					//if (generatorCurves.Count == GeneratorCharacteristics.Curves.Count)
+					{
+						for (int i = 0; i < generatorCurves.Count; i++)
+						{
+							string mrid = GeneratorCharacteristics.Curves[i].MRId;
+							SynchronousMachineCurveModel smcm = GeneratorCharacteristics.Curves[i];
+							generatorCurves[mrid] = smcm;
+						}
+					}
+				}
+			}
+		}
+
+		#endregion Optimization methods
+
+		#region UI methods
+
+		private List<MeasurementUnit> OptModelMapToListMeasUI(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optType)
         {
             List<MeasurementUnit> retList = new List<MeasurementUnit>();
             foreach (var optModel in optModelMap)
@@ -342,66 +420,7 @@ namespace EMS.Services.CalculationEngineService
 
             return retList;
         }
-
-        private Dictionary<long, OptimisationModel> GetOptimizationModelMap(List<MeasurementUnit> measGenerators, float windSpeed, float sunlight)
-        {
-            lock (lockObj)
-            {
-                Dictionary<long, OptimisationModel> optModelMap = new Dictionary<long, OptimisationModel>();
-                minProduction = 0;
-                maxProduction = 0;
-                FillGeneratorCurves();
-
-                foreach (var measUnit in measGenerators)
-                {
-                    if (synchronousMachines.ContainsKey(measUnit.Gid))
-                    {
-                        SynchronousMachine sm = synchronousMachines[measUnit.Gid];
-                        EMSFuel emsf = fuels[sm.Fuel];
-                        if (generatorCurves[sm.Mrid] != null)
-                        {
-                            OptimisationModel om = new OptimisationModel(sm, emsf, measUnit, windSpeed, sunlight, generatorCurves[sm.Mrid]);
-                            if (om.Managable)
-                            {
-                                maxProduction += om.MaxPower;
-                                minProduction += om.MinPower;
-                            }
-
-                            optModelMap.Add(om.GlobalId, om);
-                        }
-                    }
-                }
-
-                return optModelMap;
-            }
-        }
-
-        private void FillGeneratorCurves()
-        {
-            lock (lockObj)
-            {
-                if (synchronousMachines.Count > 0)
-                {
-                    generatorCurves.Clear();
-
-                    foreach (SynchronousMachine item in synchronousMachines.Values)
-                    {
-                        generatorCurves.Add(item.Mrid.ToString(), null);
-                    }
-
-                    //if (generatorCurves.Count == GeneratorCharacteristics.Curves.Count)
-                    {
-                        for (int i = 0; i < generatorCurves.Count; i++)
-                        {
-                            string mrid = GeneratorCharacteristics.Curves[i].MRId;
-                            SynchronousMachineCurveModel smcm = GeneratorCharacteristics.Curves[i];
-                            generatorCurves[mrid] = smcm;
-                        }
-                    }
-                }
-            }
-        }
-
+       
         private void PublishGeneratorsToUI(List<MeasurementUnit> measurementsFromGenerators)
         {
             List<MeasurementUI> measListUI = new List<MeasurementUI>();
@@ -431,14 +450,16 @@ namespace EMS.Services.CalculationEngineService
             publisher.PublishOptimizationResults(measUIList);
         }
 
-        #region Database methods
+		#endregion UI methods
 
-        /// <summary>
-        /// Insert data into history db
-        /// </summary>
-        /// <param name="measurements">List of measurements</param>
-        /// <returns>Success</returns>
-        private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
+		#region Database methods
+
+		/// <summary>
+		/// Insert data into history db
+		/// </summary>
+		/// <param name="measurements">List of measurements</param>
+		/// <returns>Success</returns>
+		private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
         {
             bool success = true;
 

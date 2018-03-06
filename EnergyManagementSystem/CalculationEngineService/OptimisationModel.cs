@@ -124,6 +124,7 @@ namespace EMS.Services.CalculationEngineService
 			WindPct = emsf.FuelType.Equals(EmsFuelType.wind) ? CalculateWindPct(windSpeed) : 100;
 			Managable = ((emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && (0 >= sunlight || sunlight > 100))) ? false : true; //true=optimizuj
 			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
+
 			if (!Managable)
 			{
 				Price = 0;
