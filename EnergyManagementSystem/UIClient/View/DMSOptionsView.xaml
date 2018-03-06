@@ -33,7 +33,7 @@
 				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 
-			<Expander Grid.Row="0" IsExpanded="False" Header="Wind Farm Production" Foreground="White" Margin="10">
+			<Expander Grid.Row="0" IsExpanded="False" Header="Production of individual generators" Foreground="White" Margin="10">
 				<Grid >
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -71,17 +71,17 @@
 							</toolkit:DateTimePicker>
 						</GroupBox>
 
-						<Button Content="View Data" Margin="10" Command="{Binding ViewWindProductionDataCommand}"></Button>
+						<Button Content="View Data" Margin="10" Command="{Binding ViewIndividualProductionDataCommand}"></Button>
 					</StackPanel >
 
 					<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Margin="10" >
-						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind production in selected period: "></TextBlock>
-                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalWindProduction}"></TextBlock>
+						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total production in selected period: "></TextBlock>
+                        <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalSum}"></TextBlock>
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" kW"></TextBlock>
 					</StackPanel>
 
                     <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >
-                        <chartingToolkit:Chart Margin="10" Height="270" Width="270" Style="{StaticResource DashboardChartStyle}">
+                        <chartingToolkit:Chart Margin="10" Height="300" Width="500" Style="{StaticResource DashboardChartStyle}">
                             <chartingToolkit:PieSeries ItemsSource="{Binding PieDataWind}" 
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
@@ -96,7 +96,22 @@
                                         </ResourceDictionary>
                                         <ResourceDictionary>
                                             <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="LightGreen" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="LightBlue" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
                                                 <Setter Property="Background" Value="DarkOrange" />
+                                            </Style>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary>
+                                            <Style x:Key="DataPointStyle" TargetType="Control">
+                                                <Setter Property="Background" Value="LightCoral" />
                                             </Style>
                                         </ResourceDictionary>
                                     </dv:ResourceDictionaryCollection>
@@ -112,7 +127,7 @@
                 </Grid>
 			</Expander>
 
-			<Expander Grid.Row="1" IsExpanded="False" Header="Wind Farm Saving" Foreground="White" Margin="10">
+			<Expander Grid.Row="1" IsExpanded="False" Header="Money saving" Foreground="White" Margin="10">
 				<Grid >
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -157,7 +172,7 @@
 						</Grid.RowDefinitions>
 
 						<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" >
-							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total wind farm saving in selected period: "></TextBlock>
+							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total money saving for wind and solar generators in selected period: "></TextBlock>
                             <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalWindSaving}"></TextBlock>
 							<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" $"></TextBlock>
 						</StackPanel>
@@ -166,14 +181,14 @@
                                                        IndependentValueBinding="{Binding Path=Key}"
                                                        DependentValueBinding="{Binding Path=Value}"
                                                        IsSelectionEnabled="False"
-                                                          Title="Cost [$]">
+                                                        Title="Cost" >
 							</chartingToolkit:ColumnSeries>
 						</chartingToolkit:Chart>
 					</Grid>
 				</Grid>
 			</Expander>
 
-            <Expander Grid.Row="2" IsExpanded="False" Header="CO2 Reduction" Foreground="White" Margin="10">
+            <Expander Grid.Row="2" IsExpanded="False" Header="CO2 reduction" Foreground="White" Margin="10">
                 <Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -250,13 +265,13 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Margin="10">
-                            <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction for selected period:" Margin="5,0,0,0"/>
+                            <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text="Total CO2 reduction in selected period:" Margin="5,0,0,0"/>
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalCO2Reduction}" Margin="5,0,0,0"/>
                             <TextBlock  Style="{StaticResource SubTitle}" Foreground="Green" Text=" tonnes" Margin="5,0,0,0"/>
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10">
-                            <CheckBox Content="CO2 emission real" Margin="10" Foreground="White" IsChecked="True">
+                            <CheckBox Content="Total CO2 emission" Margin="10" Foreground="White" IsChecked="True">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Checked">
                                         <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -266,7 +281,7 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </CheckBox>
-                            <CheckBox Content="CO2 emission without renewables in system" Margin="10" Foreground="White">
+                            <CheckBox Content="CO2 emission without wind and solar generators" Margin="10" Foreground="White">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Checked">
                                         <i:InvokeCommandAction Command="{Binding DataContext.CO2EmissionWithoutRenewablesGraphCheckedCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -282,7 +297,7 @@
                             <chartingToolkit:Chart Margin="10" Title="CO2 Graph" 
 											   Style="{StaticResource DashboardChartStyle}" Height="400">
 
-                                <chartingToolkit:LineSeries Title="CO2 Emission Without Renewables [t]"  
+                                <chartingToolkit:LineSeries Title="CO2 emission without wind and solar generators [t] "  
 												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item3}"
@@ -297,7 +312,7 @@
                                     </chartingToolkit:LineSeries.DataPointStyle>
                                 </chartingToolkit:LineSeries>
 
-                                <chartingToolkit:LineSeries Title="CO2 Emission Real [t]"  
+                                <chartingToolkit:LineSeries Title="CO2 emission [t] "  
 												ItemsSource="{Binding Path=GraphCO2EmissionContainer}" 
 												DependentValueBinding="{Binding Path=Item2}" 
 												IndependentValueBinding="{Binding Path=Item3}"
@@ -316,7 +331,7 @@
 									</chartingToolkit:LineSeries.IndependentAxis>
 
 									<chartingToolkit:LineSeries.DependentRangeAxis>
-										<chartingToolkit:LinearAxis Orientation="Y" Title="Mass (t)"/>
+										<chartingToolkit:LinearAxis Orientation="Y" Title="Production (t)"/>
 									</chartingToolkit:LineSeries.DependentRangeAxis>
 
 								</chartingToolkit:LineSeries>

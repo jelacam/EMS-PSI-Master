@@ -72,24 +72,24 @@ namespace EMS.ServiceContracts
 			return proxy.GetHistoryMeasurements(gid, startTime, endTime);
 		}
 
-        public List<Tuple<double,DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
-        {
-            return proxy.GetTotalProduction(startTime, endTime);
-        }
+		public List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
+		{
+			return proxy.GetTotalProduction(startTime, endTime);
+		}
 
-        public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
-        {
-            return proxy.GetCO2Emission(startTime, endTime);
-        }
+		public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
+		{
+			return proxy.GetCO2Emission(startTime, endTime);
+		}
 
-        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
-        {
-            return proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
-        }
+		public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			return proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
+		}
 
-        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
-        {
-            return proxy.ReadWindFarmProductionDataFromDb(startTime, endTime);
-        }
-    }
+		public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			return proxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
+		}
+	}
 }

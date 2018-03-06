@@ -33,30 +33,30 @@ namespace EMS.Services.CalculationEngineService
 			}
 		}
 
-        public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
-        {
-            List<Tuple<double, double, DateTime>> retList = new List<Tuple<double, double, DateTime>>();
+		public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double, DateTime>> retList = new List<Tuple<double, double, DateTime>>();
 
-            try
-            {
-                retList = ce.ReadCO2EmissionFromDb(startTime, endTime);
-            }
-            catch (Exception ex)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetCO2 emission {0}", ex.Message);
-            }
+			try
+			{
+				retList = ce.ReadCO2EmissionFromDb(startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetCO2 emission {0}", ex.Message);
+			}
 
-            return retList;
-        }
+			return retList;
+		}
 
-        public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
+		public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
 		{
 			List<Tuple<double, DateTime>> retList = new List<Tuple<double, DateTime>>();
 			try
 			{
 				retList = ce.ReadMeasurementsFromDb(gid, startTime, endTime);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetHistoryMeasurements {0}", ex.Message);
 			}
@@ -64,53 +64,69 @@ namespace EMS.Services.CalculationEngineService
 			return retList;
 		}
 
-        public List<Tuple<double,DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
-        {
-            List<Tuple<double, DateTime>> retList = new List<Tuple<double, DateTime>>();
+		public List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, DateTime>> retList = new List<Tuple<double, DateTime>>();
 
-            try
-            {
-                retList = ce.ReadTotalProductionsFromDb(startTime, endTime);
-            }
-            catch (Exception ex)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetTotalProduction {0}", ex.Message);
-            }
+			try
+			{
+				retList = ce.ReadTotalProductionsFromDb(startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error GetTotalProduction {0}", ex.Message);
+			}
 
-            return retList;
+			return retList;
 
-        }
+		}
 
-        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
-        {
-            List<Tuple<double, double, double>> retList = new List<Tuple<double, double, double>>();
+		public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double, double>> retList = new List<Tuple<double, double, double>>();
 
-            try
-            {
-                retList = ce.ReadWindFarmSavingDataFromDb(startTime, endTime);
-            }
-            catch (Exception ex)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadWindFarmSavingDataFromD {0}", ex.Message);
-            }
+			try
+			{
+				retList = ce.ReadWindFarmSavingDataFromDb(startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadWindFarmSavingDataFromD {0}", ex.Message);
+			}
 
-            return retList;
-        }
+			return retList;
+		}
 
-        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
-        {
-            List<Tuple<double, double>> retList = new List<Tuple<double, double>>();
+		public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double>> retList = new List<Tuple<double, double>>();
 
-            try
-            {
-                retList = ce.ReadWindFarmProductionDataFromDb(startTime, endTime);
-            }
-            catch (Exception ex)
-            {
-                CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadWindFarmSavingDataFromD {0}", ex.Message);
-            }
+			try
+			{
+				retList = ce.ReadWindFarmProductionDataFromDb(startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadWindFarmSavingDataFromD {0}", ex.Message);
+			}
 
-            return retList;
-        }
-    }
+			return retList;
+		}
+
+		public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double, double, double, double>> retList = new List<Tuple<double, double, double, double, double>>();
+
+			try
+			{
+				retList = ce.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				CommonTrace.WriteTrace(CommonTrace.TraceError, "[CeToUI] Error ReadIndividualFarmProductionDataFromDb {0}", ex.Message);
+			}
+
+			return retList;
+		}
+	}
 }

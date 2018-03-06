@@ -66,7 +66,7 @@ namespace EMS.Services.CalculationEngineService
         private float emissionCO2NonRenewable = 0;
         private float totalProduction = 0;
         private float totalCost = 0;
-        private float totalCostWithRenewable = 0;
+        //private float totalCostWithRenewable = 0;
 		private float totalCostWithoutWindAndSolar = 0;
 
 		private SynchronousMachineCurveModels generatorCharacteristics = new SynchronousMachineCurveModels();
@@ -644,7 +644,7 @@ namespace EMS.Services.CalculationEngineService
                 {
                     connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("SELECT TotalCostWithoutRenewable,TotalCostWithRenewable,Profit FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    using (SqlCommand cmd = new SqlCommand("SELECT TotalCostWithoutWindAndSolar,TotalCost,Profit FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -669,13 +669,7 @@ namespace EMS.Services.CalculationEngineService
 
             return retVal;
         }
-
-        /// <summary>
-        /// Read wind farm savin data from database (total cost without wind farm, total cost with wind farm and profit)
-        /// </summary>
-        /// <param name="startTime">start time of period</param>
-        /// <param name="endTime">end time of period</param>
-        /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
+		
         public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
@@ -712,14 +706,194 @@ namespace EMS.Services.CalculationEngineService
             return retVal;
         }
 
-        /// <summary>
-        /// Write CO2 Emission into database
-        /// </summary>
-        /// <param name="nonRenewableEmissionValue">emission value without renewable generators</param>
-        /// <param name="withRenewableEmissionValue">emission value with renewable generators</param>
-        /// <param name="measurementTime">time of measurement</param>
-        /// <returns>return true if success</returns>
-        public bool WriteCO2EmissionIntoDb(float nonRenewableEmissionValue, float withRenewableEmissionValue, DateTime measurementTime)
+		public List<Tuple<double, double>> ReadSolarFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("SELECT SolarProduction, SolarProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read Solar Farm Production Data from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		public List<Tuple<double, double>> ReadHydroFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("SELECT HydroProduction, HydroProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read Hydro Farm Production Data from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		public List<Tuple<double, double>> ReadCoalFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("SELECT CoalProduction, CoalProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read Coal Farm Production Data from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		public List<Tuple<double, double>> ReadOilFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("SELECT OilProduction, OilProductionPercent FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1])));
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read Oil Farm Production Data from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		public List<Tuple<double, double, double, double,double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		{
+			List<Tuple<double, double, double, double, double>> retVal = new List<Tuple<double, double, double, double, double>>();
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("SELECT WindProduction, SolarProduction, HydroProduction, CoalProduction, OilProduction FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+					{
+						cmd.CommandType = CommandType.Text;
+						cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						cmd.Parameters.Add("@endTime", SqlDbType.DateTime).Value = endTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+						SqlDataReader reader = cmd.ExecuteReader();
+
+						while (reader.Read())
+						{
+							retVal.Add(new Tuple<double, double, double, double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2]), Convert.ToDouble(reader[3]), Convert.ToDouble(reader[4])));
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					string message = string.Format("Failed read individual farm production from database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return retVal;
+		}
+
+		/// <summary>
+		/// Write CO2 Emission into database
+		/// </summary>
+		/// <param name="nonRenewableEmissionValue">emission value without renewable generators</param>
+		/// <param name="withRenewableEmissionValue">emission value with renewable generators</param>
+		/// <param name="measurementTime">time of measurement</param>
+		/// <returns>return true if success</returns>
+		public bool WriteCO2EmissionIntoDb(float nonRenewableEmissionValue, float withRenewableEmissionValue, DateTime measurementTime)
         {
             bool success = true;
 

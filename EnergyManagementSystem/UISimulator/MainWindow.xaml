@@ -7,10 +7,10 @@
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
 		mc:Ignorable="d"
-        Title="Simulator" Height="700" Width="1250">
+        Title="Simulator" Height="800" Width="1250">
 	<Window.Resources>
 		<DataTemplate x:Key="ChartView">
-			<chartingToolkit:Chart Title="Energy Consumer 1" Background="DimGray" 
+            <chartingToolkit:Chart Title="Simulated data" Background="DimGray" Margin="0,0,0,0"
                              Foreground="DarkBlue" IsEnabled="True">
 				<chartingToolkit:Chart.LegendStyle>
 					<Style TargetType="datavis:Legend">
@@ -33,7 +33,7 @@
 						<chartingToolkit:LinearAxis Orientation="X" Title="Time (s)"  />
 					</chartingToolkit:LineSeries.IndependentAxis>
 					<chartingToolkit:LineSeries.DependentRangeAxis>
-						<chartingToolkit:LinearAxis Orientation="Y" Title="Value"/>
+						<chartingToolkit:LinearAxis Orientation="Y" Title="Value (kW)"/>
 					</chartingToolkit:LineSeries.DependentRangeAxis>
 				</chartingToolkit:LineSeries>
 			</chartingToolkit:Chart>
