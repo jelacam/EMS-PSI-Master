@@ -7,12 +7,12 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <DataGrid x:Name="AlarmSummaryDataGrid"
+		<DataGrid x:Name="AlarmSummaryDataGrid"
 				  ItemsSource="{Binding Path = AlarmSummaryQueue }"
 				  CanUserDeleteRows="False" CanUserAddRows="False" RowStyle="{StaticResource AlarmSummaryDataGridRowStyle}" ClipToBounds="True"
 				  RowHeaderWidth="0" AutoGenerateColumns="False" SelectionUnit="FullRow"
 				  GridLinesVisibility="None">
-            <DataGrid.Columns>
+			<DataGrid.Columns>
                 <DataGridTextColumn Header="Gid" Binding="{Binding Gid,StringFormat={}0x{0:X8}}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" CellStyle="{StaticResource AlarmGridCell}" />
                 <!--<DataGridTextColumn Header="Init Value" Binding="{Binding InitiatingValue}" />-->
