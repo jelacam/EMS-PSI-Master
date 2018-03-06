@@ -6,22 +6,22 @@
 
 namespace EMS.Services.SCADACrunchingService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ServiceModel;
-    using Common;
-    using CommonMeasurement;
-    using NetworkModelService.DataModel.Meas;
-    using ServiceContracts;
-    using SmoothModbus;
-    using System.Xml.Serialization;
-    using System.IO;
-    using System.Threading;
+	using Common;
+	using CommonMeasurement;
+	using NetworkModelService.DataModel.Meas;
+	using ServiceContracts;
+	using SmoothModbus;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.ServiceModel;
+	using System.Threading;
+	using System.Xml.Serialization;
 
-    /// <summary>
-    /// SCADACrunching component logic
-    /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+	/// <summary>
+	/// SCADACrunching component logic
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class SCADACrunching : IScadaCRContract, ITransactionContract
     {
         /// <summary>

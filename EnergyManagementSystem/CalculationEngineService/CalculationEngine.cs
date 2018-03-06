@@ -6,28 +6,28 @@
 
 namespace EMS.Services.CalculationEngineService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.SqlClient;
-    using System.ServiceModel;
-    using CommonMeasurement;
-    using Common;
-    using ServiceContracts;
-    using PubSub;
-    using Microsoft.SolverFoundation.Services;
-    using NetworkModelService.DataModel.Wires;
-    using NetworkModelService.DataModel.Production;
-    using GeneticAlgorithm;
-    using Helpers;
-    using LinearAlgorithm;
-    using System.Threading;
-    using System.Linq;
+	using Common;
+	using CommonMeasurement;
+	using GeneticAlgorithm;
+	using Helpers;
+	using LinearAlgorithm;
+	using NetworkModelService.DataModel.Production;
+	using NetworkModelService.DataModel.Wires;
+	using PubSub;
+	using ServiceContracts;
+	using Simulation;
+	using System;
+	using System.Collections.Generic;
+	using System.Data;
+	using System.Data.SqlClient;
+	using System.Linq;
+	using System.ServiceModel;
+	using System.Threading;
 
-    /// <summary>
-    /// Class for CalculationEngine
-    /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	/// <summary>
+	/// Class for CalculationEngine
+	/// </summary>
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CalculationEngine : ITransactionContract
     {
         #region Fields
@@ -168,7 +168,57 @@ namespace EMS.Services.CalculationEngineService
             return result;
         }
 
-        private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
+		public void PopulateDatabase()
+		{
+			List<MeasurementUnit> measGenerators = new List<MeasurementUnit>();
+			ConvertorHelper convHelper = new ConvertorHelper();
+			foreach (var syncMach in synchronousMachines)
+			{
+				measGenerators.Add(new MeasurementUnit()
+				{
+					CurrentValue = 0,
+					MaxValue = syncMach.Value.MaxQ,
+					MinValue = syncMach.Value.MinQ,
+					Gid = syncMach.Key,
+				});
+			}
+
+			DateTime dateTime = new DateTime(2017, 1, 1);
+			int index = 0;
+			DummySimulation simulation = new DummySimulation();
+
+			while (dateTime < DateTime.Now)
+			{
+				Console.WriteLine("Completed: {0} %", ((float)index / 10300f) * 100);
+				float currentConsumption = simulation.GetCurrentConsumption(index % 24) / 4 - 1500;
+				float windSpeed = simulation.GetWindSpeed(index % 24);
+				float sunLight = simulation.GetSunLight(index % 24);
+
+				Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed, sunLight);
+				
+				var measurementsOptimized = DoOptimization(optModelMap, currentConsumption, windSpeed, sunLight);
+
+				if (InsertMeasurementsIntoDb(measurementsOptimized, dateTime))
+				{
+					//Console.WriteLine("Inserted {0} Measurement(s) into history database.", measurementsOptimized.Count);
+				}
+
+				if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, dateTime))
+				{
+					//Console.WriteLine("The CO2 emission is recorded into history database.");
+				}
+
+				dateTime = dateTime.AddHours(1);
+				index++;
+			}
+
+			Console.WriteLine("Completed: 100 %");
+
+		}
+
+		
+
+		private List<MeasurementUnit> DoOptimization(Dictionary<long, OptimisationModel> optModelMap, float powerOfConsumers, float windSpeed, float sunlight)
         {
             try
             {
@@ -277,8 +327,6 @@ namespace EMS.Services.CalculationEngineService
 
             GAOptimization gaoRenewable = new GAOptimization(powerOfConsumersWithoutRenewable, optModelMapNonRenewable);
             optModelMapOptimizied = gaoRenewable.StartAlgorithmWithReturn();
-
-            
 
             foreach(var optModel in optModelMapNonRenewable)
             {
@@ -453,14 +501,12 @@ namespace EMS.Services.CalculationEngineService
 
 		#endregion UI methods
 
-		#region Database methods
-
-		/// <summary>
-		/// Insert data into history db
-		/// </summary>
-		/// <param name="measurements">List of measurements</param>
-		/// <returns>Success</returns>
-		private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
+        /// <summary>
+        /// Insert data into history db
+        /// </summary>
+        /// <param name="measurements">List of measurements</param>
+        /// <returns>Success</returns>
+        public bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements)
         {
             bool success = true;
 
@@ -497,6 +543,43 @@ namespace EMS.Services.CalculationEngineService
             return success;
         }
 
+		private bool InsertMeasurementsIntoDb(List<MeasurementUnit> measurements, DateTime dateTime)
+		{
+			bool success = true;
+
+			using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
+			{
+				try
+				{
+					connection.Open();
+
+					using (SqlCommand cmd = new SqlCommand("InsertMeasurement", connection))
+					{
+						cmd.CommandType = CommandType.StoredProcedure;
+						foreach (MeasurementUnit mu in measurements)
+						{
+							cmd.Parameters.Add("@gidMeasurement", SqlDbType.BigInt).Value = mu.Gid;
+							cmd.Parameters.Add("@timeMeasurement", SqlDbType.DateTime).Value = dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+							cmd.Parameters.Add("@valueMeasurement", SqlDbType.Float).Value = mu.CurrentValue;
+							cmd.ExecuteNonQuery();
+							cmd.Parameters.Clear();
+						}
+					}
+
+					connection.Close();
+				}
+				catch (Exception e)
+				{
+					success = false;
+					string message = string.Format("Failed to insert new Measurement into database. {0}", e.Message);
+					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+					Console.WriteLine(message);
+				}
+			}
+
+			return success;
+		}
+
 		/// <summary>
 		/// Read measurements from history database
 		/// </summary>
@@ -529,6 +612,7 @@ namespace EMS.Services.CalculationEngineService
 				}
 				catch (Exception e)
 				{
+
 					string message = string.Format("Failed read Measurements from database. {0}", e.Message);
 					CommonTrace.WriteTrace(CommonTrace.TraceError, message);
 					Console.WriteLine(message);
@@ -795,8 +879,6 @@ namespace EMS.Services.CalculationEngineService
 
             return retVal;
         }
-
-        #endregion Database methods
 
         #region Fill and Clear data
 

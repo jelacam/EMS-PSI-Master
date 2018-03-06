@@ -10,15 +10,15 @@
         Title="Simulator" Height="700" Width="1250">
 	<Window.Resources>
 		<DataTemplate x:Key="ChartView">
-			<chartingToolkit:Chart Title="Energy Consumer 1" Background="DimGray" 
+            <chartingToolkit:Chart Title="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=ContentControl}}" Background="DimGray" 
                              Foreground="DarkBlue" IsEnabled="True">
 				<chartingToolkit:Chart.LegendStyle>
 					<Style TargetType="datavis:Legend">
 						<Setter Property="Width" Value="0" />
 					</Style>
 				</chartingToolkit:Chart.LegendStyle>
-				<chartingToolkit:LineSeries Title="Value"  
-                                    ItemsSource="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl}}" 
+                <chartingToolkit:LineSeries Title="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=ContentControl}}"  
+                                    ItemsSource="{Binding DataContext.Data, RelativeSource={RelativeSource AncestorType=ContentControl}}" 
                                     DependentValueBinding="{Binding Path=Value}" 
                                     IndependentValueBinding="{Binding Path=Key}"
                                     IsSelectionEnabled="False"
@@ -39,95 +39,24 @@
 			</chartingToolkit:Chart>
 		</DataTemplate>
 	</Window.Resources>
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
+    <ScrollViewer>
+        <Grid>
+            <ItemsControl ItemsSource="{Binding SimulationDataList}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="300" >
+                            <ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding }" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
 
-		<Grid Grid.Column="0" Grid.Row="0">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData1}" />
-		</Grid>
-		<Grid Grid.Column="1" Grid.Row="0">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData2}" />
-		</Grid>
-		<Grid Grid.Column="2" Grid.Row="0">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData3}" />
-		</Grid>
-		<Grid Grid.Column="3" Grid.Row="0">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData4}" />
-		</Grid>
-		<Grid Grid.Column="4" Grid.Row="0">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData5}" />
-		</Grid>
-		<Grid Grid.Column="0" Grid.Row="1">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData6}" />
-		</Grid>
-		<Grid Grid.Column="1" Grid.Row="1">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData7}" />
-		</Grid>
-		<Grid Grid.Column="2" Grid.Row="1">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData8}" />
-		</Grid>
-		<Grid Grid.Column="3" Grid.Row="1">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData9}" />
-		</Grid>
-		<Grid Grid.Column="4" Grid.Row="1">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData10}" />
-		</Grid>
-		<Grid Grid.Column="0" Grid.Row="2">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData11}" />
-		</Grid>
-		<Grid Grid.Column="1" Grid.Row="2">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData12}" />
-		</Grid>
-		<Grid Grid.Column="2" Grid.Row="2">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData13}" />
-		</Grid>
-		<Grid Grid.Column="3" Grid.Row="2">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData14}" />
-		</Grid>
-		<Grid Grid.Column="4" Grid.Row="2">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData15}" />
-		</Grid>
-		<Grid Grid.Column="0" Grid.Row="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData16}" />
-		</Grid>
-		<Grid Grid.Column="1" Grid.Row="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData17}" />
-		</Grid>
-		<Grid Grid.Column="2" Grid.Row="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData18}" />
-		</Grid>
-		<Grid Grid.Column="3" Grid.Row="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData19}" />
-		</Grid>
-		<Grid Grid.Column="4" Grid.Row="3">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationData20}" />
-		</Grid>
-
-		<Grid Grid.Column="0" Grid.Row="4">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationWindData}" />
-		</Grid>
-		<Grid Grid.Column="1" Grid.Row="4">
-			<ContentControl ContentTemplate="{StaticResource ChartView}" DataContext="{Binding SimulationSunData}" />
-		</Grid>
-
-		<Grid Grid.Column="2" Grid.Row="4">
-		</Grid>
-		<Grid Grid.Column="3" Grid.Row="4">
-		</Grid>
-		<Grid Grid.Column="4" Grid.Row="4">
-		</Grid>
-	</Grid>
+            </ItemsControl>
+        </Grid>
+    </ScrollViewer>
+    
 </Window>
