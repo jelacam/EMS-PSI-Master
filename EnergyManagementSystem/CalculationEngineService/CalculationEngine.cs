@@ -175,7 +175,7 @@ namespace EMS.Services.CalculationEngineService
 			while (dateTime < DateTime.Now)
 			{
 				Console.WriteLine("Completed: {0} %", ((float)index / 10300f) * 100);
-				float currentConsumption = simulation.GetCurrentConsumption(index % 24);
+				float currentConsumption = simulation.GetCurrentConsumption(index % 24) / 4 - 1500;
 				float windSpeed = simulation.GetWindSpeed(index % 24);
 				float sunLight = simulation.GetSunLight(index % 24);
 
