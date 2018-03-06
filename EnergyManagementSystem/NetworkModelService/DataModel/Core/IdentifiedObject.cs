@@ -20,7 +20,7 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
     /// <summary>
     /// IdentifiedObject class
     /// </summary>
-    public class IdentifiedObject
+    public class IdentifiedObject : ICloneable
     {
         /// <summary>
         /// Model Resources Description
@@ -292,6 +292,15 @@ namespace EMS.Services.NetworkModelService.DataModel.Core
                     valuesInOriginal.Add(rd.Properties[i]);
                 }
             }
+        }
+
+        public virtual object Clone()
+        {
+            IdentifiedObject io = new IdentifiedObject();
+            io.Name = this.Name;
+            io.Mrid = this.Mrid;
+
+            return io;
         }
 
         #endregion utility methods

@@ -266,86 +266,9 @@ namespace CalculationEngineServiceTest
 		[TestCase(TestName = "LinearOptimizationOptimizedLinearProperty")]
 		public void OptimizedLinearProperty()
 		{
-			lo.OptimizedRenewable = optimizedLinear;
-			Assert.AreEqual(lo.OptimizedRenewable, optimizedLinear);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization WindOptimizedLinear property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationWindOptimizedLinearProperty")]
-		public void WindOptimizedLinearProperty()
-		{
-			lo.LAWind = windOptimizedLinear;
-			Assert.AreEqual(lo.LAWind, windOptimizedLinear);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization WindOptimizedPctLinear property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationWindOptimizedPctLinearProperty")]
-		public void WindOptimizedPctLinearProperty()
-		{
-			lo.LAWindPct = windOptimizedPctLinear;
-			Assert.AreEqual(lo.LAWindPct, windOptimizedPctLinear);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization Profit property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationProfitProperty")]
-		public void ProfitProperty()
-		{
-			lo.LAProfit = profit;
-			Assert.AreEqual(lo.LAProfit, profit);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization CO2EmissionNonRenewable property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationCO2EmissionNonRenewableProperty")]
-		public void CO2EmissionNonRenewableProperty()
-		{
-			lo.LACO2WithoutRenewable = co2EmissionNonRenewable;
-			Assert.AreEqual(lo.LACO2WithoutRenewable, co2EmissionNonRenewable);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization CO2EmmissionRenewable property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationCO2EmmissionRenewableProperty")]
-		public void CO2EmmissionRenewableProperty()
-		{
-			lo.LACO2Renewable = co2EmmissionRenewable;
-			Assert.AreEqual(lo.LACO2Renewable, co2EmmissionRenewable);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization TotalCostWithRenewable property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationTotalCostWithRenewableProperty")]
-		public void TotalCostWithRenewableProperty()
-		{
-			lo.LACostRenewable = totalCostWithRenewable;
-			Assert.AreEqual(lo.LACostRenewable, totalCostWithRenewable);
-		}
-
-		/// <summary>
-		/// Unit test for LinearOptimization TotalCostNonRenewable property
-		/// </summary>
-		[Test]
-		[TestCase(TestName = "LinearOptimizationTotalCostNonRenewableProperty")]
-		public void TotalCostNonRenewableProperty()
-		{
-			lo.LACostWithoutRenewable = totalCostNonRenewable;
-			Assert.AreEqual(lo.LACostWithoutRenewable, totalCostNonRenewable);
-		}
+			lo.Optimized = optimizedLinear;
+			Assert.AreEqual(lo.Optimized, optimizedLinear);
+		}	
 
 		/// <summary>
 		/// Unit test for LinearOptimization Start method

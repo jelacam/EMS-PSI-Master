@@ -124,6 +124,7 @@ namespace UIClient.ViewModel
         {
             lock (alarmSummaryLock)
             {
+                List<AlarmHelper> alarmsToRemove = new List<AlarmHelper>(1);
                 if (!alarm.Type.Equals(AlarmType.NORMAL))
                 {
                     foreach (AlarmHelper aHelper in AlarmSummaryQueue)
@@ -144,6 +145,23 @@ namespace UIClient.ViewModel
                         if (aHelper.Gid.Equals(alarm.Gid) && aHelper.TimeStamp.Equals(alarm.TimeStamp))
                             return;
                     }
+               
+                    
+                }
+
+                foreach (AlarmHelper aHelper in AlarmSummaryQueue)
+                {
+                    if (aHelper.Gid == alarm.Gid)
+                    {
+                        alarmsToRemove.Add(aHelper);
+                    }
+                }
+                foreach (AlarmHelper ah in alarmsToRemove)
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        AlarmSummaryQueue.Remove(ah);
+                    });
                 }
 
                 try
@@ -161,6 +179,7 @@ namespace UIClient.ViewModel
             }
         }
 
+
         private void UpdateAlarm(AlarmHelper alarm)
         {
             lock (alarmSummaryLock)
@@ -176,6 +195,7 @@ namespace UIClient.ViewModel
                         aHelper.Severity = alarm.Severity;
                         aHelper.Value = alarm.Value;
                         aHelper.Message = alarm.Message;
+                        aHelper.TimeStamp = alarm.TimeStamp;
                     }
                 }
                 OnPropertyChanged(nameof(AlarmSummaryQueue));

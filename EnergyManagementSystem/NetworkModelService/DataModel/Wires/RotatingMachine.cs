@@ -62,6 +62,17 @@ namespace EMS.Services.NetworkModelService.DataModel.Wires
             return base.GetHashCode();
         }
 
+        public override object Clone()
+        {
+            RotatingMachine io = new RotatingMachine(base.GlobalId);
+            io.Measurements = this.Measurements;
+            io.Mrid = this.Mrid;
+            io.Name = this.Name;
+            io.RatedS = this.RatedS;
+
+            return io;
+        }
+
         #region IAccess implementation
         /// <summary>
         /// Checks if the entity has a property

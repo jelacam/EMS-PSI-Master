@@ -268,5 +268,8 @@
         </Setter>
     </Style>
 
-    
+	<!--<Style x:Key="AlarmSummary" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+		<Setter Property="Background" Value="Blue" />
+	</Style>-->
+
 </ResourceDictionary>
