@@ -78,7 +78,7 @@ namespace UISimulator.ViewModel
 
 					modbusClient.WriteSingleRegister(100, SimulationDataList[20].Data[i].Value); //SimulationWindData
 					modbusClient.WriteSingleRegister(102, SimulationDataList[21].Data[i].Value); //SimulationSunData
-                    Thread.Sleep(5000);
+                    Thread.Sleep(3000);
                 }
             }
 
