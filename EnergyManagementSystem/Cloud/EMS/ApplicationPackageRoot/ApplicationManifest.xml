@@ -2,7 +2,6 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="EMSType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="WebEMS_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="Web1_InstanceCount" DefaultValue="-1" />
     <Parameter Name="TransactionManagerCloudService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="AlarmsEventsCloudService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="NetworkModelCloudService_InstanceCount" DefaultValue="-1" />
@@ -21,10 +20,6 @@
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="WebEMSPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="Web1Pkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
   </ServiceManifestImport>
   <ServiceManifestImport>
@@ -67,11 +62,6 @@
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="WebEMS" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="WebEMSType" InstanceCount="[WebEMS_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
-    </Service>
-    <Service Name="Web1" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="Web1Type" InstanceCount="[Web1_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
