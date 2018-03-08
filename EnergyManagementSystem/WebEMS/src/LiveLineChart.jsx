@@ -1,7 +1,6 @@
 ﻿import React from 'react';
 import dotnetify from 'dotnetify';
 import { Line } from 'react-chartjs';
-import { Grid, Row, Col, Clearfix, Panel } from 'react-bootstrap';
 import Paper from 'material-ui/Paper';
 import { white, purple600, purple500 } from 'material-ui/styles/colors';
 
