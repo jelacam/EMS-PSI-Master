@@ -1,6 +1,10 @@
 ﻿import React from 'react';
 import dotnetify from 'dotnetify';
 import { Line } from 'react-chartjs';
+import { Grid, Row, Col, Clearfix, Panel } from 'react-bootstrap';
+import Paper from 'material-ui/Paper';
+import { white, purple600, purple500 } from 'material-ui/styles/colors';
+
 
 export default class LiveLineChart extends React.Component {
     constructor(props) {
@@ -12,9 +16,9 @@ export default class LiveLineChart extends React.Component {
             datasets: [{
                 label: "",
                 data: [],
-                fillColor: "rgba(217,237,245,0.2)",
-                strokeColor: "#9acfea",
-                pointColor: "#9acfea",
+                fillColor: 'rgba(255, 159, 64)',
+                strokeColor: 'rgba(255, 159, 64)',
+                pointColor: 'rgb(153, 102, 255)',
                 pointStrokeColor: "#fff"
             }]
         };
@@ -31,7 +35,7 @@ export default class LiveLineChart extends React.Component {
             animation: false,
             scaleShowGridLines: true,
             scaleGridLineColor: 'rgba(0,0,0,.05)',
-            scaleGridLineWidth: 1,
+            scaleGridLineWidth: 2,
             scaleShowHorizontalLines: true,
             scaleShowVerticalLines: true,
             bezierCurve: true,
@@ -53,8 +57,65 @@ export default class LiveLineChart extends React.Component {
                 chartData.datasets[0].data.push(data[1]);
             }
         }
+
+        const styles = {
+            paper: {
+                backgroundColor: white,
+                height: 170,
+                width: 350,
+                margin: 20,
+                display: 'inline-block',
+            },
+            div: {
+                height: 70,
+                width: 300,
+                padding: '5px 15px 5px 15px'
+            }
+        }
+
         return (
-            <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+            <div >
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+                <Paper style={styles.paper} zDepth={4} rounded={true}>
+                    <div style={styles.div}>
+                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                    </div>
+                </Paper>
+            </div>
         );
     }
 }
