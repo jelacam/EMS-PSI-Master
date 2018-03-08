@@ -30,7 +30,6 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
                     partitionKey: new ServicePartitionKey("HistoryData"));
         }
 
-
         public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
         {
             return proxy.InvokeWithRetry(x => x.Channel.GetCO2Emission(startTime, endTime));
@@ -46,9 +45,9 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
             return proxy.InvokeWithRetry(x => x.Channel.GetTotalProduction(startTime, endTime));
         }
 
-        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
-            return proxy.InvokeWithRetry(x => x.Channel.ReadWindFarmProductionDataFromDb(startTime, endTime));
+            return proxy.InvokeWithRetry(x => x.Channel.ReadIndividualFarmProductionDataFromDb(startTime, endTime));
         }
 
         public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)

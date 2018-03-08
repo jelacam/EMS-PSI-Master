@@ -44,14 +44,23 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
 		#region Properties
 
-		public float OptimizedRenewable { get; set; }
-		public float LACostRenewable { get; set; }
-		public float LACostWithoutRenewable { get; set; }
-		public float LAProfit { get; set; }
-		public float LACO2Renewable { get; set; }
-		public float LACO2WithoutRenewable { get; set; }
-		public float LAWind { get; set; }
-		public float LAWindPct { get; set; }
+		public float Optimized { get; set; }
+		public float Cost { get; set; }
+		public float CostWithoutWindAndSolar { get; set; }
+		public float Profit { get; set; }
+		public float CO2 { get; set; }
+		public float CO2WithoutWindAndSolar { get; set; }
+
+		public float PowerOfWind { get; set; }
+		public float PowerOfSolar { get; set; }
+		public float PowerOfHydro { get; set; }
+		public float PowerOfCoal { get; set; }
+		public float PowerOfOil { get; set; }
+		public float PowerOfWindPct { get; set; }
+		public float PowerOfSolarPct { get; set; }
+		public float PowerOfHydroPct { get; set; }
+		public float PowerOfCoalPct { get; set; }
+		public float PowerOfOilPct { get; set; }
 
 		#endregion
 
@@ -64,15 +73,24 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// <param name="maxProduction">maximal production of generators</param>
 		public LinearOptimization(float minProduction, float maxProduction)
 		{
-			LACostRenewable = 0;
-			LACostWithoutRenewable = 0;
-			LAProfit = 0;
-			LACO2Renewable = 0;
-			LACO2WithoutRenewable = 0;
-			LAWind = 0;
-			LAWindPct = 0;
+			Cost = 0;
+			CostWithoutWindAndSolar = 0;
+			Profit = 0;
+			CO2 = 0;
+			CO2WithoutWindAndSolar = 0;
 
-			OptimizedRenewable = 0;
+			PowerOfWind = 0;
+			PowerOfSolar = 0;
+			PowerOfHydro = 0;
+			PowerOfCoal = 0;
+			PowerOfOil = 0;
+			PowerOfWindPct = 0;
+			PowerOfSolarPct = 0;
+			PowerOfHydroPct = 0;
+			PowerOfCoalPct = 0;
+			PowerOfOilPct = 0;
+
+			Optimized = 0;
 
 			this.minProduction = minProduction;
 			this.maxProduction = maxProduction;
@@ -96,13 +114,13 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 				if (optModelMap.Count() > 0)
 				{
 					float production = maxProduction;
-					Dictionary<long, OptimisationModel> optModelMapWithoutWind = new Dictionary<long, OptimisationModel>();
+					Dictionary<long, OptimisationModel> optModelMapWithoutWindAndSolar = new Dictionary<long, OptimisationModel>();
 
 					foreach (var item in optModelMap)
 					{
-						if (!item.Value.EmsFuel.FuelType.Equals(EmsFuelType.wind))
+						if (!item.Value.Renewable) // wind + solar
 						{
-							optModelMapWithoutWind.Add(item.Key, item.Value);
+							optModelMapWithoutWindAndSolar.Add(item.Key, item.Value);
 						}
 						else
 						{
@@ -110,10 +128,16 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						}
 					}
 
-					optModelMapWithoutWind = StartLinearOptimization(optModelMapWithoutWind, consumption, false, production);
+					optModelMapWithoutWindAndSolar = StartLinearOptimization(optModelMapWithoutWindAndSolar, consumption, false, production);
 					optModelMap = StartLinearOptimization(optModelMap, consumption, true, maxProduction);
 
-					LAProfit = LACostWithoutRenewable - LACostRenewable;
+					Profit = CostWithoutWindAndSolar - Cost;
+
+					PowerOfWindPct = 100 * PowerOfWind / Optimized;
+					PowerOfSolarPct = 100 * PowerOfSolar / Optimized;
+					PowerOfHydroPct = 100 * PowerOfHydro / Optimized;
+					PowerOfCoalPct = 100 * PowerOfCoal / Optimized;
+					PowerOfOilPct = 100 * PowerOfOil / Optimized;
 				}
 
 				return optModelMap;
@@ -128,7 +152,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 		/// <param name="includeWindGenerators">should wind generators be included</param>
 		/// <param name="maxProductionLimit">maximum limit of production</param>
 		/// <returns>linear optimized model</returns>
-		private Dictionary<long, OptimisationModel> StartLinearOptimization(Dictionary<long, OptimisationModel> optModelMap, float consumption, bool includeWindGenerators, float maxProductionLimit)
+		private Dictionary<long, OptimisationModel> StartLinearOptimization(Dictionary<long, OptimisationModel> optModelMap, float consumption, bool includeWindAndSolarGenerators, float maxProductionLimit)
 		{
 			lock (lockObj)
 			{
@@ -136,8 +160,8 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 				{
 					Model model = context.CreateModel();
 					string goalCost = string.Empty;
-					string goalMaximizeRenewable = string.Empty;
-					string goalMinimizeNonRenewable = string.Empty;
+					string goalMaximizeWindAndSolar = string.Empty;
+					string goalMinimize = string.Empty;
 					string constraintLimit = "Limit";
 					string constraintProduction = consumption.ToString() + "<=";
 					string name = string.Empty;
@@ -156,11 +180,11 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 
 						if (optModel.Value.Renewable)
 						{
-							goalMaximizeRenewable += d.ToString() + "+";
+							goalMaximizeWindAndSolar += d.ToString() + "+";
 						}
 						else
 						{
-							goalMinimizeNonRenewable += d.ToString() + "+";
+							goalMinimize += d.ToString() + "+";
 						}
 					}
 
@@ -171,16 +195,21 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 					goalCost = goalCost.Substring(0, goalCost.Length - 1);
 					model.AddGoal("Cost", GoalKind.Minimize, goalCost);
 
-					goalMaximizeRenewable = goalMaximizeRenewable.Substring(0, goalMaximizeRenewable.Length - 1);
-					model.AddGoal("MaximizeRenewable", GoalKind.Maximize, goalMaximizeRenewable);
+					goalMinimize = goalMinimize.Substring(0, goalMinimize.Length - 1);
+					model.AddGoal("Minimize", GoalKind.Minimize, goalMinimize);
 
-					goalMinimizeNonRenewable = goalMinimizeNonRenewable.Substring(0, goalMinimizeNonRenewable.Length - 1);
-					model.AddGoal("MinimizeNonRenewable", GoalKind.Minimize, goalMinimizeNonRenewable);
+					if (includeWindAndSolarGenerators)
+					{
+						goalMaximizeWindAndSolar = goalMaximizeWindAndSolar.Substring(0, goalMaximizeWindAndSolar.Length - 1);
+						model.AddGoal("MaximizeWindAndSolar", GoalKind.Maximize, goalMaximizeWindAndSolar);
+					}
+
+					Report report;
 
 					try
 					{
 						Solution solution = context.Solve(new SimplexDirective());
-						Report report = solution.GetReport();
+						report = solution.GetReport();
 					}
 					catch(Exception ex)
 					{
@@ -195,31 +224,41 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 						{
 							optModel.LinearOptimizedValue = float.Parse(item.ToDouble().ToString());
 
-							if (includeWindGenerators) // sa vetrogeneratorima
+							if (includeWindAndSolarGenerators) // sa vetrogeneratorima i solarima
 							{
-								//Console.Write("{0}", report);
+								// Console.Write("{0}", report);
+								Optimized += optModel.LinearOptimizedValue;
+								CO2 += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+								Cost += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
 
-								OptimizedRenewable += optModel.LinearOptimizedValue;
-								LACO2Renewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
-								LACostRenewable += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
-
-								if (optModel.EmsFuel.FuelType.Equals(EmsFuelType.wind))
+								switch (optModel.EmsFuel.FuelType)
 								{
-									LAWind += optModel.LinearOptimizedValue;
-								}
+									case EmsFuelType.coal:
+										PowerOfCoal += optModel.LinearOptimizedValue;
+										break;
+									case EmsFuelType.hydro:
+										PowerOfHydro += optModel.LinearOptimizedValue;
+										break;
+									case EmsFuelType.oil:
+										PowerOfOil += optModel.LinearOptimizedValue;
+										break;
+									case EmsFuelType.solar:
+										PowerOfSolar += optModel.LinearOptimizedValue;
+										break;
+									case EmsFuelType.wind:
+										PowerOfWind += optModel.LinearOptimizedValue;
+										break;
+									default:
+										break;
+								}								
 							}
-							else // bez vetrogeneratora
+							else // bez vetrogeneratora i solara
 							{
-								LACO2WithoutRenewable += optModel.LinearOptimizedValue * optModel.EmissionFactor;
-								LACostWithoutRenewable += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
+								CO2WithoutWindAndSolar += optModel.LinearOptimizedValue * optModel.EmissionFactor;
+								CostWithoutWindAndSolar += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
 							}
 						}
-					}
-
-					if (includeWindGenerators)
-					{
-						LAWindPct = 100 * LAWind / OptimizedRenewable;
-					}
+					}					
 
 					context.ClearModel();
 				}

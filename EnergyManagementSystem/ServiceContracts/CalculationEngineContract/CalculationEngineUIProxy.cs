@@ -133,17 +133,17 @@ namespace EMS.ServiceContracts
             return windFarmSaving;
         }
 
-        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
-            List<Tuple<double, double>> windFarmProduction = new List<Tuple<double, double>>();
+            List<Tuple<double, double, double, double, double>> individualFarmProduction = new List<Tuple<double, double, double, double, double>>();
             try
             {
-                windFarmProduction = proxy.ReadWindFarmProductionDataFromDb(startTime, endTime);
+                individualFarmProduction = proxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
             }
             catch (Exception e)
             {
             }
-            return windFarmProduction;
+            return individualFarmProduction;
         }
     }
 }

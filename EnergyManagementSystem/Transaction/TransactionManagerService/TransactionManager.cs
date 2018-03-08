@@ -19,24 +19,24 @@ namespace EMS.Services.TransactionManagerService
         private static int noRespone = 0;
         private static int toRespond = 1;
         private object obj = new object();
+        public static UpdateResult updateResult = new UpdateResult();
 
         public UpdateResult ModelUpdate(Delta delta)
         {
-            deltaToApply = delta;
+            TransactionCESfProxy transactionCESfProxy = new TransactionCESfProxy();
+            TransactionCMDSfProxy transactionCMDSfProxy = new TransactionCMDSfProxy();
+            TransactionCRSfProxy transactionCRSfProxy = new TransactionCRSfProxy();
+            TransactionNMSSfProxy transactionNMSSfProxy = new TransactionNMSSfProxy();
 
+            deltaToApply = delta;
+            noRespone = 0;
+            toRespond = 1;
             // delta object for caclculation engine - contains EMSFuels and SynchronousMachines
             Delta ceDelta = new Delta();
 
-            UpdateResult updateResult = new UpdateResult();
+            updateResult = new UpdateResult();
 
             List<long> idToRemove = new List<long>(10);
-
-            #region oldDeclarations
-
-            int analogProperty = 0;
-            int ceProperty = 0;
-
-            #endregion oldDeclarations
 
             Delta analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
             Delta emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
@@ -45,130 +45,115 @@ namespace EMS.Services.TransactionManagerService
 
             ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
 
-            #region oldcode
-
-            //foreach (ResourceDescription rd_item in delta.InsertOperations)
-            //{
-            //    foreach (Property pr_item in rd_item.Properties)
-            //    {
-            //        if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.ANALOG))
-            //        {
-            //            analogProperty++;
-            //        }
-            //        else if (ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.EMSFUEL) || ModelCodeHelper.GetTypeFromModelCode(pr_item.Id).Equals(EMSType.SYNCHRONOUSMACHINE))
-            //        {
-            //            ceProperty++;
-            //        }
-            //    }
-
-            //    if (analogProperty == 0)
-            //    {
-            //        idToRemove.Add(rd_item.Id);
-            //    }
-            //    if (ceProperty != 0)
-            //    {
-            //        ceDelta.InsertOperations.Add(rd_item);
-            //    }
-
-            //    analogProperty = 0;
-            //    ceProperty = 0;
-            //}
-
-            //if (idToRemove.Count != 0 && (delta.InsertOperations.Count - idToRemove.Count > 0))
-            //{
-            //    if (ceDelta.InsertOperations.Count != 0)
-            //    {
-            //        toRespond = 4;
-            //        TransactionCEProxy.Instance.Prepare(ceDelta);
-            //    }
-            //    else
-            //    {
-            //        toRespond = 3;
-            //    }
-
-            //    updateResult = TransactionNMSProxy.Instance.Prepare(delta);
-
-            //    foreach (long id in idToRemove)
-            //    {
-            //        delta.RemoveResourceDescription(id, DeltaOpType.Insert);
-            //    }
-
-            //    TransactionCRProxy.Instance.Prepare(delta);
-            //    TransactionCMDProxy.Instance.Prepare(delta);
-            //}
-            //else
-            //{
-            //    if (ceDelta.InsertOperations.Count != 0)
-            //    {
-            //        toRespond = 2;
-            //        TransactionCEProxy.Instance.Prepare(ceDelta);
-            //    }
-            //    else
-            //    {
-            //        toRespond = 1;
-            //    }
-
-            //    updateResult = TransactionNMSProxy.Instance.Prepare(delta);
-            //}
-
-            #endregion oldcode
-
             if (analogsDelta.InsertOperations.Count != 0 || analogsDelta.UpdateOperations.Count != 0)
             {
-                toRespond++;
+                toRespond += 2;
             }
             if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
             {
                 toRespond++;
             }
-
-            // first transaction - send delta to NMS
-            //updateResult = TransactionNMSProxy.Instance.Prepare(ref delta);
-
-            TransactionNMSSfProxy transactionNMSSfProxy = new TransactionNMSSfProxy();
-            TransactionCESfProxy transactionCESfProxy = new TransactionCESfProxy();
-            TransactionCMDSfProxy transactionCMDSfProxy = new TransactionCMDSfProxy();
-            TransactionCRSfProxy transactionCRSfProxy = new TransactionCRSfProxy();
-
-            updateResult = transactionNMSSfProxy.Prepare(ref delta);
-
-            // create new delta object from delta with gids
-            analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
-            emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
-            synchMachsDelta = delta.SeparateDeltaForEMSType(EMSType.SYNCHRONOUSMACHINE);
-            energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
-
-            ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
-            ceDeltaToApply = ceDelta;
-
-            // second transaction - send ceDelta to CE
-            if (toRespond == 2)
+            try
             {
-                if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
+                // first transaction - send delta to NMS
+                try
                 {
-                    //TransactionCEProxy.Instance.Prepare(ref ceDelta);
-                    transactionCESfProxy.Prepare(ref ceDelta);
+                    updateResult = transactionNMSSfProxy.Prepare(ref delta);
                 }
-                else
+                catch (Exception e)
                 {
-                    //TransactionCRProxy.Instance.Prepare(ref analogsDelta);
-                    //TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: NMS Prepare phase failed; Message: {0}", e.Message);
+                    updateResult.Message = "Transaction: Failed to apply delta on Network Model Service";
+                    updateResult.Result = ResultType.Failed;
+                    return updateResult;
+                }
+                // create new delta object from delta with gids
+                analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
+                emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
+                synchMachsDelta = delta.SeparateDeltaForEMSType(EMSType.SYNCHRONOUSMACHINE);
+                energyConsDelta = delta.SeparateDeltaForEMSType(EMSType.ENERGYCONSUMER);
 
-                    transactionCRSfProxy.Prepare(ref analogsDelta);
-                    transactionCMDSfProxy.Prepare(ref analogsDelta);
+                ceDelta = emsFuelsDelta + synchMachsDelta + energyConsDelta;
+                ceDeltaToApply = ceDelta;
+
+                // second transaction - send ceDelta to CE
+                if (toRespond == 2)
+                {
+                    if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
+                    {
+                        try
+                        {
+                            transactionCESfProxy.Prepare(ref ceDelta);
+                        }
+                        catch (Exception e)
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: CE Prepare phase failed; Message: {0}", e.Message);
+                            updateResult.Message = "Transaction: Failed to apply delta on Calculation Engine Service";
+                            updateResult.Result = ResultType.Failed;
+                            return updateResult;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            transactionCRSfProxy.Prepare(ref analogsDelta);
+                            transactionCMDSfProxy.Prepare(ref analogsDelta);
+                        }
+                        catch (Exception e)
+                        {
+                            CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: SCADA Prepare phase failed; Message: {0}", e.Message);
+                            updateResult.Message = "Transaction: Failed to apply delta on SCADA CR and CMD Services";
+                            updateResult.Result = ResultType.Failed;
+                            return updateResult;
+                        }
+                    }
+                }
+                else if (toRespond == 3)
+                {
+                    // second transaction - send ceDelta to CE, analogDelta to SCADA
+                    try
+                    {
+                        transactionCRSfProxy.Prepare(ref analogsDelta);
+                        transactionCMDSfProxy.Prepare(ref analogsDelta);
+                    }
+                    catch (Exception e)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: Prepare phase failed for SCADA Services; Message: {0}", e.Message);
+                        updateResult.Message = "Transaction: Failed to apply delta on SCADA Services";
+                        updateResult.Result = ResultType.Failed;
+                        return updateResult;
+                    }
+                }
+                else if (toRespond == 4)
+                {
+                    try
+                    {
+                        transactionCESfProxy.Prepare(ref ceDelta);
+                        transactionCRSfProxy.Prepare(ref analogsDelta);
+                        transactionCMDSfProxy.Prepare(ref analogsDelta);
+                    }
+                    catch (Exception e)
+                    {
+                        CommonTrace.WriteTrace(CommonTrace.TraceError, "Transacion: Prepare phase failed for CE or SCADA Services; Message: {0}", e.Message);
+                        updateResult.Message = "Transaction: Failed to apply delta on Calculation Engine or SCADA Services";
+                        updateResult.Result = ResultType.Failed;
+                        return updateResult;
+                    }
                 }
             }
-            else if (toRespond == 3)
+            catch (Exception e)
             {
-                // second transaction - send ceDelta to CE, analogDelta to SCADA
-                //TransactionCEProxy.Instance.Prepare(ref ceDelta);
-                //TransactionCRProxy.Instance.Prepare(ref analogsDelta);
-                //TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
-                transactionCESfProxy.Prepare(ref ceDelta);
-                transactionCRSfProxy.Prepare(ref analogsDelta);
-                transactionCMDSfProxy.Prepare(ref analogsDelta);
+                // ako se neki exception desio prilikom transakcije - radi rollback
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction failed; Message: {0}", e.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
+                transactionCMDSfProxy.Rollback();
+                transactionCRSfProxy.Rollback();
+                transactionCESfProxy.Rollback();
+                transactionNMSSfProxy.Rollback();
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback finished!");
             }
-
+            Thread.Sleep(5000);
             return updateResult;
         }
 
@@ -226,9 +211,8 @@ namespace EMS.Services.TransactionManagerService
             bool commitResultSCADA = true;
             bool commitResultCE = true;
 
-            //bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
             bool commitResultNMS = transactionNMSSfProxy.Commit(deltaToApply);
-            if (toRespond == 3)
+            if (toRespond == 4)
             {
                 //commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
                 //commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
@@ -237,22 +221,67 @@ namespace EMS.Services.TransactionManagerService
 
                 commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
 
-                //commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
                 commitResultCE = transactionCESfProxy.Commit(deltaToApply);
-            }
-            else if (toRespond == 2)
-            {
-                if (ceDeltaToApply.InsertOperations.Count != 0 || ceDeltaToApply.UpdateOperations.Count != 0)
+
+                if (!commitResultScadaCR)
                 {
-                    //commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
-                    commitResultCE = transactionCESfProxy.Commit(deltaToApply);
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
                 }
                 else
                 {
-                    //commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                    //commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-                    commitResultScadaCR = transactionCRSfProxy.Commit(deltaToApply);
-                    commitResultScadaCMD = transactionCMDSfProxy.Commit(deltaToApply);
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                }
+                if (!commitResultScadaCMD)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
+                }
+                if (!commitResultCE)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
+                }
+            }
+            else if (toRespond == 2)
+            {
+                commitResultCE = transactionCESfProxy.Commit(deltaToApply);
+
+                if (!commitResultCE)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
+                }
+            }
+            else if (toRespond == 3)
+            {
+                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
+                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
+
+                if (!commitResultScadaCR)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                }
+
+                if (!commitResultScadaCMD)
+                {
+                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                }
+                else
+                {
+                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
                 }
             }
 
@@ -273,6 +302,7 @@ namespace EMS.Services.TransactionManagerService
                 transactionCMDSfProxy.Rollback();
                 transactionCESfProxy.Rollback();
             }
+            updateResult.Message += String.Format("\n\nApply successfully finished");
             toRespond = 1;
             noRespone = 0;
         }

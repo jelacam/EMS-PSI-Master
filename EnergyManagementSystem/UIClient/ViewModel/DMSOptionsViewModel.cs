@@ -16,7 +16,7 @@ namespace UIClient.ViewModel
 
         private ObservableCollection<Tuple<double, double, DateTime>> cO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
         private ObservableCollection<Tuple<double, double, DateTime>> graphCO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
-        private ObservableCollection<Tuple<double, double>> windContainer = new ObservableCollection<Tuple<double, double>>();
+        private ObservableCollection<Tuple<double, double, double, double, double>> individualContainer = new ObservableCollection<Tuple<double, double, double, double, double>>();
         private ObservableCollection<Tuple<double, double, double>> savingContainer = new ObservableCollection<Tuple<double, double, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieData = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieDataWind = new ObservableCollection<KeyValuePair<string, double>>();
@@ -31,7 +31,7 @@ namespace UIClient.ViewModel
         private PeriodValues selectedPeriodWind;
         private PeriodValues selectedPeriodSaving;
         private ICommand viewCO2EmissionDataCommand;
-        private ICommand viewWindProductionDataCommand;
+        private ICommand viewIndividualProductionDataCommand;
         private ICommand viewSavingnDataCommand;
         private ICommand changePeriodCo2Command;
         private ICommand changePeriodWindProductionCommand;
@@ -44,9 +44,18 @@ namespace UIClient.ViewModel
         private double totalCO2;
         private double totalWindProductionPercentage;
         private double totalWindProduction;
+        private double totalSolarProductionPercentage;
+        private double totalSolarProduction;
+        private double totalHydroProductionPercentage;
+        private double totalHydroProduction;
+        private double totalCoalProductionPercentage;
+        private double totalCoalProduction;
+        private double totalOilProductionPercentage;
+        private double totalOilProduction;
         private double totalWindSaving;
         private double totalCostWithoutRenewable;
         private double totalCostWithRenewable;
+        private double totalSum;
         private GraphSample graphSampling;
         private bool cO2EmissionWithoutRenewableGraphVisibility = false;
         private bool cO2EmissionGraphVisibility = true;
@@ -232,6 +241,119 @@ namespace UIClient.ViewModel
             }
         }
 
+        public double TotalSolarProduction
+        {
+            get
+            {
+                return totalSolarProduction;
+            }
+            set
+            {
+                totalSolarProduction = value;
+                OnPropertyChanged(nameof(TotalSolarProduction));
+            }
+        }
+
+        public double TotalSolarProductionPercentage
+        {
+            get
+            {
+                return totalSolarProductionPercentage;
+            }
+            set
+            {
+                totalSolarProductionPercentage = value;
+            }
+        }
+
+        public double TotalHydroProduction
+        {
+            get
+            {
+                return totalHydroProduction;
+            }
+            set
+            {
+                totalHydroProduction = value;
+                OnPropertyChanged(nameof(TotalHydroProduction));
+            }
+        }
+
+        public double TotalHydroProductionPercentage
+        {
+            get
+            {
+                return totalHydroProductionPercentage;
+            }
+            set
+            {
+                totalHydroProductionPercentage = value;
+            }
+        }
+
+        public double TotalCoalProduction
+        {
+            get
+            {
+                return totalCoalProduction;
+            }
+            set
+            {
+                totalCoalProduction = value;
+                OnPropertyChanged(nameof(TotalCoalProduction));
+            }
+        }
+
+        public double TotalCoalProductionPercentage
+        {
+            get
+            {
+                return totalCoalProductionPercentage;
+            }
+            set
+            {
+                totalCoalProductionPercentage = value;
+            }
+        }
+
+        public double TotalOilProduction
+        {
+            get
+            {
+                return totalOilProduction;
+            }
+            set
+            {
+                totalOilProduction = value;
+                OnPropertyChanged(nameof(TotalOilProduction));
+            }
+        }
+
+        public double TotalOilProductionPercentage
+        {
+            get
+            {
+                return totalOilProductionPercentage;
+            }
+            set
+            {
+                totalOilProductionPercentage = value;
+            }
+        }
+
+        public double TotalSum
+        {
+            get
+            {
+                return totalSum;
+            }
+            set
+            {
+                totalSum = value;
+                OnPropertyChanged(nameof(TotalSum));
+            }
+        }
+
         public ObservableCollection<Tuple<double, double, DateTime>> CO2EmissionContainer
         {
             get
@@ -256,15 +378,15 @@ namespace UIClient.ViewModel
             }
         }
 
-        public ObservableCollection<Tuple<double, double>> WindContainer
+        public ObservableCollection<Tuple<double, double, double, double, double>> IndividualContainer
         {
             get
             {
-                return windContainer;
+                return individualContainer;
             }
             set
             {
-                windContainer = value;
+                individualContainer = value;
             }
         }
 
@@ -383,7 +505,7 @@ namespace UIClient.ViewModel
 
         public ICommand ChangePeriodCO2Command => changePeriodCo2Command ?? (changePeriodCo2Command = new RelayCommand(ChangePeriodCO2CommandExecute));
 
-        public ICommand ViewWindProductionDataCommand => viewWindProductionDataCommand ?? (viewWindProductionDataCommand = new RelayCommand(ViewWindProductionDataCommandExecute));
+        public ICommand ViewIndividualProductionDataCommand => viewIndividualProductionDataCommand ?? (viewIndividualProductionDataCommand = new RelayCommand(ViewIndividualProductionDataCommandExecute));
 
         public ICommand ChangePeriodWindProductionCommand => changePeriodWindProductionCommand ?? (changePeriodWindProductionCommand = new RelayCommand(ChangePeriodWindProductionCommandExecute));
 
@@ -419,10 +541,14 @@ namespace UIClient.ViewModel
                         TotalCostWithRenewable += tuple.Item2;
                         TotalWindSaving += tuple.Item3;
                     }
+
+                    TotalCostWithoutRenewable = Math.Round(TotalCostWithoutRenewable, 2);
+                    TotalCostWithRenewable = Math.Round(TotalCostWithRenewable, 2);
+                    TotalWindSaving = Math.Round(TotalWindSaving, 2);
                 }
                 BarSavingData.Clear();
-                BarSavingData.Add(new KeyValuePair<string, double>("Total Cost Without Renewable", TotalCostWithoutRenewable));
-                BarSavingData.Add(new KeyValuePair<string, double>("Total Cost With Renewable", TotalCostWithRenewable));
+                BarSavingData.Add(new KeyValuePair<string, double>("Cost without wind and solar generators", TotalCostWithoutRenewable));
+                BarSavingData.Add(new KeyValuePair<string, double>("Cost", TotalCostWithRenewable));
                 OnPropertyChanged(nameof(BarSavingData));
                 OnPropertyChanged(nameof(TotalWindSaving));
             }
@@ -430,7 +556,6 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}; Exception type: {1}", ex.Message, ex.GetType());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for Saving data");
-
                 try
                 {
                     SavingContainer = new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
@@ -553,44 +678,66 @@ namespace UIClient.ViewModel
             OnPropertyChanged(nameof(GraphCO2EmissionContainer));
         }
 
-        private void ViewWindProductionDataCommandExecute(Object obj)
+        private void ViewIndividualProductionDataCommandExecute(Object obj)
         {
             int i = 0;
-            double rest = 100;
+            double rest = 0;
             TotalWindProduction = 0;
+            TotalSolarProduction = 0;
+            TotalHydroProduction = 0;
+            TotalCoalProduction = 0;
+            TotalOilProduction = 0;
+            TotalSum = 0;
             try
             {
-                WindContainer = new ObservableCollection<Tuple<double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
-                if (WindContainer != null && WindContainer.Count > 0)
+                IndividualContainer = new ObservableCollection<Tuple<double, double, double, double, double>>(CalculationEngineUIProxy.Instance.ReadIndividualFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
+                if (IndividualContainer != null && IndividualContainer.Count > 0)
                 {
-                    foreach (Tuple<double, double> item in WindContainer)
+                    foreach (Tuple<double, double, double, double, double> item in IndividualContainer)
                     {
                         i++;
                         TotalWindProduction += item.Item1;
-                        TotalWindProductionPercentage += item.Item2;
+                        TotalSolarProduction += item.Item2;
+                        TotalHydroProduction += item.Item3;
+                        TotalCoalProduction += item.Item4;
+                        TotalOilProduction += item.Item5;
                     }
-                    TotalWindProductionPercentage = TotalWindProductionPercentage / i;
-                    rest = rest - TotalWindProductionPercentage;
+
+                    TotalSum = TotalWindProduction + TotalSolarProduction + TotalHydroProduction + TotalCoalProduction + TotalOilProduction;
+                    TotalWindProductionPercentage = 100 * TotalWindProduction / TotalSum;
+                    TotalSolarProductionPercentage = 100 * TotalSolarProduction / TotalSum;
+                    TotalHydroProductionPercentage = 100 * TotalHydroProduction / TotalSum;
+                    TotalCoalProductionPercentage = 100 * TotalCoalProduction / TotalSum;
+                    TotalOilProductionPercentage = 100 * TotalOilProduction / TotalSum;
+                    TotalSum = Math.Round(TotalSum, 2);
                 }
             }
             catch (TimeoutException ex)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", ex.Message, ex.GetType());
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for Wind Production");
-
                 try
                 {
-                    WindContainer = new ObservableCollection<Tuple<double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
-                    if (WindContainer != null && WindContainer.Count > 0)
+                    IndividualContainer = new ObservableCollection<Tuple<double, double, double, double, double>>(CalculationEngineUIProxy.Instance.ReadIndividualFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
+                    if (IndividualContainer != null && IndividualContainer.Count > 0)
                     {
-                        foreach (Tuple<double, double> item in WindContainer)
+                        foreach (Tuple<double, double, double, double, double> item in IndividualContainer)
                         {
                             i++;
                             TotalWindProduction += item.Item1;
-                            TotalWindProductionPercentage += item.Item2;
+                            TotalSolarProduction += item.Item2;
+                            TotalHydroProduction += item.Item3;
+                            TotalCoalProduction += item.Item4;
+                            TotalOilProduction += item.Item5;
                         }
-                        TotalWindProductionPercentage = TotalWindProductionPercentage / i;
-                        rest = rest - TotalWindProductionPercentage;
+
+                        TotalSum = TotalWindProduction + TotalSolarProduction + TotalHydroProduction + TotalCoalProduction + TotalOilProduction;
+                        TotalWindProductionPercentage = 100 * TotalWindProduction / TotalSum;
+                        TotalSolarProductionPercentage = 100 * TotalSolarProduction / TotalSum;
+                        TotalHydroProductionPercentage = 100 * TotalHydroProduction / TotalSum;
+                        TotalCoalProductionPercentage = 100 * TotalCoalProduction / TotalSum;
+                        TotalOilProductionPercentage = 100 * TotalOilProduction / TotalSum;
+                        TotalSum = Math.Round(TotalSum, 2);
                     }
                 }
                 catch (Exception e)
@@ -602,9 +749,13 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", e.Message, e.GetType());
             }
+
             PieDataWind.Clear();
-            PieDataWind.Add(new KeyValuePair<string, double>("Wind Production", TotalWindProductionPercentage));
-            PieDataWind.Add(new KeyValuePair<string, double>("Other", rest));
+            PieDataWind.Add(new KeyValuePair<string, double>("Wind", TotalWindProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Solar", TotalSolarProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Hydro", TotalHydroProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Coal", TotalCoalProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Oil", TotalOilProduction));
 
             OnPropertyChanged(nameof(PieDataWind));
         }

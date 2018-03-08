@@ -199,6 +199,7 @@ namespace EMS.CommonMeasurement
             set
             {
                 this.timeStamp = value;
+                NotifyPropertyChanged();
             }
         }
 

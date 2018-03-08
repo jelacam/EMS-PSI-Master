@@ -6,10 +6,10 @@
 
 namespace EMS.Services.CalculationEngineService
 {
+    using EMS.Common;
     using System;
     using System.Collections.Generic;
     using System.ServiceModel;
-    using EMS.Common;
 
     /// <summary>
     /// Class for CalculationEngineService
@@ -133,6 +133,11 @@ namespace EMS.Services.CalculationEngineService
         public bool IntegrityUpdate()
         {
             return ce.InitiateIntegrityUpdate();
+        }
+
+        public void Populate()
+        {
+            ce.PopulateDatabase();
         }
     }
 }

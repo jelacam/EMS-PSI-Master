@@ -15,7 +15,7 @@ namespace GatewayService.CEHistory
         {
             ServiceEventSource.Current.Message("CE History Data - GetCO2Emission");
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.GetCO2Emission(startTime, endTime); 
+            return calculationEngineHistorySfProxy.GetCO2Emission(startTime, endTime);
         }
 
         public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
@@ -32,11 +32,11 @@ namespace GatewayService.CEHistory
             return calculationEngineHistorySfProxy.GetTotalProduction(startTime, endTime);
         }
 
-        public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
-            ServiceEventSource.Current.Message("CE History Data - ReadWindFarmProductionDataFromDb");
+            ServiceEventSource.Current.Message("CE History Data - ReadIndividualFarmProductionDataFromDb");
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.ReadWindFarmProductionDataFromDb(startTime, endTime);
+            return calculationEngineHistorySfProxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
         }
 
         public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)

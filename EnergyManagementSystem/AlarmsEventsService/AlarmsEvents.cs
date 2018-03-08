@@ -32,7 +32,7 @@ namespace EMS.Services.AlarmsEventsService
         private List<AlarmHelper> alarmsFromDatabase;
 
         private readonly int DEADBAND_VALUE = 20;
-
+        public object alarmLock = new object();
         private Dictionary<long, bool> isNormalCreated = new Dictionary<long, bool>(10);
 
         /// <summary>
@@ -95,6 +95,7 @@ namespace EMS.Services.AlarmsEventsService
                         item.Severity = alarm.Severity;
                         item.Value = alarm.Value;
                         item.Message = alarm.Message;
+                        item.TimeStamp = alarm.TimeStamp;
                         publishingStatus = PublishingStatus.UPDATE;
                         updated = true;
                         break;
@@ -120,17 +121,17 @@ namespace EMS.Services.AlarmsEventsService
                 // ako je insert dodaj u listu - inace je updateovan
                 if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
-                    alarm.ID = this.Alarms.Count + 1;
+                    RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
-                    if (InsertAlarmIntoDb(alarm))
-                    {
-                        Console.WriteLine("Alarm with GID:{0} recorded into alarms database.", alarm.Gid);
-                    }
+                    //if (InsertAlarmIntoDb(alarm))
+                    //{
+                    //    Console.WriteLine("Alarm with GID:{0} recorded into alarms database.", alarm.Gid);
+                    //}
                     this.isNormalCreated[alarm.Gid] = false;
                 }
                 if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                 {
-                    alarm.ID = this.Alarms.Count + 1;
+                    RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
                     //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                     aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
@@ -157,6 +158,26 @@ namespace EMS.Services.AlarmsEventsService
             }
         }
 
+        private void RemoveFromAlarms(long gid)
+        {
+            lock (alarmLock)
+            {
+                List<AlarmHelper> alarmsToRemove = new List<AlarmHelper>(1);
+                foreach (AlarmHelper ah in Alarms)
+                {
+                    if (ah.Gid == gid)
+                    {
+                        alarmsToRemove.Add(ah);
+                    }
+                }
+
+                foreach (AlarmHelper ah in alarmsToRemove)
+                {
+                    Alarms.Remove(ah);
+                }
+            }
+        }
+
         public void UpdateStatus(AnalogLocation analogLoc, State state)
         {
             long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
@@ -167,10 +188,10 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
                     alarm.PubStatus = PublishingStatus.UPDATE;
-                    if (UpdateAlarmStatusIntoDb(alarm))
-                    {
-                        Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
-                    }
+                    //if (UpdateAlarmStatusIntoDb(alarm))
+                    //{
+                    //    Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
+                    //}
 
                     try
                     {
