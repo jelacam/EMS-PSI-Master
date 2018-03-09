@@ -79,7 +79,7 @@ namespace UIClient.ViewModel
                             alarmToRemove = alarm;
                             break;
                         }
-                        else if (alarm.ID.Equals(alarmHelper.ID) && alarm.Persistent.Equals(PersistentState.Persistent))
+                        else if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Persistent))
                         {
                             alarm.AckState = AckState.Acknowledged;
                             alarm.CurrentState = string.Format("{0} | {1}", alarm.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString(), alarm.AckState.ToString());
