@@ -123,30 +123,20 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
-                    //if (InsertAlarmIntoDb(alarm))
-                    //{
-                    //    Console.WriteLine("Alarm with GID:{0} recorded into alarms database.", alarm.Gid);
-                    //}
                     this.isNormalCreated[alarm.Gid] = false;
                 }
                 if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                 {
                     RemoveFromAlarms(alarm.Gid);
                     this.Alarms.Add(alarm);
-                    //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                     aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                     this.isNormalCreated[alarm.Gid] = true;
                 }
                 else if (!alarm.Type.Equals(AlarmType.NORMAL))
                 {
-                    //this.Publisher.PublishAlarmsEvents(alarm, publishingStatus);
                     aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                 }
 
-                //Console.WriteLine("AlarmsEvents: AddAlarm method");
-                //AesPublishSfProxy.Instance.PublishAlarmsEvents(alarm, publishingStatus);
-
-                //aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                 string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
             }
@@ -154,7 +144,6 @@ namespace EMS.Services.AlarmsEventsService
             {
                 string message = string.Format("Greska ", ex.Message);
                 CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                //throw new Exception(message);
             }
         }
 
@@ -188,15 +177,9 @@ namespace EMS.Services.AlarmsEventsService
                 {
                     alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
                     alarm.PubStatus = PublishingStatus.UPDATE;
-                    //if (UpdateAlarmStatusIntoDb(alarm))
-                    //{
-                    //    Console.WriteLine("Alarm status with GID:{0} updated into database.", alarm.Gid);
-                    //}
 
                     try
                     {
-                        //this.Publisher.PublishStateChange(alarm);
-                        //AesPublishSfProxy.Instance.PublishStateChange(alarm);
                         AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
                         aesPublishSfProxy.PublishStateChange(alarm);
                         string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
@@ -206,7 +189,6 @@ namespace EMS.Services.AlarmsEventsService
                     {
                         string message = string.Format("Greska ", ex.Message);
                         CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                        // throw new Exception(message);
                     }
                 }
             }

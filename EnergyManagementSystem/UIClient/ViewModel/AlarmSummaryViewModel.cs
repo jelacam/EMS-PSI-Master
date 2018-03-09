@@ -74,47 +74,18 @@ namespace UIClient.ViewModel
                 {
                     foreach (AlarmHelper alarm in AlarmSummaryQueue)
                     {
-                        if (alarm.ID.Equals(alarmHelper.ID) && alarm.Persistent.Equals(PersistentState.Nonpersistent))
+                        if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Nonpersistent))
                         {
                             alarmToRemove = alarm;
                             break;
                         }
                         else if (alarm.ID.Equals(alarmHelper.ID) && alarm.Persistent.Equals(PersistentState.Persistent))
                         {
-                            if (alarm.AckState.Equals(AckState.Unacknowledged))
-                            {
-                                alarm.AckState = AckState.Acknowledged;
-                                alarm.CurrentState = string.Format("{0} | {1}", alarm.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString(), alarm.AckState.ToString());
-                                OnPropertyChanged(nameof(AlarmSummaryQueue));
-                                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Persistent alarm with gid: {0} acknowledged", alarm.Gid.ToString());
-                                break;
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                            alarm.AckState = AckState.Acknowledged;
+                            alarm.CurrentState = string.Format("{0} | {1}", alarm.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString(), alarm.AckState.ToString());
+                            OnPropertyChanged(nameof(AlarmSummaryQueue));
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Persistent alarm acknowledged");
                         }
-
-                        //if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Nonpersistent) && alarmHelper.Persistent.Equals(PersistentState.Nonpersistent))
-                        //{
-                        //    alarmToRemove = alarm;
-                        //    break;
-                        //}
-                        //else if (alarm.Gid.Equals(alarmHelper.Gid) && alarm.Persistent.Equals(PersistentState.Persistent) && alarmHelper.Persistent.Equals(PersistentState.Persistent))
-                        //{
-                        //    if (alarm.AckState.Equals(AckState.Unacknowledged))
-                        //    {
-                        //        alarm.AckState = AckState.Acknowledged;
-                        //        alarm.CurrentState = string.Format("{0} | {1}", alarm.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString(), alarm.AckState.ToString());
-                        //        OnPropertyChanged(nameof(AlarmSummaryQueue));
-                        //        CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Persistent alarm with gid: {0} acknowledged", alarm.Gid.ToString());
-                        //        break;
-                        //    }
-                        //    else
-                        //    {
-                        //        continue;
-                        //    }
-                        //}
                     }
                     if (alarmToRemove != null)
                     {
@@ -126,9 +97,6 @@ namespace UIClient.ViewModel
                 OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
 
-            //string str = alarmHelper.CurrentState;
-            //str = str.Substring(0,str.IndexOf(",")+1);
-            //alarmHelper.CurrentState = str + " " + alarmHelper.AckState;
         }
 
         private void CallbackAction(object obj)
@@ -224,10 +192,10 @@ namespace UIClient.ViewModel
                         {
                             aHelper.CurrentState = alarm.CurrentState;
                         }
-                        else
-                        {
-                            aHelper.CurrentState = alarm.CurrentState.Replace(AckState.Unacknowledged.ToString(), AckState.Acknowledged.ToString());
-                        }
+                        //else
+                        //{
+                        //    aHelper.CurrentState = alarm.CurrentState.Replace(AckState.Unacknowledged.ToString(), AckState.Acknowledged.ToString());
+                        //}
                         aHelper.Severity = alarm.Severity;
                         aHelper.Value = alarm.Value;
                         aHelper.Message = alarm.Message;
