@@ -101,7 +101,7 @@ namespace EMS.Services.SCADACommandingService
         /// Commit method
         /// </summary>
         /// <returns></returns>
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
             try
             {
@@ -433,9 +433,7 @@ namespace EMS.Services.SCADACommandingService
                                 }
                                 else
                                 {
-
                                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Doslo je do GRESKE prilikom citanja!");
-
                                 }
                                 using (var txtWriter = new StreamWriter("SentData.txt", true))
                                 {

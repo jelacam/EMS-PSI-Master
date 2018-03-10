@@ -19,6 +19,7 @@ namespace EMS.Services.TransactionManagerService
         private static int toRespond = 1;
         private object obj = new object();
         public static UpdateResult updateResult = new UpdateResult();
+
         public UpdateResult ModelUpdate(Delta delta)
         {
             deltaToApply = delta;
@@ -36,7 +37,7 @@ namespace EMS.Services.TransactionManagerService
             int analogProperty = 0;
             int ceProperty = 0;
 
-            #endregion odlDeclarations
+            #endregion oldDeclarations
 
             Delta analogsDelta = delta.SeparateDeltaForEMSType(EMSType.ANALOG);
             Delta emsFuelsDelta = delta.SeparateDeltaForEMSType(EMSType.EMSFUEL);
@@ -115,8 +116,7 @@ namespace EMS.Services.TransactionManagerService
 
             if (analogsDelta.InsertOperations.Count != 0 || analogsDelta.UpdateOperations.Count != 0)
             {
-                toRespond+=2;
-                
+                toRespond += 2;
             }
             if (ceDelta.InsertOperations.Count != 0 || ceDelta.UpdateOperations.Count != 0)
             {
@@ -177,14 +177,12 @@ namespace EMS.Services.TransactionManagerService
                             return updateResult;
                         }
                     }
-
                 }
                 else if (toRespond == 3)
                 {
                     // second transaction - send ceDelta to CE, analogDelta to SCADA
                     try
                     {
-
                         TransactionCRProxy.Instance.Prepare(ref analogsDelta);
                         TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
                     }
@@ -199,7 +197,7 @@ namespace EMS.Services.TransactionManagerService
                 else if (toRespond == 4)
                 {
                     try
-                    { 
+                    {
                         TransactionCEProxy.Instance.Prepare(ref ceDelta);
                         TransactionCRProxy.Instance.Prepare(ref analogsDelta);
                         TransactionCMDProxy.Instance.Prepare(ref analogsDelta);
@@ -213,7 +211,7 @@ namespace EMS.Services.TransactionManagerService
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 // ako se neki exception desio prilikom transakcije - radi rollback
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction failed; Message: {0}", e.Message);
@@ -276,45 +274,50 @@ namespace EMS.Services.TransactionManagerService
 
             bool commitResultSCADA = true;
             bool commitResultCE = true;
+            bool commitResultNMS = false;
 
-            bool commitResultNMS = TransactionNMSProxy.Instance.Commit(deltaToApply);
-            if (toRespond == 4)
+            try
             {
-                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-                commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
+                if (toRespond == 4)
+                {
+                    commitResultScadaCR = false;
+                    commitResultScadaCMD = false;
+                    commitResultCE = false;
+                    commitResultScadaCR = TransactionCRProxy.Instance.Commit();
+                    commitResultScadaCMD = TransactionCMDProxy.Instance.Commit();
+                    commitResultSCADA = commitResultScadaCMD && commitResultScadaCR;
 
-                commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                    commitResultCE = TransactionCEProxy.Instance.Commit();
 
-                if(!commitResultScadaCR)
-                {
-                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                    if (!commitResultScadaCR)
+                    {
+                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                    }
+                    if (!commitResultScadaCMD)
+                    {
+                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
+                    }
+                    if (!commitResultCE)
+                    {
+                        updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
+                    }
                 }
-                else
+                else if (toRespond == 2)
                 {
-                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
-                }
-                if (!commitResultScadaCMD)
-                {
-                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
-                }
-                else
-                {
-                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
-                }
-                if (!commitResultCE)
-                {
-                    updateResult.Message += String.Format("\nCommit phase failed for Calculation Engine Service");
-                }
-                else
-                {
-                    updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
-                }
-            }
-            else if (toRespond == 2)
-            {
-                
-                    commitResultCE = TransactionCEProxy.Instance.Commit(deltaToApply);
+                    commitResultCE = false;
+                    commitResultCE = TransactionCEProxy.Instance.Commit();
 
                     if (!commitResultCE)
                     {
@@ -324,50 +327,97 @@ namespace EMS.Services.TransactionManagerService
                     {
                         updateResult.Message += String.Format("\nChanges successfully applied on Calculation Engine Service");
                     }
+                }
+                else if (toRespond == 3)
+                {
+                    commitResultScadaCR = false;
+                    commitResultScadaCMD = false;
+                    commitResultScadaCR = TransactionCRProxy.Instance.Commit();
+                    commitResultScadaCMD = TransactionCMDProxy.Instance.Commit();
 
+                    if (!commitResultScadaCR)
+                    {
+                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                    }
+
+                    if (!commitResultScadaCMD)
+                    {
+                        updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                    }
+                    else
+                    {
+                        updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
+                    }
+                }
             }
-            else if (toRespond == 3)
-            { 
-                
-                commitResultScadaCR = TransactionCRProxy.Instance.Commit(deltaToApply);
-                commitResultScadaCMD = TransactionCMDProxy.Instance.Commit(deltaToApply);
-
-                if (!commitResultScadaCR)
+            catch (Exception ex)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceError, "Transaction Manager Service failed in Commit phase.\nResult message: {0}\nException message: {1}", updateResult.Message, ex.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Starting Rollback phase ... ");
+                try
                 {
-                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Krunching Service");
+                    TransactionNMSProxy.Instance.Rollback();
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for NMS successfully finished.");
                 }
-                else
+                catch (Exception exc)
                 {
-                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Krunching Service");
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for NMS - Message: {0}", exc.Message);
                 }
-
-
-                if (!commitResultScadaCMD)
+                try
                 {
-                    updateResult.Message += String.Format("\nCommit phase failed for SCADA Commanding Service");
+                    TransactionCRProxy.Instance.Rollback();
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for SCADA KR successfully finished.");
                 }
-                else
+                catch (Exception exc)
                 {
-                    updateResult.Message += String.Format("\nChanges successfully applied on SCADA Commanding Service");
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for SCADA KR - Message: {0}", exc.Message);
+                }
+                try
+                {
+                    TransactionCMDProxy.Instance.Rollback();
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for SCADA CMD successfully finished.");
+                }
+                catch (Exception exc)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for SCADA CMD - Message: {0}", exc.Message);
+                }
+                try
+                {
+                    TransactionCEProxy.Instance.Rollback();
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for CE successfully finished.");
+                }
+                catch (Exception exc)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback for CE - Message: {0}", exc.Message);
                 }
             }
 
-        
+            if (commitResultCE && commitResultSCADA)
+            {
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase for all services succeeded. Starting commit for NMS!");
+                commitResultNMS = TransactionNMSProxy.Instance.Commit();
+            }
 
             if (commitResultNMS && commitResultSCADA && commitResultCE)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase finished!");
+                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Commit phase finished successfully for all services!");
             }
             else
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Commit phase failed!");
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
-                TransactionNMSProxy.Instance.Rollback();
-                TransactionCRProxy.Instance.Rollback();
-                TransactionCMDProxy.Instance.Rollback();
-                TransactionCEProxy.Instance.Rollback();
+                updateResult.Message += string.Format("\nCommit pahse failed");
+                updateResult.GlobalIdPairs.Clear();
+                //CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Start Rollback!");
+                //TransactionNMSProxy.Instance.Rollback();
+                //TransactionCRProxy.Instance.Rollback();
+                //TransactionCMDProxy.Instance.Rollback();
+                //TransactionCEProxy.Instance.Rollback();
             }
-            updateResult.Message += String.Format("\n\nApply successfully finished");
+            updateResult.Message += String.Format("\n\nApply finished");
             toRespond = 1;
             noRespone = 0;
         }

@@ -45,10 +45,10 @@ namespace EMS.Services.NetworkModelService
         private readonly string MODE = "DATABASE";
         //private readonly string MODE = "FILE";
 
-		/// <summary>
-		/// Initializes a new instance of the Model class.
-		/// </summary>
-		public NetworkModel()
+        /// <summary>
+        /// Initializes a new instance of the Model class.
+        /// </summary>
+        public NetworkModel()
         {
             networkDataModelCopy = new Dictionary<EMSType, Container>();
             networkDataModel = new Dictionary<EMSType, Container>();
@@ -1010,7 +1010,7 @@ namespace EMS.Services.NetworkModelService
             return applyResult;
         }
 
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
             try
             {
