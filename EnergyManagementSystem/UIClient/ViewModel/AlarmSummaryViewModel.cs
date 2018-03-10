@@ -95,6 +95,13 @@ namespace UIClient.ViewModel
                     }
                 }
             }
+            else
+            {
+                alarmHelper.AckState = AckState.Unacknowledged;
+                string state = alarmHelper.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString();
+                alarmHelper.CurrentState = string.Format("{0} | {1}", state, alarmHelper.AckState.ToString());
+                OnPropertyChanged(nameof(AlarmSummaryQueue));
+            }
 
             //string str = alarmHelper.CurrentState;
             //str = str.Substring(0,str.IndexOf(",")+1);

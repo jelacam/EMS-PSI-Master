@@ -10,6 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
 		<converters:GidToMridConverter x:Key="GidToMridConverter"/>
+		<converters:AckStateToBoolConverter x:Key="AckStateToBoolConverter"/>
 	</UserControl.Resources>
     <Grid>
 		<DataGrid x:Name="AlarmSummaryDataGrid"
@@ -41,9 +42,11 @@
                 <DataGridTemplateColumn Header="Acknowledge" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center"
+							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" 
+									  IsChecked="{Binding AckState,Converter={StaticResource AckStateToBoolConverter}}"
 									  Command="{Binding DataContext.AcknowledgeCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
-									   CommandParameter="{Binding}" />
+									   CommandParameter="{Binding}" >
+							</CheckBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
