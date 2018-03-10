@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
 {
-    public class TransactionCRSfProxy :ITransactionContract
+    public class TransactionCRSfProxy : ITransactionContract
     {
         private ServicePartitionResolver resolver = ServicePartitionResolver.GetDefault();
 
@@ -32,9 +32,9 @@ namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
                     listenerName: "TransactionCREndpoint");
         }
 
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
-            return proxy.InvokeWithRetry(x => x.Channel.Commit(delta));
+            return proxy.InvokeWithRetry(x => x.Channel.Commit());
         }
 
         public UpdateResult Prepare(ref Delta delta)

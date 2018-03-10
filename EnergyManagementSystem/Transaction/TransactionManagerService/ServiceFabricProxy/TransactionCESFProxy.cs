@@ -33,9 +33,9 @@ namespace EMS.Services.TransactionManagerService.ServiceFabricProxy
                     partitionKey: new ServicePartitionKey("Measurements"));
         }
 
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
-            return proxy.InvokeWithRetry(x => x.Channel.Commit(delta));
+            return proxy.InvokeWithRetry(x => x.Channel.Commit());
         }
 
         public UpdateResult Prepare(ref Delta delta)

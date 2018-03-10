@@ -105,7 +105,7 @@ namespace EMS.Services.SCADACommandingService
         /// Commit method
         /// </summary>
         /// <returns></returns>
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
             try
             {

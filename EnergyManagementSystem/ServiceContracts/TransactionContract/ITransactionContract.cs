@@ -15,7 +15,7 @@ namespace EMS.ServiceContracts
         UpdateResult Prepare(ref Delta delta);
 
         [OperationContract(IsOneWay = false)]
-        bool Commit(Delta delta);
+        bool Commit();
 
         [OperationContract(IsOneWay = false)]
         bool Rollback();

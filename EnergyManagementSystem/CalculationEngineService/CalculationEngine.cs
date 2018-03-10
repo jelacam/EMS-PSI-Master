@@ -82,14 +82,14 @@ namespace EMS.Services.CalculationEngineService
 
         #endregion Fields
 
-        #region Properties
+        #region Constructor
 
         public OptimizationType OptimizationType
         {
             get; set;
         }
 
-        #endregion Properties
+        #endregion Constructor
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculationEngine" /> class
@@ -1424,7 +1424,7 @@ namespace EMS.Services.CalculationEngineService
             return updateResult;
         }
 
-        public bool Commit(Delta delta)
+        public bool Commit()
         {
             try
             {
