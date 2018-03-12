@@ -5,7 +5,6 @@
     <Parameter Name="AlarmsEventsCloudService_PartitionCount" DefaultValue="3" />
     <Parameter Name="AlarmsEventsCloudService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="TransactionManagerCloudService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="AlarmsEventsCloudService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="NetworkModelCloudService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ScadaCommandingCloudService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ScadaKrunchingCloudService_InstanceCount" DefaultValue="-1" />
@@ -26,10 +25,6 @@
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="TransactionManagerCloudServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="AlarmsEventsCloudServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
   </ServiceManifestImport>
   <ServiceManifestImport>
@@ -64,7 +59,8 @@
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="AlarmsEventsCloudService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="AlarmsEventsCloudServiceType" TargetReplicaSetSize="[AlarmsEventsCloudService_TargetReplicaSetSize]" MinReplicaSetSize="[AlarmsEventsCloudService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[AlarmsEventsCloudService_PartitionCount]" LowKey="0" HighKey="2" />
+        <!--<UniformInt64Partition PartitionCount="[AlarmsEventsCloudService_PartitionCount]" LowKey="0" HighKey="2" />-->
+        <SingletonPartition />
       </StatefulService>
     </Service>
     <Service Name="NetworkModelCloudService" ServicePackageActivationMode="ExclusiveProcess">

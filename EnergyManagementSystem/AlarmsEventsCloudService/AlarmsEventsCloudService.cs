@@ -95,7 +95,6 @@ namespace AlarmsEventsCloudService
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-               
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
             }
         }

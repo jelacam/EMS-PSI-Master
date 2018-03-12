@@ -8,10 +8,12 @@ namespace EMS.CommonMeasurement
     using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Class for alarms
     /// </summary>
+    [DataContract]
     public class AlarmHelper : INotifyPropertyChanged
     {
         /// <summary>
@@ -118,6 +120,7 @@ namespace EMS.CommonMeasurement
         /// <summary>
         /// Gets or sets Gid of the entity
         /// </summary>
+        [DataMember]
         public long Gid
         {
             get
@@ -131,11 +134,13 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public int ID
         {
             get; set;
         }
 
+        [DataMember]
         public SeverityLevel Severity
         {
             get
@@ -149,6 +154,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public float Value
         {
             get
@@ -163,6 +169,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public float MinValue
         {
             get
@@ -176,6 +183,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public float MaxValue
         {
             get
@@ -189,6 +197,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public DateTime TimeStamp
         {
             get
@@ -203,6 +212,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public DateTime LastChange
         {
             get
@@ -217,6 +227,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public AlarmType Type
         {
             get
@@ -231,6 +242,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public string Message
         {
             get
@@ -245,6 +257,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public string CurrentState
         {
             get
@@ -258,6 +271,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public AckState AckState
         {
             get
@@ -270,6 +284,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public PublishingStatus PubStatus
         {
             get
@@ -283,6 +298,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public float InitiatingValue
         {
             get
@@ -296,6 +312,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public PersistentState Persistent
         {
             get
@@ -308,6 +325,7 @@ namespace EMS.CommonMeasurement
             }
         }
 
+        [DataMember]
         public InhibitState Inhibit
         {
             get

@@ -72,7 +72,7 @@ namespace EMS.Services.AlarmsEventsService
                     CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Failed to read alarms from reliable collection. Message: {0}", e.Message);
                     Alarms = new List<AlarmHelper>();
                 }
-                
+
                 await tx.CommitAsync();
             }
         }
@@ -84,7 +84,6 @@ namespace EMS.Services.AlarmsEventsService
         {
             get
             {
-                this.GetAlarmsFormAlarmsEventsCache();
                 return this.alarms;
             }
 
@@ -100,8 +99,13 @@ namespace EMS.Services.AlarmsEventsService
         /// <param name="alarm">alarm to add</param>
         public void AddAlarm(AlarmHelper alarm)
         {
+            this.GetAlarmsFormAlarmsEventsCache();
             AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
             bool normalAlarm = false;
+            if (Alarms == null)
+            {
+                return;
+            }
             if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
             {
                 return;
@@ -206,28 +210,39 @@ namespace EMS.Services.AlarmsEventsService
 
         public void UpdateStatus(AnalogLocation analogLoc, State state)
         {
-            long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
-            List<AlarmHelper> alarmsToAdd = new List<AlarmHelper>(2);
-            foreach (AlarmHelper alarm in this.Alarms)
+            try
             {
-                if (alarm.Gid.Equals(powerSystemResGid) && alarm.CurrentState.Contains(State.Active.ToString()))
+                if (this.alarms.Count == 0)
                 {
-                    alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
-                    alarm.PubStatus = PublishingStatus.UPDATE;
+                    return;
+                }
 
-                    try
+                long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
+                List<AlarmHelper> alarmsToAdd = new List<AlarmHelper>(2);
+                foreach (AlarmHelper alarm in this.Alarms)
+                {
+                    if (alarm.Gid.Equals(powerSystemResGid) && alarm.CurrentState.Contains(State.Active.ToString()))
                     {
-                        AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
-                        aesPublishSfProxy.PublishStateChange(alarm);
-                        string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
-                        CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-                    }
-                    catch (Exception ex)
-                    {
-                        string message = string.Format("Greska ", ex.Message);
-                        CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                        alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
+                        alarm.PubStatus = PublishingStatus.UPDATE;
+
+                        try
+                        {
+                            AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
+                            aesPublishSfProxy.PublishStateChange(alarm);
+                            string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
+                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = string.Format("Greska ", ex.Message);
+                            CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
             }
         }
 
@@ -430,110 +445,133 @@ namespace EMS.Services.AlarmsEventsService
 
         public async void UpdateAlarmsEventsCache(AlarmHelper alarmHelper)
         {
-            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
-            using (ITransaction tx = this.StateManager.CreateTransaction())
+            try
             {
-                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
-
-                if (data.HasValue)
+                alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+                using (ITransaction tx = this.StateManager.CreateTransaction())
                 {
-                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                    ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
 
-                    foreach(AlarmHelper item in alarms)
+                    if (data.HasValue)
                     {
-                        if (item.Gid == alarmHelper.Gid)
+                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+
+                        foreach (AlarmHelper item in alarms)
                         {
-                            item.Severity = alarmHelper.Severity;
-                            item.Value = alarmHelper.Value;
-                            item.Message = alarmHelper.Message;
-                            item.TimeStamp = alarmHelper.TimeStamp;
+                            if (item.Gid == alarmHelper.Gid)
+                            {
+                                item.Severity = alarmHelper.Severity;
+                                item.Value = alarmHelper.Value;
+                                item.Message = alarmHelper.Message;
+                                item.TimeStamp = alarmHelper.TimeStamp;
+                            }
                         }
+
+                        AlarmsData alarmsData = new AlarmsData();
+                        alarmsData.AddAlarms(alarms);
+
+                        await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+
+                        await tx.CommitAsync();
                     }
-
-                    AlarmsData alarmsData = new AlarmsData();
-                    alarmsData.AddAlarms(alarms);
-
-                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
-
-                    await tx.CommitAsync();
-
                 }
+            }
+            catch (Exception e)
+            {
             }
         }
 
         public async void AddAlarmToAlarmsEventsCache(AlarmHelper alarmHelper)
         {
-            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
-            using (ITransaction tx = this.StateManager.CreateTransaction())
+            try
             {
-                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
-
-                if (data.HasValue)
+                alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+                using (ITransaction tx = this.StateManager.CreateTransaction())
                 {
-                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
-                    alarms.Add(alarmHelper);
-                    
-                    AlarmsData alarmsData = new AlarmsData();
-                    alarmsData.AddAlarms(alarms);
+                    ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
 
-                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
-                    await tx.CommitAsync();
+                    if (data.HasValue)
+                    {
+                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                        alarms.Add(alarmHelper);
 
+                        AlarmsData alarmsData = new AlarmsData();
+                        alarmsData.AddAlarms(alarms);
+
+                        await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+                        await tx.CommitAsync();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
             }
         }
 
         public async void RemoveAlarmFormAlarmsEventsCache(long gid)
         {
-            AlarmHelper alarmToRemove = null;
-            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
-            using (ITransaction tx = this.StateManager.CreateTransaction())
+            try
             {
-                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
-
-                if (data.HasValue)
+                AlarmHelper alarmToRemove = null;
+                alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+                using (ITransaction tx = this.StateManager.CreateTransaction())
                 {
-                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
-                    foreach (AlarmHelper alarm in alarms)
+                    ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                    if (data.HasValue)
                     {
-                        if (alarm.Gid == gid)
+                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                        foreach (AlarmHelper alarm in alarms)
                         {
-                            alarmToRemove = alarm;
-                            break;
+                            if (alarm.Gid == gid)
+                            {
+                                alarmToRemove = alarm;
+                                break;
+                            }
                         }
+
+                        if (alarmToRemove != null)
+                        {
+                            alarms.Remove(alarmToRemove);
+                        }
+
+                        AlarmsData alarmsData = new AlarmsData();
+                        alarmsData.AddAlarms(alarms);
+
+                        await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+                        await tx.CommitAsync();
                     }
-
-                    if (alarmToRemove != null)
-                    {
-                        alarms.Remove(alarmToRemove);
-                    }
-
-                    AlarmsData alarmsData = new AlarmsData();
-                    alarmsData.AddAlarms(alarms);
-
-                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
-                    await tx.CommitAsync();
-
                 }
+            }
+            catch (Exception)
+            {
             }
         }
 
         public async void GetAlarmsFormAlarmsEventsCache()
         {
-            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
-            using (ITransaction tx = this.StateManager.CreateTransaction())
+            try
             {
-                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
-
-                if (data.HasValue)
+                alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+                using (ITransaction tx = this.StateManager.CreateTransaction())
                 {
-                    this.alarms = data.Value.Alarms as List<AlarmHelper>;
+                    ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                    if (data.HasValue)
+                    {
+                        this.Alarms = data.Value.Alarms as List<AlarmHelper>;
+                    }
+                    else
+                    {
+                        this.Alarms = new List<AlarmHelper>();
+                    }
+
                     await tx.CommitAsync();
                 }
             }
-
+            catch (Exception)
+            {
+            }
         }
     }
-
-    
 }
