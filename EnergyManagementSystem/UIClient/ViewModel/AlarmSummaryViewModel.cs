@@ -186,7 +186,6 @@ namespace UIClient.ViewModel
             }
         }
 
-
         private void UpdateAlarm(AlarmHelper alarm)
         {
             lock (alarmSummaryLock)
@@ -208,7 +207,6 @@ namespace UIClient.ViewModel
                 OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
         }
-
         private void IntegirtyUpdate()
         {
             List<AlarmHelper> integirtyResult = AesIntegrityProxy.Instance.InitiateIntegrityUpdate();
