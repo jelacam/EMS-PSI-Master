@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CloudCommon;
 using EMS.ServiceContracts;
 using EMS.Services.AlarmsEventsService;
+using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -14,50 +15,31 @@ using Microsoft.ServiceFabric.Services.Runtime;
 namespace AlarmsEventsCloudService
 {
     /// <summary>
-    /// An instance of this class is created for each service instance by the Service Fabric runtime.
+    /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
-    internal sealed class AlarmsEventsCloudService : StatelessService
+    internal sealed class AlarmsEventsCloudService : StatefulService
     {
-        private AlarmsEvents aEvents;
+        private AlarmsEvents alarmsEvents;
 
-        public AlarmsEventsCloudService(StatelessServiceContext context)
+        public AlarmsEventsCloudService(StatefulServiceContext context)
             : base(context)
         {
-            aEvents = new AlarmsEvents();
+            alarmsEvents = new AlarmsEvents();
         }
 
         /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
+        /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
         /// </summary>
+        /// <remarks>
+        /// For more information on service communication, see https://aka.ms/servicefabricservicecommunication
+        /// </remarks>
         /// <returns>A collection of listeners.</returns>
-        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            return new List<ServiceInstanceListener>
-            {
-                new ServiceInstanceListener(context => this.CreateAlarmEventsListener(context), "AlarmsEventsEndpoint"),
-                new ServiceInstanceListener(context => this.CreateAlarmsEventsIntegrityListener(context), "AlarmsEventsIntegrityEndpoint")
+            return new List<ServiceReplicaListener>() {
+                new ServiceReplicaListener(context => this.CreateAlarmEventsListener(context), "AlarmsEventsEndpoint"),
+                new ServiceReplicaListener(context => this.CreateAlarmsEventsIntegrityListener(context), "AlarmsEventsIntegrityEndpoint")
             };
-        }
-
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
-        {
-            // TODO: Replace the following sample code with your own logic
-            //       or remove this RunAsync override if it's not needed in your service.
-
-            long iterations = 0;
-
-            while (true)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                //ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-            }
         }
 
         #region Listeners
@@ -67,13 +49,13 @@ namespace AlarmsEventsCloudService
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private ICommunicationListener CreateAlarmEventsListener(StatelessServiceContext context)
+        private ICommunicationListener CreateAlarmEventsListener(StatefulServiceContext context)
         {
             var listener = new WcfCommunicationListener<IAlarmsEventsContract>(
                 listenerBinding: Binding.CreateCustomNetTcp(),
                 endpointResourceName: "AlarmsEventsEndpoint",
                 serviceContext: context,
-                wcfServiceObject: aEvents
+                wcfServiceObject: alarmsEvents
             );
 
             return listener;
@@ -84,18 +66,38 @@ namespace AlarmsEventsCloudService
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private ICommunicationListener CreateAlarmsEventsIntegrityListener(StatelessServiceContext context)
+        private ICommunicationListener CreateAlarmsEventsIntegrityListener(StatefulServiceContext context)
         {
             var listener = new WcfCommunicationListener<IAesIntegirtyContract>(
                 listenerBinding: Binding.CreateCustomNetTcp(),
                 endpointResourceName: "AlarmsEventsIntegrityEndpoint",
                 serviceContext: context,
-                wcfServiceObject: aEvents
+                wcfServiceObject: alarmsEvents
             );
 
             return listener;
         }
 
         #endregion Listeners
+
+        /// <summary>
+        /// This is the main entry point for your service replica.
+        /// This method executes when this replica of your service becomes primary and has write status.
+        /// </summary>
+        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
+        protected override async Task RunAsync(CancellationToken cancellationToken)
+        {
+            alarmsEvents.Instantiate(this.StateManager);
+
+            ServiceEventSource.Current.ServiceMessage(this.Context, "AES instantiation finished.");
+
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+               
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            }
+        }
     }
 }

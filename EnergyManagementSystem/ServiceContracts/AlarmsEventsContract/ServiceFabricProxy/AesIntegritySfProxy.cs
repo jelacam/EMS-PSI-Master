@@ -27,7 +27,8 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
             proxy = new ServicePartitionClient<WcfCommunicationClient<IAesIntegirtyContract>>(
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/AlarmsEventsCloudService"),
-                    listenerName: "AlarmsEventsIntegrityEndpoint");
+                    listenerName: "AlarmsEventsIntegrityEndpoint",
+                    partitionKey: ServicePartitionKey.Singleton);
         }
 
         public List<AlarmHelper> InitiateIntegrityUpdate()

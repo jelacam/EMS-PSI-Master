@@ -14,6 +14,8 @@ namespace EMS.Services.AlarmsEventsService
     using System.ServiceModel;
     using System.Data.SqlClient;
     using System.Data;
+    using Microsoft.ServiceFabric.Data;
+    using Microsoft.ServiceFabric.Data.Collections;
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
@@ -25,6 +27,9 @@ namespace EMS.Services.AlarmsEventsService
         /// list for storing AlarmHelper entities
         /// </summary>
         private List<AlarmHelper> alarms;
+
+        private IReliableStateManager StateManager;
+        private IReliableDictionary<string, AlarmsData> alarmsEventsCache;
 
         /// <summary>
         /// Temp list for alarms from database
@@ -48,6 +53,30 @@ namespace EMS.Services.AlarmsEventsService
             //}
         }
 
+        public async void Instantiate(IReliableStateManager stateManager)
+        {
+            this.StateManager = stateManager;
+            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+
+            using (var tx = this.StateManager.CreateTransaction())
+            {
+                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                AlarmsData alarmsData = data.HasValue ? data.Value : new AlarmsData();
+                try
+                {
+                    Alarms = alarmsData.Alarms as List<AlarmHelper>;
+                }
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceWarning, "Failed to read alarms from reliable collection. Message: {0}", e.Message);
+                    Alarms = new List<AlarmHelper>();
+                }
+                
+                await tx.CommitAsync();
+            }
+        }
+
         /// <summary>
         /// Gets or sets Alarms of the entity
         /// </summary>
@@ -55,6 +84,7 @@ namespace EMS.Services.AlarmsEventsService
         {
             get
             {
+                this.GetAlarmsFormAlarmsEventsCache();
                 return this.alarms;
             }
 
@@ -98,6 +128,9 @@ namespace EMS.Services.AlarmsEventsService
                         item.TimeStamp = alarm.TimeStamp;
                         publishingStatus = PublishingStatus.UPDATE;
                         updated = true;
+
+                        // update to cache
+                        this.UpdateAlarmsEventsCache(item);
                         break;
                     }
                     else if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Cleared.ToString()))
@@ -122,13 +155,17 @@ namespace EMS.Services.AlarmsEventsService
                 if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                 {
                     RemoveFromAlarms(alarm.Gid);
+                    this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
                     this.Alarms.Add(alarm);
+                    this.AddAlarmToAlarmsEventsCache(alarm);
                     this.isNormalCreated[alarm.Gid] = false;
                 }
                 if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                 {
                     RemoveFromAlarms(alarm.Gid);
+                    this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
                     this.Alarms.Add(alarm);
+                    this.AddAlarmToAlarmsEventsCache(alarm);
                     aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
                     this.isNormalCreated[alarm.Gid] = true;
                 }
@@ -390,5 +427,113 @@ namespace EMS.Services.AlarmsEventsService
 
             return success;
         }
+
+        public async void UpdateAlarmsEventsCache(AlarmHelper alarmHelper)
+        {
+            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+            using (ITransaction tx = this.StateManager.CreateTransaction())
+            {
+                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                if (data.HasValue)
+                {
+                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+
+                    foreach(AlarmHelper item in alarms)
+                    {
+                        if (item.Gid == alarmHelper.Gid)
+                        {
+                            item.Severity = alarmHelper.Severity;
+                            item.Value = alarmHelper.Value;
+                            item.Message = alarmHelper.Message;
+                            item.TimeStamp = alarmHelper.TimeStamp;
+                        }
+                    }
+
+                    AlarmsData alarmsData = new AlarmsData();
+                    alarmsData.AddAlarms(alarms);
+
+                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+
+                    await tx.CommitAsync();
+
+                }
+            }
+        }
+
+        public async void AddAlarmToAlarmsEventsCache(AlarmHelper alarmHelper)
+        {
+            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+            using (ITransaction tx = this.StateManager.CreateTransaction())
+            {
+                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                if (data.HasValue)
+                {
+                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                    alarms.Add(alarmHelper);
+                    
+                    AlarmsData alarmsData = new AlarmsData();
+                    alarmsData.AddAlarms(alarms);
+
+                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+                    await tx.CommitAsync();
+
+                }
+            }
+        }
+
+        public async void RemoveAlarmFormAlarmsEventsCache(long gid)
+        {
+            AlarmHelper alarmToRemove = null;
+            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+            using (ITransaction tx = this.StateManager.CreateTransaction())
+            {
+                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                if (data.HasValue)
+                {
+                    List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                    foreach (AlarmHelper alarm in alarms)
+                    {
+                        if (alarm.Gid == gid)
+                        {
+                            alarmToRemove = alarm;
+                            break;
+                        }
+                    }
+
+                    if (alarmToRemove != null)
+                    {
+                        alarms.Remove(alarmToRemove);
+                    }
+
+                    AlarmsData alarmsData = new AlarmsData();
+                    alarmsData.AddAlarms(alarms);
+
+                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+                    await tx.CommitAsync();
+
+                }
+            }
+        }
+
+        public async void GetAlarmsFormAlarmsEventsCache()
+        {
+            alarmsEventsCache = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AlarmsData>>("AlarmsEventsCache");
+            using (ITransaction tx = this.StateManager.CreateTransaction())
+            {
+                ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
+
+                if (data.HasValue)
+                {
+                    this.alarms = data.Value.Alarms as List<AlarmHelper>;
+                    await tx.CommitAsync();
+                }
+            }
+
+        }
     }
+
+    
 }

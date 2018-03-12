@@ -27,7 +27,8 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
             proxy = new ServicePartitionClient<WcfCommunicationClient<IAlarmsEventsContract>>(
                     communicationClientFactory: factory,
                     serviceUri: new Uri("fabric:/EMS/AlarmsEventsCloudService"),
-                    listenerName: "AlarmsEventsEndpoint");
+                    listenerName: "AlarmsEventsEndpoint",
+                    partitionKey: ServicePartitionKey.Singleton);
         }
 
         public void AddAlarm(AlarmHelper alarm)
