@@ -14,6 +14,11 @@ namespace EMS.Services.AlarmsEventsService
     {
         private static readonly IEnumerable<AlarmHelper> NoAlarms = ImmutableList<AlarmHelper>.Empty;
 
+        public AlarmsData()
+        {
+            this.Alarms = NoAlarms;
+        }
+
         [DataMember]
         public IEnumerable<AlarmHelper> Alarms { get; private set; }
 
@@ -25,13 +30,14 @@ namespace EMS.Services.AlarmsEventsService
 
         public void AddAlarm(AlarmHelper alarm)
         {
-            ((ImmutableList<AlarmHelper>)((Alarms == null) ? NoAlarms : new List<AlarmHelper>())).Add(alarm);
+            List<AlarmHelper> helperData = new List<AlarmHelper>();
+            helperData.Add(alarm);
+            Alarms = helperData.ToImmutableList();
         }
 
         public void AddAlarms(List<AlarmHelper> alarms)
         {
-            
-            ((ImmutableList<AlarmHelper>)((Alarms == null) ? NoAlarms : new List<AlarmHelper>())).AddRange(alarms);
+            Alarms = alarms.ToImmutableList();
         }
     }
 }

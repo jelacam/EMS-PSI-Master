@@ -16,6 +16,7 @@ namespace EMS.Services.AlarmsEventsService
     using System.Data;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
+    using System.Linq;
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
@@ -38,6 +39,7 @@ namespace EMS.Services.AlarmsEventsService
 
         private readonly int DEADBAND_VALUE = 20;
         public object alarmLock = new object();
+
         private Dictionary<long, bool> isNormalCreated = new Dictionary<long, bool>(10);
 
         /// <summary>
@@ -99,92 +101,95 @@ namespace EMS.Services.AlarmsEventsService
         /// <param name="alarm">alarm to add</param>
         public void AddAlarm(AlarmHelper alarm)
         {
-            this.GetAlarmsFormAlarmsEventsCache();
-            AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
-            bool normalAlarm = false;
-            if (Alarms == null)
+            lock (alarmLock)
             {
-                return;
-            }
-            if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
-            {
-                return;
-            }
-
-            PublishingStatus publishingStatus = PublishingStatus.INSERT;
-            bool updated = false;
-            try
-            {
-                alarm.AckState = AckState.Unacknowledged;
-                if (string.IsNullOrEmpty(alarm.CurrentState))
+                this.GetAlarmsFormAlarmsEventsCache();
+                AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
+                bool normalAlarm = false;
+                if (Alarms == null)
                 {
-                    alarm.CurrentState = string.Format("{0} | {1}", State.Active, alarm.AckState);
+                    return;
+                }
+                if (Alarms.Count == 0 && alarm.Type.Equals(AlarmType.NORMAL))
+                {
+                    return;
                 }
 
-                // cleared status check
-                foreach (AlarmHelper item in Alarms)
+                PublishingStatus publishingStatus = PublishingStatus.INSERT;
+                bool updated = false;
+                try
                 {
-                    if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Active.ToString()))
+                    alarm.AckState = AckState.Unacknowledged;
+                    if (string.IsNullOrEmpty(alarm.CurrentState))
                     {
-                        item.Severity = alarm.Severity;
-                        item.Value = alarm.Value;
-                        item.Message = alarm.Message;
-                        item.TimeStamp = alarm.TimeStamp;
-                        publishingStatus = PublishingStatus.UPDATE;
-                        updated = true;
-
-                        // update to cache
-                        this.UpdateAlarmsEventsCache(item);
-                        break;
+                        alarm.CurrentState = string.Format("{0} | {1}", State.Active, alarm.AckState);
                     }
-                    else if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Cleared.ToString()))
-                    {
-                        if (alarm.Type.Equals(AlarmType.NORMAL) && !item.Type.Equals(AlarmType.NORMAL.ToString()))
-                        {
-                            bool normalCreated = false;
-                            if (this.isNormalCreated.TryGetValue(alarm.Gid, out normalCreated))
-                            {
-                                if (!normalCreated)
-                                {
-                                    normalAlarm = true;
-                                }
-                            }
 
+                    // cleared status check
+                    foreach (AlarmHelper item in Alarms)
+                    {
+                        if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Active.ToString()))
+                        {
+                            item.Severity = alarm.Severity;
+                            item.Value = alarm.Value;
+                            item.Message = alarm.Message;
+                            item.TimeStamp = alarm.TimeStamp;
+                            publishingStatus = PublishingStatus.UPDATE;
+                            updated = true;
+
+                            // update to cache
+                            this.UpdateAlarmsEventsCache(item);
                             break;
                         }
+                        else if (item.Gid.Equals(alarm.Gid) && item.CurrentState.Contains(State.Cleared.ToString()))
+                        {
+                            if (alarm.Type.Equals(AlarmType.NORMAL) && !item.Type.Equals(AlarmType.NORMAL.ToString()))
+                            {
+                                bool normalCreated = false;
+                                if (this.isNormalCreated.TryGetValue(alarm.Gid, out normalCreated))
+                                {
+                                    if (!normalCreated)
+                                    {
+                                        normalAlarm = true;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
                     }
-                }
 
-                // ako je insert dodaj u listu - inace je updateovan
-                if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
-                {
-                    RemoveFromAlarms(alarm.Gid);
-                    this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
-                    this.Alarms.Add(alarm);
-                    this.AddAlarmToAlarmsEventsCache(alarm);
-                    this.isNormalCreated[alarm.Gid] = false;
-                }
-                if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
-                {
-                    RemoveFromAlarms(alarm.Gid);
-                    this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
-                    this.Alarms.Add(alarm);
-                    this.AddAlarmToAlarmsEventsCache(alarm);
-                    aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
-                    this.isNormalCreated[alarm.Gid] = true;
-                }
-                else if (!alarm.Type.Equals(AlarmType.NORMAL))
-                {
-                    aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
-                }
+                    // ako je insert dodaj u listu - inace je updateovan
+                    if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
+                    {
+                        //RemoveFromAlarms(alarm.Gid);
+                        this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
+                        //this.Alarms.Add(alarm);
+                        this.AddAlarmToAlarmsEventsCache(alarm);
+                        this.isNormalCreated[alarm.Gid] = false;
+                    }
+                    if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
+                    {
+                        //RemoveFromAlarms(alarm.Gid);
+                        this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
+                        //this.Alarms.Add(alarm);
+                        this.AddAlarmToAlarmsEventsCache(alarm);
+                        aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
+                        this.isNormalCreated[alarm.Gid] = true;
+                    }
+                    else if (!alarm.Type.Equals(AlarmType.NORMAL))
+                    {
+                        aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
+                    }
 
-                string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
-                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-            }
-            catch (Exception ex)
-            {
-                string message = string.Format("Greska ", ex.Message);
-                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                    string message = string.Format("Alarm on Analog Gid: {0} - Value: {1}", alarm.Gid, alarm.Value);
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                }
+                catch (Exception ex)
+                {
+                    string message = string.Format("Greska ", ex.Message);
+                    CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                }
             }
         }
 
@@ -210,39 +215,42 @@ namespace EMS.Services.AlarmsEventsService
 
         public void UpdateStatus(AnalogLocation analogLoc, State state)
         {
-            try
+            lock (alarmLock)
             {
-                if (this.alarms.Count == 0)
+                try
                 {
-                    return;
-                }
-
-                long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
-                List<AlarmHelper> alarmsToAdd = new List<AlarmHelper>(2);
-                foreach (AlarmHelper alarm in this.Alarms)
-                {
-                    if (alarm.Gid.Equals(powerSystemResGid) && alarm.CurrentState.Contains(State.Active.ToString()))
+                    if (this.alarms.Count == 0)
                     {
-                        alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
-                        alarm.PubStatus = PublishingStatus.UPDATE;
+                        return;
+                    }
 
-                        try
+                    long powerSystemResGid = analogLoc.Analog.PowerSystemResource;
+                    List<AlarmHelper> alarmsToAdd = new List<AlarmHelper>(2);
+                    foreach (AlarmHelper alarm in this.Alarms)
+                    {
+                        if (alarm.Gid.Equals(powerSystemResGid) && alarm.CurrentState.Contains(State.Active.ToString()))
                         {
-                            AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
-                            aesPublishSfProxy.PublishStateChange(alarm);
-                            string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
-                            CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
-                        }
-                        catch (Exception ex)
-                        {
-                            string message = string.Format("Greska ", ex.Message);
-                            CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                            alarm.CurrentState = string.Format("{0} | {1}", state, alarm.AckState);
+                            alarm.PubStatus = PublishingStatus.UPDATE;
+
+                            try
+                            {
+                                AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
+                                aesPublishSfProxy.PublishStateChange(alarm);
+                                string message = string.Format("Alarm on Gid: {0} - Changed status: {1}", alarm.Gid, alarm.CurrentState);
+                                CommonTrace.WriteTrace(CommonTrace.TraceInfo, message);
+                            }
+                            catch (Exception ex)
+                            {
+                                string message = string.Format("Greska ", ex.Message);
+                                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
+                }
             }
         }
 
@@ -454,7 +462,7 @@ namespace EMS.Services.AlarmsEventsService
 
                     if (data.HasValue)
                     {
-                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                        List<AlarmHelper> alarms = data.Value.Alarms.ToList();
 
                         foreach (AlarmHelper item in alarms)
                         {
@@ -489,18 +497,22 @@ namespace EMS.Services.AlarmsEventsService
                 using (ITransaction tx = this.StateManager.CreateTransaction())
                 {
                     ConditionalValue<AlarmsData> data = await alarmsEventsCache.TryGetValueAsync(tx, "AlarmsData");
-
+                    AlarmsData alarmsData = new AlarmsData();
                     if (data.HasValue)
                     {
-                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                        List<AlarmHelper> alarms = data.Value.Alarms.ToList();
                         alarms.Add(alarmHelper);
 
-                        AlarmsData alarmsData = new AlarmsData();
                         alarmsData.AddAlarms(alarms);
-
-                        await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
-                        await tx.CommitAsync();
                     }
+                    else
+                    {
+                        alarmsData = new AlarmsData();
+                        alarmsData.AddAlarm(alarmHelper);
+                    }
+
+                    await alarmsEventsCache.SetAsync(tx, "AlarmsData", alarmsData);
+                    await tx.CommitAsync();
                 }
             }
             catch (Exception e)
@@ -520,7 +532,7 @@ namespace EMS.Services.AlarmsEventsService
 
                     if (data.HasValue)
                     {
-                        List<AlarmHelper> alarms = data.Value.Alarms as List<AlarmHelper>;
+                        List<AlarmHelper> alarms = data.Value.Alarms.ToList();
                         foreach (AlarmHelper alarm in alarms)
                         {
                             if (alarm.Gid == gid)
@@ -559,7 +571,7 @@ namespace EMS.Services.AlarmsEventsService
 
                     if (data.HasValue)
                     {
-                        this.Alarms = data.Value.Alarms as List<AlarmHelper>;
+                        this.Alarms = data.Value.Alarms.ToList();
                     }
                     else
                     {
