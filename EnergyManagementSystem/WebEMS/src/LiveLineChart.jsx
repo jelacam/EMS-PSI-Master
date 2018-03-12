@@ -2,7 +2,8 @@
 import dotnetify from 'dotnetify';
 import { Line } from 'react-chartjs';
 import Paper from 'material-ui/Paper';
-import { white, purple600, purple500 } from 'material-ui/styles/colors';
+import Divider from 'material-ui/Divider';
+import { white, limeA400, amber800, limeA700, amber900, grey800 } from 'material-ui/styles/colors';
 
 
 export default class LiveLineChart extends React.Component {
@@ -15,8 +16,8 @@ export default class LiveLineChart extends React.Component {
             datasets: [{
                 label: "",
                 data: [],
-                fillColor: 'rgba(255, 159, 64)',
-                strokeColor: 'rgba(255, 159, 64)',
+                fillColor: limeA400,
+                strokeColor: limeA700,
                 pointColor: 'rgb(153, 102, 255)',
                 pointStrokeColor: "#fff"
             }]
@@ -59,11 +60,30 @@ export default class LiveLineChart extends React.Component {
 
         const styles = {
             paper: {
-                backgroundColor: white,
-                height: 170,
+                backgroundColor: grey800,
+                height: 220,
                 width: 350,
                 margin: 20,
                 display: 'inline-block',
+            },
+            paper2: {
+                backgroundColor: grey800,
+                height: 220,
+                width: 350,
+                margin: 20,
+                display: 'inline-block',
+            },
+            header: {
+                fontSize: 24,
+                color: white,
+                backgroundColor: limeA700,
+                padding: 10,
+            },
+            header2: {
+                fontSize: 24,
+                color: white,
+                backgroundColor: amber900,
+                padding: 10,
             },
             div: {
                 height: 70,
@@ -73,47 +93,114 @@ export default class LiveLineChart extends React.Component {
         }
 
         return (
-            <div >
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
-                <Paper style={styles.paper} zDepth={4} rounded={true}>
-                    <div style={styles.div}>
-                        <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
-                    </div>
-                </Paper>
+            <div>
+                <div>
+                    <Paper>
+                        <div style={styles.header}>Generation: 1620kW</div>
+                        <Paper style={styles.paper} zDepth={3} rounded={true} >
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper} zDepth={3} rounded={true}>
+                            <div style={styles.header}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                    </Paper>
+                </div>
+                <Divider />
+                <div>
+                    <Paper>
+                        <div style={styles.header2}>Demand: 1619kW</div>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                        <Paper style={styles.paper2} zDepth={3} rounded={true}>
+                            <div style={styles.header2}>Grafik</div>
+                            <div style={styles.div}>
+                                <Line data={chartData} options={chartOptions}>{updateData(this.props.nextData)}></Line>
+                            </div>
+                        </Paper>
+                    </Paper>
+                </div>
             </div>
         );
     }
