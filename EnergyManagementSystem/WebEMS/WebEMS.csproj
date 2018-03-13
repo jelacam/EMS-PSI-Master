@@ -19,7 +19,14 @@
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="3.0.456" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.0.456" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.0.456" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.0.456" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Wcf" Version="3.0.456" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceContracts\WebEMSContract\WebEMSContract.csproj" />
   </ItemGroup>
 
   <Target Name="RunWebpack" BeforeTargets="Build" Condition="!Exists('wwwroot\bundle.js') ">

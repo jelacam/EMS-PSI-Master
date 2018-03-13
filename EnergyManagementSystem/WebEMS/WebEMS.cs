@@ -10,17 +10,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using EMS.ServiceContracts;
+using CloudCommon;
+using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
 
 namespace WebEMS
 {
+
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance. 
     /// </summary>
-    internal sealed class WebEMS : StatelessService
+    public class WebEMS : StatelessService, IWebEMSContract
     {
         public WebEMS(StatelessServiceContext context)
             : base(context)
         { }
+
+        public void PublishOptimizationResults(List<MeasurementUI> result)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         /// <summary>
         /// Optional override to create listeners (like tcp, http) for this service instance.
@@ -45,8 +58,24 @@ namespace WebEMS
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url)
                                     .Build();
-                    }))
+                    })),
+                 new ServiceInstanceListener(serviceContext => this.CreateWebServiceCommunicationListener(serviceContext), "PublishEndpoint")
+
             };
+            
         }
+
+        private ICommunicationListener CreateWebServiceCommunicationListener(StatelessServiceContext context)
+        {
+            var listener = new WcfCommunicationListener<IWebEMSContract>(
+                listenerBinding: Binding.CreateCustomNetTcp(),
+                endpointResourceName: "CalculationEngineUIEndpoint",
+                serviceContext: context,
+                wcfServiceObject: this);
+
+            return listener;
+        }
+
+
     }
 }
