@@ -129,6 +129,7 @@
   <ItemGroup>
     <Compile Include="AesIntegrityProxy.cs" />
     <Compile Include="AlarmsEventsProxy.cs" />
+    <Compile Include="IAesIntegrityAsyncContract.cs" />
     <Compile Include="IAesIntegirtyContract.cs" />
     <Compile Include="IAlarmsEventsContract.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

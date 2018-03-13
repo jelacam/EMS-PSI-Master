@@ -19,6 +19,7 @@ using EMS.ServiceContracts.ServiceFabricProxy;
 using GatewayService.CEHistory;
 using GatewayService.NetworkModel;
 using GatewayService.CalculationEngine;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
 
 namespace GatewayService
 {
@@ -601,11 +602,15 @@ namespace GatewayService
 
         public List<AlarmHelper> InitiateIntegrityUpdate()
         {
-            AesIntegritySfProxy aesIntegritySfProxy = new AesIntegritySfProxy();
+            Task<List<AlarmHelper>> alarms = InitiateAsyncIntegrityUpdate();          
+            return alarms.Result;
+        }
 
-            List<AlarmHelper> integrityResult = aesIntegritySfProxy.InitiateIntegrityUpdate();
-
-            return integrityResult;
+        public async Task<List<AlarmHelper>> InitiateAsyncIntegrityUpdate()
+        {
+            IAesIntegrityAsyncContract aesIntegiryAsyncProxy = ServiceProxy.Create<IAesIntegrityAsyncContract>(new Uri("fabric:/EMS/AlarmsEventsCloudService"));
+            var alarms = await aesIntegiryAsyncProxy.InitiateIntegrityUpdate();
+            return alarms;
         }
 
         #endregion IAesIntegirtyContract implementation

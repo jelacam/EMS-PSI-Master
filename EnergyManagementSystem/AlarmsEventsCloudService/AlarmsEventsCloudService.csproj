@@ -114,6 +114,10 @@
       <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>
       <Name>CloudCommon</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonMeasurement\CommonMeasurement.csproj">
+      <Project>{94842C81-93DE-4490-A3D0-BC420C97B850}</Project>
+      <Name>CommonMeasurement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\AlarmsEventsContract\AlarmsEventsContract.csproj">
       <Project>{DC58AA82-434D-4C1B-936A-0AF3E79CBDC5}</Project>
       <Name>AlarmsEventsContract</Name>

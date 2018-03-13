@@ -14,6 +14,8 @@ namespace EMS.Services.AlarmsEventsService
     using System.ServiceModel;
     using System.Data.SqlClient;
     using System.Data;
+    using System.Threading.Tasks;
+
 
     /// <summary>
     /// Class for ICalculationEngineContract implementation
@@ -390,5 +392,6 @@ namespace EMS.Services.AlarmsEventsService
 
             return success;
         }
+
     }
 }
