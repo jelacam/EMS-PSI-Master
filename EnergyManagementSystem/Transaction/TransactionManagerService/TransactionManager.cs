@@ -153,7 +153,7 @@ namespace EMS.Services.TransactionManagerService
                 transactionNMSSfProxy.Rollback();
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Rollback finished!");
             }
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             return updateResult;
         }
 

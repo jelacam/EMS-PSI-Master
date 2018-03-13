@@ -602,13 +602,16 @@ namespace GatewayService
 
         public List<AlarmHelper> InitiateIntegrityUpdate()
         {
-            Task<List<AlarmHelper>> alarms = InitiateAsyncIntegrityUpdate();          
+            Task<List<AlarmHelper>> alarms = InitiateAsyncIntegrityUpdate();
             return alarms.Result;
         }
 
         public async Task<List<AlarmHelper>> InitiateAsyncIntegrityUpdate()
         {
-            IAesIntegrityAsyncContract aesIntegiryAsyncProxy = ServiceProxy.Create<IAesIntegrityAsyncContract>(new Uri("fabric:/EMS/AlarmsEventsCloudService"));
+            IAesIntegrityAsyncContract aesIntegiryAsyncProxy = ServiceProxy.Create<IAesIntegrityAsyncContract>(
+                            serviceUri: new Uri("fabric:/EMS/AlarmsEventsCloudService"),
+                            listenerName: "AlarmsEventsIntegrityAsyncEndpoint");
+
             var alarms = await aesIntegiryAsyncProxy.InitiateIntegrityUpdate();
             return alarms;
         }

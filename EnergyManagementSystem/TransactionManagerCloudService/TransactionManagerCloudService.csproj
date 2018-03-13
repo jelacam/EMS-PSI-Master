@@ -110,6 +110,10 @@
       <Project>{57D99354-6C6D-40CE-BA00-AC8610A435BF}</Project>
       <Name>CloudCommon</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{892CBE15-9ED7-4540-81FA-0EAABA592138}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceContracts\TransactionContract\TransactionContract.csproj">
       <Project>{6F89B2AE-4EED-479E-AD58-69B8A6865820}</Project>
       <Name>TransactionContract</Name>

@@ -390,6 +390,7 @@ namespace EMS.Services.SCADACommandingService
                 XmlSerializer serializer = new XmlSerializer(typeof(ScadaConfiguration));
                 StreamWriter writer = new StreamWriter("ScadaConfig.xml");
                 serializer.Serialize(writer, sc);
+                writer.Dispose();
             }
             catch (Exception e)
             {
