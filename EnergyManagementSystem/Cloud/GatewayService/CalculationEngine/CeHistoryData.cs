@@ -32,7 +32,7 @@ namespace GatewayService.CEHistory
             return calculationEngineHistorySfProxy.GetTotalProduction(startTime, endTime);
         }
 
-        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - ReadIndividualFarmProductionDataFromDb");
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();

@@ -165,6 +165,7 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 					string constraintLimit = "Limit";
 					string constraintProduction = consumption.ToString() + "<=";
 					string name = string.Empty;
+					float price = 0;
 					Term termLimit;
 
 					foreach (var optModel in optModelMap)
@@ -229,7 +230,9 @@ namespace EMS.Services.CalculationEngineService.LinearAlgorithm
 								// Console.Write("{0}", report);
 								Optimized += optModel.LinearOptimizedValue;
 								CO2 += optModel.LinearOptimizedValue * optModel.EmissionFactor;
-								Cost += ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
+								price = ((float)optModel.Curve.A * optModel.LinearOptimizedValue + (float)optModel.Curve.B) * optModel.EmsFuel.UnitPrice;
+								optModel.Price = price;
+								Cost += price;
 
 								switch (optModel.EmsFuel.FuelType)
 								{

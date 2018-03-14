@@ -624,9 +624,8 @@ namespace UIClient.ViewModel
                     EndTime = DateTime.Now;
                     graphSampling = GraphSample.LastMonthSample;
                     break;
-
-                case PeriodValues.Last_4_Month:
-                    StartTime = DateTime.Now.AddMonths(-4);
+                case PeriodValues.Last_3_Month:
+                    StartTime = DateTime.Now.AddMonths(-3);
                     EndTime = DateTime.Now;
                     graphSampling = GraphSample.Last4MonthSample;
                     break;
