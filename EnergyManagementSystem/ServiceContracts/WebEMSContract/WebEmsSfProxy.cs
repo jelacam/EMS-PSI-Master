@@ -25,7 +25,7 @@ namespace EMS.ServiceContracts
 
             proxy = new ServicePartitionClient<WcfCommunicationClient<IWebEMSContract>>(
                     communicationClientFactory: factory,
-                    serviceUri: new Uri("fabric:/EMS/WebEMS"),
+                    serviceUri: new Uri("fabric:/EMS/EMSWeb"),
                     listenerName: "PublishEndpoint");
         }
 

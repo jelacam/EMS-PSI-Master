@@ -1,11 +1,10 @@
 ﻿using Microsoft.ServiceFabric.Services.Runtime;
 using System;
 using System.Diagnostics;
-using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebEMS
+namespace EMSWeb
 {
     internal static class Program
     {
@@ -21,15 +20,13 @@ namespace WebEMS
                 // When Service Fabric creates an instance of this service type,
                 // an instance of the class is created in this host process.
 
-                ServiceRuntime.RegisterServiceAsync("WebEMSType",
-                    context => new WebEMS(context)).GetAwaiter().GetResult();
+                ServiceRuntime.RegisterServiceAsync("EMSWebType",
+                    context => new EMSWeb(context)).GetAwaiter().GetResult();
 
-                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(WebEMS).Name);
+                ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(EMSWeb).Name);
 
                 // Prevents this host process from terminating so services keeps running. 
                 Thread.Sleep(Timeout.Infinite);
-
-                
             }
             catch (Exception e)
             {

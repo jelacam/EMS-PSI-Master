@@ -5,36 +5,30 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CloudCommon;
+using EMS.ServiceContracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Services.Remoting;
-using Microsoft.ServiceFabric.Services.Remoting.Runtime;
-using EMS.ServiceContracts;
-using CloudCommon;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
-using Microsoft.ServiceFabric.Services.Communication.Wcf;
+using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace WebEMS
+namespace EMSWeb
 {
-
     /// <summary>
     /// The FabricRuntime creates an instance of this class for each service type instance. 
     /// </summary>
-    public class WebEMS : StatelessService, IWebEMSContract
+    internal sealed class EMSWeb : StatelessService, IWebEMSContract
     {
-        public WebEMS(StatelessServiceContext context)
+        public EMSWeb(StatelessServiceContext context)
             : base(context)
         { }
 
         public void PublishOptimizationResults(List<MeasurementUI> result)
         {
-            Console.WriteLine(result.Count);
+            Console.WriteLine("kurac");
         }
-
-
 
         /// <summary>
         /// Optional override to create listeners (like tcp, http) for this service instance.
@@ -60,10 +54,9 @@ namespace WebEMS
                                     .UseUrls(url)
                                     .Build();
                     })),
-                 //new ServiceInstanceListener(serviceContext => this.CreateWebServiceCommunicationListener(serviceContext), "PublishEndpoint")
+                new ServiceInstanceListener(serviceContext => this.CreateWebServiceCommunicationListener(serviceContext), "PublishEndpoint")
 
             };
-            
         }
 
         private ICommunicationListener CreateWebServiceCommunicationListener(StatelessServiceContext context)
@@ -77,7 +70,5 @@ namespace WebEMS
 
             return listener;
         }
-
-
     }
 }

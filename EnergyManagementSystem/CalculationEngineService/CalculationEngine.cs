@@ -432,6 +432,9 @@ namespace EMS.Services.CalculationEngineService
             CePublishProxy proxy = new CePublishProxy();
             proxy.PublishOptimizationResults(measListUI);
 
+            WebEmsSfProxy proxyw = new WebEmsSfProxy();
+            proxyw.PublishOptimizationResults(measListUI);
+
             ///publisher.PublishOptimizationResults(measListUI);
         }
 

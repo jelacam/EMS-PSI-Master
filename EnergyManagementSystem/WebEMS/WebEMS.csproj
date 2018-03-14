@@ -22,11 +22,20 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.0.456" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Wcf" Version="3.0.456" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.1" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.5.0-preview1-26228-01" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ServiceContracts\WebEMSContract\WebEMSContract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.ServiceFabric.Services.Wcf">
+      <HintPath>..\CalculationEngineCloudService\bin\x64\Debug\Microsoft.ServiceFabric.Services.Wcf.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.ServiceModel.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="RunWebpack" BeforeTargets="Build" Condition="!Exists('wwwroot\bundle.js') ">

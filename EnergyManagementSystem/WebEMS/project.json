@@ -1,0 +1,17 @@
+﻿{
+  "frameworks": {
+    "netcoreapp2.0": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ],
+      "dependencies": {
+        "System.ServiceModel.Duplex": "4.0.1",
+        "System.ServiceModel.Http": "4.1.0",
+        "System.ServiceModel.NetTcp": "4.1.0",
+        "System.ServiceModel.Security": "4.0.1",
+        "System.Xml.XmlSerializer": "4.0.11"
+      }
+    }
+  }
+}
