@@ -12,6 +12,7 @@ using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartup(typeof(WebEMSApp.Startup))]
+
 namespace WebEMSApp
 {
     public class Startup
@@ -26,7 +27,7 @@ namespace WebEMSApp
         //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configuration(IAppBuilder app)
+        public void Configure(IAppBuilder app)
         {
             var provider = new TinyIoCServiceProvider();
             provider.AddTransient<HelloWorld>()
@@ -37,7 +38,7 @@ namespace WebEMSApp
 
             //app.UseDotNetify(config =>
             //{
-            //    // Register the DEMO assembly "ViewModels". All subclasses of DotNetify.BaseVM 
+            //    // Register the DEMO assembly "ViewModels". All subclasses of DotNetify.BaseVM
             //    // inside that assembly will be known as view models.
             //    config.RegisterAssembly("ViewModels");
 
