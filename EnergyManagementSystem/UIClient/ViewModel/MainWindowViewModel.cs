@@ -54,9 +54,9 @@ namespace UIClient.ViewModel
 		/// <returns></returns>
 		public bool InitiateIntegrityUpdate()
 		{
-			// lock (lockObj)
+			//lock (lockObj)
 			{
-				Thread.Sleep(5000);
+				Thread.Sleep(5000); //just for testing, remove
 				NmsModelMap = new Dictionary<long, IdentifiedObject>();
 				ModelResourcesDesc modelResourcesDesc = new ModelResourcesDesc();
 
@@ -245,6 +245,8 @@ namespace UIClient.ViewModel
                 // clear retList
                 retList.Clear();
                 #endregion
+
+                OnPropertyChanged(nameof(NmsModelMap));
                 return true;
 			}
 		}

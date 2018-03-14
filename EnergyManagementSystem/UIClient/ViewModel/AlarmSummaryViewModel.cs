@@ -96,6 +96,13 @@ namespace UIClient.ViewModel
                 }
                 OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
+            else
+            {
+                alarmHelper.AckState = AckState.Unacknowledged;
+                string state = alarmHelper.CurrentState.Contains(State.Cleared.ToString()) ? State.Cleared.ToString() : State.Active.ToString();
+                alarmHelper.CurrentState = string.Format("{0} | {1}", state, alarmHelper.AckState.ToString());
+                OnPropertyChanged(nameof(AlarmSummaryQueue));
+            }
 
         }
 
@@ -179,7 +186,6 @@ namespace UIClient.ViewModel
             }
         }
 
-
         private void UpdateAlarm(AlarmHelper alarm)
         {
             lock (alarmSummaryLock)
@@ -205,7 +211,6 @@ namespace UIClient.ViewModel
                 OnPropertyChanged(nameof(AlarmSummaryQueue));
             }
         }
-
         private void IntegirtyUpdate()
         {
             List<AlarmHelper> integirtyResult = new List<AlarmHelper>();

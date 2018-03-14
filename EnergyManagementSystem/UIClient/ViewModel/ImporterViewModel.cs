@@ -147,6 +147,9 @@ namespace UIClient.ViewModel
                     string log = adapter.ApplyUpdates(nmsDelta);
                     ApplyReport = log;
                     nmsDelta = null;
+                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                    var mainWindVM = mainWindow.DataContext as MainWindowViewModel;
+                    mainWindVM.InitiateIntegrityUpdate();
                 }
                 catch (Exception e)
                 {

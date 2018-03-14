@@ -20,5 +20,7 @@ namespace EMS.ServiceContracts
 
         public int OptimizationType { get; set; }
 
+		public float Price { get; set; }
+
     }
 }

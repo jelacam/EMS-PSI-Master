@@ -171,6 +171,7 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             foreach (Tuple<long, float> gene in genes)
             {
                 float price = optModelMap[gene.Item1].CalculatePrice(gene.Item2);
+				optModelMap[gene.Item1].Price = price;
                 cost += price;
             }
 

@@ -45,7 +45,7 @@ namespace EMS.ServiceContracts.ServiceFabricProxy
             return proxy.InvokeWithRetry(x => x.Channel.GetTotalProduction(startTime, endTime));
         }
 
-        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
             return proxy.InvokeWithRetry(x => x.Channel.ReadIndividualFarmProductionDataFromDb(startTime, endTime));
         }

@@ -274,7 +274,7 @@ namespace EMS.Services.CalculationEngineService
             }
             catch (Exception e)
             {
-                throw new Exception("[Mehtod = DoOptimization] Exception = " + e.Message);
+                throw new Exception("[Method = DoOptimization] Exception = " + e.Message);
             }
         }
 
@@ -468,7 +468,8 @@ namespace EMS.Services.CalculationEngineService
                     MaxValue = optModel.Value.MaxPower,
                     MinValue = optModel.Value.MinPower,
                     OptimizationType = optType,
-                    CurrentValue = currValue
+                    CurrentValue = currValue,
+					CurrentPrice=optModel.Value.Price
                 });
             }
 
@@ -485,6 +486,7 @@ namespace EMS.Services.CalculationEngineService
                 measUI.CurrentValue = meas.CurrentValue;
                 measUI.TimeStamp = meas.TimeStamp;
                 measUI.OptimizationType = (int)meas.OptimizationType;
+				measUI.Price = meas.CurrentPrice;
                 measListUI.Add(measUI);
             }
             PublishToUI(measListUI);
@@ -953,9 +955,9 @@ namespace EMS.Services.CalculationEngineService
             return retVal;
         }
 
-        public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
-            List<Tuple<double, double, double, double, double>> retVal = new List<Tuple<double, double, double, double, double>>();
+            List<Tuple<double, double, double, double, double, DateTime>> retVal = new List<Tuple<double, double, double, double, double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
             {
@@ -963,7 +965,7 @@ namespace EMS.Services.CalculationEngineService
                 {
                     connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("SELECT WindProduction, SolarProduction, HydroProduction, CoalProduction, OilProduction FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    using (SqlCommand cmd = new SqlCommand("SELECT WindProduction, SolarProduction, HydroProduction, CoalProduction, OilProduction, TimeOfCalculation FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -972,7 +974,7 @@ namespace EMS.Services.CalculationEngineService
 
                         while (reader.Read())
                         {
-                            retVal.Add(new Tuple<double, double, double, double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2]), Convert.ToDouble(reader[3]), Convert.ToDouble(reader[4])));
+                            retVal.Add(new Tuple<double, double, double, double, double, DateTime>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2]), Convert.ToDouble(reader[3]), Convert.ToDouble(reader[4]), Convert.ToDateTime(reader[5])));
                         }
                     }
 

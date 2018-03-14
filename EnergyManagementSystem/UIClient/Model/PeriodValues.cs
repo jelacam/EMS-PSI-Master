@@ -15,8 +15,8 @@ namespace UIClient.Model
 		Today,
 		[Description("Last Month")]
 		Last_Month,
-		[Description("Last four months")]
-		Last_4_Month,
+		[Description("Last 3 Months")]
+		Last_3_Month,
 		[Description("Last Year")]
 		Last_Year,
         [Description("")]
