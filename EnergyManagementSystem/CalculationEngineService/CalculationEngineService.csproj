@@ -154,6 +154,10 @@
       <Project>{6f89b2ae-4eed-479e-ad58-69b8a6865820}</Project>
       <Name>TransactionContract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceContracts\WebEMSContract\WebEMSContract.csproj">
+      <Project>{9cfd0de7-c1b4-445c-ae7f-f9f8c1b05f6f}</Project>
+      <Name>WebEMSContract</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

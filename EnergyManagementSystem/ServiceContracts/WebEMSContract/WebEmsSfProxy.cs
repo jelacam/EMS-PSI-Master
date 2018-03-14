@@ -13,7 +13,6 @@ namespace WebEMSContract
 {
     public class WebEmsSfProxy : IWebEMSContract
     {
-
         private ServicePartitionResolver resolver = ServicePartitionResolver.GetDefault();
 
         private WcfCommunicationClientFactory<IWebEMSContract> factory;
@@ -27,7 +26,7 @@ namespace WebEMSContract
 
             proxy = new ServicePartitionClient<WcfCommunicationClient<IWebEMSContract>>(
                     communicationClientFactory: factory,
-                    serviceUri: new Uri("fabric:/EMS/EMSWeb"),
+                    serviceUri: new Uri("fabric:/EMS/WebEMSApp"),
                     listenerName: "PublishEndpoint");
         }
 

@@ -470,7 +470,7 @@ namespace EMS.Services.CalculationEngineService
                     MinValue = optModel.Value.MinPower,
                     OptimizationType = optType,
                     CurrentValue = currValue,
-					CurrentPrice=optModel.Value.Price
+                    CurrentPrice = optModel.Value.Price
                 });
             }
 
@@ -487,7 +487,7 @@ namespace EMS.Services.CalculationEngineService
                 measUI.CurrentValue = meas.CurrentValue;
                 measUI.TimeStamp = meas.TimeStamp;
                 measUI.OptimizationType = (int)meas.OptimizationType;
-				measUI.Price = meas.CurrentPrice;
+                measUI.Price = meas.CurrentPrice;
                 measListUI.Add(measUI);
             }
             PublishToUI(measListUI);
