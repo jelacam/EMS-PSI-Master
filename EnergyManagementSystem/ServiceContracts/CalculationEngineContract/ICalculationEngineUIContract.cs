@@ -54,6 +54,6 @@ namespace EMS.ServiceContracts
 		List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime);
 
 		[OperationContract]
-		List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime);
+		List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime);
 	}
 }

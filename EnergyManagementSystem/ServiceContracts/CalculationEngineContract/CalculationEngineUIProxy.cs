@@ -87,7 +87,7 @@ namespace EMS.ServiceContracts
 			return proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
 		}
 
-		public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
 		{
 			return proxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
 		}

@@ -77,7 +77,7 @@
 					<StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Margin="10" >
 						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text="Total production in selected period: "></TextBlock>
                         <TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Width="Auto" Text="{Binding TotalSum}"></TextBlock>
-						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" kW"></TextBlock>
+						<TextBlock Style="{StaticResource SubTitle}" Foreground="Green" Text=" kWh"></TextBlock>
 					</StackPanel>
 
                     <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="10" HorizontalAlignment="Left" >

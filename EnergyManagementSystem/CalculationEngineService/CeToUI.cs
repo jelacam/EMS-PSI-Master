@@ -113,9 +113,9 @@ namespace EMS.Services.CalculationEngineService
 			return retList;
 		}
 
-		public List<Tuple<double, double, double, double, double>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
+		public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
 		{
-			List<Tuple<double, double, double, double, double>> retList = new List<Tuple<double, double, double, double, double>>();
+			List<Tuple<double, double, double, double, double, DateTime>> retList = new List<Tuple<double, double, double, double, double, DateTime>>();
 
 			try
 			{

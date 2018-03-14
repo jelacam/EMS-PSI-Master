@@ -18,7 +18,7 @@ namespace UIClient.ViewModel
 
         private ObservableCollection<Tuple<double, double, DateTime>> cO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
         private ObservableCollection<Tuple<double, double, DateTime>> graphCO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
-        private ObservableCollection<Tuple<double, double,double,double,double>> individualContainer = new ObservableCollection<Tuple<double, double,double,double,double>>();
+        private ObservableCollection<Tuple<double, double,double,double,double, DateTime>> individualContainer = new ObservableCollection<Tuple<double, double,double,double,double, DateTime>>();
         private ObservableCollection<Tuple<double, double, double>> savingContainer = new ObservableCollection<Tuple<double, double, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieData = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieDataWind = new ObservableCollection<KeyValuePair<string, double>>();
@@ -380,7 +380,7 @@ namespace UIClient.ViewModel
             }
         }
 		
-		public ObservableCollection<Tuple<double, double, double, double, double>> IndividualContainer
+		public ObservableCollection<Tuple<double, double, double, double, double, DateTime>> IndividualContainer
 		{
 			get
 			{
@@ -632,8 +632,7 @@ namespace UIClient.ViewModel
 
         private void ViewIndividualProductionDataCommandExecute(Object obj)
         {
-            int i = 0;
-            double rest = 0;
+			double ts;
             TotalWindProduction = 0;
 			TotalSolarProduction = 0;
 			TotalHydroProduction = 0;
@@ -642,18 +641,18 @@ namespace UIClient.ViewModel
 			TotalSum = 0;
             try
             {
-                IndividualContainer = new ObservableCollection<Tuple<double, double, double,double,double>>(CalculationEngineUIProxy.Instance.ReadIndividualFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
+                IndividualContainer = new ObservableCollection<Tuple<double, double, double,double,double, DateTime>>(CalculationEngineUIProxy.Instance.ReadIndividualFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
                 if (IndividualContainer != null && IndividualContainer.Count > 0)
-                {
-                    foreach (Tuple<double, double, double, double, double> item in IndividualContainer)
-                    {
-                        i++;
-                        TotalWindProduction += item.Item1;
-                        TotalSolarProduction += item.Item2;
-						TotalHydroProduction += item.Item3;
-						TotalCoalProduction += item.Item4;
-						TotalOilProduction += item.Item5;
-                    }
+                {				
+					for (int i = 1; i < individualContainer.Count; i++)
+					{
+						ts = (individualContainer[i].Item6 - individualContainer[i - 1].Item6).TotalHours;
+						TotalWindProduction += ts * (individualContainer[i].Item1 + individualContainer[i - 1].Item1) / 2;
+						TotalSolarProduction += ts * (individualContainer[i].Item2 + individualContainer[i - 1].Item2) / 2;
+						TotalHydroProduction += ts * (individualContainer[i].Item3 + individualContainer[i - 1].Item3) / 2;
+						TotalCoalProduction += ts * (individualContainer[i].Item4 + individualContainer[i - 1].Item4) / 2;
+						TotalOilProduction += ts * (individualContainer[i].Item5 + individualContainer[i - 1].Item5) / 2;
+					}
 
 					TotalSum = TotalWindProduction + TotalSolarProduction + TotalHydroProduction + TotalCoalProduction + TotalOilProduction;
 					TotalWindProductionPercentage = 100 * TotalWindProduction / TotalSum;
@@ -698,8 +697,8 @@ namespace UIClient.ViewModel
                     EndTimeCO2 = DateTime.Now;
                     graphSampling = GraphSample.LastMonthSample;
                     break;
-                case PeriodValues.Last_4_Month:
-                    StartTimeCO2 = DateTime.Now.AddMonths(-4);
+                case PeriodValues.Last_3_Month:
+                    StartTimeCO2 = DateTime.Now.AddMonths(-3);
                     EndTimeCO2 = DateTime.Now;
                     graphSampling = GraphSample.Last4MonthSample;
                     break;
@@ -729,8 +728,8 @@ namespace UIClient.ViewModel
                     StartTimeSaving = DateTime.Now.AddMonths(-1);
                     EndTimeSaving = DateTime.Now;
                     break;
-                case PeriodValues.Last_4_Month:
-                    StartTimeSaving = DateTime.Now.AddMonths(-4);
+                case PeriodValues.Last_3_Month:
+                    StartTimeSaving = DateTime.Now.AddMonths(-3);
                     EndTimeSaving = DateTime.Now;
                     break;
                 case PeriodValues.Last_Year:
@@ -758,8 +757,8 @@ namespace UIClient.ViewModel
                     StartTimeWind = DateTime.Now.AddMonths(-1);
                     EndTimeWind = DateTime.Now;
                     break;
-                case PeriodValues.Last_4_Month:
-                    StartTimeWind = DateTime.Now.AddMonths(-4);
+                case PeriodValues.Last_3_Month:
+                    StartTimeWind = DateTime.Now.AddMonths(-3);
                     EndTimeWind = DateTime.Now;
                     break;
                 case PeriodValues.Last_Year:
