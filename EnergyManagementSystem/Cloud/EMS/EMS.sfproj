@@ -36,6 +36,7 @@
     <ProjectReference Include="..\..\ScadaCommandingCloudService\ScadaCommandingCloudService.csproj" />
     <ProjectReference Include="..\..\ScadaKrunchingCloudService\ScadaKrunchingCloudService.csproj" />
     <ProjectReference Include="..\..\TransactionManagerCloudService\TransactionManagerCloudService.csproj" />
+    <ProjectReference Include="..\..\WebEMSApp\WebEMSApp.csproj" />
     <ProjectReference Include="..\GatewayService\GatewayService.csproj" />
   </ItemGroup>
   <ItemGroup>

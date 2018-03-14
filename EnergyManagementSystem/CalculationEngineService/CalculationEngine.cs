@@ -23,6 +23,7 @@ namespace EMS.Services.CalculationEngineService
     using System.ServiceModel;
     using System.Threading;
     using ServiceContracts.ServiceFabricProxy;
+    using WebEMSContract;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -496,6 +497,9 @@ namespace EMS.Services.CalculationEngineService
         {
             CePublishProxy proxy = new CePublishProxy();
             proxy.PublishOptimizationResults(measListUI);
+
+            WebEmsSfProxy webEmsSfProxy = new WebEmsSfProxy();
+            webEmsSfProxy.PublishOptimizationResults(measListUI);
 
             ///publisher.PublishOptimizationResults(measListUI);
         }
