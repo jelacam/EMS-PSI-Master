@@ -267,7 +267,7 @@ namespace EMS.Services.CalculationEngineService
             }
             catch (Exception e)
             {
-                throw new Exception("[Mehtod = DoOptimization] Exception = " + e.Message);
+                throw new Exception("[Method = DoOptimization] Exception = " + e.Message);
             }
         }
 
@@ -461,7 +461,8 @@ namespace EMS.Services.CalculationEngineService
                     MaxValue = optModel.Value.MaxPower,
                     MinValue = optModel.Value.MinPower,
                     OptimizationType = optType,
-                    CurrentValue = currValue
+                    CurrentValue = currValue,
+					CurrentPrice=optModel.Value.Price
                 });
             }
 
@@ -478,6 +479,7 @@ namespace EMS.Services.CalculationEngineService
                 measUI.CurrentValue = meas.CurrentValue;
                 measUI.TimeStamp = meas.TimeStamp;
                 measUI.OptimizationType = (int)meas.OptimizationType;
+				measUI.Price = meas.CurrentPrice;
                 measListUI.Add(measUI);
             }
             publisher.PublishOptimizationResults(measListUI);

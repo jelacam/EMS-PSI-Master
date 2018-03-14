@@ -125,7 +125,7 @@ namespace EMS.Services.CalculationEngineService
 			Managable = ((emsf.FuelType.Equals(EmsFuelType.wind) && WindPct == 0) || (emsf.FuelType.Equals(EmsFuelType.solar) && (0 >= sunlight || sunlight > 100))) ? false : true; //true=optimizuj
 			Renewable = (emsf.FuelType.Equals(EmsFuelType.wind) || emsf.FuelType.Equals(EmsFuelType.solar)) ? true : false;
 
-			if (!Managable)
+			/*if (!Managable)
 			{
 				Price = 0;
 			}
@@ -136,7 +136,8 @@ namespace EMS.Services.CalculationEngineService
 			else
 			{
 				Price = CalculatePrice(MeasuredValue);
-			}
+			}*/
+			Price = 0;
 
 			MinPower = ((!Managable) || (Renewable && WindPct == 0) || (Renewable && (sunlight <= 0 || sunlight > 100))) ? 0 : sm.MinQ;
 
@@ -204,7 +205,7 @@ namespace EMS.Services.CalculationEngineService
             }
 
 			float price = 0;
-			float amount = (float)Curve.A * measuredValue * measuredValue + (float)Curve.B * measuredValue + (float)Curve.C;
+			float amount = (float)Curve.A * measuredValue + (float)Curve.B;
 			price = amount * EmsFuel.UnitPrice;
 			return price;
 		}

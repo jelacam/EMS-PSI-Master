@@ -20,13 +20,14 @@ namespace UIClient.ViewModel
 
         private int MAX_DISPLAY_NUMBER = 10;
         private int MAX_DISPLAY_TOTAL_NUMBER = 20;
-		private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attepts to subscribe to the CE
+		private const int NUMBER_OF_ALLOWED_ATTEMPTS = 5; // number of allowed attempts to subscribe to the CE
         private int attemptsCount = 0;
 
         private readonly double graphSizeOffset = 18;
 
         private float currentConsumption;
         private float currentProduction;
+		private float currentCost;
         private bool isOptionsExpanded = false;
 
         private ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>> generatorsContainer = new ObservableCollection<KeyValuePair<long, ObservableCollection<MeasurementUI>>>();
@@ -132,7 +133,21 @@ namespace UIClient.ViewModel
             }
         }
 
-        public bool IsOptionsExpanded
+		public float CurrentCost
+		{
+			get
+			{
+				return currentCost;
+			}
+
+			set
+			{
+				currentCost = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public bool IsOptionsExpanded
         {
             get
             {
@@ -346,7 +361,7 @@ namespace UIClient.ViewModel
 
             if (obj == null)
             {
-                throw new Exception("CallbackAction receive wrong param");
+                throw new Exception("CallbackAction receive wrong parameter");
             }
             if (measUIs.Count == 0)
             {
@@ -374,6 +389,7 @@ namespace UIClient.ViewModel
                     {
                         AddMeasurmentTo(GeneratorsContainer, measUIs);
 						CurrentProduction = measUIs.Sum(x => x.CurrentValue);
+						CurrentCost = measUIs.Sum(x => x.Price);
 						GenerationList.Add(new KeyValuePair<DateTime, float>(measUIs.Last().TimeStamp, CurrentProduction));
 						if (GenerationList.Count > MAX_DISPLAY_TOTAL_NUMBER)
 						{
@@ -384,7 +400,7 @@ namespace UIClient.ViewModel
             }
             catch (Exception e)
             {
-                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "CES can not update measurement values on UI becaus UI instance does not exist. Message: {0}", e.Message);
+                CommonTrace.WriteTrace(CommonTrace.TraceWarning, "CES can not update measurement values on UI because UI instance does not exist. Message: {0}", e.Message);
             }
         }
 
