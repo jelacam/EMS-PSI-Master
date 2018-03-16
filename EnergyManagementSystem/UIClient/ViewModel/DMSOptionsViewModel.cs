@@ -572,16 +572,24 @@ namespace UIClient.ViewModel
             double averageEmiisionWithRenewable;
             ObservableCollection<Tuple<double, double, DateTime>> tempData;
             GraphCO2EmissionContainer.Clear();
-
+            double timeFrame;
             try
             {
                 CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2));
                 if (CO2EmissionContainer != null && CO2EmissionContainer.Count > 0)
                 {
-                    foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                    //foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                    //{
+                    //    TotalCO2 += item.Item1;
+                    //    TotalCO2Reduction += (item.Item1 - item.Item2);
+                    //}
+                    for (int i = 1; i < CO2EmissionContainer.Count; i++)
                     {
-                        TotalCO2 += item.Item1;
-                        TotalCO2Reduction += (item.Item1 - item.Item2);
+                        timeFrame = (CO2EmissionContainer[i].Item3 - CO2EmissionContainer[i - 1].Item3).TotalHours;
+
+                        TotalCO2 += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame;
+                        TotalCO2Reduction += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame -
+                                             ((CO2EmissionContainer[i].Item2 + CO2EmissionContainer[i - 1].Item2) / 2) * timeFrame;
                     }
 
                     if (graphSampling != GraphSample.None)
@@ -605,7 +613,8 @@ namespace UIClient.ViewModel
                                 averageEmissionWithoutRenewable = 0;
                                 averageEmiisionWithRenewable = 0;
                             }
-
+                            averageEmissionWithoutRenewable = averageEmissionWithoutRenewable * (tempEndTime - tempStartTime).TotalHours;
+                            averageEmiisionWithRenewable = averageEmiisionWithRenewable * (tempEndTime - tempStartTime).TotalHours;
                             tempStartTime = IncrementTime(tempStartTime);
                             tempEndTime = IncrementTime(tempEndTime);
                             GraphCO2EmissionContainer.Add(new Tuple<double, double, DateTime>(averageEmissionWithoutRenewable, averageEmiisionWithRenewable, tempStartTime));
@@ -626,7 +635,7 @@ namespace UIClient.ViewModel
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));
 
-            TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
+            TotalCO2Reduction = Math.Round(TotalCO2Reduction, 4);
 
             OnPropertyChanged(nameof(PieData));
             OnPropertyChanged(nameof(TotalCO2Reduction));
