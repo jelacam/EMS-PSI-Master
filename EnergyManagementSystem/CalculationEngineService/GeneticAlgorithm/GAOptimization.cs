@@ -146,8 +146,18 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             //}
 
             double rndNumber = random.NextDouble();
-            float mutatedGeneValue = rndNumber < 0.5 ? gene.Item2 + mutateRate : gene.Item2 - mutateRate;
+            float mutateOffset = 0;
+            //no mutation between 0.33 and 0.66
+            if (rndNumber < 0.33)
+            {
+                mutateOffset = -mutateRate;
+            }
+            else if(rndNumber > 0.66)
+            {
+                mutateOffset = +mutateRate;
+            }
 
+            float mutatedGeneValue = gene.Item2 + mutateOffset;
 
             if (mutatedGeneValue < optModelMap[gid].MinPower)
             {

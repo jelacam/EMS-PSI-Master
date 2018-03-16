@@ -187,13 +187,20 @@ namespace EMS.Services.CalculationEngineService
             DateTime dateTime = new DateTime(2017, 1, 1);
             int index = 0;
             DummySimulation simulation = new DummySimulation();
-
+            Random rnd = new Random();
+            float rndValue = ((float)rnd.NextDouble() + 1) / 3;
             while (dateTime < DateTime.Now)
             {
+                if (index % 24 == 0)
+                {
+                    rndValue = ((float)rnd.NextDouble() + 1) / 3;
+                }
                 Console.WriteLine("Completed: {0} %", ((float)index / 10300f) * 100);
+
                 float currentConsumption = simulation.GetCurrentConsumption(index % 24) / 4 - 1500;
-                float windSpeed = simulation.GetWindSpeed(index % 24);
-                float sunLight = simulation.GetSunLight(index % 24);
+                currentConsumption *= rndValue;
+                float windSpeed = (1 - rndValue) * simulation.GetWindSpeed(index % 24);
+                float sunLight = rndValue * simulation.GetSunLight(index % 24);
 
                 Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed, sunLight);
 
@@ -207,6 +214,13 @@ namespace EMS.Services.CalculationEngineService
                 if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, dateTime))
                 {
                     //Console.WriteLine("The CO2 emission is recorded into history database.");
+                }
+
+                totalProduction = measurementsOptimized.Sum(x => x.CurrentValue);
+
+                if (WriteTotalProductionIntoDb(totalProduction, totalCost, totalCostWithoutWindAndSolar, profit, dateTime, windProductionkW, windProductionPct, solarProductionkW, solarProductionPct, hydroProductionkW, hydroProductionPct, coalProductionkW, coalProductionPct, oilProductionkW, oilProductionPct))
+                {
+                   // Console.WriteLine("The total production is recorded into history database.");
                 }
 
                 dateTime = dateTime.AddHours(1);
@@ -363,7 +377,7 @@ namespace EMS.Services.CalculationEngineService
         private float CalculatePowerOfEach(Dictionary<long, OptimisationModel> optModelMap)
         {
             float optimizedTotalPower = 0;
-            foreach(var optModel in optModelMap.Values)
+            foreach (var optModel in optModelMap.Values)
             {
                 optimizedTotalPower += optModel.LinearOptimizedValue;
                 switch (optModel.EmsFuel.FuelType)
@@ -501,7 +515,7 @@ namespace EMS.Services.CalculationEngineService
                     MinValue = optModel.Value.MinPower,
                     OptimizationType = optType,
                     CurrentValue = currValue,
-					CurrentPrice=optModel.Value.Price
+                    CurrentPrice = optModel.Value.Price
                 });
             }
 
@@ -518,7 +532,7 @@ namespace EMS.Services.CalculationEngineService
                 measUI.CurrentValue = meas.CurrentValue;
                 measUI.TimeStamp = meas.TimeStamp;
                 measUI.OptimizationType = (int)meas.OptimizationType;
-				measUI.Price = meas.CurrentPrice;
+                measUI.Price = meas.CurrentPrice;
                 measListUI.Add(measUI);
             }
             publisher.PublishOptimizationResults(measListUI);
