@@ -770,9 +770,9 @@ namespace EMS.Services.CalculationEngineService
         /// <param name="startTime">start time of period</param>
         /// <param name="endTime">end time of period</param>
         /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
-        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, DateTime>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
-            List<Tuple<double, double, double>> retVal = new List<Tuple<double, double, double>>();
+            List<Tuple<double, double, double, DateTime>> retVal = new List<Tuple<double, double, double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
             {
@@ -780,7 +780,7 @@ namespace EMS.Services.CalculationEngineService
                 {
                     connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("SELECT TotalCostWithoutWindAndSolar,TotalCost,Profit FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
+                    using (SqlCommand cmd = new SqlCommand("SELECT TotalCostWithoutWindAndSolar,TotalCost,Profit,TimeOfCalculation FROM TotalProduction WHERE (TimeOfCalculation BETWEEN @startTime AND @endTime)", connection))
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.Add("@startTime", SqlDbType.DateTime).Value = startTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -789,7 +789,7 @@ namespace EMS.Services.CalculationEngineService
 
                         while (reader.Read())
                         {
-                            retVal.Add(new Tuple<double, double, double>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2])));
+                            retVal.Add(new Tuple<double, double, double, DateTime>(Convert.ToDouble(reader[0]), Convert.ToDouble(reader[1]), Convert.ToDouble(reader[2]), Convert.ToDateTime(reader[3])));
                         }
                     }
 
