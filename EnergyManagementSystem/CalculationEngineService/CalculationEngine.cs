@@ -187,13 +187,20 @@ namespace EMS.Services.CalculationEngineService
             DateTime dateTime = new DateTime(2017, 1, 1);
             int index = 0;
             DummySimulation simulation = new DummySimulation();
-
+            Random rnd = new Random();
+            float rndValue = ((float)rnd.NextDouble() + 1) / 3;
             while (dateTime < DateTime.Now)
             {
+                if (index % 24 == 0)
+                {
+                    rndValue = ((float)rnd.NextDouble() + 1) / 3;
+                }
                 Console.WriteLine("Completed: {0} %", ((float)index / 10300f) * 100);
+
                 float currentConsumption = simulation.GetCurrentConsumption(index % 24) / 4 - 1500;
-                float windSpeed = simulation.GetWindSpeed(index % 24);
-                float sunLight = simulation.GetSunLight(index % 24);
+                currentConsumption *= rndValue;
+                float windSpeed = (1 - rndValue) * simulation.GetWindSpeed(index % 24);
+                float sunLight = rndValue * simulation.GetSunLight(index % 24);
 
                 Dictionary<long, OptimisationModel> optModelMap = GetOptimizationModelMap(measGenerators, windSpeed, sunLight);
 
@@ -207,6 +214,13 @@ namespace EMS.Services.CalculationEngineService
                 if (WriteCO2EmissionIntoDb(emissionCO2NonRenewable, emissionCO2Renewable, dateTime))
                 {
                     //Console.WriteLine("The CO2 emission is recorded into history database.");
+                }
+
+                totalProduction = measurementsOptimized.Sum(x => x.CurrentValue);
+
+                if (WriteTotalProductionIntoDb(totalProduction, totalCost, totalCostWithoutWindAndSolar, profit, dateTime, windProductionkW, windProductionPct, solarProductionkW, solarProductionPct, hydroProductionkW, hydroProductionPct, coalProductionkW, coalProductionPct, oilProductionkW, oilProductionPct))
+                {
+                   // Console.WriteLine("The total production is recorded into history database.");
                 }
 
                 dateTime = dateTime.AddHours(1);
@@ -336,20 +350,59 @@ namespace EMS.Services.CalculationEngineService
                 return optModelMap;
             }
 
+            float totalOptimizedPower = CalculatePowerOfEach(optModelMap);
+
             var coalModel = optModelMapNonRenewableClone.FirstOrDefault(x => x.Value.EmsFuel.FuelType == EmsFuelType.coal);
             coalModel.Value.GenericOptimizedValue = optModelMapOptimizied[coalModel.Key].GenericOptimizedValue + windProductionkW;
             totalCostWithoutWindAndSolar = CalculateCost(optModelMapNonRenewableClone, OptimizationType.Genetic);
             totalCost = gaoRenewable.TotalCost;
             profit = totalCostWithoutWindAndSolar - totalCost;
-            windProductionPct = 100 * windProductionkW / powerOfConsumers;
+
             emissionCO2Renewable = gaoRenewable.EmissionCO2;
             emissionCO2NonRenewable = CalculateCO2(optModelMapNonRenewableClone);
+
+            windProductionPct = 100 * windProductionkW / totalOptimizedPower;
+            solarProductionPct = 100 * solarProductionkW / totalOptimizedPower;
+            oilProductionPct = 100 * oilProductionkW / totalOptimizedPower;
+            coalProductionPct = 100 * coalProductionkW / totalOptimizedPower;
+            hydroProductionPct = 100 * hydroProductionkW / totalOptimizedPower;
 
             //foreach(var item in optModelMapOptimizied)
             //{
             //    optModelMap[item.Key].GenericOptimizedValue = item.Value.GenericOptimizedValue;
             //}
             return optModelMap;
+        }
+
+        private float CalculatePowerOfEach(Dictionary<long, OptimisationModel> optModelMap)
+        {
+            float optimizedTotalPower = 0;
+            foreach (var optModel in optModelMap.Values)
+            {
+                optimizedTotalPower += optModel.LinearOptimizedValue;
+                switch (optModel.EmsFuel.FuelType)
+                {
+                    case EmsFuelType.coal:
+                        coalProductionkW += optModel.GenericOptimizedValue;
+                        break;
+                    case EmsFuelType.hydro:
+                        hydroProductionkW += optModel.GenericOptimizedValue;
+                        break;
+                    case EmsFuelType.oil:
+                        oilProductionkW += optModel.GenericOptimizedValue;
+                        break;
+                    case EmsFuelType.solar:
+                        solarProductionkW += optModel.GenericOptimizedValue;
+                        break;
+                    case EmsFuelType.wind:
+                        windProductionkW += optModel.GenericOptimizedValue;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return optimizedTotalPower;
         }
 
         private static float CalculateCost(Dictionary<long, OptimisationModel> optModelMap, OptimizationType optimizationType)

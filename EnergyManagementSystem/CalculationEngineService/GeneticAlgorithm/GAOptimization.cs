@@ -98,12 +98,10 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private float FitnessFunction(DNA<Tuple<long, float>> dna)
         {
-            float penaltyOffset = 0;
-            float penalty = (penaltyRate + penaltyOffset) * (necessaryEnergy - CalculateEnergy(dna.Genes));
+            float penalty = penaltyRate * (necessaryEnergy - CalculateEnergy(dna.Genes));
 
             penalty = Math.Abs(penalty); //we need a value closer to the desired one
-            float offset = 1;
-            return 1000 - ((costRate + offset) * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
+            return 1000 - (costRate  * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
         }
 
         private float CalculateEnergy(Tuple<long, float>[] genes)
@@ -146,8 +144,18 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
             //}
 
             double rndNumber = random.NextDouble();
-            float mutatedGeneValue = rndNumber < 0.5 ? gene.Item2 + mutateRate : gene.Item2 - mutateRate;
+            float mutateOffset = 0;
+            //no mutation between 0.33 and 0.66
+            if (rndNumber < 0.33)
+            {
+                mutateOffset = -mutateRate;
+            }
+            else if(rndNumber > 0.66)
+            {
+                mutateOffset = +mutateRate;
+            }
 
+            float mutatedGeneValue = gene.Item2 + mutateOffset;
 
             if (mutatedGeneValue < optModelMap[gid].MinPower)
             {

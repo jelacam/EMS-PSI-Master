@@ -10,7 +10,7 @@ using UIClient.View;
 
 namespace UIClient.ViewModel
 {
-    public class HistoryViewModel : ViewModelBase
+	public class HistoryViewModel : ViewModelBase
     {
         #region Fields
 
@@ -29,7 +29,7 @@ namespace UIClient.ViewModel
         private ICommand totalProductionGraphUnCheckedCommand;
         private PeriodValues selectedPeriod;
         private GraphSample graphSampling;
-        private List<long> generatorsFromNms = new List<long>();
+        private ObservableCollection<long> generatorsFromNms = new ObservableCollection<long>();
         private List<Tuple<double, DateTime>> measurements;
         private Dictionary<long, bool> gidToBoolMap = new Dictionary<long, bool>();
         private ObservableCollection<Tuple<double, DateTime>> totalProduction = new ObservableCollection<Tuple<double, DateTime>>();
@@ -50,74 +50,79 @@ namespace UIClient.ViewModel
         #endregion
 
         public HistoryViewModel()
-        {
-            Title = "History";
-            startTime = DateTime.Now.AddMinutes(-1);
-            endTime = DateTime.Now;
-            graphSampling = GraphSample.None;
-            selectedPeriod = PeriodValues.None;
+		{
+			Title = "History";
+			startTime = DateTime.Now.AddMinutes(-1);
+			endTime = DateTime.Now;
+			graphSampling = GraphSample.None;
+			selectedPeriod = PeriodValues.None;
 
-            internalSynchMachines = new List<ResourceDescription>(5);
-            modelResourcesDesc = new ModelResourcesDesc();
-            retList = new List<ResourceDescription>(5);
-            properties = new List<ModelCode>(10);
-            ModelCode modelCodeSynchronousMachine = ModelCode.SYNCHRONOUSMACHINE;
-            iteratorId = 0;
-            resourcesLeft = 0;
-            numberOfResources = 2;
-            string message = string.Empty;
+			IntegrityUpdateForGenerators();
+		}
+
+		public void IntegrityUpdateForGenerators()
+		{
+			internalSynchMachines = new List<ResourceDescription>(5);
+			modelResourcesDesc = new ModelResourcesDesc();
+			retList = new List<ResourceDescription>(5);
+			properties = new List<ModelCode>(10);
+			ModelCode modelCodeSynchronousMachine = ModelCode.SYNCHRONOUSMACHINE;
+			iteratorId = 0;
+			resourcesLeft = 0;
+			numberOfResources = 2;
+			string message = string.Empty;
 
 
-            // getting SynchronousMachine
-            try
-            {
-                // first get all synchronous machines from NMS
-                properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
-                iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
-                resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+			// getting SynchronousMachine
+			try
+			{
+				// first get all synchronous machines from NMS
+				properties = modelResourcesDesc.GetAllPropertyIds(modelCodeSynchronousMachine);
+				iteratorId = NetworkModelGDAProxy.Instance.GetExtentValues(modelCodeSynchronousMachine, properties);
+				resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
 
-                while (resourcesLeft > 0)
-                {
-                    List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
-                    retList.AddRange(rds);
-                    resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
-                }
-                NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
+				while (resourcesLeft > 0)
+				{
+					List<ResourceDescription> rds = NetworkModelGDAProxy.Instance.IteratorNext(numberOfResources, iteratorId);
+					retList.AddRange(rds);
+					resourcesLeft = NetworkModelGDAProxy.Instance.IteratorResourcesLeft(iteratorId);
+				}
+				NetworkModelGDAProxy.Instance.IteratorClose(iteratorId);
 
-                // add synchronous machines to internal collection
-                internalSynchMachines.AddRange(retList);
+				// add synchronous machines to internal collection
+				internalSynchMachines.AddRange(retList);
 
-                foreach (ResourceDescription rd in internalSynchMachines)
-                {
-                    if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
-                    {
-                        long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
-                        if (GeneratorsFromNms.Contains(gid))
-                        {
-                            continue;
-                        }
-                        GeneratorsFromNms.Add(gid);
-                        GidToBoolMap.Add(gid, false);
-                    }
-                }
-                OnPropertyChanged(nameof(GeneratorsFromNms));
+				foreach (ResourceDescription rd in internalSynchMachines)
+				{
+					if (rd.ContainsProperty(ModelCode.IDENTIFIEDOBJECT_GID))
+					{
+						long gid = rd.GetProperty(ModelCode.IDENTIFIEDOBJECT_GID).AsLong();
+						if (GeneratorsFromNms.Contains(gid))
+						{
+							continue;
+						}
+						GeneratorsFromNms.Add(gid);
+						GidToBoolMap.Add(gid, false);
+					}
+				}
+				OnPropertyChanged(nameof(GeneratorsFromNms));
 
-            }
-            catch (Exception e)
-            {
-                message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
-                Console.WriteLine(message);
-                CommonTrace.WriteTrace(CommonTrace.TraceError, message);
-                //return false;
-            }
+			}
+			catch (Exception e)
+			{
+				message = string.Format("Getting extent values method failed for {0}.\n\t{1}", modelCodeSynchronousMachine, e.Message);
+				Console.WriteLine(message);
+				CommonTrace.WriteTrace(CommonTrace.TraceError, message);
+				//return false;
+			}
 
-            // clear retList for getting new model from NMS
-            retList.Clear();
-        }
+			// clear retList for getting new model from NMS
+			retList.Clear();
+		}
 
-        #region Commands
+		#region Commands
 
-        public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
+		public ICommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(ShowDataCommandExecute));
 
         public ICommand VisibilityCheckedCommand => visibilityCheckedCommand ?? (visibilityCheckedCommand = new RelayCommand<long>(VisibilityCheckedCommandExecute));
 
@@ -141,7 +146,7 @@ namespace UIClient.ViewModel
 
         #region Properties
 
-        public List<long> GeneratorsFromNms
+        public ObservableCollection<long> GeneratorsFromNms
         {
             get
             {
@@ -150,6 +155,7 @@ namespace UIClient.ViewModel
             set
             {
                 generatorsFromNms = value;
+				OnPropertyChanged();
             }
         }
 
