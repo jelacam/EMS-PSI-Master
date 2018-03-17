@@ -98,12 +98,10 @@ namespace EMS.Services.CalculationEngineService.GeneticAlgorithm
 
         private float FitnessFunction(DNA<Tuple<long, float>> dna)
         {
-            float penaltyOffset = 0;
-            float penalty = (penaltyRate + penaltyOffset) * (necessaryEnergy - CalculateEnergy(dna.Genes));
+            float penalty = penaltyRate * (necessaryEnergy - CalculateEnergy(dna.Genes));
 
             penalty = Math.Abs(penalty); //we need a value closer to the desired one
-            float offset = 1;
-            return 1000 - ((costRate + offset) * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
+            return 1000 - (costRate  * CalculateCost(dna.Genes) + penalty); // we need the smallest cost
         }
 
         private float CalculateEnergy(Tuple<long, float>[] genes)
