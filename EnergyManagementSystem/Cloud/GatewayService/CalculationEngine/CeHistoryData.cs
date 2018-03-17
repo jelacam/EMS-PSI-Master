@@ -59,10 +59,10 @@ namespace GatewayService.CEHistory
             return ret;
         }
 
-        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, DateTime>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - ReadWindFarmSavingDataFromDb");
-            List<Tuple<double, double, double>> ret = new List<Tuple<double, double, double>>();
+            List<Tuple<double, double, double, DateTime>> ret = new List<Tuple<double, double, double, DateTime>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
 
             Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.ReadWindFarmSavingDataFromDb(startTime, endTime));

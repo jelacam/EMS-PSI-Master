@@ -119,9 +119,9 @@ namespace EMS.ServiceContracts
             return co2Emission;
         }
 
-        public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
+        public List<Tuple<double, double, double, DateTime>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
-            List<Tuple<double, double, double>> windFarmSaving = new List<Tuple<double, double, double>>();
+            List<Tuple<double, double, double, DateTime>> windFarmSaving = new List<Tuple<double, double, double, DateTime>>();
             try
             {
                 windFarmSaving = proxy.ReadWindFarmSavingDataFromDb(startTime, endTime);

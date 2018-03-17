@@ -17,7 +17,7 @@ namespace UIClient.ViewModel
         private ObservableCollection<Tuple<double, double, DateTime>> cO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
         private ObservableCollection<Tuple<double, double, DateTime>> graphCO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>();
         private ObservableCollection<Tuple<double, double, double, double, double, DateTime>> individualContainer = new ObservableCollection<Tuple<double, double, double, double, double, DateTime>>();
-        private ObservableCollection<Tuple<double, double, double>> savingContainer = new ObservableCollection<Tuple<double, double, double>>();
+        private ObservableCollection<Tuple<double, double, double, DateTime>> savingContainer = new ObservableCollection<Tuple<double, double, double, DateTime>>();
         private ObservableCollection<KeyValuePair<string, double>> pieData = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> pieDataWind = new ObservableCollection<KeyValuePair<string, double>>();
         private ObservableCollection<KeyValuePair<string, double>> barSavingData = new ObservableCollection<KeyValuePair<string, double>>();
@@ -108,7 +108,7 @@ namespace UIClient.ViewModel
             }
         }
 
-        public ObservableCollection<Tuple<double, double, double>> SavingContainer
+        public ObservableCollection<Tuple<double, double, double, DateTime>> SavingContainer
         {
             get
             {
@@ -527,19 +527,25 @@ namespace UIClient.ViewModel
 
         private void ViewSavingnDataCommandExecute(object obj)
         {
+            double timeFrame;
             TotalWindSaving = 0;
             TotalCostWithoutRenewable = 0;
             TotalCostWithRenewable = 0;
             try
             {
-                SavingContainer = new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
+                SavingContainer = new ObservableCollection<Tuple<double, double, double, DateTime>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
                 if (SavingContainer != null)
                 {
-                    foreach (Tuple<double, double, double> tuple in SavingContainer)
+                    //foreach (Tuple<double, double, double, DateTime> tuple in SavingContainer)
+                    for (int i = 1; i < SavingContainer.Count; i++)
                     {
-                        TotalCostWithoutRenewable += tuple.Item1;
-                        TotalCostWithRenewable += tuple.Item2;
-                        TotalWindSaving += tuple.Item3;
+                        timeFrame = (SavingContainer[i].Item4 - SavingContainer[i - 1].Item4).TotalHours;
+                        TotalCostWithoutRenewable += ((SavingContainer[i].Item1 + SavingContainer[i - 1].Item1) / 2) * timeFrame;
+                        TotalCostWithRenewable += ((SavingContainer[i].Item2 + SavingContainer[i - 1].Item2) / 2) * timeFrame;
+                        TotalWindSaving += ((SavingContainer[i].Item3 + SavingContainer[i - 1].Item3) / 2) * timeFrame;
+                        //TotalCostWithoutRenewable += tuple.Item1;
+                        //TotalCostWithRenewable += tuple.Item2;
+                        //TotalWindSaving += tuple.Item3;
                     }
 
                     TotalCostWithoutRenewable = Math.Round(TotalCostWithoutRenewable, 2);
@@ -558,19 +564,28 @@ namespace UIClient.ViewModel
                 CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Repeating request for Saving data");
                 try
                 {
-                    SavingContainer = new ObservableCollection<Tuple<double, double, double>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
+                    SavingContainer = new ObservableCollection<Tuple<double, double, double, DateTime>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
                     if (SavingContainer != null)
                     {
-                        foreach (Tuple<double, double, double> tuple in SavingContainer)
+                        //foreach (Tuple<double, double, double, DateTime> tuple in SavingContainer)
+                        for (int i = 1; i < SavingContainer.Count; i++)
                         {
-                            TotalCostWithoutRenewable += tuple.Item1;
-                            TotalCostWithRenewable += tuple.Item2;
-                            TotalWindSaving += tuple.Item3;
+                            timeFrame = (SavingContainer[i].Item4 - SavingContainer[i - 1].Item4).TotalHours;
+                            TotalCostWithoutRenewable += ((SavingContainer[i].Item1 + SavingContainer[i - 1].Item1) / 2) * timeFrame;
+                            TotalCostWithRenewable += ((SavingContainer[i].Item2 + SavingContainer[i - 1].Item2) / 2) * timeFrame;
+                            TotalWindSaving += ((SavingContainer[i].Item3 + SavingContainer[i - 1].Item3) / 2) * timeFrame;
+                            //TotalCostWithoutRenewable += tuple.Item1;
+                            //TotalCostWithRenewable += tuple.Item2;
+                            //TotalWindSaving += tuple.Item3;
                         }
+
+                        TotalCostWithoutRenewable = Math.Round(TotalCostWithoutRenewable, 2);
+                        TotalCostWithRenewable = Math.Round(TotalCostWithRenewable, 2);
+                        TotalWindSaving = Math.Round(TotalWindSaving, 2);
                     }
                     BarSavingData.Clear();
-                    BarSavingData.Add(new KeyValuePair<string, double>("Total Cost Without Renewable", TotalCostWithoutRenewable));
-                    BarSavingData.Add(new KeyValuePair<string, double>("Total Cost With Renewable", TotalCostWithRenewable));
+                    BarSavingData.Add(new KeyValuePair<string, double>("Cost without wind and solar generators", TotalCostWithoutRenewable));
+                    BarSavingData.Add(new KeyValuePair<string, double>("Cost", TotalCostWithRenewable));
                     OnPropertyChanged(nameof(BarSavingData));
                     OnPropertyChanged(nameof(TotalWindSaving));
                 }
@@ -593,17 +608,25 @@ namespace UIClient.ViewModel
             double averageEmiisionWithRenewable;
             ObservableCollection<Tuple<double, double, DateTime>> tempData;
             GraphCO2EmissionContainer.Clear();
-
+            double timeFrame;
             try
             {
                 List<Tuple<double, double, DateTime>> co2Emission = CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2);
                 CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(co2Emission);
                 if (CO2EmissionContainer != null && CO2EmissionContainer.Count > 0)
                 {
-                    foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                    //foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                    //{
+                    //    TotalCO2 += item.Item1;
+                    //    TotalCO2Reduction += (item.Item1 - item.Item2);
+                    //}
+                    for (int i = 1; i < CO2EmissionContainer.Count; i++)
                     {
-                        TotalCO2 += item.Item1;
-                        TotalCO2Reduction += (item.Item1 - item.Item2);
+                        timeFrame = (CO2EmissionContainer[i].Item3 - CO2EmissionContainer[i - 1].Item3).TotalHours;
+
+                        TotalCO2 += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame;
+                        TotalCO2Reduction += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame -
+                                             ((CO2EmissionContainer[i].Item2 + CO2EmissionContainer[i - 1].Item2) / 2) * timeFrame;
                     }
 
                     if (graphSampling != GraphSample.None)
@@ -627,7 +650,8 @@ namespace UIClient.ViewModel
                                 averageEmissionWithoutRenewable = 0;
                                 averageEmiisionWithRenewable = 0;
                             }
-
+                            averageEmissionWithoutRenewable = averageEmissionWithoutRenewable * (tempEndTime - tempStartTime).TotalHours;
+                            averageEmiisionWithRenewable = averageEmiisionWithRenewable * (tempEndTime - tempStartTime).TotalHours;
                             tempStartTime = IncrementTime(tempStartTime);
                             tempEndTime = IncrementTime(tempEndTime);
                             GraphCO2EmissionContainer.Add(new Tuple<double, double, DateTime>(averageEmissionWithoutRenewable, averageEmiisionWithRenewable, tempStartTime));
@@ -650,10 +674,51 @@ namespace UIClient.ViewModel
                     CO2EmissionContainer = new ObservableCollection<Tuple<double, double, DateTime>>(co2Emission);
                     if (CO2EmissionContainer != null && CO2EmissionContainer.Count > 0)
                     {
-                        foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                        //foreach (Tuple<double, double, DateTime> item in CO2EmissionContainer)
+                        //{
+                        //    TotalCO2 += item.Item1;
+                        //    TotalCO2Reduction += (item.Item1 - item.Item2);
+                        //}
+                        for (int i = 1; i < CO2EmissionContainer.Count; i++)
                         {
-                            TotalCO2 += item.Item1;
-                            TotalCO2Reduction += (item.Item1 - item.Item2);
+                            timeFrame = (CO2EmissionContainer[i].Item3 - CO2EmissionContainer[i - 1].Item3).TotalHours;
+
+                            TotalCO2 += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame;
+                            TotalCO2Reduction += ((CO2EmissionContainer[i].Item1 + CO2EmissionContainer[i - 1].Item1) / 2) * timeFrame -
+                                                 ((CO2EmissionContainer[i].Item2 + CO2EmissionContainer[i - 1].Item2) / 2) * timeFrame;
+                        }
+
+                        if (graphSampling != GraphSample.None)
+                        {
+                            DateTime tempStartTime = StartTimeCO2;
+                            DateTime tempEndTime = IncrementTime(tempStartTime);
+
+                            averageEmissionWithoutRenewable = 0;
+                            averageEmiisionWithRenewable = 0;
+
+                            while (tempEndTime <= EndTimeCO2)
+                            {
+                                tempData = new ObservableCollection<Tuple<double, double, DateTime>>(CO2EmissionContainer.Where(x => x.Item3 > tempStartTime && x.Item3 < tempEndTime));
+                                if (tempData != null && tempData.Count != 0)
+                                {
+                                    averageEmissionWithoutRenewable = tempData.Average(x => x.Item1);
+                                    averageEmiisionWithRenewable = tempData.Average(x => x.Item2);
+                                }
+                                else
+                                {
+                                    averageEmissionWithoutRenewable = 0;
+                                    averageEmiisionWithRenewable = 0;
+                                }
+                                averageEmissionWithoutRenewable = averageEmissionWithoutRenewable * (tempEndTime - tempStartTime).TotalHours;
+                                averageEmiisionWithRenewable = averageEmiisionWithRenewable * (tempEndTime - tempStartTime).TotalHours;
+                                tempStartTime = IncrementTime(tempStartTime);
+                                tempEndTime = IncrementTime(tempEndTime);
+                                GraphCO2EmissionContainer.Add(new Tuple<double, double, DateTime>(averageEmissionWithoutRenewable, averageEmiisionWithRenewable, tempStartTime));
+                            }
+                        }
+                        else
+                        {
+                            GraphCO2EmissionContainer = CO2EmissionContainer;
                         }
                     }
                 }
@@ -671,7 +736,7 @@ namespace UIClient.ViewModel
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
             PieData.Add(new KeyValuePair<string, double>("CO2 Remaining", TotalCO2));
 
-            TotalCO2Reduction = Math.Round(TotalCO2Reduction, 2);
+            TotalCO2Reduction = Math.Round(TotalCO2Reduction, 4);
 
             OnPropertyChanged(nameof(PieData));
             OnPropertyChanged(nameof(TotalCO2Reduction));
