@@ -5,11 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CloudCommon;
+using EMS.CommonMeasurement;
 using EMS.ServiceContracts;
 using EMS.Services.AlarmsEventsService;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Communication.Wcf.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace AlarmsEventsCloudService
@@ -17,7 +19,7 @@ namespace AlarmsEventsCloudService
     /// <summary>
     /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
-    internal sealed class AlarmsEventsCloudService : StatefulService
+    internal sealed class AlarmsEventsCloudService : StatefulService, IAesIntegrityAsyncContract
     {
         private AlarmsEvents alarmsEvents;
 
@@ -25,6 +27,11 @@ namespace AlarmsEventsCloudService
             : base(context)
         {
             alarmsEvents = new AlarmsEvents();
+        }
+
+        public Task<List<AlarmHelper>> InitiateIntegrityUpdate()
+        {
+            return Task.FromResult(alarmsEvents.InitiateIntegrityUpdate());
         }
 
         /// <summary>
@@ -38,7 +45,8 @@ namespace AlarmsEventsCloudService
         {
             return new List<ServiceReplicaListener>() {
                 new ServiceReplicaListener(context => this.CreateAlarmEventsListener(context), "AlarmsEventsEndpoint"),
-                new ServiceReplicaListener(context => this.CreateAlarmsEventsIntegrityListener(context), "AlarmsEventsIntegrityEndpoint")
+                new ServiceReplicaListener(context => this.CreateAlarmsEventsIntegrityListener(context), "AlarmsEventsIntegrityEndpoint"),
+                new ServiceReplicaListener(context => this.CreateServiceRemotingListener(context), "AlarmsEventsIntegrityAsyncEndpoint")
             };
         }
 

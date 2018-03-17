@@ -16,6 +16,8 @@ namespace EMS.Services.AlarmsEventsService
     using System.Data;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
+    using System.Threading.Tasks;
+
     using System.Linq;
 
     /// <summary>
@@ -103,7 +105,7 @@ namespace EMS.Services.AlarmsEventsService
         {
             lock (alarmLock)
             {
-                this.GetAlarmsFormAlarmsEventsCache();
+                this.GetAlarmsFromAlarmsEventsCache();
                 AesPublishSfProxy aesPublishSfProxy = new AesPublishSfProxy();
                 bool normalAlarm = false;
                 if (Alarms == null)
@@ -163,7 +165,7 @@ namespace EMS.Services.AlarmsEventsService
                     if (publishingStatus.Equals(PublishingStatus.INSERT) && !updated && !alarm.Type.Equals(AlarmType.NORMAL))
                     {
                         //RemoveFromAlarms(alarm.Gid);
-                        this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
+                        this.RemoveAlarmFromAlarmsEventsCache(alarm.Gid);
                         //this.Alarms.Add(alarm);
                         this.AddAlarmToAlarmsEventsCache(alarm);
                         this.isNormalCreated[alarm.Gid] = false;
@@ -171,7 +173,7 @@ namespace EMS.Services.AlarmsEventsService
                     if (alarm.Type.Equals(AlarmType.NORMAL) && normalAlarm)
                     {
                         //RemoveFromAlarms(alarm.Gid);
-                        this.RemoveAlarmFormAlarmsEventsCache(alarm.Gid);
+                        this.RemoveAlarmFromAlarmsEventsCache(alarm.Gid);
                         //this.Alarms.Add(alarm);
                         this.AddAlarmToAlarmsEventsCache(alarm);
                         aesPublishSfProxy.PublishAlarmsEvents(alarm, publishingStatus);
@@ -520,7 +522,7 @@ namespace EMS.Services.AlarmsEventsService
             }
         }
 
-        public async void RemoveAlarmFormAlarmsEventsCache(long gid)
+        public async void RemoveAlarmFromAlarmsEventsCache(long gid)
         {
             try
             {
@@ -560,7 +562,7 @@ namespace EMS.Services.AlarmsEventsService
             }
         }
 
-        public async void GetAlarmsFormAlarmsEventsCache()
+        public async void GetAlarmsFromAlarmsEventsCache()
         {
             try
             {

@@ -14,36 +14,60 @@ namespace GatewayService.CEHistory
         public List<Tuple<double, double, DateTime>> GetCO2Emission(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - GetCO2Emission");
+            List<Tuple<double, double, DateTime>> ret = new List<Tuple<double, double, DateTime>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.GetCO2Emission(startTime, endTime);
+
+            Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.GetCO2Emission(startTime, endTime));
+            task.Wait();
+
+            return ret;
         }
 
         public List<Tuple<double, DateTime>> GetHistoryMeasurements(long gid, DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - GetHistoryMeasurements");
+            List<Tuple<double, DateTime>> ret = new List<Tuple<double, DateTime>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.GetHistoryMeasurements(gid, startTime, endTime);
+
+            Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.GetHistoryMeasurements(gid, startTime, endTime));
+            task.Wait();
+
+            return ret;
         }
 
         public List<Tuple<double, DateTime>> GetTotalProduction(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - GetTotalProduction");
+            List<Tuple<double, DateTime>> ret = new List<Tuple<double, DateTime>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.GetTotalProduction(startTime, endTime);
+
+            Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.GetTotalProduction(startTime, endTime));
+            task.Wait();
+
+            return ret;
         }
 
         public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - ReadIndividualFarmProductionDataFromDb");
+            List<Tuple<double, double, double, double, double, DateTime>> ret = new List<Tuple<double, double, double, double, double, DateTime>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime);
+
+            Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.ReadIndividualFarmProductionDataFromDb(startTime, endTime));
+            task.Wait();
+
+            return ret;
         }
 
         public List<Tuple<double, double, double>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
             ServiceEventSource.Current.Message("CE History Data - ReadWindFarmSavingDataFromDb");
+            List<Tuple<double, double, double>> ret = new List<Tuple<double, double, double>>();
             CalculationEngineHistorySfProxy calculationEngineHistorySfProxy = new CalculationEngineHistorySfProxy();
-            return calculationEngineHistorySfProxy.ReadWindFarmSavingDataFromDb(startTime, endTime);
+
+            Task task = Task.Run(() => ret = calculationEngineHistorySfProxy.ReadWindFarmSavingDataFromDb(startTime, endTime));
+            task.Wait();
+            return ret;
         }
     }
 }

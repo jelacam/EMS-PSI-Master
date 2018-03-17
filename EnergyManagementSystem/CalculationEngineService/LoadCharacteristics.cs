@@ -83,6 +83,7 @@ namespace EMS.Services.CalculationEngineService
             XmlSerializer serializer = new XmlSerializer(typeof(SynchronousMachineCurveModels));
             StreamWriter writer = new StreamWriter("SynchronousMachinesCurves.xml");
             serializer.Serialize(writer, CharacteristicCurves);
+            writer.Dispose();
         }
     }
 }
