@@ -20,7 +20,7 @@
                                     AzureActiveDirectory="true"
                                     ServerCertThumbprint="0123456789012345678901234567890123456789" />
   -->
-  <ClusterConnectionParameters ConnectionEndpoint="emsteam.westeurope.cloudapp.azure.com:19000" X509Credential="true" ServerCertThumbprint="CB96FF43673FF0F14988182BDD0FEFF27F06841D" FindType="FindByThumbprint" FindValue="CB96FF43673FF0F14988182BDD0FEFF27F06841D" StoreLocation="CurrentUser" StoreName="My" />
+  <ClusterConnectionParameters ConnectionEndpoint="ems-cluster.northeurope.cloudapp.azure.com:19000" X509Credential="true" ServerCertThumbprint="8C9CA85D0C64B5F9248FCC10FDA3E2134E7EE659" FindType="FindByThumbprint" FindValue="8C9CA85D0C64B5F9248FCC10FDA3E2134E7EE659" StoreLocation="CurrentUser" StoreName="My" />
   <ApplicationParameterFile Path="..\ApplicationParameters\Cloud.xml" />
   <CopyPackageParameters CompressPackage="true" />
 </PublishProfile>
