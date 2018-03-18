@@ -330,7 +330,7 @@
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10,10,10,0">
                         <TextBlock  Style="{StaticResource Title}" Foreground="LightCoral" Text="Cost:" />
                         <TextBlock  Style="{StaticResource SubTitle}" Foreground="LightCoral" Text="{Binding CurrentCost}" Margin="5,0,0,0" />
-                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="LightCoral" Text="$" Margin="5,0,0,0" />
+                        <TextBlock  Style="{StaticResource SubTitle}" Foreground="LightCoral" Text="$/kWh" Margin="5,0,0,0" />
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10,10,10,0">

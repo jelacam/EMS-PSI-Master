@@ -184,12 +184,13 @@ namespace EMS.Services.CalculationEngineService
                 });
             }
 
-            DateTime dateTime = new DateTime(2017, 1, 1);
+            DateTime dateTime = new DateTime(2017, 8, 14);
+            DateTime endTime = new DateTime(2018, 3, 17);
             int index = 0;
             DummySimulation simulation = new DummySimulation();
             Random rnd = new Random();
             float rndValue = ((float)rnd.NextDouble() + 1) / 3;
-            while (dateTime < DateTime.Now)
+            while (dateTime < endTime)
             {
                 if (index % 24 == 0)
                 {
@@ -199,6 +200,10 @@ namespace EMS.Services.CalculationEngineService
 
                 float currentConsumption = simulation.GetCurrentConsumption(index % 24) / 4 - 1500;
                 currentConsumption *= rndValue;
+                if(currentConsumption < 500)
+                {
+                    currentConsumption = 500;
+                }
                 float windSpeed = (1 - rndValue) * simulation.GetWindSpeed(index % 24);
                 float sunLight = rndValue * simulation.GetSunLight(index % 24);
 
