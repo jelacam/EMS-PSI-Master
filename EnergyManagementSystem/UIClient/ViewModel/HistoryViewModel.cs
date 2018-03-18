@@ -337,9 +337,11 @@ namespace UIClient.ViewModel
             GraphTotalProduction.Clear();
             GeneratorsContainer.Clear();
             GraphTotalProductionForSelected.Clear();
+            Mouse.OverrideCursor = Cursors.Wait;
 
             foreach (KeyValuePair<long, bool> keyPair in GidToBoolMap)
             {
+
                 if (keyPair.Value == true)
                 {
                     try
@@ -416,6 +418,8 @@ namespace UIClient.ViewModel
                     }
                 }
             }
+
+
             List<Tuple<double, DateTime>> allProductionValues = new List<Tuple<double, DateTime>>();
             List<DateTime> timestamps = new List<DateTime>();
 
@@ -525,6 +529,7 @@ namespace UIClient.ViewModel
             }
             IsExpandedSeparated = true;
             IsExpandedTotalProduction = true;
+            Mouse.OverrideCursor = null;
 
             OnPropertyChanged(nameof(GraphTotalProductionForSelected));
             OnPropertyChanged(nameof(GraphTotalProduction));

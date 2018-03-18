@@ -21,9 +21,10 @@
         <converters:GidMapToBoolConverter x:Key="GidMapToBoolConverter" />
         <converters:NumberToSizeNameConverter x:Key="NumberToSizeNameConverter" />
         <converters:LastValueShowConverter x:Key="LastValueShowConverter" />
-        <converters:BindableAxisConverter x:Key="BindableAxisConverter" />
+		<converters:BindableAxisConverter x:Key="BindableAxisConverter" />
+		<converters:OptimizationTypeEnumToStringConverter x:Key="OptimizationTypeEnumToStringConverter" />
 
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+		<ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="commonMeas:OptimizationType" />
@@ -206,6 +207,11 @@
                                     <i:InvokeCommandAction Command="{Binding ChangeAlgorithmCommand}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource OptimizationTypeEnumToStringConverter}}"></TextBlock>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
                         </ComboBox>
                     </GroupBox>
                     <GroupBox FontSize="14" Header="Visibility" Foreground="White">

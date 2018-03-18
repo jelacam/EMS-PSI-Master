@@ -106,6 +106,7 @@ namespace UIClient.ViewModel
                     MessageBox.Show("Must enter CIM/XML file.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
+                Mouse.OverrideCursor = Cursors.Wait;
 
                 string log;
                 nmsDelta = null;
@@ -129,6 +130,10 @@ namespace UIClient.ViewModel
             {
                 MessageBox.Show(string.Format("An error occurred.\n\n{0}", e.Message), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
 
             CimFileLocation = string.Empty;
         }
@@ -140,6 +145,8 @@ namespace UIClient.ViewModel
             {
                 try
                 {
+                    Mouse.OverrideCursor = Cursors.Wait;
+
                     string log = adapter.ApplyUpdates(nmsDelta);
                     ApplyReport = log;
                     nmsDelta = null;
@@ -156,6 +163,10 @@ namespace UIClient.ViewModel
                 catch (Exception e)
                 {
                     MessageBox.Show(string.Format("An error occurred.\n\n{0}", e.Message), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    Mouse.OverrideCursor = null;
                 }
             }
             else

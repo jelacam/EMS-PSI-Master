@@ -151,6 +151,7 @@
     <Compile Include="Converters\LastValueShowConverter.cs" />
     <Compile Include="Converters\ModelCodeToStringConverter.cs" />
     <Compile Include="Converters\NumberToSizeNameConverter.cs" />
+    <Compile Include="Converters\OptimizationTypeEnumToStringConverter.cs" />
     <Compile Include="Converters\PeriodEnumToStringConverter.cs" />
     <Compile Include="Converters\PropertyValueConverter.cs" />
     <Compile Include="Converters\StringCompareConverter.cs" />
