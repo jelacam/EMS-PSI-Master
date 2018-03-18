@@ -3,20 +3,16 @@ using EMS.CIMAdapter.Manager;
 using EMS.Common;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 
 namespace UIClient.ViewModel
 {
-    public class ImporterViewModel : ViewModelBase
+	public class ImporterViewModel : ViewModelBase
     {
         private ICommand showOpenDialogCommand;
         private ICommand convertCommand;
@@ -149,7 +145,13 @@ namespace UIClient.ViewModel
                     nmsDelta = null;
                     MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
                     var mainWindVM = mainWindow.DataContext as MainWindowViewModel;
-                    mainWindVM.InitiateIntegrityUpdate();
+					var historyVm = mainWindVM?.DockManagerViewModel.Documents.FirstOrDefault(x => x is HistoryViewModel) as HistoryViewModel;
+
+					mainWindVM.InitiateIntegrityUpdate();
+					if(historyVm != null)
+					{
+						historyVm.IntegrityUpdateForGenerators();
+					}
                 }
                 catch (Exception e)
                 {

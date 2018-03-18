@@ -193,7 +193,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Background="Gray" Width="200"
+        <Grid Grid.Column="0" Background="Gray" Width="250"
 			  Visibility="{Binding IsOptionsExpanded,Converter={StaticResource BoolToVisibilityConverter}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
 
@@ -216,14 +216,14 @@
                             </Grid.RowDefinitions>
 
                             <GroupBox Header="Generators" Foreground="White">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxHeight="175">
                                     <ItemsControl ItemsSource="{Binding GeneratorsContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}" />
                                 </ScrollViewer>
                             </GroupBox>
 
                             <GroupBox Grid.Row="1" Header="Consumers" Foreground="White">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="175">
+								<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" MaxHeight="175">
                                     <ItemsControl ItemsSource="{Binding EnergyConsumersContainer}"
 										  ItemTemplate="{StaticResource VisibilityCheckbox}">
                                     </ItemsControl>

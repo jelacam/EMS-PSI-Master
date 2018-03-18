@@ -88,26 +88,26 @@ namespace UISimulator.ViewModel
 		private void PopulateSimulationData()
         {
 			SimulationDataList = new List<SimulationData>();
-			SimulationDataList.Add( new SimulationData("SimulationData1"));
-            SimulationDataList.Add( new SimulationData("SimulationData2"));
-            SimulationDataList.Add( new SimulationData("SimulationData3"));
-            SimulationDataList.Add( new SimulationData("SimulationData4"));
-            SimulationDataList.Add( new SimulationData("SimulationData5"));
-            SimulationDataList.Add( new SimulationData("SimulationData6"));
-            SimulationDataList.Add( new SimulationData("SimulationData7"));
-            SimulationDataList.Add( new SimulationData("SimulationData8"));
-            SimulationDataList.Add( new SimulationData("SimulationData9"));
-            SimulationDataList.Add( new SimulationData("SimulationData10"));
-            SimulationDataList.Add( new SimulationData("SimulationData11"));
-            SimulationDataList.Add( new SimulationData("SimulationData12"));
-            SimulationDataList.Add( new SimulationData("SimulationData13"));
-            SimulationDataList.Add( new SimulationData("SimulationData14"));
-            SimulationDataList.Add( new SimulationData("SimulationData15"));
-            SimulationDataList.Add( new SimulationData("SimulationData16"));
-            SimulationDataList.Add( new SimulationData("SimulationData17"));
-            SimulationDataList.Add( new SimulationData("SimulationData18"));
-            SimulationDataList.Add( new SimulationData("SimulationData19"));
-			SimulationDataList.Add( new SimulationData("SimulationData20"));
+			SimulationDataList.Add( new SimulationData("Household1"));
+            SimulationDataList.Add( new SimulationData("Household2"));
+            SimulationDataList.Add( new SimulationData("Household3"));
+            SimulationDataList.Add( new SimulationData("Household4"));
+            SimulationDataList.Add( new SimulationData("Household5"));
+            SimulationDataList.Add( new SimulationData("Household6"));
+            SimulationDataList.Add( new SimulationData("Household7"));
+            SimulationDataList.Add( new SimulationData("Household8"));
+            SimulationDataList.Add( new SimulationData("Household9"));
+            SimulationDataList.Add( new SimulationData("Household10"));
+            SimulationDataList.Add( new SimulationData("Administration1"));
+            SimulationDataList.Add( new SimulationData("Administration2"));
+            SimulationDataList.Add( new SimulationData("Administration3"));
+            SimulationDataList.Add( new SimulationData("Administration4"));
+            SimulationDataList.Add( new SimulationData("Administration5"));
+            SimulationDataList.Add( new SimulationData("Industry1"));
+            SimulationDataList.Add( new SimulationData("Industry2"));
+            SimulationDataList.Add( new SimulationData("Industry3"));
+            SimulationDataList.Add( new SimulationData("Industry4"));
+			SimulationDataList.Add( new SimulationData("Industry5"));
 
 			SimulationDataList.Add( new SimulationData("SimulationWindData"));
 			SimulationDataList.Add( new SimulationData("SimulationSunData"));
