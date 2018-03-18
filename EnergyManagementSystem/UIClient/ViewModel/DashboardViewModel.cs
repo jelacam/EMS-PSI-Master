@@ -182,6 +182,11 @@ namespace UIClient.ViewModel
 
             set
             {
+                if(selectedOptimizationType == value)
+                {
+                    return;
+                }
+
                 selectedOptimizationType = value;
                 OnPropertyChanged();
             }
@@ -408,6 +413,8 @@ namespace UIClient.ViewModel
                 {
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
+                        SelectedOptimizationType = measUIs.Last().OptimizationType == 0 ? OptimizationType.Linear : OptimizationType.Genetic;
+
                         AddMeasurmentTo(GeneratorsContainer, measUIs);
                         CurrentProduction = measUIs.Sum(x => x.CurrentValue);
 						CurrentCost = measUIs.Sum(x => x.Price);
