@@ -31,7 +31,7 @@ namespace EMS.Services.CalculationEngineService
         /// </summary>
         public CalculationEngineService()
         {
-            this.ce = new CalculationEngine();
+            this.ce = new CalculationEngine(null);
             CrToCe.CalculationEngine = this.ce;
             CeToUI.CalculationEngine = this.ce;
             this.InitializeHosts();

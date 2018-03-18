@@ -23,6 +23,7 @@ namespace EMS.Services.CalculationEngineService
     using System.ServiceModel;
     using System.Threading;
     using ServiceContracts.ServiceFabricProxy;
+    using System.Fabric;
 
     /// <summary>
     /// Class for CalculationEngine
@@ -74,6 +75,8 @@ namespace EMS.Services.CalculationEngineService
 
         private OptimizationType optimizationType = OptimizationType.Linear;
 
+        public StatefulServiceContext ServiceContext;
+
         public SynchronousMachineCurveModels GeneratorCharacteristics
         {
             get { return generatorCharacteristics; }
@@ -94,8 +97,9 @@ namespace EMS.Services.CalculationEngineService
         /// <summary>
         /// Initializes a new instance of the <see cref="CalculationEngine" /> class
         /// </summary>
-        public CalculationEngine()
+        public CalculationEngine(StatefulServiceContext context)
         {
+            ServiceContext = context;
             generatorCurves = new Dictionary<string, SynchronousMachineCurveModel>();
             lockObj = new object();
 
@@ -608,6 +612,8 @@ namespace EMS.Services.CalculationEngineService
         /// <param name="gid">Global identifikator of object</param>
         public List<Tuple<double, DateTime>> ReadMeasurementsFromDb(long gid, DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadMeasurements -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -699,6 +705,8 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>Tuple list od pair double and datetime for period</returns>
         public List<Tuple<double, DateTime>> ReadTotalProductionsFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadTotalProductions -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, DateTime>> retVal = new List<Tuple<double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -741,6 +749,8 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>tuples of double, double, time (total cost, total cost with wind farm,)</returns>
         public List<Tuple<double, double, double, DateTime>> ReadWindFarmSavingDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadWindFarmSolarSaving -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double, double, DateTime>> retVal = new List<Tuple<double, double, double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -777,6 +787,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double>> ReadWindFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadWindFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -813,6 +825,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double>> ReadSolarFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadSolarFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -849,6 +863,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double>> ReadHydroFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadHydroFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -885,6 +901,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double>> ReadCoalFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadCoalFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -921,6 +939,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double>> ReadOilFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadOilFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double>> retVal = new List<Tuple<double, double>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -957,6 +977,8 @@ namespace EMS.Services.CalculationEngineService
 
         public List<Tuple<double, double, double, double, double, DateTime>> ReadIndividualFarmProductionDataFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadIndividualFarmProduction -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double, double, double, double, DateTime>> retVal = new List<Tuple<double, double, double, double, double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))
@@ -1041,6 +1063,8 @@ namespace EMS.Services.CalculationEngineService
         /// <returns>returns list of pair values</returns>
         public List<Tuple<double, double, DateTime>> ReadCO2EmissionFromDb(DateTime startTime, DateTime endTime)
         {
+            ServiceEventSource.Current.ServiceMessage(ServiceContext, string.Format("CE_HISTORY -ReadCO2Emission -Node: {0} | Partition: {1}", ServiceContext.NodeContext.NodeName, ServiceContext.PartitionId));
+
             List<Tuple<double, double, DateTime>> retVal = new List<Tuple<double, double, DateTime>>();
 
             using (SqlConnection connection = new SqlConnection(Config.Instance.ConnectionString))

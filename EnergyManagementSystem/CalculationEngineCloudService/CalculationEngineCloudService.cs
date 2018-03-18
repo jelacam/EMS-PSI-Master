@@ -26,7 +26,7 @@ namespace CalculationEngineCloudService
         public CalculationEngineCloudService(StatefulServiceContext context)
             : base(context)
         {
-            ce = new CalculationEngine();
+            ce = new CalculationEngine(this.Context);
             crToCe = new CrToCe();
             ceToUI = new CeToUI();
             CrToCe.CalculationEngine = ce;
