@@ -531,6 +531,8 @@ namespace UIClient.ViewModel
             TotalWindSaving = 0;
             TotalCostWithoutRenewable = 0;
             TotalCostWithRenewable = 0;
+            Mouse.OverrideCursor = Cursors.Wait;
+
             try
             {
                 SavingContainer = new ObservableCollection<Tuple<double, double, double, DateTime>>(CalculationEngineUIProxy.Instance.ReadWindFarmSavingDataFromDb(StartTimeSaving, EndTimeSaving));
@@ -598,6 +600,11 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetTotalWindSaving from database. {0}; Exception type: {1}", e.Message, e.GetType());
             }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+
         }
 
         private void ViewCO2EmissionDataCommandExecute(object obj)
@@ -609,6 +616,8 @@ namespace UIClient.ViewModel
             ObservableCollection<Tuple<double, double, DateTime>> tempData;
             GraphCO2EmissionContainer.Clear();
             double timeFrame;
+            Mouse.OverrideCursor = Cursors.Wait;
+
             try
             {
                 List<Tuple<double, double, DateTime>> co2Emission = CalculationEngineUIProxy.Instance.GetCO2Emission(StartTimeCO2, EndTimeCO2);
@@ -731,6 +740,10 @@ namespace UIClient.ViewModel
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error GetCO2Emission from database. {0}", e.Message);
             }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
 
             PieData.Clear();
             PieData.Add(new KeyValuePair<string, double>("CO2 Saved", TotalCO2Reduction));
@@ -752,6 +765,9 @@ namespace UIClient.ViewModel
             TotalCoalProduction = 0;
             TotalOilProduction = 0;
             TotalSum = 0;
+            Mouse.OverrideCursor = Cursors.Wait;
+
+
             try
             {
                 IndividualContainer = new ObservableCollection<Tuple<double, double, double, double, double, DateTime>>(CalculationEngineUIProxy.Instance.ReadIndividualFarmProductionDataFromDb(StartTimeWind, EndTimeWind));
@@ -812,6 +828,10 @@ namespace UIClient.ViewModel
             catch (Exception e)
             {
                 CommonTrace.WriteTrace(CommonTrace.TraceError, "[DMSOptionsViewModel] Error ViewWindProductionData from database. {0}; Exception type: {1}", e.Message, e.GetType());
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
             }
 
             PieDataWind.Clear();

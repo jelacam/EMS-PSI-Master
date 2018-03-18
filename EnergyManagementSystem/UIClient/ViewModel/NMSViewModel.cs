@@ -79,6 +79,7 @@ namespace UIClient.ViewModel
             ResList.Clear();
 
             List<ModelCode> forFind = getModelCodes();
+            Mouse.OverrideCursor = Cursors.Wait;
 
             var allSelected = getSelectedProp();
             foreach (var modCode in forFind)
@@ -109,6 +110,9 @@ namespace UIClient.ViewModel
                     Console.WriteLine(ex.Message);
                 }
             }
+
+            Mouse.OverrideCursor = null;
+
         }
 
         private void TypeCheckBoxChangedCommandExecute(object obj)
