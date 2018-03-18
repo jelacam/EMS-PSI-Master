@@ -48,7 +48,7 @@ namespace EMS.Services.SCADACollectingService
             try
             {
                 //modbusClient = new ModbusClient("109.92.167.138", 502);
-                modbusClient = new ModbusClient("localhost", 502);
+                modbusClient = new ModbusClient("178.222.159.165", 502);
                 modbusClient.Connect();
             }
             catch (SocketException)
