@@ -12,10 +12,10 @@ namespace CloudCommon
         public static NetTcpBinding CreateCustomNetTcp()
         {
             NetTcpBinding binding = new NetTcpBinding();
-            binding.SendTimeout = new TimeSpan(0, 10, 0);
-            binding.ReceiveTimeout = new TimeSpan(10, 30, 0);
-            binding.CloseTimeout = new TimeSpan(0, 30, 0); ;
-            binding.OpenTimeout = new TimeSpan(0, 30, 0);
+            binding.SendTimeout = new TimeSpan(1, 30, 0);
+            binding.ReceiveTimeout = new TimeSpan(1, 30, 0);
+            binding.CloseTimeout = new TimeSpan(1, 30, 0); ;
+            binding.OpenTimeout = new TimeSpan(1, 30, 0);
             binding.MaxBufferSize = 2147483647;
             binding.MaxReceivedMessageSize = 2147483647;
             binding.ReaderQuotas.MaxStringContentLength = 2147483647;
