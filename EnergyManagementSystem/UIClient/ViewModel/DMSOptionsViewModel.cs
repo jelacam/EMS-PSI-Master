@@ -815,11 +815,11 @@ namespace UIClient.ViewModel
             }
 
             PieDataWind.Clear();
-            PieDataWind.Add(new KeyValuePair<string, double>("Wind", TotalWindProduction));
-            PieDataWind.Add(new KeyValuePair<string, double>("Solar", TotalSolarProduction));
-            PieDataWind.Add(new KeyValuePair<string, double>("Hydro", TotalHydroProduction));
-            PieDataWind.Add(new KeyValuePair<string, double>("Coal", TotalCoalProduction));
-            PieDataWind.Add(new KeyValuePair<string, double>("Oil", TotalOilProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Wind  ", TotalWindProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Solar  ", TotalSolarProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Hydro  ", TotalHydroProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Coal  ", TotalCoalProduction));
+            PieDataWind.Add(new KeyValuePair<string, double>("Oil  ", TotalOilProduction));
 
             OnPropertyChanged(nameof(PieDataWind));
         }

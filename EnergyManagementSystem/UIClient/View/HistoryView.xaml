@@ -69,8 +69,7 @@
                         </MultiBinding>
                     </chartingToolkit:Chart.Title>
 
-                    <chartingToolkit:LineSeries Title="Generation [kW]"
-                                                ItemsSource="{Binding Path=Value}" 
+                    <chartingToolkit:LineSeries ItemsSource="{Binding Path=Value}" 
 												DependentValueBinding="{Binding Path=Item1}" 
 												IndependentValueBinding="{Binding Path=Item2}"
 												IsSelectionEnabled="False"
@@ -90,6 +89,12 @@
                         <chartingToolkit:LineSeries.DependentRangeAxis>
                             <chartingToolkit:LinearAxis Orientation="Y" Title="Power (kW)"/>
                         </chartingToolkit:LineSeries.DependentRangeAxis>
+
+                        <chartingToolkit:LineSeries.LegendItemStyle>
+                            <Style TargetType="chartingToolkit:LegendItem">
+                                <Setter Property="Width" Value="0"/>
+                            </Style>
+                        </chartingToolkit:LineSeries.LegendItemStyle>
 
                     </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
