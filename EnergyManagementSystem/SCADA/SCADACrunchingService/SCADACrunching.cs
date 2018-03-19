@@ -448,16 +448,21 @@ namespace EMS.Services.SCADACrunchingService
                 //        timeStamp: DateTime.Now
                 //    ));
                 //}
-
-                if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
+                try
                 {
-                    using (var txtWriter = new StreamWriter("PointsReport.txt", true))
+                    if (analogLoc.Analog.Mrid.Equals("Analog_sm_03"))
                     {
-                        txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " before the conversion was: " + values[0] + ", and after:" + eguVal);
-                        txtWriter.Dispose();
+                        using (var txtWriter = new StreamWriter("PointsReport.txt", true))
+                        {
+                            txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " before the conversion was: " + values[0] + ", and after:" + eguVal);
+                            txtWriter.Dispose();
+                        }
                     }
                 }
-
+                catch (Exception e)
+                {
+                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "PointsReport " + e.Message);
+                }
                 MeasurementUnit measUnit = new MeasurementUnit();
                 measUnit.Gid = analogLoc.Analog.PowerSystemResource;
                 measUnit.MinValue = analogLoc.Analog.MinValue;

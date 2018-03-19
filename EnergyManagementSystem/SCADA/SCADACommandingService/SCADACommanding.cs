@@ -426,7 +426,7 @@ namespace EMS.Services.SCADACommandingService
 
                             modbusClient.WriteSingleRegister((ushort)analogLoc.StartAddress, rawVal);
 
-                            if (analogLoc.Analog.Mrid.Equals("Analog_sm_2"))
+                            if (analogLoc.Analog.Mrid.Equals("Analog_sm_03"))
                             {
                                 float[] values = new float[100];
                                 int setPointLimit = 10;
@@ -447,11 +447,18 @@ namespace EMS.Services.SCADACommandingService
                                 {
                                     CommonTrace.WriteTrace(CommonTrace.TraceInfo, "Doslo je do GRESKE prilikom citanja!");
                                 }
-                                using (var txtWriter = new StreamWriter("SentData.txt", true))
+                                try
                                 {
-                                    // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
-                                    txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + ", EGU = " + measurements[i].CurrentValue);
-                                    txtWriter.Dispose();
+                                    using (var txtWriter = new StreamWriter("SentData.txt", true))
+                                    {
+                                        // txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal1 + " EGU = " + 89);
+                                        txtWriter.WriteLine(" [" + DateTime.Now + "] " + " The value for " + analogLoc.Analog.Mrid + " that was sent: RAW = " + rawVal + ", EGU = " + measurements[i].CurrentValue);
+                                        txtWriter.Dispose();
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    CommonTrace.WriteTrace(CommonTrace.TraceInfo, "FirstReadAfterSending " + e.Message);
                                 }
                             }
                         }
